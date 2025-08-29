@@ -14,14 +14,20 @@ import br.ufsc.aggregare.repository.UserRepository;
 @Profile("test")
 public class TestConfig implements CommandLineRunner {
 
+	private final UserRepository userRepository;
+
 	@Autowired
-	private UserRepository userRepository;
+	public TestConfig(UserRepository userRepository) {
+		this.userRepository = userRepository;
+	}
 
 	@Override
 	public void run(String... args) throws Exception {
 
-		User user1 = new User(null, "João", "Silva", "joaosilva", "joaosilva@gmail.com", "1234567", "localhost:8080/images/1", true);
+		User user1 = new User(null, "João", "Silva", "joaosilva", "joao@gmail.com", "1234567", "localhost:8080/images/1", true);
+		User user2 = new User(null, "Maria", "Oliveira", "mariaoliveira", "maria@gmail.com", "2345678", "localhost:8080/images/2", false);
+		User user3 = new User(null, "José", "Santos", "josesantos", "jose@gmail.com", "3456789", "localhost:8080/images/3", false);
 
-		userRepository.saveAll(Arrays.asList(user1));
+		userRepository.saveAll(Arrays.asList(user1, user2, user3));
 	}
 }
