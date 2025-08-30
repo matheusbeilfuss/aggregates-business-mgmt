@@ -18,7 +18,7 @@ public class FileService {
 
 	public String saveImage(MultipartFile file) {
 		if (file.isEmpty()) {
-			throw new FileStorageException("Falha ao salvar arquivo vazio.");
+			throw new FileStorageException("Failed to save empty file.");
 		}
 
 		try {
