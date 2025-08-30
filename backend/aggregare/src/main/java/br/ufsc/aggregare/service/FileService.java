@@ -43,7 +43,7 @@ public class FileService {
 
 			return "/uploads/" + uniqueFileName;
 		} catch (IOException e) {
-			throw new FileStorageException("Falha ao salvar o arquivo: " + file.getOriginalFilename());
+			throw new FileStorageException("Failed to save file: " + file.getOriginalFilename());
 		}
 	}
 
@@ -54,7 +54,7 @@ public class FileService {
 				Path filePath = this.uploadPath.resolve(filename);
 				Files.deleteIfExists(filePath);
 			} catch (IOException e) {
-				throw new FileStorageException("Falha ao apagar imagem anterior: " + imgUrl);
+				throw new FileStorageException("Failed to delete previous image: " + imgUrl);
 			}
 		}
 	}
