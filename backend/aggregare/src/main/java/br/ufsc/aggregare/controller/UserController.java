@@ -18,7 +18,6 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import br.ufsc.aggregare.model.User;
-import br.ufsc.aggregare.service.FileService;
 import br.ufsc.aggregare.service.UserService;
 
 @RestController
@@ -26,12 +25,10 @@ import br.ufsc.aggregare.service.UserService;
 public class UserController {
 
 	private final UserService service;
-	private final FileService fileService;
 
 	@Autowired
-	public UserController(UserService service, FileService fileService) {
+	public UserController(UserService service) {
 		this.service = service;
-		this.fileService = fileService;
 	}
 
 	@PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
