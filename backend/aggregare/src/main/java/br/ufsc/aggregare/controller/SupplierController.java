@@ -1,0 +1,63 @@
+package br.ufsc.aggregare.controller;
+
+import java.net.URI;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+
+import br.ufsc.aggregare.model.Supplier;
+import br.ufsc.aggregare.model.dto.SupplierDTO;
+import br.ufsc.aggregare.service.SupplierService;
+
+@RestController
+@RequestMapping(value = "/suppliers")
+public class SupplierController {
+
+	private final SupplierService service;
+
+	@Autowired
+	public SupplierController(SupplierService service) {
+		this.service = service;
+	}
+
+	@PostMapping
+	public ResponseEntity<Supplier> insert(@RequestBody Supplier supplier) {
+		supplier = service.insert(supplier);
+		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(supplier.getId()).toUri();
+		return ResponseEntity.created(uri).body(supplier);
+	}
+
+	@DeleteMapping(value = "/{id}")
+	public ResponseEntity<Void> delete(@PathVariable Long id) {
+		service.delete(id);
+		return ResponseEntity.noContent().build();
+	}
+
+	@PutMapping(value = "/{id}")
+	public ResponseEntity<Supplier> update(@PathVariable Long id, @RequestBody Supplier supplier) {
+		supplier = service.update(id, supplier);
+		return ResponseEntity.ok().body(supplier);
+	}
+
+	@GetMapping(value = "/{id}")
+	public ResponseEntity<SupplierDTO> findById(@PathVariable Long id) { // TODO: substituir por findByProduct
+		SupplierDTO supplierDTO = service.findById(id);
+		return ResponseEntity.ok().body(supplierDTO);
+	}
+
+	@GetMapping
+	public ResponseEntity<List<SupplierDTO>> findAll() {
+		List<SupplierDTO> suppliers = service.findAll();
+		return ResponseEntity.ok().body(suppliers);
+	}
+}
