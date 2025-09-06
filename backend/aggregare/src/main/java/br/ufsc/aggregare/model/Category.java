@@ -11,8 +11,8 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "tb_supplier")
-public class Supplier implements Serializable {
+@Table(name = "tb_category")
+public class Category implements Serializable {
 	@Serial private static final long serialVersionUID = 1L;
 
 	@Id
@@ -20,13 +20,12 @@ public class Supplier implements Serializable {
 	private Long id;
 	private String name;
 
-	public Supplier() {
+	public Category() {
 	}
 
-	public Supplier(Long id, String name) {
+	public Category(Long id, String name) {
 		this.id = id;
 		this.name = name;
-
 	}
 
 	public Long getId() {
@@ -48,8 +47,8 @@ public class Supplier implements Serializable {
 	@Override public boolean equals(Object o) {
 		if (o == null || getClass() != o.getClass())
 			return false;
-		Supplier supplier = (Supplier) o;
-		return Objects.equals(id, supplier.id);
+		Category category = (Category) o;
+		return Objects.equals(id, category.id);
 	}
 
 	@Override public int hashCode() {

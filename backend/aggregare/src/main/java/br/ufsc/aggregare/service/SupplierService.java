@@ -9,7 +9,6 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
 import br.ufsc.aggregare.model.Supplier;
-import br.ufsc.aggregare.model.dto.SupplierDTO;
 import br.ufsc.aggregare.repository.SupplierRepository;
 import br.ufsc.aggregare.service.exception.DatabaseException;
 import br.ufsc.aggregare.service.exception.ResourceNotFoundException;
@@ -55,30 +54,14 @@ public class SupplierService {
 
 	public void updateData(Supplier existingSupplier, Supplier newSupplier) {
 		existingSupplier.setName(newSupplier.getName());
-		existingSupplier.setMaterial(newSupplier.getMaterial());
-		existingSupplier.setCostPerCubicMeter(newSupplier.getCostPerCubicMeter());
-		existingSupplier.setCostFor5CubicMeters(newSupplier.getCostFor5CubicMeters());
-		existingSupplier.setCostPerTon(newSupplier.getCostPerTon());
-		existingSupplier.setDensity(newSupplier.getDensity());
 	}
 
-	public SupplierDTO findById(Long id) {
+	public Supplier findById(Long id) {
 		Optional<Supplier> supplier = repository.findById(id);
-		Supplier entity = supplier.orElseThrow(() -> new ResourceNotFoundException(id));
-		return convertToDto(entity);
+		return supplier.orElseThrow(() -> new ResourceNotFoundException(id));
 	}
 
-	public List<SupplierDTO> findAll() {
-		return repository.findAll().stream()
-				.map(this::convertToDto)
-				.toList();
-	}
-
-	private SupplierDTO convertToDto(Supplier supplier) {
-		// TODO: substituir para a regra de negócio envolvendo produto
-		double profitPerCubicMeter = supplier.getCostPerCubicMeter() * 2.0;
-		double profitFor5CubicMeters = supplier.getCostFor5CubicMeters() * 3.0;
-
-		return new SupplierDTO(supplier, profitPerCubicMeter, profitFor5CubicMeters);
+	public List<Supplier> findAll() {
+		return repository.findAll();
 	}
 }
