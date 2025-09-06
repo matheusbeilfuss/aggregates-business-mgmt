@@ -8,25 +8,29 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
-import br.ufsc.aggregare.model.Supplier;
-import br.ufsc.aggregare.repository.SupplierRepository;
+import br.ufsc.aggregare.model.Product;
+import br.ufsc.aggregare.repository.ProductRepository;
 import br.ufsc.aggregare.service.exception.DatabaseException;
 import br.ufsc.aggregare.service.exception.ResourceNotFoundException;
 
 import jakarta.persistence.EntityNotFoundException;
 
 @Service
-public class SupplierService {
+public class ProductService {
 
-	private final SupplierRepository repository;
+	private final ProductRepository repository;
+	private final StockService stockService;
 
 	@Autowired
-	public SupplierService(SupplierRepository repository) {
+	public ProductService(ProductRepository repository, StockService stockService) {
 		this.repository = repository;
+		this.stockService = stockService;
 	}
 
-	public Supplier insert(Supplier supplier) {
-		return repository.save(supplier);
+	public Product insert(Product product) {
+		Product savedProduct = repository.save(product);
+		stockService.createInitialStockForProduct(product);
+		return savedProduct;
 	}
 
 	public void delete(Long id) {
@@ -42,26 +46,26 @@ public class SupplierService {
 		}
 	}
 
-	public Supplier update(Long id, Supplier newSupplier) {
+	public Product update(Long id, Product newProduct) {
 		try {
-			Supplier existingSupplier = repository.getReferenceById(id);
-			updateData(existingSupplier, newSupplier);
-			return repository.save(existingSupplier);
+			Product existingProduct = repository.getReferenceById(id);
+			updateData(existingProduct, newProduct);
+			return repository.save(existingProduct);
 		} catch (EntityNotFoundException e) {
 			throw new ResourceNotFoundException(id);
 		}
 	}
 
-	public void updateData(Supplier existingSupplier, Supplier newSupplier) {
-		existingSupplier.setName(newSupplier.getName());
+	public void updateData(Product existingProduct, Product newProduct) {
+		existingProduct.setName(newProduct.getName());
 	}
 
-	public Supplier findById(Long id) {
-		Optional<Supplier> supplier = repository.findById(id);
-		return supplier.orElseThrow(() -> new ResourceNotFoundException(id));
+	public Product findById(Long id) {
+		Optional<Product> product = repository.findById(id);
+		return product.orElseThrow(() -> new ResourceNotFoundException(id));
 	}
 
-	public List<Supplier> findAll() {
+	public List<Product> findAll() {
 		return repository.findAll();
 	}
 }
