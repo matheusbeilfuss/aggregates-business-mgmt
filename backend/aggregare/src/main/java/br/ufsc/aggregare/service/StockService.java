@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import br.ufsc.aggregare.model.Product;
 import br.ufsc.aggregare.model.Stock;
+import br.ufsc.aggregare.repository.ProductRepository;
 import br.ufsc.aggregare.repository.StockRepository;
 import br.ufsc.aggregare.service.exception.DatabaseException;
 import br.ufsc.aggregare.service.exception.ResourceNotFoundException;
@@ -20,12 +21,12 @@ import jakarta.persistence.EntityNotFoundException;
 public class StockService {
 
 	private final StockRepository repository;
-	private final ProductService productService;
+	private final ProductRepository productRepository;
 
 	@Autowired
-	public StockService(StockRepository repository, ProductService productService) {
+	public StockService(StockRepository repository, ProductRepository productRepository) {
 		this.repository = repository;
-		this.productService = productService;
+		this.productRepository = productRepository;
 	}
 
 	public void createInitialStockForProduct(Product product) {
@@ -42,7 +43,7 @@ public class StockService {
 				throw new ResourceNotFoundException(id);
 			}
 			Stock stock = repository.getReferenceById(id);
-			productService.delete(stock.getProduct().getId());
+			productRepository.deleteById(stock.getProduct().getId());
 			repository.deleteById(id);
 		} catch (EmptyResultDataAccessException e) {
 			throw new ResourceNotFoundException(id);

@@ -8,7 +8,9 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
+import br.ufsc.aggregare.model.Category;
 import br.ufsc.aggregare.model.Product;
+import br.ufsc.aggregare.model.dto.ProductInsertDTO;
 import br.ufsc.aggregare.repository.ProductRepository;
 import br.ufsc.aggregare.service.exception.DatabaseException;
 import br.ufsc.aggregare.service.exception.ResourceNotFoundException;
@@ -20,17 +22,25 @@ public class ProductService {
 
 	private final ProductRepository repository;
 	private final StockService stockService;
+	private final CategoryService categoryService;
 
 	@Autowired
-	public ProductService(ProductRepository repository, StockService stockService) {
+	public ProductService(ProductRepository repository, StockService stockService, CategoryService categoryService) {
 		this.repository = repository;
 		this.stockService = stockService;
+		this.categoryService = categoryService;
 	}
 
 	public Product insert(Product product) {
-		Product savedProduct = repository.save(product);
-		stockService.createInitialStockForProduct(product);
-		return savedProduct;
+		try {
+			Category existingCategory = categoryService.findById(product.getCategory().getId());
+			product.setCategory(existingCategory);
+			Product savedProduct = repository.save(product);
+			stockService.createInitialStockForProduct(product);
+			return savedProduct;
+		} catch (EntityNotFoundException e) {
+			throw new ResourceNotFoundException(product.getCategory().getId());
+		}
 	}
 
 	public void delete(Long id) {
@@ -58,6 +68,7 @@ public class ProductService {
 
 	public void updateData(Product existingProduct, Product newProduct) {
 		existingProduct.setName(newProduct.getName());
+		existingProduct.setCategory(newProduct.getCategory());
 	}
 
 	public Product findById(Long id) {
@@ -67,5 +78,10 @@ public class ProductService {
 
 	public List<Product> findAll() {
 		return repository.findAll();
+	}
+
+	public Product fromDTO(ProductInsertDTO dto) {
+		Category category = categoryService.findById(dto.getCategoryId());
+		return new Product(null, dto.getName(), category);
 	}
 }
