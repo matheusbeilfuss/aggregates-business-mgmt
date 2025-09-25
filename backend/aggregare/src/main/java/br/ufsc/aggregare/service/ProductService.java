@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import br.ufsc.aggregare.model.Category;
 import br.ufsc.aggregare.model.Product;
@@ -21,12 +22,14 @@ import jakarta.persistence.EntityNotFoundException;
 public class ProductService {
 
 	private final ProductRepository repository;
+	private final ProductSupplierService productSupplierService;
 	private final StockService stockService;
 	private final CategoryService categoryService;
 
 	@Autowired
-	public ProductService(ProductRepository repository, StockService stockService, CategoryService categoryService) {
+	public ProductService(ProductRepository repository, ProductSupplierService productSupplierService, StockService stockService, CategoryService categoryService) {
 		this.repository = repository;
+		this.productSupplierService = productSupplierService;
 		this.stockService = stockService;
 		this.categoryService = categoryService;
 	}
@@ -43,11 +46,14 @@ public class ProductService {
 		}
 	}
 
+	@Transactional
 	public void delete(Long id) {
 		try {
 			if (!repository.existsById(id)){
 				throw new ResourceNotFoundException(id);
 			}
+			productSupplierService.deleteAllByProductId(id);
+			stockService.deleteByProductId(id);
 			repository.deleteById(id);
 		} catch (EmptyResultDataAccessException e) {
 			throw new ResourceNotFoundException(id);

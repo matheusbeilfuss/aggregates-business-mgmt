@@ -4,15 +4,12 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import br.ufsc.aggregare.model.Product;
 import br.ufsc.aggregare.model.Stock;
-import br.ufsc.aggregare.repository.ProductRepository;
 import br.ufsc.aggregare.repository.StockRepository;
-import br.ufsc.aggregare.service.exception.DatabaseException;
 import br.ufsc.aggregare.service.exception.ResourceNotFoundException;
 
 import jakarta.persistence.EntityNotFoundException;
@@ -21,12 +18,10 @@ import jakarta.persistence.EntityNotFoundException;
 public class StockService {
 
 	private final StockRepository repository;
-	private final ProductRepository productRepository;
 
 	@Autowired
-	public StockService(StockRepository repository, ProductRepository productRepository) {
+	public StockService(StockRepository repository) {
 		this.repository = repository;
-		this.productRepository = productRepository;
 	}
 
 	public void createInitialStockForProduct(Product product) {
@@ -37,19 +32,9 @@ public class StockService {
 		repository.save(initialStock);
 	}
 
-	public void delete(Long id) {
-		try {
-			if (!repository.existsById(id)){
-				throw new ResourceNotFoundException(id);
-			}
-			Stock stock = repository.getReferenceById(id);
-			productRepository.deleteById(stock.getProduct().getId());
-			repository.deleteById(id);
-		} catch (EmptyResultDataAccessException e) {
-			throw new ResourceNotFoundException(id);
-		} catch (DataIntegrityViolationException e) {
-			throw new DatabaseException(e.getMessage());
-		}
+	@Transactional
+	public void deleteByProductId(Long productId) {
+		repository.deleteByProductId(productId);
 	}
 
 	public Stock update(Long id, Stock newStock) {

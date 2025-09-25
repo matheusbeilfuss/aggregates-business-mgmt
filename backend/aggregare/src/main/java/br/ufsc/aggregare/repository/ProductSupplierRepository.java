@@ -6,4 +6,5 @@ import br.ufsc.aggregare.model.ProductSupplier;
 
 public interface ProductSupplierRepository extends JpaRepository<ProductSupplier, Long> {
 
+	void deleteAllByProductId(Long productId);
 }
