@@ -1,10 +1,12 @@
 package br.ufsc.aggregare.controller;
 
 import java.net.URI;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -48,5 +50,17 @@ public class ProductController {
 		System.out.println("PRODUCT" + product);
 		product = service.update(id, product);
 		return ResponseEntity.ok().body(product);
+	}
+
+	@GetMapping(value = "/{id}")
+	public ResponseEntity<Product> findById(@PathVariable Long id) {
+		Product product = service.findById(id);
+		return ResponseEntity.ok().body(product);
+	}
+
+	@GetMapping
+	public ResponseEntity<List<Product>> findAll() {
+		List<Product> products = service.findAll();
+		return ResponseEntity.ok().body(products);
 	}
 }
