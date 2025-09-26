@@ -15,25 +15,25 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import br.ufsc.aggregare.model.Supplier;
-import br.ufsc.aggregare.service.SupplierService;
+import br.ufsc.aggregare.model.Category;
+import br.ufsc.aggregare.service.CategoryService;
 
 @RestController
-@RequestMapping(value = "/suppliers")
-public class SupplierController {
+@RequestMapping(value = "/categories")
+public class CategoryController {
 
-	private final SupplierService service;
+	private final CategoryService service;
 
 	@Autowired
-	public SupplierController(SupplierService service) {
+	public CategoryController(CategoryService service) {
 		this.service = service;
 	}
 
 	@PostMapping
-	public ResponseEntity<Supplier> insert(@RequestBody Supplier supplier) {
-		supplier = service.insert(supplier);
-		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(supplier.getId()).toUri();
-		return ResponseEntity.created(uri).body(supplier);
+	public ResponseEntity<Category> insert(@RequestBody Category category) {
+		category = service.insert(category);
+		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(category.getId()).toUri();
+		return ResponseEntity.created(uri).body(category);
 	}
 
 	@DeleteMapping(value = "/{id}")
@@ -43,20 +43,20 @@ public class SupplierController {
 	}
 
 	@PutMapping(value = "/{id}")
-	public ResponseEntity<Supplier> update(@PathVariable Long id, @RequestBody Supplier supplier) {
-		supplier = service.update(id, supplier);
-		return ResponseEntity.ok().body(supplier);
+	public ResponseEntity<Category> update(@PathVariable Long id, @RequestBody Category category) {
+		category = service.update(id, category);
+		return ResponseEntity.ok().body(category);
 	}
 
 	@GetMapping(value = "/{id}")
-	public ResponseEntity<Supplier> findById(@PathVariable Long id) { // TODO: substituir por findByProduct
-		Supplier supplier = service.findById(id);
-		return ResponseEntity.ok().body(supplier);
+	public ResponseEntity<Category> findById(@PathVariable Long id) {
+		Category category = service.findById(id);
+		return ResponseEntity.ok().body(category);
 	}
 
 	@GetMapping
-	public ResponseEntity<List<Supplier>> findAll() {
-		List<Supplier> suppliers = service.findAll();
-		return ResponseEntity.ok().body(suppliers);
+	public ResponseEntity<List<Category>> findAll() {
+		List<Category> categories = service.findAll();
+		return ResponseEntity.ok().body(categories);
 	}
 }

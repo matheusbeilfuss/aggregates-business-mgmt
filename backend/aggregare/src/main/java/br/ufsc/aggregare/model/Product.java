@@ -8,11 +8,13 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "tb_supplier")
-public class Supplier implements Serializable {
+@Table(name = "tb_product")
+public class Product implements Serializable {
 	@Serial private static final long serialVersionUID = 1L;
 
 	@Id
@@ -20,13 +22,17 @@ public class Supplier implements Serializable {
 	private Long id;
 	private String name;
 
-	public Supplier() {
+	@ManyToOne
+	@JoinColumn(name = "category_id")
+	private Category category;
+
+	public Product() {
 	}
 
-	public Supplier(Long id, String name) {
+	public Product(Long id, String name, Category category) {
 		this.id = id;
 		this.name = name;
-
+		this.category = category;
 	}
 
 	public Long getId() {
@@ -45,11 +51,19 @@ public class Supplier implements Serializable {
 		this.name = name;
 	}
 
+	public Category getCategory() {
+		return category;
+	}
+
+	public void setCategory(Category category) {
+		this.category = category;
+	}
+
 	@Override public boolean equals(Object o) {
 		if (o == null || getClass() != o.getClass())
 			return false;
-		Supplier supplier = (Supplier) o;
-		return Objects.equals(id, supplier.id);
+		Product product = (Product) o;
+		return Objects.equals(id, product.id);
 	}
 
 	@Override public int hashCode() {
