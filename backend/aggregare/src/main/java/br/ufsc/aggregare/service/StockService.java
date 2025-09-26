@@ -9,6 +9,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import br.ufsc.aggregare.model.Product;
 import br.ufsc.aggregare.model.Stock;
+import br.ufsc.aggregare.model.dto.StockUpdateDTO;
+import br.ufsc.aggregare.repository.ProductRepository;
 import br.ufsc.aggregare.repository.StockRepository;
 import br.ufsc.aggregare.service.exception.ResourceNotFoundException;
 
@@ -18,10 +20,12 @@ import jakarta.persistence.EntityNotFoundException;
 public class StockService {
 
 	private final StockRepository repository;
+	private final ProductRepository productRepository;
 
 	@Autowired
-	public StockService(StockRepository repository) {
+	public StockService(StockRepository repository, ProductRepository productRepository) {
 		this.repository = repository;
+		this.productRepository = productRepository;
 	}
 
 	public void createInitialStockForProduct(Product product) {
@@ -60,5 +64,13 @@ public class StockService {
 
 	public List<Stock> findAll() {
 		return repository.findAll();
+	}
+
+	public Stock fromDTO(StockUpdateDTO dto) {
+		Optional<Product> optionalProduct = productRepository.findById(dto.getProductId());
+		Product product = optionalProduct.orElseThrow(
+				() -> new ResourceNotFoundException(dto.getProductId())
+		);
+		return new Stock(null, dto.getTonQuantity(), dto.getM3Quantity(), product);
 	}
 }
