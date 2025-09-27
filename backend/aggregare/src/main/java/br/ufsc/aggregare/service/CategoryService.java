@@ -9,6 +9,7 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
 import br.ufsc.aggregare.model.Category;
+import br.ufsc.aggregare.model.Price;
 import br.ufsc.aggregare.repository.CategoryRepository;
 import br.ufsc.aggregare.service.exception.DatabaseException;
 import br.ufsc.aggregare.service.exception.ResourceNotFoundException;
@@ -19,14 +20,18 @@ import jakarta.persistence.EntityNotFoundException;
 public class CategoryService {
 
 	private final CategoryRepository repository;
+	private final PriceService priceService;
 
 	@Autowired
-	public CategoryService(CategoryRepository repository) {
+	public CategoryService(CategoryRepository repository, PriceService priceService) {
 		this.repository = repository;
+		this.priceService = priceService;
 	}
 
 	public Category insert(Category category) {
-		return repository.save(category);
+		repository.save(category);
+		priceService.createInitialPricesForCategory(category);
+		return category;
 	}
 
 	public void delete(Long id) {
