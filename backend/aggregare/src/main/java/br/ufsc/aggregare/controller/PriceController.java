@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -32,6 +33,12 @@ public class PriceController {
 	@GetMapping
 	public ResponseEntity<List<Price>> findAll() {
 		List<Price> prices = service.findAll();
+		return ResponseEntity.ok().body(prices);
+	}
+
+	@GetMapping(value = "/edit/{categoryId}")
+	public ResponseEntity<List<Price>> findByCategory(@PathVariable Long categoryId) {
+		List<Price> prices = service.findByCategoryId(categoryId);
 		return ResponseEntity.ok().body(prices);
 	}
 }

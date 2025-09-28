@@ -71,4 +71,8 @@ public class PriceService {
 	public List<Price> findAll() {
 		return repository.findAll();
 	}
+
+	public List<Price> findByCategoryId(Long categoryId) {
+		return repository.findByCategoryId(categoryId);
+	}
 }
