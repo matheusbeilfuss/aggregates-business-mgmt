@@ -16,17 +16,21 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import br.ufsc.aggregare.model.Category;
+import br.ufsc.aggregare.model.dto.PriceDTO;
 import br.ufsc.aggregare.service.CategoryService;
+import br.ufsc.aggregare.service.PriceService;
 
 @RestController
 @RequestMapping(value = "/categories")
 public class CategoryController {
 
 	private final CategoryService service;
+	private final PriceService priceService;
 
 	@Autowired
-	public CategoryController(CategoryService service) {
+	public CategoryController(CategoryService service, PriceService priceService) {
 		this.service = service;
+		this.priceService = priceService;
 	}
 
 	@PostMapping
@@ -58,5 +62,17 @@ public class CategoryController {
 	public ResponseEntity<List<Category>> findAll() {
 		List<Category> categories = service.findAll();
 		return ResponseEntity.ok().body(categories);
+	}
+
+	@GetMapping(value = "/{id}/prices")
+	public ResponseEntity<List<PriceDTO>> findPricesByCategoryId(@PathVariable Long id) {
+		List<PriceDTO> prices = priceService.findPricesByCategoryId(id);
+		return ResponseEntity.ok().body(prices);
+	}
+
+	@PutMapping(value = "/{id}/prices")
+	public ResponseEntity<List<PriceDTO>> updatePricesForCategory(@PathVariable Long id, @RequestBody List<PriceDTO> prices) {
+		List<PriceDTO> updatedPrices = priceService.updatePricesForCategory(id, prices);
+		return ResponseEntity.ok().body(updatedPrices);
 	}
 }

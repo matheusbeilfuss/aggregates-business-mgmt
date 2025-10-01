@@ -2,14 +2,18 @@ package br.ufsc.aggregare.service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import br.ufsc.aggregare.model.Category;
 import br.ufsc.aggregare.model.Price;
+import br.ufsc.aggregare.model.dto.PriceDTO;
+import br.ufsc.aggregare.repository.CategoryRepository;
 import br.ufsc.aggregare.repository.PriceRepository;
 import br.ufsc.aggregare.service.exception.DatabaseException;
 import br.ufsc.aggregare.service.exception.ResourceNotFoundException;
@@ -18,10 +22,12 @@ import br.ufsc.aggregare.service.exception.ResourceNotFoundException;
 public class PriceService {
 
 	private final PriceRepository repository;
+	private final CategoryRepository categoryRepository;
 
 	@Autowired
-	public PriceService(PriceRepository repository) {
+	public PriceService(PriceRepository repository, CategoryRepository categoryRepository) {
 		this.repository = repository;
+		this.categoryRepository = categoryRepository;
 	}
 
 	public void createInitialPricesForCategory(Category category) {
@@ -74,5 +80,38 @@ public class PriceService {
 
 	public List<Price> findByCategoryId(Long categoryId) {
 		return repository.findByCategoryId(categoryId);
+	}
+
+	@Transactional(readOnly = true)
+	public List<PriceDTO> findPricesByCategoryId(Long categoryId) {
+		if (!categoryRepository.existsById(categoryId)) {
+			throw new ResourceNotFoundException(categoryId);
+		}
+		List<Price> prices = repository.findByCategoryId(categoryId);
+		return prices.stream().map(this::toDTO).collect(Collectors.toList());
+	}
+
+	@Transactional
+	public List<PriceDTO> updatePricesForCategory(Long categoryId, List<PriceDTO> priceDTOs) {
+		Category category = categoryRepository.findById(categoryId).
+				orElseThrow(() -> new ResourceNotFoundException(categoryId));
+
+		repository.deleteByCategoryId(categoryId);
+		repository.flush();
+
+		List<Price> pricesToSave = priceDTOs.stream()
+				.map(dto -> new Price(null, dto.getM3Volume(), dto.getPrice(), category))
+				.collect(Collectors.toList());
+
+		List<Price> savedPrices = repository.saveAll(pricesToSave);
+		return savedPrices.stream().map(this::toDTO).collect(Collectors.toList());
+	}
+
+	private PriceDTO toDTO(Price price) {
+		PriceDTO dto = new PriceDTO();
+		dto.setId(price.getId());
+		dto.setM3Volume(price.getM3Volume());
+		dto.setPrice(price.getPrice());
+		return dto;
 	}
 }
