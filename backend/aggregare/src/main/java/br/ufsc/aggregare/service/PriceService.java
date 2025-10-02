@@ -1,7 +1,9 @@
 package br.ufsc.aggregare.service;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -88,23 +90,27 @@ public class PriceService {
 			throw new ResourceNotFoundException(categoryId);
 		}
 		List<Price> prices = repository.findByCategoryId(categoryId);
-		return prices.stream().map(this::toDTO).collect(Collectors.toList());
+		return prices.stream().map(this::toDTO).toList();
 	}
 
 	@Transactional
 	public List<PriceDTO> updatePricesForCategory(Long categoryId, List<PriceDTO> priceDTOs) {
-		Category category = categoryRepository.findById(categoryId).
-				orElseThrow(() -> new ResourceNotFoundException(categoryId));
+		if (!categoryRepository.existsById(categoryId)) {
+			throw new ResourceNotFoundException(categoryId);
+		}
 
-		repository.deleteByCategoryId(categoryId);
-		repository.flush();
+		Map<Integer, Price> existingPricesMap = repository.findByCategoryId(categoryId).stream()
+				.collect(Collectors.toMap(Price::getM3Volume, Function.identity()));
 
-		List<Price> pricesToSave = priceDTOs.stream()
-				.map(dto -> new Price(null, dto.getM3Volume(), dto.getPrice(), category))
-				.collect(Collectors.toList());
+		priceDTOs.forEach(dto -> {
+			Price existingPrice = existingPricesMap.get(dto.getM3Volume());
+			if (existingPrice != null) {
+				existingPrice.setPrice(dto.getPrice());
+			}
+		});
 
-		List<Price> savedPrices = repository.saveAll(pricesToSave);
-		return savedPrices.stream().map(this::toDTO).collect(Collectors.toList());
+		List<Price> updatedPrices = repository.saveAll(existingPricesMap.values());
+		return updatedPrices.stream().map(this::toDTO).toList();
 	}
 
 	private PriceDTO toDTO(Price price) {
