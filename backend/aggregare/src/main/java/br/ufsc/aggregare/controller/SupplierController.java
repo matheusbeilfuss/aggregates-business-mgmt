@@ -49,7 +49,7 @@ public class SupplierController {
 	}
 
 	@GetMapping(value = "/{id}")
-	public ResponseEntity<Supplier> findById(@PathVariable Long id) { // TODO: substituir por findByProduct
+	public ResponseEntity<Supplier> findById(@PathVariable Long id) {
 		Supplier supplier = service.findById(id);
 		return ResponseEntity.ok().body(supplier);
 	}
