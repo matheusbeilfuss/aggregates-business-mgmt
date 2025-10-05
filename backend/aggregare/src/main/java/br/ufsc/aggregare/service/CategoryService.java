@@ -9,7 +9,6 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
 import br.ufsc.aggregare.model.Category;
-import br.ufsc.aggregare.model.Price;
 import br.ufsc.aggregare.repository.CategoryRepository;
 import br.ufsc.aggregare.service.exception.DatabaseException;
 import br.ufsc.aggregare.service.exception.ResourceNotFoundException;

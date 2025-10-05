@@ -20,6 +20,8 @@ import br.ufsc.aggregare.repository.PriceRepository;
 import br.ufsc.aggregare.service.exception.DatabaseException;
 import br.ufsc.aggregare.service.exception.ResourceNotFoundException;
 
+import jakarta.persistence.EntityNotFoundException;
+
 @Service
 public class PriceService {
 
@@ -60,7 +62,7 @@ public class PriceService {
 			Price existingPrice = repository.getReferenceById(id);
 			updateData(existingPrice, newPrice);
 			return repository.save(existingPrice);
-		} catch (Exception e) {
+		} catch (EntityNotFoundException e) {
 			throw new ResourceNotFoundException(id);
 		}
 	}
