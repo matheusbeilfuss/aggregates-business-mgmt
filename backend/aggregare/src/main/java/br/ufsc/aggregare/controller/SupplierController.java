@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import br.ufsc.aggregare.model.Supplier;
-import br.ufsc.aggregare.model.dto.SupplierDTO;
 import br.ufsc.aggregare.service.SupplierService;
 
 @RestController
@@ -50,14 +49,14 @@ public class SupplierController {
 	}
 
 	@GetMapping(value = "/{id}")
-	public ResponseEntity<SupplierDTO> findById(@PathVariable Long id) { // TODO: substituir por findByProduct
-		SupplierDTO supplierDTO = service.findById(id);
-		return ResponseEntity.ok().body(supplierDTO);
+	public ResponseEntity<Supplier> findById(@PathVariable Long id) {
+		Supplier supplier = service.findById(id);
+		return ResponseEntity.ok().body(supplier);
 	}
 
 	@GetMapping
-	public ResponseEntity<List<SupplierDTO>> findAll() {
-		List<SupplierDTO> suppliers = service.findAll();
+	public ResponseEntity<List<Supplier>> findAll() {
+		List<Supplier> suppliers = service.findAll();
 		return ResponseEntity.ok().body(suppliers);
 	}
 }

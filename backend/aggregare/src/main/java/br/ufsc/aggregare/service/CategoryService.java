@@ -8,25 +8,29 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
-import br.ufsc.aggregare.model.Supplier;
-import br.ufsc.aggregare.repository.SupplierRepository;
+import br.ufsc.aggregare.model.Category;
+import br.ufsc.aggregare.repository.CategoryRepository;
 import br.ufsc.aggregare.service.exception.DatabaseException;
 import br.ufsc.aggregare.service.exception.ResourceNotFoundException;
 
 import jakarta.persistence.EntityNotFoundException;
 
 @Service
-public class SupplierService {
+public class CategoryService {
 
-	private final SupplierRepository repository;
+	private final CategoryRepository repository;
+	private final PriceService priceService;
 
 	@Autowired
-	public SupplierService(SupplierRepository repository) {
+	public CategoryService(CategoryRepository repository, PriceService priceService) {
 		this.repository = repository;
+		this.priceService = priceService;
 	}
 
-	public Supplier insert(Supplier supplier) {
-		return repository.save(supplier);
+	public Category insert(Category category) {
+		repository.save(category);
+		priceService.createInitialPricesForCategory(category);
+		return category;
 	}
 
 	public void delete(Long id) {
@@ -42,26 +46,26 @@ public class SupplierService {
 		}
 	}
 
-	public Supplier update(Long id, Supplier newSupplier) {
+	public Category update(Long id, Category newCategory) {
 		try {
-			Supplier existingSupplier = repository.getReferenceById(id);
-			updateData(existingSupplier, newSupplier);
-			return repository.save(existingSupplier);
+			Category existingCategory = repository.getReferenceById(id);
+			updateData(existingCategory, newCategory);
+			return repository.save(existingCategory);
 		} catch (EntityNotFoundException e) {
 			throw new ResourceNotFoundException(id);
 		}
 	}
 
-	public void updateData(Supplier existingSupplier, Supplier newSupplier) {
-		existingSupplier.setName(newSupplier.getName());
+	public void updateData(Category existingCategory, Category newCategory) {
+		existingCategory.setName(newCategory.getName());
 	}
 
-	public Supplier findById(Long id) {
-		Optional<Supplier> supplier = repository.findById(id);
-		return supplier.orElseThrow(() -> new ResourceNotFoundException(id));
+	public Category findById(Long id) {
+		Optional<Category> category = repository.findById(id);
+		return category.orElseThrow(() -> new ResourceNotFoundException(id));
 	}
 
-	public List<Supplier> findAll() {
+	public List<Category> findAll() {
 		return repository.findAll();
 	}
 }
