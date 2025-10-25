@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import br.ufsc.aggregare.model.Product;
-import br.ufsc.aggregare.model.dto.ProductInsertDTO;
+import br.ufsc.aggregare.model.dto.ProductInputDTO;
 import br.ufsc.aggregare.service.ProductService;
 
 @RestController
@@ -31,7 +31,7 @@ public class ProductController {
 	}
 
 	@PostMapping
-	public ResponseEntity<Product> insert(@RequestBody ProductInsertDTO dto) {
+	public ResponseEntity<Product> insert(@RequestBody ProductInputDTO dto) {
 		Product product = service.fromDTO(dto);
 		product = service.insert(product);
 		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(product.getId()).toUri();
@@ -45,7 +45,7 @@ public class ProductController {
 	}
 
 	@PutMapping(value = "/{id}")
-	public ResponseEntity<Product> update(@PathVariable Long id, @RequestBody ProductInsertDTO dto) {
+	public ResponseEntity<Product> update(@PathVariable Long id, @RequestBody ProductInputDTO dto) {
 		Product product = service.fromDTO(dto);
 		product = service.update(id, product);
 		return ResponseEntity.ok().body(product);

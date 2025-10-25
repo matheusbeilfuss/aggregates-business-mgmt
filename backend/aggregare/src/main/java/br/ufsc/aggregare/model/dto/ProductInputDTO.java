@@ -1,14 +1,14 @@
 package br.ufsc.aggregare.model.dto;
 
-public class ProductInsertDTO {
+public class ProductInputDTO {
 
 	private String name;
 	private Long categoryId;
 
-	public ProductInsertDTO() {
+	public ProductInputDTO() {
 	}
 
-	public ProductInsertDTO(String name, Long categoryId) {
+	public ProductInputDTO(String name, Long categoryId) {
 		this.name = name;
 		this.categoryId = categoryId;
 	}
