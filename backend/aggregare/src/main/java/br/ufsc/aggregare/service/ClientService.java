@@ -4,7 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import br.ufsc.aggregare.model.Address;
 import br.ufsc.aggregare.model.Client;
@@ -15,6 +17,7 @@ import br.ufsc.aggregare.model.dto.PhoneDTO;
 import br.ufsc.aggregare.repository.AddressRepository;
 import br.ufsc.aggregare.repository.ClientRepository;
 import br.ufsc.aggregare.repository.PhoneRepository;
+import br.ufsc.aggregare.service.exception.DatabaseException;
 import br.ufsc.aggregare.service.exception.ResourceNotFoundException;
 
 @Service
@@ -41,6 +44,21 @@ public class ClientService {
 		phoneRepository.saveAll(phones);
 
 		return savedClient;
+	}
+
+	@Transactional
+	public void delete(Long id) {
+		if (!repository.existsById(id)) {
+			throw new ResourceNotFoundException(id);
+		}
+
+		try {
+			phoneRepository.deleteAllByClientId(id);
+			addressRepository.deleteByClientId(id);
+			repository.deleteById(id);
+		} catch (DataIntegrityViolationException e) {
+			throw new DatabaseException(e.getMessage());
+		}
 	}
 
 	public ClientDTO findById(Long id) {
