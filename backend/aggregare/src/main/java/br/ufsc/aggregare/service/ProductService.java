@@ -11,7 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import br.ufsc.aggregare.model.Category;
 import br.ufsc.aggregare.model.Product;
-import br.ufsc.aggregare.model.dto.ProductInsertDTO;
+import br.ufsc.aggregare.model.dto.ProductInputDTO;
 import br.ufsc.aggregare.repository.ProductRepository;
 import br.ufsc.aggregare.service.exception.DatabaseException;
 import br.ufsc.aggregare.service.exception.ResourceNotFoundException;
@@ -86,7 +86,7 @@ public class ProductService {
 		return repository.findAll();
 	}
 
-	public Product fromDTO(ProductInsertDTO dto) {
+	public Product fromDTO(ProductInputDTO dto) {
 		Category category = categoryService.findById(dto.getCategoryId());
 		return new Product(null, dto.getName(), category);
 	}
