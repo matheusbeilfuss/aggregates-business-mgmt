@@ -38,6 +38,7 @@ public class ClientService {
 		this.phoneRepository = phoneRepository;
 	}
 
+	@Transactional
 	public Client insert(ClientInputDTO dto) {
 		Client savedClient = repository.save(clientFromDTO(dto));
 
@@ -52,11 +53,10 @@ public class ClientService {
 
 	@Transactional
 	public void delete(Long id) {
-		if (!repository.existsById(id)) {
-			throw new ResourceNotFoundException(id);
-		}
-
 		try {
+			if (!repository.existsById(id)) {
+				throw new ResourceNotFoundException(id);
+			}
 			phoneRepository.deleteAllByClientId(id);
 			addressRepository.deleteByClientId(id);
 			repository.deleteById(id);
