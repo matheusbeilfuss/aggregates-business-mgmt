@@ -5,20 +5,31 @@ import br.ufsc.aggregare.model.enums.PhoneTypeEnum;
 
 public class PhoneDTO {
 
+	private Long id;
 	private String number;
 	private PhoneTypeEnum type;
 
 	public PhoneDTO() {
 	}
 
-	public PhoneDTO(String number, PhoneTypeEnum type) {
+	public PhoneDTO(Long id, String number, PhoneTypeEnum type) {
+		this.id = id;
 		this.number = number;
 		this.type = type;
 	}
 
 	public PhoneDTO(Phone phone) {
+		this.id = phone.getId();
 		this.number = phone.getNumber();
 		this.type = phone.getType();
+	}
+
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
 	}
 
 	public String getNumber() {

@@ -2,6 +2,8 @@ package br.ufsc.aggregare.service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -19,6 +21,8 @@ import br.ufsc.aggregare.repository.ClientRepository;
 import br.ufsc.aggregare.repository.PhoneRepository;
 import br.ufsc.aggregare.service.exception.DatabaseException;
 import br.ufsc.aggregare.service.exception.ResourceNotFoundException;
+
+import jakarta.persistence.EntityNotFoundException;
 
 @Service
 public class ClientService {
@@ -59,6 +63,72 @@ public class ClientService {
 		} catch (DataIntegrityViolationException e) {
 			throw new DatabaseException(e.getMessage());
 		}
+	}
+
+	@Transactional
+	public ClientDTO update(Long id, ClientInputDTO newClient) {
+		try {
+			Client existingClient = repository.findById(id).orElseThrow(() -> new ResourceNotFoundException(id));
+			Address existingAddress = addressRepository.findByClientId(id).orElseThrow(() -> new ResourceNotFoundException(id));
+
+			updateData(existingClient, existingAddress, newClient);
+			List<Phone> phonesToSave = updatePhones(id, existingClient, newClient);
+
+			Client updatedClient = repository.save(existingClient);
+			Address updatedAddress = addressRepository.save(existingAddress);
+			List<Phone> updatedPhones = phoneRepository.saveAll(phonesToSave);
+
+			return new ClientDTO(updatedClient, updatedAddress, updatedPhones);
+		} catch (EntityNotFoundException e) {
+			throw new ResourceNotFoundException(id);
+		}
+
+	}
+
+	public void updateData(Client existingClient, Address existingAddress, ClientInputDTO newClient) {
+		existingClient.setName(newClient.getName());
+		existingClient.setEmail(newClient.getEmail());
+		existingClient.setCpfCnpj(newClient.getCpfCnpj());
+
+		existingAddress.setState(newClient.getState());
+		existingAddress.setCity(newClient.getCity());
+		existingAddress.setNeighborhood(newClient.getNeighborhood());
+		existingAddress.setStreet(newClient.getStreet());
+		existingAddress.setNumber(newClient.getNumber());
+	}
+
+	public List<Phone> updatePhones(Long clientId, Client existingClient, ClientInputDTO newClient) {
+		List<Phone> existingPhones = phoneRepository.findByClientId(clientId);
+
+		Map<Long, Phone> existingPhonesMap = existingPhones.stream()
+				.collect(Collectors.toMap(Phone::getId, phone -> phone));
+
+		List<Phone> updatedPhones = new ArrayList<>();
+
+		for (PhoneDTO phoneDto : newClient.getPhones()) {
+			if (phoneDto.getId() == null) {
+				Phone newPhone = new Phone();
+				newPhone.setClient(existingClient);
+				newPhone.setNumber(phoneDto.getNumber());
+				newPhone.setType(phoneDto.getType());
+				updatedPhones.add(newPhone);
+			} else {
+				Phone existingPhone = existingPhonesMap.get(phoneDto.getId());
+				if (existingPhone != null) {
+					existingPhone.setNumber(phoneDto.getNumber());
+					existingPhone.setType(phoneDto.getType());
+					updatedPhones.add(existingPhone);
+
+					existingPhonesMap.remove(phoneDto.getId());
+				}
+			}
+		}
+
+		if (!existingPhonesMap.isEmpty()) {
+			phoneRepository.deleteAll(existingPhonesMap.values());
+		}
+
+		return updatedPhones;
 	}
 
 	public ClientDTO findById(Long id) {
