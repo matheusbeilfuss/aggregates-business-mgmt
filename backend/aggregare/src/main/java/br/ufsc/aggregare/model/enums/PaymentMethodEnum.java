@@ -7,5 +7,6 @@ public enum PaymentMethodEnum {
 	CASH,
 	PIX,
 	BANK_TRANSFER,
+	BANK_SLIP,
 	CHECK
 }
