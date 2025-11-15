@@ -8,7 +8,6 @@ import java.util.Objects;
 
 import br.ufsc.aggregare.model.enums.OrderStatusEnum;
 import br.ufsc.aggregare.model.enums.OrderTypeEnum;
-import br.ufsc.aggregare.model.enums.PaymentMethodEnum;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -30,45 +29,49 @@ public class Order implements Serializable {
 	private Long id;
 
 	@ManyToOne
+	@JoinColumn(name = "product_id")
+	private Product product;
+
+	@ManyToOne
 	@JoinColumn(name = "client_id")
 	private Client client;
 
 	@ManyToOne
 	@JoinColumn(name = "address_id")
-	private Address address;
+	private OrderAddress orderAddress;
 
-	private LocalDate date;
-	private LocalTime deliveryTime;
+	private Double quantity;
+	private String service;
 
 	@Enumerated(EnumType.STRING)
 	private OrderTypeEnum type;
 
+	private LocalDate scheduledDate;
+	private LocalTime scheduledTime;
+	private String observations;
+
 	@Enumerated(EnumType.STRING)
 	private OrderStatusEnum status;
-
-	private String observations;
-	private Boolean paid;
-	private Double paidValue;
-
-	@Enumerated(EnumType.STRING)
-	private PaymentMethodEnum paymentMethod;
+	private Double orderValue;
 
 	public Order() {
 	}
 
-	public Order(Long id, Client client, Address address, LocalDate date, LocalTime deliveryTime, OrderTypeEnum type, OrderStatusEnum status, String observations, Boolean paid,
-			Double paidValue, PaymentMethodEnum paymentMethod) {
+	public Order(Long id, Product product, Client client, OrderAddress orderAddress, Double quantity,
+			String service, OrderTypeEnum type, LocalDate scheduledDate, LocalTime scheduledTime,
+			String observations, OrderStatusEnum status, Double orderValue) {
 		this.id = id;
+		this.product = product;
 		this.client = client;
-		this.address = address;
-		this.date = date;
-		this.deliveryTime = deliveryTime;
+		this.orderAddress = orderAddress;
+		this.quantity = quantity;
+		this.service = service;
 		this.type = type;
-		this.status = status;
+		this.scheduledDate = scheduledDate;
+		this.scheduledTime = scheduledTime;
 		this.observations = observations;
-		this.paid = paid;
-		this.paidValue = paidValue;
-		this.paymentMethod = paymentMethod;
+		this.status = status;
+		this.orderValue = orderValue;
 	}
 
 	public Long getId() {
@@ -79,6 +82,14 @@ public class Order implements Serializable {
 		this.id = id;
 	}
 
+	public Product getProduct() {
+		return product;
+	}
+
+	public void setProduct(Product product) {
+		this.product = product;
+	}
+
 	public Client getClient() {
 		return client;
 	}
@@ -87,28 +98,28 @@ public class Order implements Serializable {
 		this.client = client;
 	}
 
-	public Address getAddress() {
-		return address;
+	public OrderAddress getOrderAddress() {
+		return orderAddress;
 	}
 
-	public void setAddress(Address address) {
-		this.address = address;
+	public void setOrderAddress(OrderAddress orderAddress) {
+		this.orderAddress = orderAddress;
 	}
 
-	public LocalDate getDate() {
-		return date;
+	public Double getQuantity() {
+		return quantity;
 	}
 
-	public void setDate(LocalDate date) {
-		this.date = date;
+	public void setQuantity(Double quantity) {
+		this.quantity = quantity;
 	}
 
-	public LocalTime getDeliveryTime() {
-		return deliveryTime;
+	public String getService() {
+		return service;
 	}
 
-	public void setDeliveryTime(LocalTime deliveryTime) {
-		this.deliveryTime = deliveryTime;
+	public void setService(String service) {
+		this.service = service;
 	}
 
 	public OrderTypeEnum getType() {
@@ -119,12 +130,20 @@ public class Order implements Serializable {
 		this.type = type;
 	}
 
-	public OrderStatusEnum getStatus() {
-		return status;
+	public LocalDate getScheduledDate() {
+		return scheduledDate;
 	}
 
-	public void setStatus(OrderStatusEnum status) {
-		this.status = status;
+	public void setScheduledDate(LocalDate scheduledDate) {
+		this.scheduledDate = scheduledDate;
+	}
+
+	public LocalTime getScheduledTime() {
+		return scheduledTime;
+	}
+
+	public void setScheduledTime(LocalTime scheduledTime) {
+		this.scheduledTime = scheduledTime;
 	}
 
 	public String getObservations() {
@@ -135,28 +154,20 @@ public class Order implements Serializable {
 		this.observations = observations;
 	}
 
-	public Boolean getPaid() {
-		return paid;
+	public OrderStatusEnum getStatus() {
+		return status;
 	}
 
-	public void setPaid(Boolean paid) {
-		this.paid = paid;
+	public void setStatus(OrderStatusEnum status) {
+		this.status = status;
 	}
 
-	public Double getPaidValue() {
-		return paidValue;
+	public Double getOrderValue() {
+		return orderValue;
 	}
 
-	public void setPaidValue(Double paidValue) {
-		this.paidValue = paidValue;
-	}
-
-	public PaymentMethodEnum getPaymentMethod() {
-		return paymentMethod;
-	}
-
-	public void setPaymentMethod(PaymentMethodEnum paymentMethod) {
-		this.paymentMethod = paymentMethod;
+	public void setOrderValue(Double orderValue) {
+		this.orderValue = orderValue;
 	}
 
 	@Override public boolean equals(Object o) {

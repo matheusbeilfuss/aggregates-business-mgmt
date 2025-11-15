@@ -13,7 +13,7 @@ import br.ufsc.aggregare.model.Address;
 import br.ufsc.aggregare.model.Category;
 import br.ufsc.aggregare.model.Client;
 import br.ufsc.aggregare.model.Order;
-import br.ufsc.aggregare.model.OrderItem;
+import br.ufsc.aggregare.model.OrderAddress;
 import br.ufsc.aggregare.model.Phone;
 import br.ufsc.aggregare.model.Price;
 import br.ufsc.aggregare.model.Product;
@@ -28,7 +28,7 @@ import br.ufsc.aggregare.model.enums.PhoneTypeEnum;
 import br.ufsc.aggregare.repository.AddressRepository;
 import br.ufsc.aggregare.repository.CategoryRepository;
 import br.ufsc.aggregare.repository.ClientRepository;
-import br.ufsc.aggregare.repository.OrderItemRepository;
+import br.ufsc.aggregare.repository.OrderAddressRepository;
 import br.ufsc.aggregare.repository.OrderRepository;
 import br.ufsc.aggregare.repository.PhoneRepository;
 import br.ufsc.aggregare.repository.PriceRepository;
@@ -53,7 +53,7 @@ public class TestConfig implements CommandLineRunner {
 	private final PhoneRepository phoneRepository;
 	private final AddressRepository addressRepository;
 	private final OrderRepository orderRepository;
-	private final OrderItemRepository orderItemRepository;
+	private final OrderAddressRepository orderAddressRepository;
 
 	@Autowired
 	public TestConfig(
@@ -68,7 +68,7 @@ public class TestConfig implements CommandLineRunner {
 			PhoneRepository phoneRepository,
 			AddressRepository addressRepository,
 			OrderRepository orderRepository,
-			OrderItemRepository orderItemRepository) {
+			OrderAddressRepository orderAddressRepository) {
 		this.userRepository = userRepository;
 		this.categoryRepository = categoryRepository;
 		this.productRepository = productRepository;
@@ -80,7 +80,7 @@ public class TestConfig implements CommandLineRunner {
 		this.phoneRepository = phoneRepository;
 		this.addressRepository = addressRepository;
 		this.orderRepository = orderRepository;
-		this.orderItemRepository = orderItemRepository;
+		this.orderAddressRepository = orderAddressRepository;
 	}
 
 	@Override
@@ -132,13 +132,12 @@ public class TestConfig implements CommandLineRunner {
 		LocalDate dataTeste1 = LocalDate.of(2025, 11, 11);
 		LocalTime horaTeste1 = LocalTime.of(10, 30, 0);
 
-		Order order1 = new Order(null, client1, address1, dataTeste1, horaTeste1, OrderTypeEnum.MATERIAL, OrderStatusEnum.PENDING, "Entregar pela manhã", false, 0.0, PaymentMethodEnum.PIX);
-		Order order2 = new Order(null, client2, address2, dataTeste1.plusDays(1), horaTeste1.plusHours(2), OrderTypeEnum.SERVICE, OrderStatusEnum.DELIVERED, "Casa da esquina", true, 500.0, PaymentMethodEnum.CREDIT_CARD);
+		OrderAddress orderAddress1 = new OrderAddress(null, "Rua A", "200", "Bairro B", "Cidade C", "SC");
+		OrderAddress orderAddress2 = new OrderAddress(null, "Avenida X", "500", "Bairro Y", "Cidade Z", "SC");
+		orderAddressRepository.saveAll(Arrays.asList(orderAddress1, orderAddress2));
+
+		Order order1 = new Order(null, product1, client1, orderAddress1, 5.0, null, OrderTypeEnum.MATERIAL, dataTeste1, horaTeste1, "Entregar no portão", OrderStatusEnum.PENDING, 415.00);
+		Order order2 = new Order(null, product2, client2, orderAddress2, null, "Serviço de máquina", OrderTypeEnum.SERVICE, dataTeste1, horaTeste1, "Ligar antes de chegar", OrderStatusEnum.DELIVERED, 500.00);
 		orderRepository.saveAll(Arrays.asList(order1, order2));
-
-		OrderItem orderItem1 = new OrderItem(null, product1, order1, null, 5.0, 350.0);
-		OrderItem orderItem2 = new OrderItem(null, null, order2, "Serviço de máquina", 1.0, 250.0);
-
-		orderItemRepository.saveAll(Arrays.asList(orderItem1, orderItem2));
 	}
 }
