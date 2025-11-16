@@ -8,6 +8,7 @@ import java.util.Objects;
 
 import br.ufsc.aggregare.model.enums.OrderStatusEnum;
 import br.ufsc.aggregare.model.enums.OrderTypeEnum;
+import br.ufsc.aggregare.model.enums.PaymentStatusEnum;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -52,6 +53,10 @@ public class Order implements Serializable {
 
 	@Enumerated(EnumType.STRING)
 	private OrderStatusEnum status;
+
+	@Enumerated(EnumType.STRING)
+	private PaymentStatusEnum paymentStatus;
+
 	private Double orderValue;
 
 	public Order() {
@@ -59,7 +64,7 @@ public class Order implements Serializable {
 
 	public Order(Long id, Product product, Client client, OrderAddress orderAddress, Double quantity,
 			String service, OrderTypeEnum type, LocalDate scheduledDate, LocalTime scheduledTime,
-			String observations, OrderStatusEnum status, Double orderValue) {
+			String observations, OrderStatusEnum status, PaymentStatusEnum paymentStatus, Double orderValue) {
 		this.id = id;
 		this.product = product;
 		this.client = client;
@@ -71,6 +76,7 @@ public class Order implements Serializable {
 		this.scheduledTime = scheduledTime;
 		this.observations = observations;
 		this.status = status;
+		this.paymentStatus = paymentStatus;
 		this.orderValue = orderValue;
 	}
 
@@ -160,6 +166,14 @@ public class Order implements Serializable {
 
 	public void setStatus(OrderStatusEnum status) {
 		this.status = status;
+	}
+
+	public PaymentStatusEnum getPaymentStatus() {
+		return paymentStatus;
+	}
+
+	public void setPaymentStatus(PaymentStatusEnum paymentStatus) {
+		this.paymentStatus = paymentStatus;
 	}
 
 	public Double getOrderValue() {
