@@ -24,6 +24,7 @@ import br.ufsc.aggregare.model.User;
 import br.ufsc.aggregare.model.enums.OrderStatusEnum;
 import br.ufsc.aggregare.model.enums.OrderTypeEnum;
 import br.ufsc.aggregare.model.enums.PaymentMethodEnum;
+import br.ufsc.aggregare.model.enums.PaymentStatusEnum;
 import br.ufsc.aggregare.model.enums.PhoneTypeEnum;
 import br.ufsc.aggregare.repository.AddressRepository;
 import br.ufsc.aggregare.repository.CategoryRepository;
@@ -136,8 +137,8 @@ public class TestConfig implements CommandLineRunner {
 		OrderAddress orderAddress2 = new OrderAddress(null, "Avenida X", "500", "Bairro Y", "Cidade Z", "SC");
 		orderAddressRepository.saveAll(Arrays.asList(orderAddress1, orderAddress2));
 
-		Order order1 = new Order(null, product1, client1, orderAddress1, 5.0, null, OrderTypeEnum.MATERIAL, dataTeste1, horaTeste1, "Entregar no portão", OrderStatusEnum.PENDING, 415.00);
-		Order order2 = new Order(null, product2, client2, orderAddress2, null, "Serviço de máquina", OrderTypeEnum.SERVICE, dataTeste1, horaTeste1, "Ligar antes de chegar", OrderStatusEnum.DELIVERED, 500.00);
+		Order order1 = new Order(null, product1, client1, orderAddress1, 5.0, null, OrderTypeEnum.MATERIAL, dataTeste1, horaTeste1, "Entregar no portão", OrderStatusEnum.PENDING, PaymentStatusEnum.PENDING, 415.00);
+		Order order2 = new Order(null, product2, client2, orderAddress2, null, "Serviço de máquina", OrderTypeEnum.SERVICE, dataTeste1, horaTeste1, "Ligar antes de chegar", OrderStatusEnum.DELIVERED, PaymentStatusEnum.PARTIAL, 500.00);
 		orderRepository.saveAll(Arrays.asList(order1, order2));
 	}
 }
