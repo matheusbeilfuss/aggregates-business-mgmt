@@ -131,7 +131,12 @@ public class ClientService {
 		return updatedPhones;
 	}
 
-	public ClientDTO findById(Long id) {
+	public Client findById(Long id) {
+		return repository.findById(id)
+				.orElseThrow(() -> new ResourceNotFoundException(id));
+	}
+
+	public ClientDTO findClientDtoById(Long id) {
 		Client client = repository.findById(id)
 				.orElseThrow(() -> new ResourceNotFoundException(id));
 		Address address = addressRepository.findByClientId(id)
