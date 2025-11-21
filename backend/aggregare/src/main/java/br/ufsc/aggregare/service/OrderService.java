@@ -74,4 +74,44 @@ public class OrderService {
 
 		return order;
 	}
+
+	@Transactional
+	public Order update(Long id, OrderInputDTO dto) {
+		Order existingOrder = orderRepository.findById(id)
+				.orElseThrow(() -> new ResourceNotFoundException(id));
+
+		Product existingProduct = productService.findById(dto.getProductId());
+		existingOrder.setProduct(existingProduct);
+
+		Client existingClient = clientService.findById(dto.getClientId());
+		existingOrder.setClient(existingClient);
+
+		OrderAddress existingOrderAddress = existingOrder.getOrderAddress();
+		updateOrderAddress(existingOrderAddress,  dto);
+		orderAddressRepository.save(existingOrderAddress);
+		existingOrder.setOrderAddress(existingOrderAddress);
+
+		updateOrder(existingOrder, dto);
+
+		orderRepository.save(existingOrder);
+		return existingOrder;
+	}
+
+	private void updateOrderAddress(OrderAddress existingOrderAddress, OrderInputDTO dto) {
+		existingOrderAddress.setStreet(dto.getStreet());
+		existingOrderAddress.setNumber(dto.getNumber());
+		existingOrderAddress.setNeighborhood(dto.getNeighborhood());
+		existingOrderAddress.setCity(dto.getCity());
+		existingOrderAddress.setState(dto.getState());
+	}
+
+	private void updateOrder(Order existingOrder, OrderInputDTO dto) {
+		existingOrder.setQuantity(dto.getQuantity());
+		existingOrder.setService(dto.getService());
+		existingOrder.setType(dto.getType());
+		existingOrder.setScheduledDate(dto.getScheduledDate());
+		existingOrder.setScheduledTime(dto.getScheduledTime());
+		existingOrder.setObservations(dto.getObservations());
+		existingOrder.setOrderValue(dto.getOrderValue());
+	}
 }
