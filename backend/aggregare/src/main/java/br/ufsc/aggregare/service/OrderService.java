@@ -76,6 +76,15 @@ public class OrderService {
 	}
 
 	@Transactional
+	public void delete(Long id) {
+		Order existingOrder = orderRepository.findById(id)
+				.orElseThrow(() -> new ResourceNotFoundException(id));
+		OrderAddress existingOrderAddress = existingOrder.getOrderAddress();
+		orderAddressRepository.delete(existingOrderAddress);
+		orderRepository.delete(existingOrder);
+	}
+
+	@Transactional
 	public Order update(Long id, OrderInputDTO dto) {
 		Order existingOrder = orderRepository.findById(id)
 				.orElseThrow(() -> new ResourceNotFoundException(id));
