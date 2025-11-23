@@ -23,7 +23,6 @@ import br.ufsc.aggregare.model.Supplier;
 import br.ufsc.aggregare.model.User;
 import br.ufsc.aggregare.model.enums.OrderStatusEnum;
 import br.ufsc.aggregare.model.enums.OrderTypeEnum;
-import br.ufsc.aggregare.model.enums.PaymentMethodEnum;
 import br.ufsc.aggregare.model.enums.PaymentStatusEnum;
 import br.ufsc.aggregare.model.enums.PhoneTypeEnum;
 import br.ufsc.aggregare.repository.AddressRepository;

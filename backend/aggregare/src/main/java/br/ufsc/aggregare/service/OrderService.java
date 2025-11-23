@@ -98,13 +98,10 @@ public class OrderService {
 		existingOrder.setClient(existingClient);
 
 		OrderAddress existingOrderAddress = existingOrder.getOrderAddress();
-		updateOrderAddress(existingOrderAddress,  dto);
-		orderAddressRepository.save(existingOrderAddress);
-		existingOrder.setOrderAddress(existingOrderAddress);
+		updateOrderAddress(existingOrderAddress, dto);
 
 		updateOrder(existingOrder, dto);
 
-		orderRepository.save(existingOrder);
 		return existingOrder;
 	}
 
