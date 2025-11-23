@@ -1,5 +1,7 @@
 package br.ufsc.aggregare.service;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -122,5 +124,14 @@ public class OrderService {
 		existingOrder.setScheduledTime(dto.getScheduledTime());
 		existingOrder.setObservations(dto.getObservations());
 		existingOrder.setOrderValue(dto.getOrderValue());
+	}
+
+	public Order findById(Long id) {
+		return orderRepository.findById(id)
+				.orElseThrow(() -> new ResourceNotFoundException(id));
+	}
+
+	public List<Order> findAll() {
+		return orderRepository.findAll();
 	}
 }
