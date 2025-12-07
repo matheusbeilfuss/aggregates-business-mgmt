@@ -1,5 +1,6 @@
 package br.ufsc.aggregare.service;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,8 +9,10 @@ import org.springframework.stereotype.Service;
 import br.ufsc.aggregare.model.Client;
 import br.ufsc.aggregare.model.Order;
 import br.ufsc.aggregare.model.OrderAddress;
+import br.ufsc.aggregare.model.Payment;
 import br.ufsc.aggregare.model.Product;
 import br.ufsc.aggregare.model.dto.OrderInputDTO;
+import br.ufsc.aggregare.model.dto.PaymentInputDTO;
 import br.ufsc.aggregare.model.enums.OrderStatusEnum;
 import br.ufsc.aggregare.model.enums.PaymentStatusEnum;
 import br.ufsc.aggregare.repository.OrderAddressRepository;
@@ -25,13 +28,16 @@ public class OrderService {
 	private final OrderAddressRepository orderAddressRepository;
 	private final ProductService productService;
 	private final ClientService clientService;
+	private final PaymentService paymentService;
 
 	@Autowired
-	public OrderService(OrderRepository orderRepository, OrderAddressRepository orderAddressRepository, ProductService productService, ClientService clientService) {
+	public OrderService(OrderRepository orderRepository, OrderAddressRepository orderAddressRepository,
+			ProductService productService, ClientService clientService, PaymentService paymentService) {
 		this.orderRepository = orderRepository;
 		this.orderAddressRepository = orderAddressRepository;
 		this.productService = productService;
 		this.clientService = clientService;
+		this.paymentService = paymentService;
 	}
 
 	@Transactional
@@ -130,5 +136,33 @@ public class OrderService {
 
 	public List<Order> findAll() {
 		return orderRepository.findAll();
+	}
+
+	@Transactional
+	public Order createPayment(Long id, PaymentInputDTO payment) {
+		Order existingOrder = orderRepository.findById(id)
+				.orElseThrow(() -> new ResourceNotFoundException(id));
+
+		Payment newPayment = new Payment();
+		newPayment.setOrder(existingOrder);
+		newPayment.setDate(LocalDate.now());
+		newPayment.setPaymentValue(payment.getPaymentValue());
+		newPayment.setPaymentMethod(payment.getPaymentMethod());
+
+		if (isPaymentComplete(existingOrder, newPayment)) {
+			existingOrder.setPaymentStatus(PaymentStatusEnum.PAID);
+		} else {
+			existingOrder.setPaymentStatus(PaymentStatusEnum.PARTIAL);
+		}
+
+		paymentService.insert(newPayment);
+
+		return existingOrder;
+	}
+
+	private Boolean isPaymentComplete(Order order, Payment newPayment) {
+		List<Payment> payments = paymentService.findByOrderId(order.getId());
+		Double totalPaid = payments.stream().mapToDouble(Payment::getPaymentValue).sum() + newPayment.getPaymentValue();
+		return totalPaid >= order.getOrderValue();
 	}
 }
