@@ -149,7 +149,7 @@ public class OrderService {
 		newPayment.setPaymentValue(payment.getPaymentValue());
 		newPayment.setPaymentMethod(payment.getPaymentMethod());
 
-		if (isPaymentComplete(existingOrder, newPayment)) {
+		if (paymentService.isPaymentComplete(existingOrder, newPayment)) {
 			existingOrder.setPaymentStatus(PaymentStatusEnum.PAID);
 		} else {
 			existingOrder.setPaymentStatus(PaymentStatusEnum.PARTIAL);
@@ -158,11 +158,5 @@ public class OrderService {
 		paymentService.insert(newPayment);
 
 		return existingOrder;
-	}
-
-	private Boolean isPaymentComplete(Order order, Payment newPayment) {
-		List<Payment> payments = paymentService.findByOrderId(order.getId());
-		Double totalPaid = payments.stream().mapToDouble(Payment::getPaymentValue).sum() + newPayment.getPaymentValue();
-		return totalPaid >= order.getOrderValue();
 	}
 }

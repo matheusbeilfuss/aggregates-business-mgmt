@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import br.ufsc.aggregare.model.Order;
-import br.ufsc.aggregare.model.Payment;
 import br.ufsc.aggregare.model.dto.OrderInputDTO;
 import br.ufsc.aggregare.model.dto.PaymentInputDTO;
 import br.ufsc.aggregare.service.OrderService;
