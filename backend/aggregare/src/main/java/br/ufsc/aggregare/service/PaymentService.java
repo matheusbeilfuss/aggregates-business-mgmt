@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import br.ufsc.aggregare.model.Order;
 import br.ufsc.aggregare.model.Payment;
+import br.ufsc.aggregare.model.dto.PaymentInputDTO;
 import br.ufsc.aggregare.model.dto.PaymentInsertDTO;
 import br.ufsc.aggregare.model.enums.PaymentStatusEnum;
 import br.ufsc.aggregare.repository.OrderRepository;
@@ -30,13 +31,17 @@ public class PaymentService {
 
 	@Transactional
 	public Payment insert(Payment payment) {
-		return paymentRepository.save(payment);
+		Payment savedPayment = paymentRepository.save(payment);
+		recalculateOrderPaymentStatus(payment.getOrder());
+		return savedPayment;
 	}
 
 	@Transactional
 	public Payment insert(PaymentInsertDTO dto) {
 		Payment payment = fromInsertDTO(dto);
-		return paymentRepository.save(payment);
+		paymentRepository.save(payment);
+		recalculateOrderPaymentStatus(payment.getOrder());
+		return payment;
 	}
 
 	private Payment fromInsertDTO(PaymentInsertDTO dto) {
@@ -49,11 +54,6 @@ public class PaymentService {
 		newPayment.setPaymentValue(dto.getPaymentValue());
 		newPayment.setPaymentMethod(dto.getPaymentMethod());
 
-		if (isPaymentComplete(existingOrder, newPayment)) {
-			existingOrder.setPaymentStatus(PaymentStatusEnum.PAID);
-		} else {
-			existingOrder.setPaymentStatus(PaymentStatusEnum.PARTIAL);
-		}
 		return newPayment;
 	}
 
@@ -61,6 +61,33 @@ public class PaymentService {
 		List<Payment> payments = findByOrderId(order.getId());
 		Double totalPaid = payments.stream().mapToDouble(Payment::getPaymentValue).sum() + newPayment.getPaymentValue();
 		return totalPaid >= order.getOrderValue();
+	}
+
+	private void recalculateOrderPaymentStatus(Order order) {
+		List<Payment> payments = findByOrderId(order.getId());
+		Double totalPaid = payments.stream().mapToDouble(Payment::getPaymentValue).sum();
+
+		if (totalPaid >= order.getOrderValue()) {
+			order.setPaymentStatus(PaymentStatusEnum.PAID);
+		} else if (totalPaid > 0.0) {
+			order.setPaymentStatus(PaymentStatusEnum.PARTIAL);
+		} else {
+			order.setPaymentStatus(PaymentStatusEnum.PENDING);
+		}
+
+		orderRepository.save(order);
+	}
+
+	@Transactional
+	public void delete(Long id) {
+		Payment existingPayment = paymentRepository.findById(id)
+				.orElseThrow(() -> new ResourceNotFoundException(id));
+		Order order = existingPayment.getOrder();
+
+		paymentRepository.delete(existingPayment);
+		paymentRepository.flush();
+
+		recalculateOrderPaymentStatus(order);
 	}
 
 	public List<Payment> findByOrderId(Long orderId) {

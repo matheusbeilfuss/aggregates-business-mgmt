@@ -149,12 +149,6 @@ public class OrderService {
 		newPayment.setPaymentValue(payment.getPaymentValue());
 		newPayment.setPaymentMethod(payment.getPaymentMethod());
 
-		if (paymentService.isPaymentComplete(existingOrder, newPayment)) {
-			existingOrder.setPaymentStatus(PaymentStatusEnum.PAID);
-		} else {
-			existingOrder.setPaymentStatus(PaymentStatusEnum.PARTIAL);
-		}
-
 		paymentService.insert(newPayment);
 
 		return existingOrder;
