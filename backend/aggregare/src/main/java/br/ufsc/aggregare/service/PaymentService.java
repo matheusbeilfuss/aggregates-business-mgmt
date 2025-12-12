@@ -57,12 +57,6 @@ public class PaymentService {
 		return newPayment;
 	}
 
-	public Boolean isPaymentComplete(Order order, Payment newPayment) {
-		List<Payment> payments = findByOrderId(order.getId());
-		Double totalPaid = payments.stream().mapToDouble(Payment::getPaymentValue).sum() + newPayment.getPaymentValue();
-		return totalPaid >= order.getOrderValue();
-	}
-
 	private void recalculateOrderPaymentStatus(Order order) {
 		List<Payment> payments = findByOrderId(order.getId());
 		Double totalPaid = payments.stream().mapToDouble(Payment::getPaymentValue).sum();
@@ -88,6 +82,21 @@ public class PaymentService {
 		paymentRepository.flush();
 
 		recalculateOrderPaymentStatus(order);
+	}
+
+	@Transactional
+	public Payment update(Long id, PaymentInsertDTO dto) {
+		Payment existingPayment = paymentRepository.findById(id)
+				.orElseThrow(() -> new ResourceNotFoundException(id));
+
+		existingPayment.setPaymentValue(dto.getPaymentValue());
+		existingPayment.setPaymentMethod(dto.getPaymentMethod());
+
+		Payment savedPayment = paymentRepository.save(existingPayment);
+
+		recalculateOrderPaymentStatus(savedPayment.getOrder());
+
+		return savedPayment;
 	}
 
 	public List<Payment> findByOrderId(Long orderId) {
