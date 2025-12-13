@@ -99,6 +99,15 @@ public class PaymentService {
 		return savedPayment;
 	}
 
+	public Payment findById(Long id) {
+		return paymentRepository.findById(id)
+				.orElseThrow(() -> new ResourceNotFoundException(id));
+	}
+
+	public List<Payment> findAll() {
+		return paymentRepository.findAll();
+	}
+
 	public List<Payment> findByOrderId(Long orderId) {
 		return paymentRepository.findByOrderId(orderId);
 	}
