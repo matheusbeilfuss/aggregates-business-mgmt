@@ -1,25 +1,27 @@
 package br.ufsc.aggregare.model.dto;
 
+import java.math.BigDecimal;
+
 import br.ufsc.aggregare.model.enums.PaymentMethodEnum;
 
 public class PaymentInputDTO {
 
-	private Double paymentValue;
+	private BigDecimal paymentValue;
 	private PaymentMethodEnum paymentMethod;
 
 	public PaymentInputDTO() {
 	}
 
-	public PaymentInputDTO(Double paymentValue, PaymentMethodEnum paymentMethod) {
+	public PaymentInputDTO(BigDecimal paymentValue, PaymentMethodEnum paymentMethod) {
 		this.paymentValue = paymentValue;
 		this.paymentMethod = paymentMethod;
 	}
 
-	public Double getPaymentValue() {
+	public BigDecimal getPaymentValue() {
 		return paymentValue;
 	}
 
-	public void setPaymentValue(Double paymentValue) {
+	public void setPaymentValue(BigDecimal paymentValue) {
 		this.paymentValue = paymentValue;
 	}
 

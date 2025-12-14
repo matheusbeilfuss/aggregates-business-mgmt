@@ -2,6 +2,7 @@ package br.ufsc.aggregare.model;
 
 import java.io.Serial;
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Objects;
@@ -57,14 +58,14 @@ public class Order implements Serializable {
 	@Enumerated(EnumType.STRING)
 	private PaymentStatusEnum paymentStatus;
 
-	private Double orderValue;
+	private BigDecimal orderValue;
 
 	public Order() {
 	}
 
 	public Order(Long id, Product product, Client client, OrderAddress orderAddress, Double quantity,
 			String service, OrderTypeEnum type, LocalDate scheduledDate, LocalTime scheduledTime,
-			String observations, OrderStatusEnum status, PaymentStatusEnum paymentStatus, Double orderValue) {
+			String observations, OrderStatusEnum status, PaymentStatusEnum paymentStatus, BigDecimal orderValue) {
 		this.id = id;
 		this.product = product;
 		this.client = client;
@@ -176,11 +177,11 @@ public class Order implements Serializable {
 		this.paymentStatus = paymentStatus;
 	}
 
-	public Double getOrderValue() {
+	public BigDecimal getOrderValue() {
 		return orderValue;
 	}
 
-	public void setOrderValue(Double orderValue) {
+	public void setOrderValue(BigDecimal orderValue) {
 		this.orderValue = orderValue;
 	}
 

@@ -1,5 +1,6 @@
 package br.ufsc.aggregare.model.dto;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
@@ -22,12 +23,12 @@ public class OrderInputDTO {
 	private LocalDate scheduledDate;
 	private LocalTime scheduledTime;
 	private String observations;
-	private Double orderValue;
+	private BigDecimal orderValue;
 
 	public OrderInputDTO() {
 	}
 
-	public OrderInputDTO(Long productId, Long clientId, String street, String number, String neighborhood, String city, String state, Double quantity, String service, OrderTypeEnum type, LocalDate scheduledDate, LocalTime scheduledTime, String observations, Double orderValue) {
+	public OrderInputDTO(Long productId, Long clientId, String street, String number, String neighborhood, String city, String state, Double quantity, String service, OrderTypeEnum type, LocalDate scheduledDate, LocalTime scheduledTime, String observations, BigDecimal orderValue) {
 		this.productId = productId;
 		this.clientId = clientId;
 		this.street = street;
@@ -52,11 +53,11 @@ public class OrderInputDTO {
 		this.productId = productId;
 	}
 
-	public Double getOrderValue() {
+	public BigDecimal getOrderValue() {
 		return orderValue;
 	}
 
-	public void setOrderValue(Double orderValue) {
+	public void setOrderValue(BigDecimal orderValue) {
 		this.orderValue = orderValue;
 	}
 

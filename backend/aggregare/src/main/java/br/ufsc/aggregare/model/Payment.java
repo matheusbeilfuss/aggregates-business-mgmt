@@ -2,6 +2,7 @@ package br.ufsc.aggregare.model;
 
 import java.io.Serial;
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Objects;
 
@@ -30,7 +31,7 @@ public class Payment implements Serializable {
 	@JoinColumn(name = "order_id")
 	private Order order;
 
-	private Double paymentValue;
+	private BigDecimal paymentValue;
 	private LocalDate date;
 
 	@Enumerated(EnumType.STRING)
@@ -39,7 +40,7 @@ public class Payment implements Serializable {
 	public Payment() {
 	}
 
-	public Payment(Long id, Order order, Double paymentValue, LocalDate date, PaymentMethodEnum paymentMethod) {
+	public Payment(Long id, Order order, BigDecimal paymentValue, LocalDate date, PaymentMethodEnum paymentMethod) {
 		this.id = id;
 		this.order = order;
 		this.paymentValue = paymentValue;
@@ -63,11 +64,11 @@ public class Payment implements Serializable {
 		this.order = order;
 	}
 
-	public Double getPaymentValue() {
+	public BigDecimal getPaymentValue() {
 		return paymentValue;
 	}
 
-	public void setPaymentValue(Double paymentValue) {
+	public void setPaymentValue(BigDecimal paymentValue) {
 		this.paymentValue = paymentValue;
 	}
 

@@ -1,5 +1,6 @@
 package br.ufsc.aggregare.service;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -59,11 +60,14 @@ public class PaymentService {
 
 	private void recalculateOrderPaymentStatus(Order order) {
 		List<Payment> payments = findByOrderId(order.getId());
-		Double totalPaid = payments.stream().mapToDouble(Payment::getPaymentValue).sum();
 
-		if (totalPaid >= order.getOrderValue()) {
+		BigDecimal totalPaid = payments.stream()
+				.map(Payment::getPaymentValue)
+				.reduce(BigDecimal.ZERO, BigDecimal::add);
+
+		if (totalPaid.compareTo(order.getOrderValue()) >= 0) {
 			order.setPaymentStatus(PaymentStatusEnum.PAID);
-		} else if (totalPaid > 0.0) {
+		} else if (totalPaid.compareTo(BigDecimal.ZERO) > 0) {
 			order.setPaymentStatus(PaymentStatusEnum.PARTIAL);
 		} else {
 			order.setPaymentStatus(PaymentStatusEnum.PENDING);
