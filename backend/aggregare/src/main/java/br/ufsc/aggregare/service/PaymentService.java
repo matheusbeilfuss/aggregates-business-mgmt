@@ -11,6 +11,7 @@ import br.ufsc.aggregare.model.Order;
 import br.ufsc.aggregare.model.Payment;
 import br.ufsc.aggregare.model.dto.PaymentInputDTO;
 import br.ufsc.aggregare.model.dto.PaymentInsertDTO;
+import br.ufsc.aggregare.model.enums.PaymentMethodEnum;
 import br.ufsc.aggregare.model.enums.PaymentStatusEnum;
 import br.ufsc.aggregare.repository.OrderRepository;
 import br.ufsc.aggregare.repository.PaymentRepository;
@@ -38,24 +39,22 @@ public class PaymentService {
 	}
 
 	@Transactional
-	public Payment insert(PaymentInsertDTO dto) {
-		Payment payment = fromInsertDTO(dto);
-		paymentRepository.save(payment);
-		recalculateOrderPaymentStatus(payment.getOrder());
-		return payment;
+	public Payment insert(Order order, BigDecimal paymentValue, PaymentMethodEnum paymentMethod) {
+		Payment newPayment = new Payment();
+		newPayment.setOrder(order);
+		newPayment.setDate(LocalDate.now());
+		newPayment.setPaymentValue(paymentValue);
+		newPayment.setPaymentMethod(paymentMethod);
+
+		return insert(newPayment);
 	}
 
-	private Payment fromInsertDTO(PaymentInsertDTO dto) {
+	@Transactional
+	public Payment insert(PaymentInsertDTO dto) {
 		Order existingOrder = orderRepository.findById(dto.getOrderId())
 				.orElseThrow(() -> new ResourceNotFoundException(dto.getOrderId()));
 
-		Payment newPayment = new Payment();
-		newPayment.setOrder(existingOrder);
-		newPayment.setDate(LocalDate.now());
-		newPayment.setPaymentValue(dto.getPaymentValue());
-		newPayment.setPaymentMethod(dto.getPaymentMethod());
-
-		return newPayment;
+		return insert(existingOrder, dto.getPaymentValue(), dto.getPaymentMethod());
 	}
 
 	private void recalculateOrderPaymentStatus(Order order) {

@@ -139,17 +139,11 @@ public class OrderService {
 	}
 
 	@Transactional
-	public Order createPayment(Long id, PaymentInputDTO payment) {
+	public Order createPayment(Long id, PaymentInputDTO paymentDTO) {
 		Order existingOrder = orderRepository.findById(id)
 				.orElseThrow(() -> new ResourceNotFoundException(id));
 
-		Payment newPayment = new Payment();
-		newPayment.setOrder(existingOrder);
-		newPayment.setDate(LocalDate.now());
-		newPayment.setPaymentValue(payment.getPaymentValue());
-		newPayment.setPaymentMethod(payment.getPaymentMethod());
-
-		paymentService.insert(newPayment);
+		paymentService.insert(existingOrder, paymentDTO.getPaymentValue(), paymentDTO.getPaymentMethod());
 
 		return existingOrder;
 	}
