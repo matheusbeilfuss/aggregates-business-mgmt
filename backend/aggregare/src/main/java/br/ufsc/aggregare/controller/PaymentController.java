@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import br.ufsc.aggregare.model.Payment;
+import br.ufsc.aggregare.model.dto.PaymentInputDTO;
 import br.ufsc.aggregare.model.dto.PaymentInsertDTO;
 import br.ufsc.aggregare.service.PaymentService;
 
@@ -44,7 +45,7 @@ public class PaymentController {
 	}
 
 	@PutMapping(value = "/{id}")
-	public ResponseEntity<Payment> update(@PathVariable Long id, @RequestBody PaymentInsertDTO dto) {
+	public ResponseEntity<Payment> update(@PathVariable Long id, @RequestBody PaymentInputDTO dto) {
 		Payment payment = service.update(id, dto);
 		return ResponseEntity.ok().body(payment);
 	}

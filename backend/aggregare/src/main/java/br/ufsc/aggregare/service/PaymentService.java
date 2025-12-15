@@ -88,7 +88,7 @@ public class PaymentService {
 	}
 
 	@Transactional
-	public Payment update(Long id, PaymentInsertDTO dto) {
+	public Payment update(Long id, PaymentInputDTO dto) {
 		Payment existingPayment = paymentRepository.findById(id)
 				.orElseThrow(() -> new ResourceNotFoundException(id));
 
