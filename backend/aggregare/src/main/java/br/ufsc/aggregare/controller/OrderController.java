@@ -65,7 +65,7 @@ public class OrderController {
 
 	@PatchMapping(value = "/{id}/pay")
 	public ResponseEntity<Order> payOrder(@PathVariable Long id, @RequestBody PaymentInputDTO payment) {
-		Order order = service.createPayment(id, payment);
+		Order order = service.addPayment(id, payment);
 		return ResponseEntity.ok().body(order);
 	}
 }

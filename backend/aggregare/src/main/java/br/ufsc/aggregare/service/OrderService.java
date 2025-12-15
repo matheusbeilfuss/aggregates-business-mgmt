@@ -1,6 +1,5 @@
 package br.ufsc.aggregare.service;
 
-import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,7 +8,6 @@ import org.springframework.stereotype.Service;
 import br.ufsc.aggregare.model.Client;
 import br.ufsc.aggregare.model.Order;
 import br.ufsc.aggregare.model.OrderAddress;
-import br.ufsc.aggregare.model.Payment;
 import br.ufsc.aggregare.model.Product;
 import br.ufsc.aggregare.model.dto.OrderInputDTO;
 import br.ufsc.aggregare.model.dto.PaymentInputDTO;
@@ -139,12 +137,13 @@ public class OrderService {
 	}
 
 	@Transactional
-	public Order createPayment(Long id, PaymentInputDTO paymentDTO) {
+	public Order addPayment(Long id, PaymentInputDTO paymentDTO) {
 		Order existingOrder = orderRepository.findById(id)
 				.orElseThrow(() -> new ResourceNotFoundException(id));
 
 		paymentService.insert(existingOrder, paymentDTO.getPaymentValue(), paymentDTO.getPaymentMethod());
 
-		return existingOrder;
+		return orderRepository.findById(id)
+				.orElseThrow(() -> new ResourceNotFoundException(id));
 	}
 }
