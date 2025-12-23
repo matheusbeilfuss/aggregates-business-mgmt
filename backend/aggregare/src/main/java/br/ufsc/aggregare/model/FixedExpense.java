@@ -2,6 +2,7 @@ package br.ufsc.aggregare.model;
 
 import java.io.Serial;
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.Objects;
 
 import jakarta.persistence.Entity;
@@ -20,13 +21,13 @@ public class FixedExpense implements Serializable {
 	private Long id;
 
 	private String name;
-	private Double defaultValue;
+	private BigDecimal defaultValue;
 	private String category;
 
 	public FixedExpense() {
 	}
 
-	public FixedExpense(Long id, String name, Double defaultValue, String category) {
+	public FixedExpense(Long id, String name, BigDecimal defaultValue, String category) {
 		this.id = id;
 		this.name = name;
 		this.defaultValue = defaultValue;
@@ -49,11 +50,11 @@ public class FixedExpense implements Serializable {
 		this.name = name;
 	}
 
-	public Double getDefaultValue() {
+	public BigDecimal getDefaultValue() {
 		return defaultValue;
 	}
 
-	public void setDefaultValue(Double defaultValue) {
+	public void setDefaultValue(BigDecimal defaultValue) {
 		this.defaultValue = defaultValue;
 	}
 

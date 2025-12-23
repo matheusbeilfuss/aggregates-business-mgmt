@@ -2,6 +2,7 @@ package br.ufsc.aggregare.model;
 
 import java.io.Serial;
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Objects;
 
@@ -26,7 +27,7 @@ public class Expense implements Serializable {
 	private Long id;
 
 	private String name;
-	private Double value;
+	private BigDecimal expenseValue;
 	private LocalDate date;
 	private LocalDate dueDate;
 	private LocalDate paymentDate;
@@ -42,11 +43,11 @@ public class Expense implements Serializable {
 	public Expense() {
 	}
 
-	public Expense(Long id, String name, Double value, LocalDate date, LocalDate dueDate, LocalDate paymentDate, ExpenseTypeEnum type, PaymentStatusEnum paymentStatus,
+	public Expense(Long id, String name, BigDecimal value, LocalDate date, LocalDate dueDate, LocalDate paymentDate, ExpenseTypeEnum type, PaymentStatusEnum paymentStatus,
 			String category) {
 		this.id = id;
 		this.name = name;
-		this.value = value;
+		this.expenseValue = value;
 		this.date = date;
 		this.dueDate = dueDate;
 		this.paymentDate = paymentDate;
@@ -71,12 +72,12 @@ public class Expense implements Serializable {
 		this.name = name;
 	}
 
-	public Double getValue() {
-		return value;
+	public BigDecimal getExpenseValue() {
+		return expenseValue;
 	}
 
-	public void setValue(Double value) {
-		this.value = value;
+	public void setExpenseValue(BigDecimal expenseValue) {
+		this.expenseValue = expenseValue;
 	}
 
 	public LocalDate getDate() {
