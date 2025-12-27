@@ -8,6 +8,7 @@ import br.ufsc.aggregare.model.dto.ExpenseInputDTO;
 import br.ufsc.aggregare.model.enums.ExpenseTypeEnum;
 import br.ufsc.aggregare.repository.ExpenseRepository;
 import br.ufsc.aggregare.repository.FixedExpenseRepository;
+import br.ufsc.aggregare.service.exception.ResourceNotFoundException;
 
 import jakarta.transaction.Transactional;
 
@@ -49,5 +50,17 @@ public class ExpenseService {
 		expense.setCategory(dto.getCategory());
 
 		return expense;
+	}
+
+	@Transactional
+	public void delete (Long id) {
+		Expense existingExpense = expenseRepository.findById(id)
+				.orElseThrow(() -> new ResourceNotFoundException(id));
+
+		if (existingExpense.getType().equals(ExpenseTypeEnum.FUEL)) {
+			fuelService.deleteByExpenseId(existingExpense.getId());
+		}
+
+		expenseRepository.delete(existingExpense);
 	}
 }

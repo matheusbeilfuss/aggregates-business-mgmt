@@ -6,4 +6,5 @@ import br.ufsc.aggregare.model.Fuel;
 
 public interface FuelRepository extends JpaRepository<Fuel, Long> {
 
+	void deleteByExpenseId(Long expenseId);
 }

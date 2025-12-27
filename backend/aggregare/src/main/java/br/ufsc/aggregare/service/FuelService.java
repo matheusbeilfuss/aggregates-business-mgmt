@@ -36,4 +36,8 @@ public class FuelService {
 		fuel.setFuelSupplier(dto.getFuelSupplier());
 		return fuel;
 	}
+
+	public void deleteByExpenseId(Long expenseId) {
+		fuelRepository.deleteByExpenseId(expenseId);
+	}
 }
