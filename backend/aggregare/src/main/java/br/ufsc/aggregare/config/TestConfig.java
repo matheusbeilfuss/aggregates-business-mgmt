@@ -14,6 +14,7 @@ import br.ufsc.aggregare.model.Category;
 import br.ufsc.aggregare.model.Client;
 import br.ufsc.aggregare.model.Order;
 import br.ufsc.aggregare.model.OrderAddress;
+import br.ufsc.aggregare.model.Payment;
 import br.ufsc.aggregare.model.Phone;
 import br.ufsc.aggregare.model.Price;
 import br.ufsc.aggregare.model.Product;
@@ -23,6 +24,7 @@ import br.ufsc.aggregare.model.Supplier;
 import br.ufsc.aggregare.model.User;
 import br.ufsc.aggregare.model.enums.OrderStatusEnum;
 import br.ufsc.aggregare.model.enums.OrderTypeEnum;
+import br.ufsc.aggregare.model.enums.PaymentMethodEnum;
 import br.ufsc.aggregare.model.enums.PaymentStatusEnum;
 import br.ufsc.aggregare.model.enums.PhoneTypeEnum;
 import br.ufsc.aggregare.repository.AddressRepository;
@@ -30,6 +32,7 @@ import br.ufsc.aggregare.repository.CategoryRepository;
 import br.ufsc.aggregare.repository.ClientRepository;
 import br.ufsc.aggregare.repository.OrderAddressRepository;
 import br.ufsc.aggregare.repository.OrderRepository;
+import br.ufsc.aggregare.repository.PaymentRepository;
 import br.ufsc.aggregare.repository.PhoneRepository;
 import br.ufsc.aggregare.repository.PriceRepository;
 import br.ufsc.aggregare.repository.ProductRepository;
@@ -54,6 +57,7 @@ public class TestConfig implements CommandLineRunner {
 	private final AddressRepository addressRepository;
 	private final OrderRepository orderRepository;
 	private final OrderAddressRepository orderAddressRepository;
+	private final PaymentRepository paymentRepository;
 
 	@Autowired
 	public TestConfig(
@@ -68,7 +72,8 @@ public class TestConfig implements CommandLineRunner {
 			PhoneRepository phoneRepository,
 			AddressRepository addressRepository,
 			OrderRepository orderRepository,
-			OrderAddressRepository orderAddressRepository) {
+			OrderAddressRepository orderAddressRepository,
+			PaymentRepository paymentRepository) {
 		this.userRepository = userRepository;
 		this.categoryRepository = categoryRepository;
 		this.productRepository = productRepository;
@@ -81,6 +86,7 @@ public class TestConfig implements CommandLineRunner {
 		this.addressRepository = addressRepository;
 		this.orderRepository = orderRepository;
 		this.orderAddressRepository = orderAddressRepository;
+		this.paymentRepository = paymentRepository;
 	}
 
 	@Override
@@ -139,5 +145,9 @@ public class TestConfig implements CommandLineRunner {
 		Order order1 = new Order(null, product1, client1, orderAddress1, 5.0, null, OrderTypeEnum.MATERIAL, dataTeste1, horaTeste1, "Entregar no portão", OrderStatusEnum.PENDING, PaymentStatusEnum.PENDING, 415.00);
 		Order order2 = new Order(null, product2, client2, orderAddress2, null, "Serviço de máquina", OrderTypeEnum.SERVICE, dataTeste1, horaTeste1, "Ligar antes de chegar", OrderStatusEnum.DELIVERED, PaymentStatusEnum.PARTIAL, 500.00);
 		orderRepository.saveAll(Arrays.asList(order1, order2));
+
+		Payment payment1 = new Payment(null, order1, 200.00, dataTeste1, PaymentMethodEnum.CASH);
+		Payment payment2 = new Payment(null, order2, 300.00, dataTeste1, PaymentMethodEnum.BANK_TRANSFER);
+		paymentRepository.saveAll(Arrays.asList(payment1, payment2));
 	}
 }
