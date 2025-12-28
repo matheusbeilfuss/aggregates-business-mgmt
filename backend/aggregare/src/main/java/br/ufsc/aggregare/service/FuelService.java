@@ -7,6 +7,7 @@ import br.ufsc.aggregare.model.Expense;
 import br.ufsc.aggregare.model.Fuel;
 import br.ufsc.aggregare.model.dto.ExpenseInputDTO;
 import br.ufsc.aggregare.repository.FuelRepository;
+import br.ufsc.aggregare.service.exception.ResourceNotFoundException;
 
 import jakarta.transaction.Transactional;
 
@@ -39,5 +40,16 @@ public class FuelService {
 
 	public void deleteByExpenseId(Long expenseId) {
 		fuelRepository.deleteByExpenseId(expenseId);
+	}
+
+	public void updateByExpenseId(Long expenseId, ExpenseInputDTO dto) {
+		Fuel existingFuel = fuelRepository.findByExpenseId(expenseId)
+				.orElseThrow(() -> new ResourceNotFoundException(expenseId));
+
+		existingFuel.setVehicle(dto.getVehicle());
+		existingFuel.setKmDriven(dto.getKmDriven());
+		existingFuel.setLiters(dto.getLiters());
+		existingFuel.setPricePerLiter(dto.getPricePerLiter());
+		existingFuel.setFuelSupplier(dto.getFuelSupplier());
 	}
 }

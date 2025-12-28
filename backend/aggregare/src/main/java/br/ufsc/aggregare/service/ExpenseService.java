@@ -63,4 +63,30 @@ public class ExpenseService {
 
 		expenseRepository.delete(existingExpense);
 	}
+
+	@Transactional
+	public Expense update(Long id, ExpenseInputDTO dto) {
+		Expense existingExpense = expenseRepository.findById(id)
+				.orElseThrow(() -> new ResourceNotFoundException(id));
+
+		updateExpense(existingExpense, dto);
+
+		if (existingExpense.getType().equals(ExpenseTypeEnum.FUEL)) {
+			fuelService.updateByExpenseId(existingExpense.getId(), dto);
+		}
+
+		expenseRepository.save(existingExpense);
+		return existingExpense;
+	}
+
+	private void updateExpense(Expense expense, ExpenseInputDTO dto) {
+		expense.setName(dto.getName());
+		expense.setExpenseValue(dto.getExpenseValue());
+		expense.setDate(dto.getDate());
+		expense.setDueDate(dto.getDueDate());
+		expense.setPaymentDate(dto.getPaymentDate());
+		expense.setType(dto.getType());
+		expense.setPaymentStatus(dto.getPaymentStatus());
+		expense.setCategory(dto.getCategory());
+	}
 }
