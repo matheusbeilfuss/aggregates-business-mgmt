@@ -10,6 +10,7 @@ import br.ufsc.aggregare.model.Order;
 import br.ufsc.aggregare.model.OrderAddress;
 import br.ufsc.aggregare.model.Product;
 import br.ufsc.aggregare.model.dto.OrderInputDTO;
+import br.ufsc.aggregare.model.dto.PaymentInputDTO;
 import br.ufsc.aggregare.model.enums.OrderStatusEnum;
 import br.ufsc.aggregare.model.enums.PaymentStatusEnum;
 import br.ufsc.aggregare.repository.OrderAddressRepository;
@@ -25,13 +26,16 @@ public class OrderService {
 	private final OrderAddressRepository orderAddressRepository;
 	private final ProductService productService;
 	private final ClientService clientService;
+	private final PaymentService paymentService;
 
 	@Autowired
-	public OrderService(OrderRepository orderRepository, OrderAddressRepository orderAddressRepository, ProductService productService, ClientService clientService) {
+	public OrderService(OrderRepository orderRepository, OrderAddressRepository orderAddressRepository,
+			ProductService productService, ClientService clientService, PaymentService paymentService) {
 		this.orderRepository = orderRepository;
 		this.orderAddressRepository = orderAddressRepository;
 		this.productService = productService;
 		this.clientService = clientService;
+		this.paymentService = paymentService;
 	}
 
 	@Transactional
@@ -130,5 +134,16 @@ public class OrderService {
 
 	public List<Order> findAll() {
 		return orderRepository.findAll();
+	}
+
+	@Transactional
+	public Order addPayment(Long id, PaymentInputDTO paymentDTO) {
+		Order existingOrder = orderRepository.findById(id)
+				.orElseThrow(() -> new ResourceNotFoundException(id));
+
+		paymentService.insert(existingOrder, paymentDTO.getPaymentValue(), paymentDTO.getPaymentMethod());
+
+		return orderRepository.findById(id)
+				.orElseThrow(() -> new ResourceNotFoundException(id));
 	}
 }
