@@ -1,5 +1,7 @@
 package br.ufsc.aggregare.service;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -88,5 +90,9 @@ public class ExpenseService {
 		expense.setType(dto.getType());
 		expense.setPaymentStatus(dto.getPaymentStatus());
 		expense.setCategory(dto.getCategory());
+	}
+
+	public List<Expense> findAll() {
+		return expenseRepository.findAll();
 	}
 }
