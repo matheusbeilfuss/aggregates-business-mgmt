@@ -50,6 +50,12 @@ public class ExpenseController {
 		return ResponseEntity.ok().body(expense);
 	}
 
+	@GetMapping(value = "/{id}")
+	public ResponseEntity<Expense> findById(@PathVariable Long id) {
+		Expense expense = service.findById(id);
+		return ResponseEntity.ok().body(expense);
+	}
+
 	@GetMapping
 	public ResponseEntity<List<Expense>> findAll() {
 		List<Expense> expenses = service.findAll();

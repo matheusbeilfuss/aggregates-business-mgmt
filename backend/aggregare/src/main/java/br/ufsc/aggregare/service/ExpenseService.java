@@ -92,6 +92,11 @@ public class ExpenseService {
 		expense.setCategory(dto.getCategory());
 	}
 
+	public Expense findById(Long id) {
+		return expenseRepository.findById(id)
+				.orElseThrow(() -> new ResourceNotFoundException(id));
+	}
+
 	public List<Expense> findAll() {
 		return expenseRepository.findAll();
 	}
