@@ -9,7 +9,6 @@ import br.ufsc.aggregare.model.Expense;
 import br.ufsc.aggregare.model.dto.ExpenseInputDTO;
 import br.ufsc.aggregare.model.enums.ExpenseTypeEnum;
 import br.ufsc.aggregare.repository.ExpenseRepository;
-import br.ufsc.aggregare.repository.FixedExpenseRepository;
 import br.ufsc.aggregare.service.exception.ResourceNotFoundException;
 
 import jakarta.transaction.Transactional;
@@ -18,13 +17,11 @@ import jakarta.transaction.Transactional;
 public class ExpenseService {
 
 	private final ExpenseRepository expenseRepository;
-	private final FixedExpenseRepository fixedExpenseRepository;
 	private final FuelService fuelService;
 
 	@Autowired
-	public ExpenseService(ExpenseRepository expenseRepository, FixedExpenseRepository fixedExpenseRepository, FuelService fuelService) {
+	public ExpenseService(ExpenseRepository expenseRepository, FuelService fuelService) {
 		this.expenseRepository = expenseRepository;
-		this.fixedExpenseRepository = fixedExpenseRepository;
 		this.fuelService = fuelService;
 	}
 
