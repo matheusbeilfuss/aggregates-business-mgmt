@@ -30,4 +30,18 @@ public class FixedExpenseService {
 				.orElseThrow(() -> new ResourceNotFoundException(id));
 		repository.delete(fixedExpense);
 	}
+
+	@Transactional
+	public FixedExpense update(Long id, FixedExpense fixedExpense) {
+		FixedExpense existingFixedExpense = repository.findById(id)
+				.orElseThrow(() -> new ResourceNotFoundException(id));
+		updateData(existingFixedExpense, fixedExpense);
+		return repository.save(existingFixedExpense);
+	}
+
+	public void updateData(FixedExpense existingFixedExpense, FixedExpense newFixedExpense) {
+		existingFixedExpense.setName(newFixedExpense.getName());
+		existingFixedExpense.setDefaultValue(newFixedExpense.getDefaultValue());
+		existingFixedExpense.setCategory(newFixedExpense.getCategory());
+	}
 }
