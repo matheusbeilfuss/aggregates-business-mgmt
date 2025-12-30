@@ -1,5 +1,8 @@
 package br.ufsc.aggregare.service;
 
+import java.util.List;
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -43,5 +46,14 @@ public class FixedExpenseService {
 		existingFixedExpense.setName(newFixedExpense.getName());
 		existingFixedExpense.setDefaultValue(newFixedExpense.getDefaultValue());
 		existingFixedExpense.setCategory(newFixedExpense.getCategory());
+	}
+
+	public FixedExpense findById(Long id) {
+		Optional<FixedExpense> fixedExpense = repository.findById(id);
+		return fixedExpense.orElseThrow(() -> new ResourceNotFoundException(id));
+	}
+
+	public List<FixedExpense> findAll() {
+		return repository.findAll();
 	}
 }

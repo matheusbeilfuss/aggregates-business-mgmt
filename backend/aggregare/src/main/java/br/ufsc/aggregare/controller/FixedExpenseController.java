@@ -1,10 +1,12 @@
 package br.ufsc.aggregare.controller;
 
 import java.net.URI;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -44,5 +46,17 @@ public class FixedExpenseController {
 	public ResponseEntity<FixedExpense> update(@PathVariable Long id, @RequestBody FixedExpense fixedExpense) {
 		FixedExpense updatedFixedExpense = service.update(id, fixedExpense);
 		return ResponseEntity.ok().body(updatedFixedExpense);
+	}
+
+	@GetMapping(value = "/{id}")
+	public ResponseEntity<FixedExpense> findById(@PathVariable Long id) {
+		FixedExpense fixedExpense = service.findById(id);
+		return ResponseEntity.ok().body(fixedExpense);
+	}
+
+	@GetMapping
+	public ResponseEntity<List<FixedExpense>> findAll() {
+		List<FixedExpense> fixedExpenses = service.findAll();
+		return ResponseEntity.ok().body(fixedExpenses);
 	}
 }
