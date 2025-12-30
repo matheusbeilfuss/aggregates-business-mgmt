@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 
 import br.ufsc.aggregare.model.FixedExpense;
 import br.ufsc.aggregare.repository.FixedExpenseRepository;
+import br.ufsc.aggregare.service.exception.ResourceNotFoundException;
 
 import jakarta.transaction.Transactional;
 
@@ -21,5 +22,12 @@ public class FixedExpenseService {
 	@Transactional
 	public FixedExpense insert(FixedExpense fixedExpense) {
 		return repository.save(fixedExpense);
+	}
+
+	@Transactional
+	public void delete(Long id) {
+		FixedExpense fixedExpense = repository.findById(id)
+				.orElseThrow(() -> new ResourceNotFoundException(id));
+		repository.delete(fixedExpense);
 	}
 }
