@@ -34,7 +34,7 @@ public class ExpenseService {
 			fuelService.insert(dto, savedExpense);
 		}
 
-		return expense;
+		return savedExpense;
 	}
 
 	private Expense expenseFromInputDTO(ExpenseInputDTO dto) {
@@ -70,7 +70,17 @@ public class ExpenseService {
 
 		updateExpense(existingExpense, dto);
 
-		if (existingExpense.getType().equals(ExpenseTypeEnum.FUEL)) {
+		if (existingExpense.getType() != null && existingExpense.getType().equals(ExpenseTypeEnum.FUEL) &&
+			(dto.getType() == null || !dto.getType().equals(ExpenseTypeEnum.FUEL))) {
+			fuelService.deleteByExpenseId(existingExpense.getId());
+		}
+
+		if (dto.getType() != null && dto.getType().equals(ExpenseTypeEnum.FUEL) &&
+			(existingExpense.getType() == null || !existingExpense.getType().equals(ExpenseTypeEnum.FUEL))) {
+			fuelService.insert(dto, existingExpense);
+		}
+
+		if (dto.getType() != null && existingExpense.getType().equals(ExpenseTypeEnum.FUEL)) {
 			fuelService.updateByExpenseId(existingExpense.getId(), dto);
 		}
 
