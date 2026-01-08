@@ -38,10 +38,12 @@ public class FuelService {
 		return fuel;
 	}
 
+	@Transactional
 	public void deleteByExpenseId(Long expenseId) {
 		fuelRepository.deleteByExpenseId(expenseId);
 	}
 
+	@Transactional
 	public void updateByExpenseId(Long expenseId, ExpenseInputDTO dto) {
 		Fuel existingFuel = fuelRepository.findByExpenseId(expenseId)
 				.orElseThrow(() -> new ResourceNotFoundException(expenseId));
