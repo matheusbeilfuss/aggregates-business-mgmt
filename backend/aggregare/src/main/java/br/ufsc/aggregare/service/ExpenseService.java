@@ -52,11 +52,11 @@ public class ExpenseService {
 	}
 
 	@Transactional
-	public void delete (Long id) {
+	public void delete(Long id) {
 		Expense existingExpense = expenseRepository.findById(id)
 				.orElseThrow(() -> new ResourceNotFoundException(id));
 
-		if (existingExpense.getType().equals(ExpenseTypeEnum.FUEL)) {
+		if (existingExpense.getType() != null && existingExpense.getType().equals(ExpenseTypeEnum.FUEL)) {
 			fuelService.deleteByExpenseId(existingExpense.getId());
 		}
 
@@ -65,27 +65,30 @@ public class ExpenseService {
 
 	@Transactional
 	public Expense update(Long id, ExpenseInputDTO dto) {
+
 		Expense existingExpense = expenseRepository.findById(id)
 				.orElseThrow(() -> new ResourceNotFoundException(id));
 
-		updateExpense(existingExpense, dto);
+		ExpenseTypeEnum oldType = existingExpense.getType();
+		ExpenseTypeEnum newType = dto.getType();
 
-		if (existingExpense.getType() != null && existingExpense.getType().equals(ExpenseTypeEnum.FUEL) &&
-			(dto.getType() == null || !dto.getType().equals(ExpenseTypeEnum.FUEL))) {
+		boolean wasFuel = ExpenseTypeEnum.FUEL.equals(oldType);
+		boolean isFuel  = ExpenseTypeEnum.FUEL.equals(newType);
+
+		if (wasFuel && !isFuel) {
 			fuelService.deleteByExpenseId(existingExpense.getId());
 		}
 
-		if (dto.getType() != null && dto.getType().equals(ExpenseTypeEnum.FUEL) &&
-			(existingExpense.getType() == null || !existingExpense.getType().equals(ExpenseTypeEnum.FUEL))) {
+		if (!wasFuel && isFuel) {
 			fuelService.insert(dto, existingExpense);
 		}
 
-		if (dto.getType() != null && existingExpense.getType().equals(ExpenseTypeEnum.FUEL)) {
+		if (wasFuel && isFuel) {
 			fuelService.updateByExpenseId(existingExpense.getId(), dto);
 		}
 
-		expenseRepository.save(existingExpense);
-		return existingExpense;
+		updateExpense(existingExpense, dto);
+		return expenseRepository.save(existingExpense);
 	}
 
 	private void updateExpense(Expense expense, ExpenseInputDTO dto) {
