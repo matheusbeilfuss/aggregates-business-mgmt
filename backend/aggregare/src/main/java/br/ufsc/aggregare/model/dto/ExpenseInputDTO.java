@@ -22,7 +22,7 @@ public class ExpenseInputDTO {
 	private Double pricePerLiter;
 	private String fuelSupplier;
 
-	private ExpenseInputDTO() {
+	public ExpenseInputDTO() {
 	}
 
 	public ExpenseInputDTO(String name, BigDecimal expenseValue, LocalDate date, LocalDate dueDate, LocalDate paymentDate, ExpenseTypeEnum type, PaymentStatusEnum paymentStatus,

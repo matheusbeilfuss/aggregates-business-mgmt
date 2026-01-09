@@ -180,7 +180,7 @@ public class TestConfig implements CommandLineRunner {
 		Expense expense1 = new Expense(null, "Conserto pneu caminhão", BigDecimal.valueOf(150.00), expenseDate1, expenseDueDate1, expenseDate1, ExpenseTypeEnum.VARIABLE, PaymentStatusEnum.PAID, "Mecânica");
 		Expense expense2 = new Expense(null, fixedExpense1.getName(), fixedExpense1.getDefaultValue(), expenseDate1, expenseDueDate1, null, ExpenseTypeEnum.FIXED, PaymentStatusEnum.PENDING, fixedExpense1.getCategory());
 		Expense expense3 = new Expense(null, fixedExpense2.getName(), fixedExpense2.getDefaultValue(), expenseDate2, expenseDueDate2, null, ExpenseTypeEnum.FIXED, PaymentStatusEnum.PENDING, fixedExpense2.getCategory());
-		Expense expense4 = new Expense(null, "Combustível máquina", BigDecimal.valueOf(250.00), expenseDate2, expenseDueDate2, expenseDate2, ExpenseTypeEnum.VARIABLE, PaymentStatusEnum.PAID, "Combustível");
+		Expense expense4 = new Expense(null, "Combustível máquina", BigDecimal.valueOf(250.00), expenseDate2, expenseDueDate2, expenseDate2, ExpenseTypeEnum.FUEL, PaymentStatusEnum.PAID, "Combustível");
 		expenseRepository.saveAll(Arrays.asList(expense1, expense2, expense3, expense4));
 
 		Fuel fuel1 = new Fuel(null, expense4, "Mercedes 1313", 100, 85.30, 6.03, "Posto Dom Bosco");
