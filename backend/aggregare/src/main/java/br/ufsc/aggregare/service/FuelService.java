@@ -2,14 +2,13 @@ package br.ufsc.aggregare.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import br.ufsc.aggregare.model.Expense;
 import br.ufsc.aggregare.model.Fuel;
 import br.ufsc.aggregare.model.dto.ExpenseInputDTO;
 import br.ufsc.aggregare.repository.FuelRepository;
 import br.ufsc.aggregare.service.exception.ResourceNotFoundException;
-
-import jakarta.transaction.Transactional;
 
 @Service
 public class FuelService {
@@ -23,11 +22,11 @@ public class FuelService {
 
 	@Transactional
 	public Fuel insert(ExpenseInputDTO dto, Expense expense) {
-		Fuel fuel = fuelExpenseFromExpenseInputDTO(dto, expense);
+		Fuel fuel = fuelFromDTO(dto, expense);
 		return fuelRepository.save(fuel);
 	}
 
-	private Fuel fuelExpenseFromExpenseInputDTO(ExpenseInputDTO dto, Expense expense) {
+	private Fuel fuelFromDTO(ExpenseInputDTO dto, Expense expense) {
 		Fuel fuel = new Fuel();
 		fuel.setExpense(expense);
 		fuel.setVehicle(dto.getVehicle());

@@ -5,12 +5,11 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import br.ufsc.aggregare.model.FixedExpense;
 import br.ufsc.aggregare.repository.FixedExpenseRepository;
 import br.ufsc.aggregare.service.exception.ResourceNotFoundException;
-
-import jakarta.transaction.Transactional;
 
 @Service
 public class FixedExpenseService {

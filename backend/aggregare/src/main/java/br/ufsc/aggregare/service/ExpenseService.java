@@ -4,14 +4,13 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import br.ufsc.aggregare.model.Expense;
 import br.ufsc.aggregare.model.dto.ExpenseInputDTO;
 import br.ufsc.aggregare.model.enums.ExpenseTypeEnum;
 import br.ufsc.aggregare.repository.ExpenseRepository;
 import br.ufsc.aggregare.service.exception.ResourceNotFoundException;
-
-import jakarta.transaction.Transactional;
 
 @Service
 public class ExpenseService {
@@ -39,15 +38,7 @@ public class ExpenseService {
 
 	private Expense expenseFromInputDTO(ExpenseInputDTO dto) {
 		Expense expense = new Expense();
-		expense.setName(dto.getName());
-		expense.setExpenseValue(dto.getExpenseValue());
-		expense.setDate(dto.getDate());
-		expense.setDueDate(dto.getDueDate());
-		expense.setPaymentDate(dto.getPaymentDate());
-		expense.setType(dto.getType());
-		expense.setPaymentStatus(dto.getPaymentStatus());
-		expense.setCategory(dto.getCategory());
-
+		updateExpense(expense, dto);
 		return expense;
 	}
 
