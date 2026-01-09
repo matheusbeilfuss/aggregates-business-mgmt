@@ -13,6 +13,9 @@ import org.springframework.context.annotation.Profile;
 import br.ufsc.aggregare.model.Address;
 import br.ufsc.aggregare.model.Category;
 import br.ufsc.aggregare.model.Client;
+import br.ufsc.aggregare.model.Expense;
+import br.ufsc.aggregare.model.FixedExpense;
+import br.ufsc.aggregare.model.Fuel;
 import br.ufsc.aggregare.model.Order;
 import br.ufsc.aggregare.model.OrderAddress;
 import br.ufsc.aggregare.model.Payment;
@@ -23,6 +26,7 @@ import br.ufsc.aggregare.model.ProductSupplier;
 import br.ufsc.aggregare.model.Stock;
 import br.ufsc.aggregare.model.Supplier;
 import br.ufsc.aggregare.model.User;
+import br.ufsc.aggregare.model.enums.ExpenseTypeEnum;
 import br.ufsc.aggregare.model.enums.OrderStatusEnum;
 import br.ufsc.aggregare.model.enums.OrderTypeEnum;
 import br.ufsc.aggregare.model.enums.PaymentMethodEnum;
@@ -31,6 +35,9 @@ import br.ufsc.aggregare.model.enums.PhoneTypeEnum;
 import br.ufsc.aggregare.repository.AddressRepository;
 import br.ufsc.aggregare.repository.CategoryRepository;
 import br.ufsc.aggregare.repository.ClientRepository;
+import br.ufsc.aggregare.repository.ExpenseRepository;
+import br.ufsc.aggregare.repository.FixedExpenseRepository;
+import br.ufsc.aggregare.repository.FuelRepository;
 import br.ufsc.aggregare.repository.OrderAddressRepository;
 import br.ufsc.aggregare.repository.OrderRepository;
 import br.ufsc.aggregare.repository.PaymentRepository;
@@ -59,6 +66,9 @@ public class TestConfig implements CommandLineRunner {
 	private final OrderRepository orderRepository;
 	private final OrderAddressRepository orderAddressRepository;
 	private final PaymentRepository paymentRepository;
+	private final ExpenseRepository expenseRepository;
+	private final FixedExpenseRepository fixedExpenseRepository;
+	private final FuelRepository fuelRepository;
 
 	@Autowired
 	public TestConfig(
@@ -74,7 +84,10 @@ public class TestConfig implements CommandLineRunner {
 			AddressRepository addressRepository,
 			OrderRepository orderRepository,
 			OrderAddressRepository orderAddressRepository,
-			PaymentRepository paymentRepository) {
+			PaymentRepository paymentRepository,
+			ExpenseRepository expenseRepository,
+			FixedExpenseRepository fixedExpenseRepository,
+			FuelRepository fuelRepository) {
 		this.userRepository = userRepository;
 		this.categoryRepository = categoryRepository;
 		this.productRepository = productRepository;
@@ -88,6 +101,9 @@ public class TestConfig implements CommandLineRunner {
 		this.orderRepository = orderRepository;
 		this.orderAddressRepository = orderAddressRepository;
 		this.paymentRepository = paymentRepository;
+		this.expenseRepository = expenseRepository;
+		this.fixedExpenseRepository = fixedExpenseRepository;
+		this.fuelRepository = fuelRepository;
 	}
 
 	@Override
@@ -150,5 +166,24 @@ public class TestConfig implements CommandLineRunner {
 		Payment payment1 = new Payment(null, order1, BigDecimal.valueOf(200.00), dataTeste1, PaymentMethodEnum.CASH);
 		Payment payment2 = new Payment(null, order2, BigDecimal.valueOf(300.00), dataTeste1, PaymentMethodEnum.BANK_TRANSFER);
 		paymentRepository.saveAll(Arrays.asList(payment1, payment2));
+
+		FixedExpense fixedExpense1 = new FixedExpense(null, "Mensalidade Sindicato", BigDecimal.valueOf(80.00), "Sindicato");
+		FixedExpense fixedExpense2 = new FixedExpense(null, "Jornal", BigDecimal.valueOf(20.00), "Escritório");
+		fixedExpenseRepository.saveAll(Arrays.asList(fixedExpense1, fixedExpense2));
+
+		LocalDate expenseDate1 = LocalDate.of(2025, 12, 19);
+		LocalDate expenseDueDate1 = LocalDate.of(2026, 1, 19);
+
+		LocalDate expenseDate2 = LocalDate.of(2025, 11, 28);
+		LocalDate expenseDueDate2 = LocalDate.of(2025, 12, 28);
+
+		Expense expense1 = new Expense(null, "Conserto pneu caminhão", BigDecimal.valueOf(150.00), expenseDate1, expenseDueDate1, expenseDate1, ExpenseTypeEnum.VARIABLE, PaymentStatusEnum.PAID, "Mecânica");
+		Expense expense2 = new Expense(null, fixedExpense1.getName(), fixedExpense1.getDefaultValue(), expenseDate1, expenseDueDate1, null, ExpenseTypeEnum.FIXED, PaymentStatusEnum.PENDING, fixedExpense1.getCategory());
+		Expense expense3 = new Expense(null, fixedExpense2.getName(), fixedExpense2.getDefaultValue(), expenseDate2, expenseDueDate2, null, ExpenseTypeEnum.FIXED, PaymentStatusEnum.PENDING, fixedExpense2.getCategory());
+		Expense expense4 = new Expense(null, "Combustível máquina", BigDecimal.valueOf(250.00), expenseDate2, expenseDueDate2, expenseDate2, ExpenseTypeEnum.FUEL, PaymentStatusEnum.PAID, "Combustível");
+		expenseRepository.saveAll(Arrays.asList(expense1, expense2, expense3, expense4));
+
+		Fuel fuel1 = new Fuel(null, expense4, "Mercedes 1313", 100, 85.30, 6.03, "Posto Dom Bosco");
+		fuelRepository.save(fuel1);
 	}
 }
