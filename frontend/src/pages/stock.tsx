@@ -9,7 +9,7 @@ import {
 import { Layout } from "@/components/layout";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useEffect, useState } from "react";
-import { MoreHorizontal, Pencil, Plus, X } from "lucide-react";
+import { List, MoreHorizontal, Pencil, Plus, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -17,6 +17,30 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { z } from "zod";
+import { toast } from "sonner";
+
+interface Category {
+  id: number;
+  name: string;
+}
 
 interface Product {
   id: number;
@@ -32,28 +56,102 @@ interface StockItem {
 
 export function Stock() {
   const [stocks, setStocks] = useState<StockItem[]>([]);
+  const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [newProductName, setNewProductName] = useState("");
+  const [selectedCategoryId, setSelectedCategoryId] = useState("");
+  const [isNewCategory, setIsNewCategory] = useState(false);
+  const [newCategoryName, setNewCategoryName] = useState("");
+  const [formErrors, setFormErrors] = useState<Record<string, string>>({});
+
+  const apiUrl = import.meta.env.VITE_API_URL;
+
+  const productSchema = z.object({
+    name: z.string().min(1, "O nome do produto é obrigatório."),
+    categoryId: z.number().int().positive("Selecione uma categoria válida"),
+  });
+
+  async function handleCreateProduct() {
+    setFormErrors({});
+
+    const parsedCategoryId = Number(selectedCategoryId);
+
+    const result = productSchema.safeParse({
+      name: newProductName,
+      categoryId: parsedCategoryId,
+    });
+
+    if (!result.success) {
+      const errors: Record<string, string> = {};
+      result.error.issues.forEach((issue) => {
+        errors[issue.path[0] as string] = issue.message;
+      });
+      setFormErrors(errors);
+      return;
+    }
+
+    try {
+      const response = await fetch(`${apiUrl}/products`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          name: newProductName,
+          categoryId: parsedCategoryId,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Erro ao salvar produto");
+      } else {
+        toast.success("O produto foi criado com sucesso.");
+      }
+
+      await loadStocksandCategories();
+
+      setIsDialogOpen(false);
+      setNewProductName("");
+      setSelectedCategoryId("");
+      setIsNewCategory(false);
+    } catch (error) {
+      toast.error("Não foi possível salvar o produto.");
+      console.error(error);
+    }
+  }
+
+  async function loadStocksandCategories(signal?: AbortSignal) {
+    const [stocksResponse, categoriesResponse] = await Promise.all([
+      fetch(`${apiUrl}/stocks`, { signal }),
+      fetch(`${apiUrl}/categories`, { signal }),
+    ]);
+
+    if (!stocksResponse.ok) {
+      throw new Error("Erro ao buscar estoque");
+    }
+
+    if (!categoriesResponse.ok) {
+      throw new Error("Erro ao buscar categorias");
+    }
+
+    const stocksData = await stocksResponse.json();
+    const categoriesData = await categoriesResponse.json();
+
+    setStocks(stocksData);
+    setCategories(categoriesData);
+  }
 
   useEffect(() => {
-    const apiUrl = import.meta.env.VITE_API_URL;
     const controller = new AbortController();
 
-    fetch(`${apiUrl}/stocks`, { signal: controller.signal })
-      .then(async (response) => {
-        if (!response.ok) {
-          throw new Error(`Erro na requisição: ${response.status}`);
-        }
-        return response.json();
-      })
-      .then((data) => {
-        setStocks(data);
-        setLoading(false);
-      })
+    loadStocksandCategories(controller.signal)
+      .then(() => setLoading(false))
       .catch((err) => {
-        if (err.name === "AbortError" || err.message.includes("aborted"))
-          return;
-        setError("Não foi possível carregar os dados de estoque.");
+        if (err.name === "AbortError") return;
+        console.error(err);
+        setError("Não foi possível carregar os dados.");
         setLoading(false);
       });
 
@@ -148,9 +246,96 @@ export function Stock() {
           </div>
         )}
         <div className="mt-auto flex justify-end py-12">
-          <Button className="bg-slate-500 hover:bg-slate-600 text-white px-6 py-6 text-base shadow-sm">
-            Adicionar Produto
-          </Button>
+          <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+            <DialogTrigger asChild>
+              <Button className="bg-slate-500 hover:bg-slate-600 text-white px-6 py-6 text-base shadow-sm">
+                Adicionar Produto
+              </Button>
+            </DialogTrigger>
+
+            <DialogContent className="sm:max-w-[425px]">
+              <DialogHeader>
+                <DialogTitle>Novo produto</DialogTitle>
+                <DialogDescription>
+                  Preencha as informações do novo item que será inserido no
+                  estoque.
+                </DialogDescription>
+              </DialogHeader>
+
+              <div className="grid gap-4 py-4">
+                <div className="grid grid-cols-4 items-center gap-4">
+                  <Label htmlFor="name" className="text-right">
+                    Nome
+                  </Label>
+                  <Input
+                    id="name"
+                    className="col-span-3"
+                    value={newProductName}
+                    onChange={(e) => setNewProductName(e.target.value)}
+                  />
+                  {formErrors.name && (
+                    <p className="col-span-4 text-sm text-red-500">
+                      {formErrors.name}
+                    </p>
+                  )}
+                </div>
+                <div className="grid grid-cols-4 items-center gap-4">
+                  <Label htmlFor="category" className="text-right">
+                    Categoria
+                  </Label>
+
+                  <div className="col-span-3 flex gap-2 w-full">
+                    {isNewCategory ? (
+                      <Input
+                        id="new-category-name"
+                        placeholder="Nome da nova categoria"
+                        className="flex-1"
+                      />
+                    ) : (
+                      <div className="flex-1">
+                        <Select
+                          value={selectedCategoryId}
+                          onValueChange={setSelectedCategoryId}
+                        >
+                          <SelectTrigger className="w-full">
+                            <SelectValue placeholder="Selecione..." />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {categories.map((category) => (
+                              <SelectItem
+                                key={category.id}
+                                value={String(category.id)}
+                              >
+                                {category.name}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+                    )}
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="icon"
+                      onClick={() => setIsNewCategory(!isNewCategory)}
+                    >
+                      {isNewCategory ? (
+                        <List className="h-4 w-4" />
+                      ) : (
+                        <Plus className="h-4 w-4" />
+                      )}
+                    </Button>
+                  </div>
+                </div>
+              </div>
+
+              <div className="flex justify-end">
+                <Button type="button" onClick={handleCreateProduct}>
+                  Salvar
+                </Button>
+              </div>
+            </DialogContent>
+          </Dialog>
         </div>
       </div>
     </Layout>
