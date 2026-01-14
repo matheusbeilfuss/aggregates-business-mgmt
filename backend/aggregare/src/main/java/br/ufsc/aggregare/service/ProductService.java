@@ -89,7 +89,14 @@ public class ProductService {
 	}
 
 	public Product fromDTO(ProductInputDTO dto) {
-		Category category = categoryService.findById(dto.getCategoryId());
-		return new Product(null, dto.getName(), category);
+		if (dto.getCategoryName() != null) {
+			Category newCategory = new Category();
+			newCategory.setName(dto.getCategoryName());
+			Category savedCategory = categoryService.insert(newCategory);
+			return new Product(null, dto.getName(), savedCategory);
+		} else {
+			Category category = categoryService.findById(dto.getCategoryId());
+			return new Product(null, dto.getName(), category);
+		}
 	}
 }
