@@ -34,15 +34,16 @@ public class ProductService {
 		this.categoryService = categoryService;
 	}
 
-	public Product insert(Product product) {
+	public Product insert(ProductInputDTO dto) {
 		try {
+			Product product = fromDTO(dto);
 			Category existingCategory = categoryService.findById(product.getCategory().getId());
 			product.setCategory(existingCategory);
 			Product savedProduct = repository.save(product);
 			stockService.createInitialStockForProduct(product);
 			return savedProduct;
 		} catch (EntityNotFoundException e) {
-			throw new ResourceNotFoundException(product.getCategory().getId());
+			throw new ResourceNotFoundException(dto.getCategoryId());
 		}
 	}
 
@@ -62,8 +63,9 @@ public class ProductService {
 		}
 	}
 
-	public Product update(Long id, Product newProduct) {
+	public Product update(Long id, ProductInputDTO dto) {
 		try {
+			Product newProduct = fromDTO(dto);
 			Product existingProduct = repository.getReferenceById(id);
 			updateData(existingProduct, newProduct);
 			return repository.save(existingProduct);
