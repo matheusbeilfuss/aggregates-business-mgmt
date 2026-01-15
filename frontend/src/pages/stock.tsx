@@ -68,20 +68,50 @@ export function Stock() {
 
   const apiUrl = import.meta.env.VITE_API_URL;
 
-  const productSchema = z.object({
-    name: z.string().min(1, "O nome do produto é obrigatório."),
-    categoryId: z.number().int().positive("Selecione uma categoria válida"),
-  });
+  const productSchema = z
+    .object({
+      name: z.string().min(1, "O nome do produto é obrigatório."),
+      categoryId: z.number().optional(),
+      categoryName: z.string().optional(),
+    })
+    .refine(
+      (data) =>
+        (data.categoryId && !data.categoryName) ||
+        (!data.categoryId && data.categoryName),
+      {
+        message:
+          "Informe uma categoria existente ou o nome de uma nova categoria.",
+        path: ["categoryId", "categoryName"],
+      }
+    );
 
   async function handleCreateProduct() {
     setFormErrors({});
 
-    const parsedCategoryId = Number(selectedCategoryId);
-
-    const result = productSchema.safeParse({
+    const payload: {
+      name: string;
+      categoryId?: number;
+      categoryName?: string;
+    } = {
       name: newProductName,
-      categoryId: parsedCategoryId,
-    });
+    };
+
+    if (isNewCategory) {
+      if (!newCategoryName.trim()) {
+        setFormErrors({ category: "Informe o nome da nova categoria." });
+        return;
+      }
+      payload.categoryName = newCategoryName.trim();
+    } else {
+      const parsedCategoryId = Number(selectedCategoryId);
+      if (!parsedCategoryId) {
+        setFormErrors({ category: "Selecione uma categoria." });
+        return;
+      }
+      payload.categoryId = parsedCategoryId;
+    }
+
+    const result = productSchema.safeParse(payload);
 
     if (!result.success) {
       const errors: Record<string, string> = {};
@@ -98,23 +128,20 @@ export function Stock() {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({
-          name: newProductName,
-          categoryId: parsedCategoryId,
-        }),
+        body: JSON.stringify(payload),
       });
 
       if (!response.ok) {
-        throw new Error("Erro ao salvar produto");
-      } else {
-        toast.success("O produto foi criado com sucesso.");
+        throw new Error("Erro ao criar produto");
       }
 
+      toast.success("O produto foi criado com sucesso.");
       await loadStocksandCategories();
 
       setIsDialogOpen(false);
       setNewProductName("");
       setSelectedCategoryId("");
+      setNewCategoryName("");
       setIsNewCategory(false);
     } catch (error) {
       toast.error("Não foi possível salvar o produto.");
@@ -290,6 +317,8 @@ export function Stock() {
                         id="new-category-name"
                         placeholder="Nome da nova categoria"
                         className="flex-1"
+                        value={newCategoryName}
+                        onChange={(e) => setNewCategoryName(e.target.value)}
                       />
                     ) : (
                       <div className="flex-1">
