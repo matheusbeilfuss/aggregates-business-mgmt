@@ -9,7 +9,14 @@ import {
 import { Layout } from "@/components/layout";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useEffect, useState } from "react";
-import { List, MoreHorizontal, Pencil, Plus, X } from "lucide-react";
+import {
+  List,
+  MoreHorizontal,
+  Pencil,
+  Plus,
+  TriangleAlert,
+  X,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -25,6 +32,16 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
+
 import { Input } from "@/components/ui/input";
 import {
   Select,
@@ -89,7 +106,11 @@ export function Stock() {
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [openMenuId, setOpenMenuId] = useState<number | null>(null);
+  const [isAddProductDialogOpen, setIsAddProductDialogOpen] = useState(false);
+  const [isDeleteProductDialogOpen, setIsDeleteProductDialogOpen] =
+    useState(false);
+  const [productToDelete, setProductToDelete] = useState<Product | null>(null);
 
   const apiUrl = import.meta.env.VITE_API_URL;
   const navigate = useNavigate();
@@ -122,6 +143,35 @@ export function Stock() {
     setCategories(await categoriesResponse.json());
   }
 
+  function openDeleteProductDialog(product: Product) {
+    setOpenMenuId(null);
+
+    requestAnimationFrame(() => {
+      setProductToDelete(product);
+      setIsDeleteProductDialogOpen(true);
+    });
+  }
+
+  async function confirmDeleteProduct() {
+    if (!productToDelete) return;
+
+    try {
+      const response = await fetch(`${apiUrl}/products/${productToDelete.id}`, {
+        method: "DELETE",
+      });
+
+      if (!response.ok) throw new Error();
+
+      toast.success("O produto foi excluído com sucesso.");
+      await loadStocksandCategories();
+    } catch {
+      toast.error("Não foi possível excluir o produto.");
+    } finally {
+      setIsDeleteProductDialogOpen(false);
+      setProductToDelete(null);
+    }
+  }
+
   async function onSubmit(data: ProductFormData) {
     const payload: {
       name: string;
@@ -149,7 +199,7 @@ export function Stock() {
       toast.success("O produto foi criado com sucesso.");
       await loadStocksandCategories();
 
-      setIsDialogOpen(false);
+      setIsAddProductDialogOpen(false);
       form.reset();
     } catch {
       toast.error("Não foi possível salvar o produto.");
@@ -205,26 +255,41 @@ export function Stock() {
 
                   <TableCell>
                     <div className="flex justify-end">
-                      <DropdownMenu>
+                      <DropdownMenu
+                        open={openMenuId === stock.id}
+                        onOpenChange={(open) =>
+                          setOpenMenuId(open ? stock.id : null)
+                        }
+                      >
                         <DropdownMenuTrigger asChild>
-                          <Button variant="ghost" className="h-8 w-8 p-0">
+                          <Button
+                            variant="ghost"
+                            className="h-8 w-8 p-0 cursor-pointer"
+                          >
                             <MoreHorizontal className="h-4 w-4" />
                           </Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end">
                           <DropdownMenuItem
+                            className="cursor-pointer"
                             onClick={() => navigate(`/stocks/${stock.id}`)}
                           >
                             <Pencil className="mr-2 h-4 w-4" />
                             Editar
                           </DropdownMenuItem>
 
-                          <DropdownMenuItem>
+                          <DropdownMenuItem
+                            className="cursor-pointer"
+                            onSelect={(event) => {
+                              event.preventDefault();
+                              openDeleteProductDialog(stock.product);
+                            }}
+                          >
                             <X className="mr-2 h-4 w-4" />
                             Excluir
                           </DropdownMenuItem>
 
-                          <DropdownMenuItem>
+                          <DropdownMenuItem className="cursor-pointer">
                             <Plus className="mr-2 h-4 w-4" />
                             Adicionar
                           </DropdownMenuItem>
@@ -250,9 +315,12 @@ export function Stock() {
         )}
 
         <div className="mt-auto flex justify-end py-12">
-          <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+          <Dialog
+            open={isAddProductDialogOpen}
+            onOpenChange={setIsAddProductDialogOpen}
+          >
             <DialogTrigger asChild>
-              <Button className="bg-slate-500 hover:bg-slate-600 text-white px-6 py-6 text-base">
+              <Button className="bg-slate-500 hover:bg-slate-600 text-white px-6 py-6 text-base cursor-pointer">
                 Adicionar Produto
               </Button>
             </DialogTrigger>
@@ -318,7 +386,7 @@ export function Stock() {
                                   }
                                 >
                                   <FormControl>
-                                    <SelectTrigger className="w-full">
+                                    <SelectTrigger className="w-full cursor-pointer">
                                       <SelectValue placeholder="Selecione..." />
                                     </SelectTrigger>
                                   </FormControl>
@@ -327,6 +395,7 @@ export function Stock() {
                                       <SelectItem
                                         key={category.id}
                                         value={String(category.id)}
+                                        className="cursor-pointer"
                                       >
                                         {category.name}
                                       </SelectItem>
@@ -341,6 +410,7 @@ export function Stock() {
                             type="button"
                             variant="outline"
                             size="icon"
+                            className="cursor-pointer"
                             onClick={() =>
                               form.setValue("isNewCategory", !field.value)
                             }
@@ -359,7 +429,9 @@ export function Stock() {
                   />
 
                   <div className="flex justify-end">
-                    <Button type="submit">Salvar</Button>
+                    <Button type="submit" className="cursor-pointer">
+                      Salvar
+                    </Button>
                   </div>
                 </form>
               </Form>
@@ -367,6 +439,42 @@ export function Stock() {
           </Dialog>
         </div>
       </div>
+      <AlertDialog
+        open={isDeleteProductDialogOpen}
+        onOpenChange={setIsDeleteProductDialogOpen}
+      >
+        <AlertDialogContent className="sm:max-w-[420px] text-center">
+          <AlertDialogHeader>
+            <div className="flex items-start gap-4">
+              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-red-100">
+                <TriangleAlert className="h-5 w-5 text-red-600" />
+              </div>
+
+              <div className="text-left">
+                <AlertDialogTitle className="leading-tight">
+                  Você tem certeza de que deseja excluir o registro abaixo?
+                </AlertDialogTitle>
+              </div>
+            </div>
+          </AlertDialogHeader>
+          <AlertDialogDescription className="mt-6 text-base text-foreground">
+            {productToDelete?.name}
+          </AlertDialogDescription>
+
+          <div className="mt-6 flex justify-end gap-4">
+            <AlertDialogCancel className="cursor-pointer">
+              Cancelar
+            </AlertDialogCancel>
+
+            <AlertDialogAction
+              className="bg-red-600 hover:bg-red-700 cursor-pointer"
+              onClick={confirmDeleteProduct}
+            >
+              Excluir
+            </AlertDialogAction>
+          </div>
+        </AlertDialogContent>
+      </AlertDialog>
     </Layout>
   );
 }
