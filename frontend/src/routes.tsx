@@ -2,6 +2,7 @@ import { createBrowserRouter } from "react-router-dom";
 import { Login } from "./pages/Login";
 import { Home } from "./pages/Home";
 import { Stock } from "./pages/Stock";
+import { StockEdit } from "./pages/StockEdit";
 
 export const router = createBrowserRouter([
   {
@@ -15,5 +16,9 @@ export const router = createBrowserRouter([
   {
     path: "/stocks",
     element: <Stock />,
+  },
+  {
+    path: "/stocks/:id",
+    element: <StockEdit />,
   },
 ]);
