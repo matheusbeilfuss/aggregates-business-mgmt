@@ -1,5 +1,6 @@
 package br.ufsc.aggregare.service;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,8 +8,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import br.ufsc.aggregare.model.Expense;
+import br.ufsc.aggregare.model.Stock;
 import br.ufsc.aggregare.model.dto.ExpenseInputDTO;
+import br.ufsc.aggregare.model.dto.StockReplenishDTO;
 import br.ufsc.aggregare.model.enums.ExpenseTypeEnum;
+import br.ufsc.aggregare.model.enums.PaymentStatusEnum;
 import br.ufsc.aggregare.repository.ExpenseRepository;
 import br.ufsc.aggregare.service.exception.ResourceNotFoundException;
 
@@ -40,6 +44,28 @@ public class ExpenseService {
 		Expense expense = new Expense();
 		updateExpense(expense, dto);
 		return expense;
+	}
+
+	@Transactional
+	public Expense createExpenseForStockReplenishment(Stock stock, StockReplenishDTO dto) {
+		Expense expense = new Expense();
+		expense.setName(stock.getProduct().getName());
+		expense.setExpenseValue(dto.getExpenseValue());
+		expense.setDate(LocalDate.now());
+		expense.setDueDate(LocalDate.now().plusDays(30));
+
+		if (dto.getPaymentStatus() != null && dto.getPaymentStatus().equals(PaymentStatusEnum.PAID)) {
+			expense.setPaymentDate(LocalDate.now());
+			expense.setPaymentStatus(PaymentStatusEnum.PAID);
+		} else {
+			expense.setPaymentDate(null);
+			expense.setPaymentStatus(PaymentStatusEnum.PENDING);
+		}
+
+		expense.setType(ExpenseTypeEnum.VARIABLE);
+		expense.setCategory("Estoque");
+
+		return expenseRepository.save(expense);
 	}
 
 	@Transactional
