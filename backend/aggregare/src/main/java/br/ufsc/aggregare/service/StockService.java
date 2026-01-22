@@ -45,8 +45,14 @@ public class StockService {
 		Stock stock = repository.findByProductId(productId)
 				.orElseThrow(() -> new ResourceNotFoundException(productId));
 
-		stock.setTonQuantity(stock.getTonQuantity() + dto.getTonQuantity());
-		stock.setM3Quantity(stock.getM3Quantity() + dto.getM3Quantity());
+		Double currentTonQuantity = stock.getTonQuantity() != null ? stock.getTonQuantity() : 0.0;
+		Double tonQuantityToAdd = dto.getTonQuantity() != null ? dto.getTonQuantity() : 0.0;
+		stock.setTonQuantity(currentTonQuantity + tonQuantityToAdd);
+
+		Double currentM3Quantity = stock.getM3Quantity() != null ? stock.getM3Quantity() : 0.0;
+		Double m3QuantityToAdd = dto.getM3Quantity() != null ? dto.getM3Quantity() : 0.0;
+		stock.setM3Quantity(currentM3Quantity + m3QuantityToAdd);
+
 		repository.save(stock);
 
 		if (dto.getExpenseValue() != null && dto.getExpenseValue().compareTo(BigDecimal.ZERO) > 0) {
