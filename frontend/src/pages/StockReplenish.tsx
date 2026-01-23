@@ -47,11 +47,9 @@ interface Stock {
 const replenishSchema = z.object({
   supplierId: z.number().min(1, "Selecione um fornecedor"),
   density: z.coerce.number().min(0.001, "Densidade inválida"),
-  tonQuantity: z.coerce.number().min(0.01, "Quantidade em toneladas inválida"),
-  m3Quantity: z.coerce
-    .number()
-    .min(0.01, "Quantidade em metros cúbicos inválida"),
-  expenseValue: z.coerce.number().min(0, "O valor não pode ser negativo"),
+  tonQuantity: z.coerce.number().min(0.01, "Quantidade inválida"),
+  m3Quantity: z.coerce.number().min(0.01, "Quantidade inválida"),
+  expenseValue: z.coerce.number().min(0, "Valor inválido"),
   paymentStatus: z.enum(["PAID", "PENDING"]),
 });
 
@@ -330,7 +328,8 @@ export function StockReplenish() {
                         <FormControl>
                           <Input
                             type="number"
-                            {...field}
+                            value={field.value ?? ""}
+                            onFocus={(e) => e.target.select()}
                             onChange={(e) => {
                               field.onChange(e);
                               handleDensityChange(e);
@@ -351,7 +350,8 @@ export function StockReplenish() {
                         <FormControl>
                           <Input
                             type="number"
-                            value={field.value}
+                            value={field.value ?? ""}
+                            onFocus={(e) => e.target.select()}
                             onChange={(e) => {
                               field.onChange(e);
                               handleTonChange(e);
@@ -372,8 +372,8 @@ export function StockReplenish() {
                         <FormControl>
                           <Input
                             type="number"
-                            step="0.01"
-                            {...field}
+                            value={field.value ?? ""}
+                            onFocus={(e) => e.target.select()}
                             onChange={(e) => {
                               field.onChange(e);
                               handleM3Change(e);
@@ -394,7 +394,8 @@ export function StockReplenish() {
                         <FormControl>
                           <Input
                             type="number"
-                            {...field}
+                            value={field.value ?? ""}
+                            onFocus={(e) => e.target.select()}
                             onChange={(e) => {
                               field.onChange(e);
                               setUserEditedExpenseValue(true);
