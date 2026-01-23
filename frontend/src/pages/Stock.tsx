@@ -289,7 +289,12 @@ export function Stock() {
                             Excluir
                           </DropdownMenuItem>
 
-                          <DropdownMenuItem className="cursor-pointer">
+                          <DropdownMenuItem
+                            className="cursor-pointer"
+                            onClick={() =>
+                              navigate(`/stocks/${stock.id}/replenish`)
+                            }
+                          >
                             <Plus className="mr-2 h-4 w-4" />
                             Adicionar
                           </DropdownMenuItem>
