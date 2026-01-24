@@ -254,7 +254,9 @@ export function Stock() {
                 <TableRow key={stock.id}>
                   <TableCell>{stock.product.name}</TableCell>
                   <TableCell>{stock.tonQuantity ?? "-"}</TableCell>
-                  <TableCell>{stock.m3Quantity} m³</TableCell>
+                  <TableCell>
+                    {stock.m3Quantity != null ? `${stock.m3Quantity} m³` : "-"}
+                  </TableCell>
 
                   <TableCell>
                     <div className="flex justify-end">
