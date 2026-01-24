@@ -63,6 +63,7 @@ import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { API_URL } from "@/lib/api";
 
 interface Category {
   id: number;
@@ -95,7 +96,7 @@ const productSchema = z
     {
       message:
         "Informe uma categoria existente ou o nome de uma nova categoria.",
-      path: ["category"],
+      path: ["isNewCategory"],
     },
   );
 
@@ -112,7 +113,6 @@ export function Stock() {
     useState(false);
   const [productToDelete, setProductToDelete] = useState<Product | null>(null);
 
-  const apiUrl = import.meta.env.VITE_API_URL;
   const navigate = useNavigate();
 
   const form = useForm<ProductFormData>({
@@ -127,8 +127,8 @@ export function Stock() {
 
   async function loadStocksandCategories(signal?: AbortSignal) {
     const [stocksResponse, categoriesResponse] = await Promise.all([
-      fetch(`${apiUrl}/stocks`, { signal }),
-      fetch(`${apiUrl}/categories`, { signal }),
+      fetch(`${API_URL}/stocks`, { signal }),
+      fetch(`${API_URL}/categories`, { signal }),
     ]);
 
     if (!stocksResponse.ok) {
@@ -156,9 +156,12 @@ export function Stock() {
     if (!productToDelete) return;
 
     try {
-      const response = await fetch(`${apiUrl}/products/${productToDelete.id}`, {
-        method: "DELETE",
-      });
+      const response = await fetch(
+        `${API_URL}/products/${productToDelete.id}`,
+        {
+          method: "DELETE",
+        },
+      );
 
       if (!response.ok) throw new Error();
 
@@ -188,7 +191,7 @@ export function Stock() {
     }
 
     try {
-      const response = await fetch(`${apiUrl}/products`, {
+      const response = await fetch(`${API_URL}/products`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
