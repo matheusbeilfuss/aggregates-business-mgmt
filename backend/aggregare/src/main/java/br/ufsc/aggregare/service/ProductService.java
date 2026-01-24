@@ -37,8 +37,6 @@ public class ProductService {
 	public Product insert(ProductInputDTO dto) {
 		try {
 			Product product = fromDTO(dto);
-			Category existingCategory = categoryService.findById(product.getCategory().getId());
-			product.setCategory(existingCategory);
 			Product savedProduct = repository.save(product);
 			stockService.createInitialStockForProduct(product);
 			return savedProduct;
