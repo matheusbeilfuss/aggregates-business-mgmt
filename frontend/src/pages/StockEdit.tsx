@@ -23,6 +23,7 @@ import { useForm } from "react-hook-form";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "sonner";
 import { z } from "zod";
+import { API_URL } from "@/lib/api";
 
 interface Category {
   id: number;
@@ -41,7 +42,6 @@ type EditStockFormData = z.infer<typeof editStockSchema>;
 export function StockEdit() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const apiUrl = import.meta.env.VITE_API_URL;
 
   const [categories, setCategories] = useState<Category[]>([]);
   const [productId, setProductId] = useState<number | null>(null);
@@ -54,8 +54,8 @@ export function StockEdit() {
   async function loadData() {
     try {
       const [stockRes, categoriesRes] = await Promise.all([
-        fetch(`${apiUrl}/stocks/${id}`),
-        fetch(`${apiUrl}/categories`),
+        fetch(`${API_URL}/stocks/${id}`),
+        fetch(`${API_URL}/categories`),
       ]);
 
       if (!stockRes.ok || !categoriesRes.ok) {
@@ -90,7 +90,7 @@ export function StockEdit() {
     if (!productId) return;
 
     try {
-      await fetch(`${apiUrl}/products/${productId}`, {
+      await fetch(`${API_URL}/products/${productId}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -99,7 +99,7 @@ export function StockEdit() {
         }),
       });
 
-      await fetch(`${apiUrl}/stocks/${id}`, {
+      await fetch(`${API_URL}/stocks/${id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

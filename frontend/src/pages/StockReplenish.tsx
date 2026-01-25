@@ -23,6 +23,7 @@ import { useForm } from "react-hook-form";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "sonner";
 import { z } from "zod";
+import { API_URL } from "@/lib/api";
 
 interface ProductSupplier {
   id: number;
@@ -58,7 +59,6 @@ type ReplenishFormData = z.infer<typeof replenishSchema>;
 export function StockReplenish() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const apiUrl = import.meta.env.VITE_API_URL;
 
   const [loading, setLoading] = useState(true);
   const [stock, setStock] = useState<Stock | null>(null);
@@ -84,7 +84,7 @@ export function StockReplenish() {
 
   async function loadData() {
     try {
-      const stockRes = await fetch(`${apiUrl}/stocks/${id}`);
+      const stockRes = await fetch(`${API_URL}/stocks/${id}`);
       if (!stockRes.ok) {
         throw new Error("Erro ao buscar estoque");
       }
@@ -92,7 +92,7 @@ export function StockReplenish() {
       setStock(stockData);
 
       const suppliersRes = await fetch(
-        `${apiUrl}/product-suppliers/${stockData.product.id}`,
+        `${API_URL}/product-suppliers/${stockData.product.id}`,
       );
       if (!suppliersRes.ok) {
         throw new Error("Erro ao buscar fornecedores do produto");
@@ -239,7 +239,7 @@ export function StockReplenish() {
     if (!stock) return;
 
     try {
-      const response = await fetch(`${apiUrl}/stocks/${stock.id}/replenish`, {
+      const response = await fetch(`${API_URL}/stocks/${stock.id}/replenish`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
