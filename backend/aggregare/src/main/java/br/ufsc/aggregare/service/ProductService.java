@@ -91,8 +91,8 @@ public class ProductService {
 		boolean hasName = dto.getCategoryName() != null && !dto.getCategoryName().trim().isEmpty();
 
 		if (hasId == hasName) {
-			throw new IllegalArgumentException(
-					"É necessário fornecer exatamente um id de categoria ou o nome de uma nova"
+			throw new ResourceNotFoundException(
+					String.format("%s, %s", String.valueOf(dto.getCategoryId()), String.valueOf(dto.getCategoryName()))
 			);
 		}
 
@@ -106,6 +106,5 @@ public class ProductService {
 		}
 
 		return new Product(null, dto.getName(), category);
-
 	}
 }
