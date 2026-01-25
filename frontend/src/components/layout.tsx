@@ -5,10 +5,12 @@ import { SidebarProvider } from "@/components/ui/sidebar";
 export function Layout({ children }: { children: React.ReactNode }) {
   return (
     <SidebarProvider>
-      <AppSidebar />
-      <div className="w-full h-full">
-        <Navbar />
-        {children}
+      <div className="flex h-screen w-screen">
+        <AppSidebar />
+        <div className="flex flex-col flex-1">
+          <Navbar />
+          <main className="flex-1 overflow-auto">{children}</main>
+        </div>
       </div>
     </SidebarProvider>
   );

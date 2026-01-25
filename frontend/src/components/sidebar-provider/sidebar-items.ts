@@ -15,7 +15,7 @@ import {
 export const items = [
   {
     title: "Home",
-    url: "#",
+    url: "/home",
     icon: Home,
   },
   {
@@ -25,7 +25,7 @@ export const items = [
   },
   {
     title: "Estoque",
-    url: "#",
+    url: `/stocks`,
     icon: Warehouse,
   },
   {

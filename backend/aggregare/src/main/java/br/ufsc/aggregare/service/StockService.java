@@ -41,9 +41,9 @@ public class StockService {
 	}
 
 	@Transactional
-	public Stock replenishStock(Long productId, StockReplenishDTO dto) {
-		Stock stock = repository.findByProductId(productId)
-				.orElseThrow(() -> new ResourceNotFoundException(productId));
+	public Stock replenishStock(Long id, StockReplenishDTO dto) {
+		Stock stock = repository.findById(id)
+				.orElseThrow(() -> new ResourceNotFoundException(id));
 
 		Double currentTonQuantity = stock.getTonQuantity() != null ? stock.getTonQuantity() : 0.0;
 		Double tonQuantityToAdd = dto.getTonQuantity() != null ? dto.getTonQuantity() : 0.0;

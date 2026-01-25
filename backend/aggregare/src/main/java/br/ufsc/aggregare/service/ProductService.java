@@ -34,15 +34,14 @@ public class ProductService {
 		this.categoryService = categoryService;
 	}
 
-	public Product insert(Product product) {
+	public Product insert(ProductInputDTO dto) {
 		try {
-			Category existingCategory = categoryService.findById(product.getCategory().getId());
-			product.setCategory(existingCategory);
+			Product product = fromDTO(dto);
 			Product savedProduct = repository.save(product);
 			stockService.createInitialStockForProduct(product);
 			return savedProduct;
 		} catch (EntityNotFoundException e) {
-			throw new ResourceNotFoundException(product.getCategory().getId());
+			throw new ResourceNotFoundException(dto.getCategoryId());
 		}
 	}
 
@@ -62,8 +61,9 @@ public class ProductService {
 		}
 	}
 
-	public Product update(Long id, Product newProduct) {
+	public Product update(Long id, ProductInputDTO dto) {
 		try {
+			Product newProduct = fromDTO(dto);
 			Product existingProduct = repository.getReferenceById(id);
 			updateData(existingProduct, newProduct);
 			return repository.save(existingProduct);
@@ -87,7 +87,24 @@ public class ProductService {
 	}
 
 	public Product fromDTO(ProductInputDTO dto) {
-		Category category = categoryService.findById(dto.getCategoryId());
+		boolean hasId = dto.getCategoryId() != null;
+		boolean hasName = dto.getCategoryName() != null && !dto.getCategoryName().trim().isEmpty();
+
+		if (hasId == hasName) {
+			throw new ResourceNotFoundException(
+					String.format("%s, %s", String.valueOf(dto.getCategoryId()), String.valueOf(dto.getCategoryName()))
+			);
+		}
+
+		Category category;
+		if (hasName) {
+			Category newCategory = new Category();
+			newCategory.setName(dto.getCategoryName().trim());
+			category = categoryService.insert(newCategory);
+		} else {
+			category = categoryService.findById(dto.getCategoryId());
+		}
+
 		return new Product(null, dto.getName(), category);
 	}
 }

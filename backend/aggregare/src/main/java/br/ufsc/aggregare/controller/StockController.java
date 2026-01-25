@@ -28,9 +28,9 @@ public class StockController {
 		this.service = service;
 	}
 
-	@PostMapping(value = "/{productId}/replenish")
-	public ResponseEntity<Stock> replenishStock(@PathVariable Long productId, @RequestBody StockReplenishDTO dto) {
-		Stock stock = service.replenishStock(productId, dto);
+	@PostMapping(value = "/{id}/replenish")
+	public ResponseEntity<Stock> replenishStock(@PathVariable Long id, @RequestBody StockReplenishDTO dto) {
+		Stock stock = service.replenishStock(id, dto);
 		return ResponseEntity.ok().body(stock);
 	}
 
