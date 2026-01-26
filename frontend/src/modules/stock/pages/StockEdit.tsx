@@ -1,4 +1,4 @@
-import { Layout } from "@/components/layout";
+import { Layout } from "@/components/layout/Layout";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import {

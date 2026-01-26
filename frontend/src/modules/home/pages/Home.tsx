@@ -1,5 +1,5 @@
-import { Layout } from "@/components/layout";
-import { HomeCard } from "@/components/home-card";
+import { Layout } from "@/components/layout/Layout";
+import { HomeCard } from "@/modules/home/components/HomeCard";
 import { useEffect, useState } from "react";
 import { MockFetchData } from "@/MockFetchData";
 import { Skeleton } from "@/components/ui/skeleton";
