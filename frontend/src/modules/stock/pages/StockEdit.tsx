@@ -1,6 +1,12 @@
-import { Layout } from "@/components/layout/Layout";
+import { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { toast } from "sonner";
+import { TriangleAlert } from "lucide-react";
+
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import {
   Form,
   FormControl,
@@ -8,105 +14,64 @@ import {
   FormItem,
   FormLabel,
 } from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
+
+import { PageContainer, LoadingState, FormActions } from "@/components/shared";
+import { CategorySelect } from "../components/CategorySelect";
+import { useStock, useCategories } from "../hooks";
+import { stockService, productService } from "../services/stock.service";
 import {
-  Select,
-  SelectTrigger,
-  SelectValue,
-  SelectContent,
-  SelectItem,
-} from "@/components/ui/select";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { TriangleAlert } from "lucide-react";
-import { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
-import { useNavigate, useParams } from "react-router-dom";
-import { toast } from "sonner";
-import { z } from "zod";
-import { API_URL } from "@/lib/api";
-
-interface Category {
-  id: number;
-  name: string;
-}
-
-const editStockSchema = z.object({
-  productName: z.string().min(1, "Nome obrigatório"),
-  categoryId: z.number(),
-  tonQuantity: z.coerce.number().nonnegative(),
-  m3Quantity: z.coerce.number().nonnegative(),
-});
-
-type EditStockFormData = z.infer<typeof editStockSchema>;
+  editStockSchema,
+  type EditStockFormData,
+} from "../schemas/stock.schemas";
 
 export function StockEdit() {
-  const { id } = useParams();
+  const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
 
-  const [categories, setCategories] = useState<Category[]>([]);
+  const { data: stock, loading: stockLoading } = useStock(id!);
+  const { data: categories, loading: categoriesLoading } = useCategories();
+
   const [productId, setProductId] = useState<number | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [isFormReady, setIsFormReady] = useState(false);
 
   const form = useForm<EditStockFormData>({
     resolver: zodResolver(editStockSchema),
+    defaultValues: {
+      productName: "",
+      categoryId: 0,
+      tonQuantity: 0,
+      m3Quantity: 0,
+    },
   });
 
-  async function loadData() {
-    try {
-      const [stockRes, categoriesRes] = await Promise.all([
-        fetch(`${API_URL}/stocks/${id}`),
-        fetch(`${API_URL}/categories`),
-      ]);
+  const loading = stockLoading || categoriesLoading;
 
-      if (!stockRes.ok || !categoriesRes.ok) {
-        throw new Error();
-      }
-
-      const stock = await stockRes.json();
-      const categories = await categoriesRes.json();
-
+  useEffect(() => {
+    if (stock && !isFormReady) {
       form.reset({
         productName: stock.product.name,
         categoryId: stock.product.category.id,
         tonQuantity: stock.tonQuantity,
         m3Quantity: stock.m3Quantity,
       });
-
       setProductId(stock.product.id);
-      setCategories(categories);
-    } catch {
-      toast.error("Erro ao carregar os dados do estoque.");
-      navigate("/stocks");
-    } finally {
-      setLoading(false);
+      setIsFormReady(true);
     }
-  }
-
-  useEffect(() => {
-    loadData();
-  }, []);
+  }, [stock, form, isFormReady]);
 
   async function onSubmit(data: EditStockFormData) {
-    if (!productId) return;
+    if (!productId || !id) return;
 
     try {
-      await fetch(`${API_URL}/products/${productId}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          name: data.productName,
-          categoryId: data.categoryId,
-        }),
+      await productService.update(productId, {
+        name: data.productName,
+        categoryId: data.categoryId,
       });
 
-      await fetch(`${API_URL}/stocks/${id}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          tonQuantity: data.tonQuantity,
-          m3Quantity: data.m3Quantity,
-          productId,
-        }),
+      await stockService.update(id, {
+        tonQuantity: data.tonQuantity,
+        m3Quantity: data.m3Quantity,
+        productId,
       });
 
       toast.success("Estoque atualizado com sucesso!");
@@ -116,122 +81,91 @@ export function StockEdit() {
     }
   }
 
-  if (loading) {
+  // Mostra loading enquanto dados carregam OU formulário não está pronto
+  if (loading || !isFormReady) {
     return (
-      <Layout>
-        <p className="text-center mt-10 text-muted-foreground">
-          Carregando dados...
-        </p>
-      </Layout>
+      <PageContainer title="Editar estoque">
+        <LoadingState rows={4} variant="form" />
+      </PageContainer>
     );
   }
 
   return (
-    <Layout>
-      <div className="flex flex-col mx-auto w-[80%] h-full">
-        <div className="py-15 text-center">
-          <h1 className="text-3xl">Editar estoque</h1>
-        </div>
-        <Form {...form}>
-          <form
-            onSubmit={form.handleSubmit(onSubmit)}
-            className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto"
-          >
-            <FormField
-              name="productName"
-              control={form.control}
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Nome</FormLabel>
-                  <FormControl>
-                    <Input {...field} />
-                  </FormControl>
-                </FormItem>
-              )}
-            />
+    <PageContainer title="Editar estoque">
+      <Form {...form}>
+        <form
+          onSubmit={form.handleSubmit(onSubmit)}
+          className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto"
+        >
+          <FormField
+            name="productName"
+            control={form.control}
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Nome</FormLabel>
+                <FormControl>
+                  <Input {...field} value={field.value ?? ""} />
+                </FormControl>
+              </FormItem>
+            )}
+          />
 
-            <FormField
-              name="categoryId"
-              control={form.control}
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Categoria</FormLabel>
-                  <Select
-                    value={field.value?.toString()}
-                    onValueChange={(value) => field.onChange(Number(value))}
-                  >
-                    <FormControl>
-                      <SelectTrigger className="w-full">
-                        <SelectValue placeholder="Selecione..." />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      {categories.map((category) => (
-                        <SelectItem
-                          key={category.id}
-                          value={String(category.id)}
-                        >
-                          {category.name}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </FormItem>
-              )}
-            />
+          <FormField
+            name="categoryId"
+            control={form.control}
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Categoria</FormLabel>
+                <CategorySelect
+                  value={field.value}
+                  onChange={field.onChange}
+                  categories={categories ?? []}
+                />
+              </FormItem>
+            )}
+          />
 
-            <FormField
-              name="tonQuantity"
-              control={form.control}
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Toneladas</FormLabel>
-                  <FormControl>
-                    <Input type="number" {...field} />
-                  </FormControl>
-                </FormItem>
-              )}
-            />
+          <FormField
+            name="tonQuantity"
+            control={form.control}
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Toneladas</FormLabel>
+                <FormControl>
+                  <Input type="number" {...field} value={field.value ?? 0} />
+                </FormControl>
+              </FormItem>
+            )}
+          />
 
-            <FormField
-              name="m3Quantity"
-              control={form.control}
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>M³</FormLabel>
-                  <FormControl>
-                    <Input type="number" {...field} />
-                  </FormControl>
-                </FormItem>
-              )}
-            />
-            <Alert variant="destructive" className="md:col-span-2">
-              <TriangleAlert />
-              <AlertTitle>Atenção</AlertTitle>
-              <AlertDescription>
-                Ao realizar esta edição, lembre-se de checar as últimas
-                saídas{" "}
-              </AlertDescription>
-            </Alert>
-          </form>
-        </Form>
-        <div className="mt-auto flex justify-end py-12 gap-2">
-          <Button
-            className="px-6 py-6 text-base"
-            variant="outline"
-            onClick={() => navigate("/stocks")}
-          >
-            Cancelar
-          </Button>
+          <FormField
+            name="m3Quantity"
+            control={form.control}
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>M³</FormLabel>
+                <FormControl>
+                  <Input type="number" {...field} value={field.value ?? 0} />
+                </FormControl>
+              </FormItem>
+            )}
+          />
 
-          <Button
-            className="bg-slate-500 hover:bg-slate-600 text-white px-6 py-6 text-base"
-            onClick={form.handleSubmit(onSubmit)}
-          >
-            Salvar
-          </Button>
-        </div>
-      </div>
-    </Layout>
+          <Alert variant="destructive" className="md:col-span-2">
+            <TriangleAlert />
+            <AlertTitle>Atenção</AlertTitle>
+            <AlertDescription>
+              Ao realizar esta edição, lembre-se de checar as últimas saídas
+            </AlertDescription>
+          </Alert>
+        </form>
+      </Form>
+
+      <FormActions
+        cancelPath="/stocks"
+        submitLabel="Salvar"
+        onSubmit={form.handleSubmit(onSubmit)}
+      />
+    </PageContainer>
   );
 }
