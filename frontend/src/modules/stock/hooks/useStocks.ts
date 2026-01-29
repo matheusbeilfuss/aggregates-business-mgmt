@@ -1,31 +1,22 @@
 import { useCallback } from "react";
-import { useApi } from "@/hooks/useApi";
 import { stockService, categoryService } from "../services/stock.service";
-import type { StockItem, Category } from "../types";
+import { useApi } from "@/hooks/useApi";
+import { Category, StockDetail, StockItem } from "../types";
 
 export function useStocks() {
-  const fetcher = useCallback(
-    (signal: AbortSignal) => stockService.getAll(signal),
-    [],
-  );
+  const fetcher = useCallback(() => stockService.getAll(), []);
 
   return useApi<StockItem[]>(fetcher);
 }
 
 export function useStock(id: string) {
-  const fetcher = useCallback(
-    (signal: AbortSignal) => stockService.getById(id, signal),
-    [id],
-  );
+  const fetcher = useCallback(() => stockService.getById(id), [id]);
 
-  return useApi(fetcher);
+  return useApi<StockDetail>(fetcher);
 }
 
 export function useCategories() {
-  const fetcher = useCallback(
-    (signal: AbortSignal) => categoryService.getAll(signal),
-    [],
-  );
+  const fetcher = useCallback(() => categoryService.getAll(), []);
 
   return useApi<Category[]>(fetcher);
 }

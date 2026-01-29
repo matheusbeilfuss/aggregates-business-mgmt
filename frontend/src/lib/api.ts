@@ -19,8 +19,8 @@ async function handleResponse<T>(response: Response): Promise<T> {
 }
 
 export const api = {
-  get: <T>(endpoint: string, signal?: AbortSignal): Promise<T> =>
-    fetch(`${API_URL}${endpoint}`, { signal }).then(handleResponse<T>),
+  get: <T>(endpoint: string): Promise<T> =>
+    fetch(`${API_URL}${endpoint}`).then(handleResponse<T>),
 
   post: <T>(endpoint: string, data: unknown): Promise<T> =>
     fetch(`${API_URL}${endpoint}`, {

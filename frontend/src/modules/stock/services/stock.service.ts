@@ -12,20 +12,19 @@ import type {
 } from "../types";
 
 export const stockService = {
-  getAll: (signal?: AbortSignal) => api.get<StockItem[]>("/stocks", signal),
+  getAll: () => api.get<StockItem[]>("/stocks"),
 
-  getById: (id: string, signal?: AbortSignal) =>
-    api.get<StockDetail>(`/stocks/${id}`, signal),
+  getById: (id: string) => api.get<StockDetail>(`/stocks/${id}`),
 
   update: (id: string, data: UpdateStockPayload) =>
     api.put<StockItem>(`/stocks/${id}`, data),
 
   replenish: (id: string, data: ReplenishStockPayload) =>
-    api.post<void>(`/stocks/${id}/replenish`, data),
+    api.post<StockItem>(`/stocks/${id}/replenish`, data),
 };
 
 export const categoryService = {
-  getAll: (signal?: AbortSignal) => api.get<Category[]>("/categories", signal),
+  getAll: () => api.get<Category[]>("/categories"),
 };
 
 export const productService = {
@@ -38,6 +37,6 @@ export const productService = {
 };
 
 export const productSupplierService = {
-  getByProductId: (productId: number, signal?: AbortSignal) =>
-    api.get<ProductSupplier[]>(`/product-suppliers/${productId}`, signal),
+  getByProductId: (productId: number) =>
+    api.get<ProductSupplier[]>(`/product-suppliers/${productId}`),
 };

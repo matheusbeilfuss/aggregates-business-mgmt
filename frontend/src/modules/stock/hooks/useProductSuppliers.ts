@@ -1,15 +1,13 @@
 import { useCallback } from "react";
-import { useApi } from "@/hooks/useApi";
 import { productSupplierService } from "../services/stock.service";
+import { useApi } from "@/hooks/useApi";
+import { ProductSupplier } from "../types";
 
 export function useProductSuppliers(productId: number | null) {
-  const fetcher = useCallback(
-    (signal: AbortSignal) => {
-      if (!productId) return Promise.resolve([]);
-      return productSupplierService.getByProductId(productId, signal);
-    },
-    [productId],
-  );
+  const fetcher = useCallback(() => {
+    if (!productId) throw new Error("O ID do produto é obrigatório");
+    return productSupplierService.getByProductId(productId);
+  }, [productId]);
 
-  return useApi(fetcher, { immediate: !!productId });
+  return useApi<ProductSupplier[]>(fetcher);
 }

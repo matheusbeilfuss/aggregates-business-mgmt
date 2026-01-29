@@ -82,11 +82,11 @@ export function Stock() {
     try {
       await productService.delete(productToDelete.id);
       toast.success("O produto foi excluído com sucesso.");
-      await refetch();
     } catch {
       toast.error("Não foi possível excluir o produto.");
     } finally {
       setProductToDelete(null);
+      refetch();
     }
   }
 
@@ -101,17 +101,18 @@ export function Stock() {
     try {
       await productService.create(payload);
       toast.success("O produto foi criado com sucesso.");
-      await refetch();
       setIsAddProductDialogOpen(false);
       form.reset();
     } catch {
       toast.error("Não foi possível salvar o produto.");
+    } finally {
+      refetch();
     }
   }
 
   return (
     <PageContainer title="Estoque">
-      {error && <p className="text-red-500 mb-4">{error}</p>}
+      {error && <p className="text-red-500 mb-4">{error.message}</p>}
 
       {loading ? (
         <LoadingState rows={5} />
