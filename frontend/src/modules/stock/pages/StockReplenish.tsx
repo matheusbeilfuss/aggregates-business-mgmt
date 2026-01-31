@@ -176,7 +176,7 @@ export function StockReplenish() {
               <FormItem>
                 <FormLabel>Fornecedor</FormLabel>
                 <Select
-                  value={field.value?.toString()}
+                  value={field.value?.toString() ?? ""}
                   onValueChange={(value) => {
                     field.onChange(Number(value));
                     handleSupplierChange(Number(value));

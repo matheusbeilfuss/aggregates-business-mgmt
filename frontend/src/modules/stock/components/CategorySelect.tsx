@@ -25,7 +25,7 @@ export function CategorySelect({
 }: CategorySelectProps) {
   return (
     <Select
-      value={value?.toString()}
+      value={value?.toString() ?? ""}
       onValueChange={(val) => onChange(Number(val))}
       disabled={disabled}
     >
