@@ -13,7 +13,10 @@ export function useApi<T>(
   const [error, setError] = useState<Error | null>(null);
 
   const fetchData = useCallback(async () => {
-    if (!enabled) return;
+    if (!enabled) {
+      setLoading(false);
+      return;
+    }
 
     try {
       setLoading(true);

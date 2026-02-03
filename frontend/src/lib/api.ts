@@ -15,7 +15,13 @@ async function handleResponse<T>(response: Response): Promise<T> {
     const message = await response.text().catch(() => "Erro desconhecido");
     throw new ApiError(response.status, message);
   }
-  return response.json();
+
+  if (response.status === 204) {
+    return undefined as T;
+  }
+
+  const text = await response.text();
+  return text ? JSON.parse(text) : (undefined as T);
 }
 
 export const api = {
