@@ -9,10 +9,10 @@ export function useStocks() {
   return useApi<StockItem[]>(fetcher);
 }
 
-export function useStock(id: string) {
-  const fetcher = useCallback(() => stockService.getById(id), [id]);
+export function useStock(id: string | null) {
+  const fetcher = useCallback(() => stockService.getById(id!), [id]);
 
-  return useApi<StockDetail>(fetcher);
+  return useApi<StockDetail>(fetcher, { enabled: !!id });
 }
 
 export function useCategories() {

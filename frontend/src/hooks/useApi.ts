@@ -1,11 +1,20 @@
 import { useCallback, useEffect, useState } from "react";
 
-export function useApi<T>(fetcher: () => Promise<T>) {
+interface UseApiOptions {
+  enabled?: boolean;
+}
+
+export function useApi<T>(
+  fetcher: () => Promise<T>,
+  { enabled = true }: UseApiOptions = {},
+) {
   const [data, setData] = useState<T | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<Error | null>(null);
 
   const fetchData = useCallback(async () => {
+    if (!enabled) return;
+
     try {
       setLoading(true);
       setError(null);
@@ -16,7 +25,7 @@ export function useApi<T>(fetcher: () => Promise<T>) {
     } finally {
       setLoading(false);
     }
-  }, [fetcher]);
+  }, [fetcher, enabled]);
 
   useEffect(() => {
     fetchData();

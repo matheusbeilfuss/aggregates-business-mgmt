@@ -49,10 +49,10 @@ export function StockTable({
         {stocks.map((stock) => (
           <TableRow key={stock.id}>
             <TableCell>{stock.product.name}</TableCell>
-            <TableCell>{stock.tonQuantity.toFixed(2) ?? "-"}</TableCell>
+            <TableCell>{stock.tonQuantity?.toFixed(2) ?? "-"}</TableCell>
             <TableCell>
               {stock.m3Quantity != null
-                ? `${stock.m3Quantity.toFixed(2)} m³`
+                ? `${stock.m3Quantity?.toFixed(2)} m³`
                 : "-"}
             </TableCell>
 

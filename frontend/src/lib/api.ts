@@ -37,7 +37,7 @@ export const api = {
     }).then(handleResponse<T>),
 
   delete: (endpoint: string): Promise<void> =>
-    fetch(`${API_URL}${endpoint}`, { method: "DELETE" }).then((res) => {
-      if (!res.ok) throw new Error();
-    }),
+    fetch(`${API_URL}${endpoint}`, { method: "DELETE" }).then(
+      handleResponse<void>,
+    ),
 };
