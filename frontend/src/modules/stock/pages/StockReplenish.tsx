@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -36,7 +36,11 @@ export function StockReplenish() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
 
-  const { data: stock, loading: stockLoading } = useStock(id!);
+  const {
+    data: stock,
+    loading: stockLoading,
+    error: stockError,
+  } = useStock(id!);
   const { data: productSuppliers, loading: suppliersLoading } =
     useProductSuppliers(stock?.product.id ?? null);
 
@@ -57,6 +61,13 @@ export function StockReplenish() {
   });
 
   const loading = stockLoading || suppliersLoading;
+
+  useEffect(() => {
+    if (stockError) {
+      toast.error("Não foi possível carregar o estoque.");
+      navigate("/stocks");
+    }
+  }, [stockError, navigate]);
 
   const getSelectedSupplier = (): ProductSupplier | undefined => {
     const supplierId = form.getValues("supplierId");
