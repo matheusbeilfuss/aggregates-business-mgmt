@@ -1,8 +1,9 @@
-import { AppSidebar } from "./sidebar-provider/app-sidebar";
-import { Navbar } from "./navbar";
+import { AppSidebar } from "./sidebar-provider/AppSidebar";
+import { Navbar } from "./Navbar";
 import { SidebarProvider } from "@/components/ui/sidebar";
+import { ReactNode } from "react";
 
-export function Layout({ children }: { children: React.ReactNode }) {
+export function Layout({ children }: { children: ReactNode }) {
   return (
     <SidebarProvider>
       <div className="flex h-screen w-screen">
