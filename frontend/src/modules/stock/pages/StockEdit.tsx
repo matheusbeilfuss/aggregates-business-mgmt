@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { useForm } from "react-hook-form";
+import { DefaultValues, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
 import { TriangleAlert } from "lucide-react";
@@ -42,10 +42,10 @@ export function StockEdit() {
     resolver: zodResolver(editStockSchema),
     defaultValues: {
       productName: "",
-      categoryId: 0,
+      categoryId: undefined,
       tonQuantity: 0,
       m3Quantity: 0,
-    },
+    } as DefaultValues<EditStockFormData>,
   });
 
   const loading = stockLoading || categoriesLoading;

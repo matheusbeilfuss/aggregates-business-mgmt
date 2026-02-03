@@ -22,11 +22,11 @@ export type ProductFormData = z.infer<typeof productSchema>;
 
 export const editStockSchema = z.object({
   productName: z.string().min(1, "Nome obrigatório"),
-  categoryId: z.number({ required_error: "Categoria obrigatória" }),
-  tonQuantity: z.coerce
-    .number()
-    .nonnegative("Quantidade não pode ser negativa"),
-  m3Quantity: z.coerce.number().nonnegative("Quantidade não pode ser negativa"),
+  categoryId: z
+    .number({ required_error: "Categoria obrigatória" })
+    .min(1, "Categoria obrigatória"),
+  tonQuantity: z.coerce.number().nonnegative("Quantidade inválida"),
+  m3Quantity: z.coerce.number().nonnegative("Quantidade inválida"),
 });
 
 export type EditStockFormData = z.infer<typeof editStockSchema>;
