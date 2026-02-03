@@ -28,7 +28,11 @@ export function StockEdit() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
 
-  const { data: stock, loading: stockLoading } = useStock(id!);
+  const {
+    data: stock,
+    loading: stockLoading,
+    error: stockError,
+  } = useStock(id!);
   const { data: categories, loading: categoriesLoading } = useCategories();
 
   const [productId, setProductId] = useState<number | null>(null);
@@ -59,6 +63,13 @@ export function StockEdit() {
     }
   }, [stock, form, isFormReady]);
 
+  useEffect(() => {
+    if (stockError) {
+      toast.error("Não foi possível carregar o estoque.");
+      navigate("/stocks");
+    }
+  }, [stockError, navigate]);
+
   async function onSubmit(data: EditStockFormData) {
     if (!productId || !id) return;
 
@@ -81,7 +92,6 @@ export function StockEdit() {
     }
   }
 
-  // Mostra loading enquanto dados carregam OU formulário não está pronto
   if (loading || !isFormReady) {
     return (
       <PageContainer title="Editar estoque">
