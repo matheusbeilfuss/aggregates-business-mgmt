@@ -1,5 +1,6 @@
 package br.ufsc.aggregare.service;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -134,6 +135,10 @@ public class OrderService {
 
 	public List<Order> findAll() {
 		return orderRepository.findAll();
+	}
+
+	public List<Order> findByScheduledDate(LocalDate scheduledDate) {
+		return orderRepository.findByScheduledDate(scheduledDate);
 	}
 
 	@Transactional
