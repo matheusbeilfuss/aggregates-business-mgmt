@@ -3,12 +3,20 @@ import { Product } from "@/modules/stock/types";
 export type OrderType = "MATERIAL" | "SERVICE";
 export type OrderStatus = "PENDING" | "DELIVERED";
 export type PaymentStatus = "PENDING" | "PAID";
+export type PhoneType = "WHATSAPP" | "CELULAR" | "FIXO" | "OUTRO";
 
 export interface Client {
   id: number;
   name: string;
   cpfCnpj: string;
   email: string;
+}
+
+export interface Phone {
+  id: number;
+  client: Client;
+  number: string;
+  type: PhoneType;
 }
 
 export interface OrderAddress {

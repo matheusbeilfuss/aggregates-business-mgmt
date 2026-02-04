@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import br.ufsc.aggregare.model.Client;
+import br.ufsc.aggregare.model.Phone;
 import br.ufsc.aggregare.model.dto.ClientDTO;
 import br.ufsc.aggregare.model.dto.ClientInputDTO;
 import br.ufsc.aggregare.service.ClientService;
@@ -60,5 +61,11 @@ public class ClientController {
 	public ResponseEntity<List<Client>> findAll() {
 		List<Client> clients = service.findAll();
 		return ResponseEntity.ok().body(clients);
+	}
+
+	@GetMapping(value = "/{id}/phones" )
+	public ResponseEntity<List<Phone>> findClientPhonesById(@PathVariable Long id) {
+		List<Phone> phones = service.findClientPhonesById(id);
+		return ResponseEntity.ok().body(phones);
 	}
 }

@@ -3,16 +3,22 @@ import {
   AccordionTrigger,
   AccordionContent,
 } from "@/components/ui/accordion";
-import { OrderItem } from "../types";
+import { OrderItem, Phone } from "../types";
 import { OrderActions } from "./OrderActions";
 import { Separator } from "@/components/ui/separator";
 import { formatTime } from "../utils/formatTime";
+import { useClientsPhones } from "../hooks/useClientsPhones";
+import { selectPreferredPhone } from "../utils/selectPreferredPhone";
 
 interface Props {
   order: OrderItem;
 }
 
 export function OrderAccordionItem({ order }: Props) {
+  const { data: phones } = useClientsPhones(order.client.id.toString());
+
+  const preferredPhone: Phone | null = selectPreferredPhone(phones ?? []);
+
   const isMaterial = order.type === "MATERIAL";
 
   const materialLabel = isMaterial
@@ -52,7 +58,7 @@ export function OrderAccordionItem({ order }: Props) {
 
           <p>{order.orderAddress.city}</p>
 
-          <p>(47) 98812-3456</p>
+          <p>{preferredPhone?.number}</p>
         </div>
 
         {order.observations && (

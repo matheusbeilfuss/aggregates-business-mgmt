@@ -150,6 +150,13 @@ public class ClientService {
 		return repository.findAll();
 	}
 
+	public List<Phone> findClientPhonesById(Long id) {
+		if (!repository.existsById(id)) {
+			throw new ResourceNotFoundException(id);
+		}
+		return phoneRepository.findByClientId(id);
+	}
+
 	public Client clientFromDTO(ClientInputDTO dto) {
 		Client client = new Client();
 		client.setName(dto.getName());
