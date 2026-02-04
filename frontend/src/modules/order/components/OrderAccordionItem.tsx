@@ -6,6 +6,7 @@ import {
 import { OrderItem } from "../types";
 import { OrderActions } from "./OrderActions";
 import { Separator } from "@/components/ui/separator";
+import { formatTime } from "../utils/formatTime";
 
 interface Props {
   order: OrderItem;
@@ -27,7 +28,7 @@ export function OrderAccordionItem({ order }: Props) {
           </span>
 
           <span className="order-2 text-right sm:order-4 sm:col-span-1 sm:text-right">
-            {order.scheduledTime}
+            {formatTime(order.scheduledTime)}
           </span>
 
           <span className="order-3 col-span-2 sm:order-2 sm:col-span-1">
