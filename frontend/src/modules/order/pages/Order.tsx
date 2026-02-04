@@ -6,8 +6,11 @@ import { OrderItem } from "../types";
 import { useState } from "react";
 import { toISODate } from "../utils/toIsoDate";
 import { Button } from "@/components/ui/button";
+import { useNavigate } from "react-router";
 
 export function Order() {
+  const navigate = useNavigate();
+
   const [selectedDate, setSelectedDate] = useState(new Date());
 
   const {
@@ -39,6 +42,15 @@ export function Order() {
           <OrderSection title="Entregues" orders={completedOrders} />
         </div>
       )}
+
+      <div className="mt-auto flex justify-end py-12">
+        <Button
+          className="bg-slate-500 hover:bg-slate-600 text-white px-6 py-6 text-base cursor-pointer"
+          onClick={() => navigate("/orders/new")}
+        >
+          Adicionar Pedido
+        </Button>
+      </div>
     </PageContainer>
   );
 }
