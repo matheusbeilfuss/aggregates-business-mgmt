@@ -3,6 +3,7 @@ import { createBrowserRouter } from "react-router-dom";
 import { Login } from "@/modules/auth";
 import { Home } from "@/modules/home";
 import { Stock, StockEdit, StockReplenish } from "@/modules/stock";
+import { Order } from "./modules/order/pages/Order";
 
 export const router = createBrowserRouter([
   {
@@ -16,6 +17,10 @@ export const router = createBrowserRouter([
   {
     path: "/home",
     element: <Home />,
+  },
+  {
+    path: "/orders",
+    element: <Order />,
   },
   {
     path: "/stocks",
