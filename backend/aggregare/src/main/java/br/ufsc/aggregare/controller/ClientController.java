@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -58,7 +59,12 @@ public class ClientController {
 	}
 
 	@GetMapping
-	public ResponseEntity<List<Client>> findAll() {
+	public ResponseEntity<List<Client>> findAll(@RequestParam(required = false) String search) {
+		if (search != null && !search.isBlank()) {
+			List<Client> clients = service.searchByName(search);
+			return ResponseEntity.ok().body(clients);
+		}
+
 		List<Client> clients = service.findAll();
 		return ResponseEntity.ok().body(clients);
 	}

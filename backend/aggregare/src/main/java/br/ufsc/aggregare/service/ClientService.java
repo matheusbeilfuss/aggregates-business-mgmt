@@ -40,6 +40,12 @@ public class ClientService {
 
 	@Transactional
 	public Client insert(ClientInputDTO dto) {
+		if (dto.getCpfCnpj() != null &&
+				repository.existsByCpfCnpj(dto.getCpfCnpj())) {
+
+			throw new DatabaseException("Cliente já cadastrado com esse CPF/CNPJ");
+		}
+
 		Client savedClient = repository.save(clientFromDTO(dto));
 
 		Address address = addressFromDTO(dto, savedClient);
@@ -155,6 +161,10 @@ public class ClientService {
 			throw new ResourceNotFoundException(id);
 		}
 		return phoneRepository.findByClientId(id);
+	}
+
+	public List<Client> searchByName(String search) {
+		return repository.findByNameContainingIgnoreCase(search);
 	}
 
 	public Client clientFromDTO(ClientInputDTO dto) {
