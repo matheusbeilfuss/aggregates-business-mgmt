@@ -3,7 +3,8 @@ import { z } from "zod";
 export const orderSchema = z
   .object({
     productId: z.number().optional(),
-    clientId: z.number().min(1, "Cliente obrigatório"),
+    clientId: z.number().optional(),
+    clientName: z.string().optional(),
     phone: z.string().min(1, "Telefone obrigatório"),
     cpfCnpj: z.string().min(1, "CPF/CNPJ obrigatório"),
     street: z.string().min(1, "Rua obrigatória"),
@@ -27,6 +28,10 @@ export const orderSchema = z
       message: "Produto ou serviço obrigatório conforme o tipo do pedido.",
       path: ["productId", "service"],
     },
-  );
+  )
+  .refine((data) => data.clientId !== undefined || !!data.clientName?.trim(), {
+    message: "Informe um cliente existente ou o nome de um novo cliente.",
+    path: ["clientId", "clientName"],
+  });
 
 export type OrderFormData = z.infer<typeof orderSchema>;

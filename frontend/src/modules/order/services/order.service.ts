@@ -1,5 +1,5 @@
 import { api } from "@/lib/api";
-import { OrderItem, Phone } from "../types";
+import { Client, OrderItem, Phone } from "../types";
 
 export const orderService = {
   getByScheduledDate: (scheduledDate: string) =>
@@ -7,4 +7,6 @@ export const orderService = {
 
   getPhonesByClientId: (clientId: number) =>
     api.get<Phone[]>(`/clients/${clientId}/phones`),
+
+  getAllClients: () => api.get<Client[]>(`/clients`),
 };

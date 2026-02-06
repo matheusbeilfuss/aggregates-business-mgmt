@@ -16,11 +16,14 @@ import { useEffect, useState } from "react";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { useProducts } from "@/modules/stock/hooks/useStocks";
 import { ProductSelect } from "../components/ProductSelect";
+import { useClients } from "../hooks/useClients";
+import { ClientCombobox } from "../components/ClientCombobox";
 
 export function OrderAdd() {
   const [selectedDate, setSelectedDate] = useState(new Date());
 
   const { data: products, loading: productsLoading } = useProducts();
+  const { data: clients, loading: clientsLoading } = useClients();
 
   const form = useForm<OrderFormData>({
     resolver: zodResolver(orderSchema),
@@ -42,7 +45,7 @@ export function OrderAdd() {
     }
   }, [orderType, form]);
 
-  const loading = productsLoading;
+  const loading = productsLoading || clientsLoading;
 
   if (loading) {
     return (
@@ -101,17 +104,26 @@ export function OrderAdd() {
           <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
             <FormField
               control={form.control}
-              name="clientId"
+              name="clientName"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Cliente</FormLabel>
-                  <FormControl>
-                    <Input
-                      type="number"
-                      value={field.value ?? ""}
-                      onFocus={(e) => e.target.select()}
-                    />
-                  </FormControl>
+
+                  <ClientCombobox
+                    value={field.value ?? ""}
+                    clientId={form.watch("clientId")}
+                    clients={clients ?? []}
+                    onChange={(value) => {
+                      form.setValue("clientId", undefined);
+                      field.onChange(value);
+                    }}
+                    onClientSelect={(client) => {
+                      field.onChange(client.name);
+                      form.setValue("clientId", client.id);
+                      form.setValue("cpfCnpj", client.cpfCnpj);
+                    }}
+                  />
+
                   <FormMessage />
                 </FormItem>
               )}
