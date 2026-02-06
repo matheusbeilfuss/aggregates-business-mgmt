@@ -13,6 +13,7 @@ import br.ufsc.aggregare.model.Product;
 import br.ufsc.aggregare.model.dto.OrderInputDTO;
 import br.ufsc.aggregare.model.dto.PaymentInputDTO;
 import br.ufsc.aggregare.model.enums.OrderStatusEnum;
+import br.ufsc.aggregare.model.enums.OrderTypeEnum;
 import br.ufsc.aggregare.model.enums.PaymentStatusEnum;
 import br.ufsc.aggregare.repository.OrderAddressRepository;
 import br.ufsc.aggregare.repository.OrderRepository;
@@ -59,8 +60,14 @@ public class OrderService {
 	private Order orderFromInputDTO(OrderInputDTO dto) {
 		Order order = new Order();
 
-		Product existingProduct = productService.findById(dto.getProductId());
-		order.setProduct(existingProduct);
+		if (dto.getType() == OrderTypeEnum.MATERIAL) {
+			Product existingProduct = productService.findById(dto.getProductId());
+			order.setProduct(existingProduct);
+			order.setQuantity(dto.getQuantity());
+		} else {
+			order.setProduct(null);
+			order.setQuantity(null);
+		}
 
 		Client existingClient = clientService.findById(dto.getClientId());
 		order.setClient(existingClient);
@@ -69,7 +76,6 @@ public class OrderService {
 		orderAddressRepository.save(orderAddress);
 		order.setOrderAddress(orderAddress);
 
-		order.setQuantity(dto.getQuantity());
 		order.setService(dto.getService());
 		order.setType(dto.getType());
 		order.setScheduledDate(dto.getScheduledDate());
@@ -96,8 +102,14 @@ public class OrderService {
 		Order existingOrder = orderRepository.findById(id)
 				.orElseThrow(() -> new ResourceNotFoundException(id));
 
-		Product existingProduct = productService.findById(dto.getProductId());
-		existingOrder.setProduct(existingProduct);
+		if (dto.getType() == OrderTypeEnum.MATERIAL) {
+			Product existingProduct = productService.findById(dto.getProductId());
+			existingOrder.setProduct(existingProduct);
+			existingOrder.setQuantity(dto.getQuantity());
+		} else {
+			existingOrder.setProduct(null);
+			existingOrder.setQuantity(null);
+		}
 
 		Client existingClient = clientService.findById(dto.getClientId());
 		existingOrder.setClient(existingClient);
@@ -119,7 +131,6 @@ public class OrderService {
 	}
 
 	private void updateOrder(Order existingOrder, OrderInputDTO dto) {
-		existingOrder.setQuantity(dto.getQuantity());
 		existingOrder.setService(dto.getService());
 		existingOrder.setType(dto.getType());
 		existingOrder.setScheduledDate(dto.getScheduledDate());
