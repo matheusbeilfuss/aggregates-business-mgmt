@@ -28,7 +28,7 @@ export function ClientCombobox({
   );
   return (
     <Combobox
-      value={clientId ? String(clientId) : undefined}
+      value={clientId ? String(clientId) : ""}
       onValueChange={(val) => {
         const client = clients.find((c) => String(c.id) === val);
         if (client) {

@@ -27,7 +27,7 @@ export const orderSchema = z
       .min(2, "Estado obrigatório"),
     quantity: z.coerce
       .number({ invalid_type_error: "Quantidade obrigatória" })
-      .positive("Quantidade obrigatória")
+      .min(0, "Quantidade obrigatória")
       .optional(),
     service: z.string().optional(),
     type: z.enum(["MATERIAL", "SERVICE"]),

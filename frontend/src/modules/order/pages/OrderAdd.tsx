@@ -36,11 +36,25 @@ export function OrderAdd() {
 
   const form = useForm<OrderFormData>({
     resolver: zodResolver(orderSchema),
-    shouldUnregister: true,
     mode: "onSubmit",
     defaultValues: {
-      type: "MATERIAL",
       scheduledDate: toISODate(new Date()),
+      type: "MATERIAL",
+      clientName: "",
+      clientId: undefined,
+      phone: "",
+      cpfCnpj: "",
+      state: "",
+      city: "",
+      neighborhood: "",
+      street: "",
+      number: "",
+      productId: undefined,
+      service: "",
+      quantity: undefined,
+      orderValue: undefined,
+      scheduledTime: "",
+      observations: "",
     },
   });
 
@@ -147,8 +161,6 @@ export function OrderAdd() {
       quantity: data.type === "MATERIAL" ? data.quantity : undefined,
       service: data.type === "SERVICE" ? (data.service ?? null) : null,
     };
-
-    console.log(form.formState.errors);
 
     try {
       await orderService.create(payload);
@@ -281,9 +293,15 @@ export function OrderAdd() {
                   <FormLabel>CPF/CNPJ</FormLabel>
                   <FormControl>
                     <Input
-                      {...field}
                       type="number"
-                      onFocus={(e) => e.target.select()}
+                      value={field.value ?? ""}
+                      onChange={(e) =>
+                        field.onChange(
+                          e.target.value === ""
+                            ? undefined
+                            : Number(e.target.value),
+                        )
+                      }
                     />
                   </FormControl>
                   <FormMessage />
@@ -367,8 +385,14 @@ export function OrderAdd() {
                   <FormControl>
                     <Input
                       type="number"
-                      {...field}
-                      onFocus={(e) => e.target.select()}
+                      value={field.value ?? ""}
+                      onChange={(e) =>
+                        field.onChange(
+                          e.target.value === ""
+                            ? undefined
+                            : Number(e.target.value),
+                        )
+                      }
                     />
                   </FormControl>
                   <FormMessage />
@@ -429,9 +453,14 @@ export function OrderAdd() {
                     <FormControl>
                       <Input
                         type="number"
-                        {...field}
-                        onChange={(e) => field.onChange(Number(e.target.value))}
-                        onFocus={(e) => e.target.select()}
+                        value={field.value ?? ""}
+                        onChange={(e) =>
+                          field.onChange(
+                            e.target.value === ""
+                              ? undefined
+                              : Number(e.target.value),
+                          )
+                        }
                       />
                     </FormControl>
                     <FormMessage />
@@ -449,8 +478,14 @@ export function OrderAdd() {
                   <FormControl>
                     <Input
                       type="number"
-                      {...field}
-                      onFocus={(e) => e.target.select()}
+                      value={field.value ?? ""}
+                      onChange={(e) =>
+                        field.onChange(
+                          e.target.value === ""
+                            ? undefined
+                            : Number(e.target.value),
+                        )
+                      }
                     />
                   </FormControl>
                   <FormMessage />
