@@ -28,6 +28,12 @@ export interface Phone {
   type: PhoneType;
 }
 
+export interface Price {
+  id: number;
+  m3Volume: number;
+  price: number;
+}
+
 export interface OrderAddress {
   id: number;
   street: string;

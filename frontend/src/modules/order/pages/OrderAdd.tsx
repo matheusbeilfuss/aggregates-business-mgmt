@@ -12,16 +12,21 @@ import { Input } from "@/components/ui/input";
 import { useForm } from "react-hook-form";
 import { OrderFormData, orderSchema } from "../schemas/order.schemas";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { useProducts } from "@/modules/stock/hooks/useStocks";
 import { ProductSelect } from "../components/ProductSelect";
 import { useClient, useClients } from "../hooks/useClients";
 import { ClientCombobox } from "../components/ClientCombobox";
 import { selectPreferredPhone } from "../utils/selectPreferredPhone";
+import { Price } from "../types";
+import { orderService } from "../services/order.service";
 
 export function OrderAdd() {
   const [selectedDate, setSelectedDate] = useState(new Date());
+
+  const [categoryPrices, setCategoryPrices] = useState<Price[]>([]);
+  const [loadedCategoryId, setLoadedCategoryId] = useState<number | null>(null);
 
   const { data: products, loading: productsLoading } = useProducts();
   const { data: clients, loading: clientsLoading } = useClients();
@@ -34,6 +39,24 @@ export function OrderAdd() {
   });
 
   const orderType = form.watch("type");
+  const selectedProductId = form.watch("productId");
+  const quantity = form.watch("quantity");
+  const clientId = form.watch("clientId");
+
+  const calculatedOrderValue = useMemo(() => {
+    if (
+      orderType !== "MATERIAL" ||
+      quantity == null ||
+      !Array.isArray(categoryPrices) ||
+      categoryPrices.length === 0
+    ) {
+      return 0;
+    }
+
+    const priceEntry = categoryPrices.find((p) => p.m3Volume === quantity);
+
+    return priceEntry?.price ?? 0;
+  }, [orderType, quantity, categoryPrices]);
 
   useEffect(() => {
     if (orderType === "MATERIAL") {
@@ -43,10 +66,14 @@ export function OrderAdd() {
     if (orderType === "SERVICE") {
       form.setValue("productId", undefined);
       form.setValue("quantity", undefined);
+      form.setValue("orderValue", 0);
+      setCategoryPrices([]);
     }
   }, [orderType, form]);
 
-  const clientId = form.watch("clientId");
+  useEffect(() => {
+    form.setValue("orderValue", calculatedOrderValue);
+  }, [calculatedOrderValue, form]);
 
   const { data: client } = useClient(clientId ? String(clientId) : null);
 
@@ -63,6 +90,37 @@ export function OrderAdd() {
       form.setValue("phone", selectPreferredPhone(client.phones)?.number ?? "");
     }
   }, [client, form]);
+
+  const selectedProduct = useMemo(() => {
+    return products?.find((p) => p.id === selectedProductId);
+  }, [products, selectedProductId]);
+
+  useEffect(() => {
+    const categoryId = selectedProduct?.category?.id;
+
+    if (!categoryId) {
+      setCategoryPrices([]);
+      setLoadedCategoryId(null);
+      return;
+    }
+
+    if (loadedCategoryId === categoryId) {
+      return;
+    }
+
+    const fetchPrices = async () => {
+      try {
+        const prices = await orderService.getCategoryPrices(categoryId);
+        setCategoryPrices(prices);
+        setLoadedCategoryId(categoryId);
+      } catch {
+        setCategoryPrices([]);
+        setLoadedCategoryId(null);
+      }
+    };
+
+    fetchPrices();
+  }, [selectedProduct, loadedCategoryId]);
 
   const loading = productsLoading || clientsLoading;
 
@@ -242,6 +300,7 @@ export function OrderAdd() {
                       <Input
                         type="number"
                         {...field}
+                        onChange={(e) => field.onChange(Number(e.target.value))}
                         onFocus={(e) => e.target.select()}
                       />
                     </FormControl>
@@ -309,7 +368,7 @@ export function OrderAdd() {
                   <FormLabel>Horário</FormLabel>
                   <FormControl>
                     <Input
-                      type="string"
+                      type="time"
                       {...field}
                       onFocus={(e) => e.target.select()}
                     />
