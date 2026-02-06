@@ -1,4 +1,3 @@
-import { FormControl } from "@/components/ui/form";
 import {
   Select,
   SelectContent,
@@ -10,18 +9,20 @@ import { Product } from "@/modules/stock/types";
 
 interface ProductSelectProps {
   value?: number;
-  onChange: (value: number) => void;
   products: Product[];
   placeholder?: string;
   disabled?: boolean;
+  className?: string;
+  onChange: (value: number) => void;
 }
 
 export function ProductSelect({
   value,
-  onChange,
   products,
   placeholder = "Selecione...",
   disabled = false,
+  className,
+  onChange,
 }: ProductSelectProps) {
   return (
     <Select
@@ -29,11 +30,9 @@ export function ProductSelect({
       onValueChange={(val) => onChange(Number(val))}
       disabled={disabled}
     >
-      <FormControl>
-        <SelectTrigger className="w-full cursor-pointer">
-          <SelectValue placeholder={placeholder} />
-        </SelectTrigger>
-      </FormControl>
+      <SelectTrigger className={`w-full cursor-pointer ${className}`}>
+        <SelectValue placeholder={placeholder} />
+      </SelectTrigger>
       <SelectContent>
         {products.map((product) => (
           <SelectItem

@@ -23,6 +23,7 @@ import { CreateOrderPayload, Price } from "../types";
 import { orderService } from "../services/order.service";
 import { toast } from "sonner";
 import { useNavigate } from "react-router";
+import { toISODate } from "../utils/toIsoDate";
 
 export function OrderAdd() {
   const navigate = useNavigate();
@@ -35,9 +36,11 @@ export function OrderAdd() {
 
   const form = useForm<OrderFormData>({
     resolver: zodResolver(orderSchema),
+    shouldUnregister: true,
+    mode: "onSubmit",
     defaultValues: {
       type: "MATERIAL",
-      scheduledDate: new Date().toISOString().split("T")[0],
+      scheduledDate: toISODate(new Date()),
     },
   });
 
@@ -145,7 +148,7 @@ export function OrderAdd() {
       service: data.type === "SERVICE" ? (data.service ?? null) : null,
     };
 
-    console.log("Payload para criação do pedido:", payload);
+    console.log(form.formState.errors);
 
     try {
       await orderService.create(payload);
@@ -178,10 +181,12 @@ export function OrderAdd() {
                 <FormItem>
                   <FormControl>
                     <DatePicker
-                      value={field.value ? new Date(field.value) : new Date()}
-                      onChange={(date: Date) =>
-                        field.onChange(date.toISOString().split("T")[0])
+                      value={
+                        field.value
+                          ? new Date(`${field.value}T00:00:00`)
+                          : new Date()
                       }
+                      onChange={(date: Date) => field.onChange(toISODate(date))}
                     />
                   </FormControl>
                   <FormMessage />
@@ -227,25 +232,26 @@ export function OrderAdd() {
             <FormField
               control={form.control}
               name="clientName"
-              render={({ field }) => (
+              render={({ field, fieldState }) => (
                 <FormItem>
                   <FormLabel>Cliente</FormLabel>
-
-                  <ClientCombobox
-                    value={field.value ?? ""}
-                    clientId={form.watch("clientId")}
-                    clients={clients ?? []}
-                    onChange={(value) => {
-                      form.setValue("clientId", undefined);
-                      field.onChange(value);
-                    }}
-                    onClientSelect={(client) => {
-                      field.onChange(client.name);
-                      form.setValue("clientId", client.id);
-                      form.setValue("cpfCnpj", client.cpfCnpj);
-                    }}
-                  />
-
+                  <FormControl>
+                    <ClientCombobox
+                      value={field.value ?? ""}
+                      clientId={form.watch("clientId")}
+                      clients={clients ?? []}
+                      onChange={field.onChange}
+                      onClientSelect={(client) => {
+                        field.onChange(client.name);
+                        form.setValue("clientId", client.id);
+                      }}
+                      className={
+                        fieldState.error
+                          ? "border border-red-500 rounded-md"
+                          : ""
+                      }
+                    />
+                  </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
@@ -373,10 +379,21 @@ export function OrderAdd() {
               <FormField
                 control={form.control}
                 name="productId"
-                render={({ field }) => (
+                render={({ field, fieldState }) => (
                   <FormItem>
                     <FormLabel>Material</FormLabel>
-                    <ProductSelect {...field} products={products ?? []} />
+                    <FormControl>
+                      <ProductSelect
+                        value={field.value}
+                        onChange={field.onChange}
+                        products={products ?? []}
+                        className={
+                          fieldState.error
+                            ? "border border-red-500 rounded-md"
+                            : ""
+                        }
+                      />
+                    </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
@@ -477,13 +494,13 @@ export function OrderAdd() {
               )}
             />
           </div>
+          <FormActions
+            cancelPath="/orders"
+            submitLabel="Adicionar"
+            onSubmit={form.handleSubmit(onSubmit)}
+          />
         </form>
       </Form>
-      <FormActions
-        cancelPath="/orders"
-        submitLabel="Adicionar"
-        onSubmit={form.handleSubmit(onSubmit)}
-      />
     </PageContainer>
   );
 }
