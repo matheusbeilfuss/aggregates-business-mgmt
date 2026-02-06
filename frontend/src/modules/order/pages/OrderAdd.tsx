@@ -16,8 +16,9 @@ import { useEffect, useState } from "react";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { useProducts } from "@/modules/stock/hooks/useStocks";
 import { ProductSelect } from "../components/ProductSelect";
-import { useClients } from "../hooks/useClients";
+import { useClient, useClients } from "../hooks/useClients";
 import { ClientCombobox } from "../components/ClientCombobox";
+import { selectPreferredPhone } from "../utils/selectPreferredPhone";
 
 export function OrderAdd() {
   const [selectedDate, setSelectedDate] = useState(new Date());
@@ -44,6 +45,24 @@ export function OrderAdd() {
       form.setValue("quantity", undefined);
     }
   }, [orderType, form]);
+
+  const clientId = form.watch("clientId");
+
+  const { data: client } = useClient(clientId ? String(clientId) : null);
+
+  useEffect(() => {
+    if (!client) return;
+
+    form.setValue("clientName", client.name);
+    form.setValue("cpfCnpj", client.cpfCnpj);
+    form.setValue("street", client.street);
+    form.setValue("number", client.number);
+    form.setValue("neighborhood", client.neighborhood);
+
+    if (client.phones?.length) {
+      form.setValue("phone", selectPreferredPhone(client.phones)?.number ?? "");
+    }
+  }, [client, form]);
 
   const loading = productsLoading || clientsLoading;
 
@@ -136,8 +155,8 @@ export function OrderAdd() {
                   <FormLabel>Telefone</FormLabel>
                   <FormControl>
                     <Input
-                      type="number"
-                      value={field.value ?? ""}
+                      {...field}
+                      type="string"
                       onFocus={(e) => e.target.select()}
                     />
                   </FormControl>
@@ -153,8 +172,8 @@ export function OrderAdd() {
                   <FormLabel>CPF/CNPJ</FormLabel>
                   <FormControl>
                     <Input
+                      {...field}
                       type="number"
-                      value={field.value ?? ""}
                       onFocus={(e) => e.target.select()}
                     />
                   </FormControl>
@@ -169,11 +188,7 @@ export function OrderAdd() {
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Material</FormLabel>
-                    <ProductSelect
-                      value={field.value}
-                      onChange={field.onChange}
-                      products={products ?? []}
-                    />
+                    <ProductSelect {...field} products={products ?? []} />
                     <FormMessage />
                   </FormItem>
                 )}
@@ -189,7 +204,7 @@ export function OrderAdd() {
                     <FormControl>
                       <Input
                         type="string"
-                        value={field.value ?? ""}
+                        {...field}
                         onFocus={(e) => e.target.select()}
                       />
                     </FormControl>
@@ -208,7 +223,7 @@ export function OrderAdd() {
                   <FormControl>
                     <Input
                       type="string"
-                      value={field.value ?? ""}
+                      {...field}
                       onFocus={(e) => e.target.select()}
                     />
                   </FormControl>
@@ -226,7 +241,7 @@ export function OrderAdd() {
                     <FormControl>
                       <Input
                         type="number"
-                        value={field.value ?? ""}
+                        {...field}
                         onFocus={(e) => e.target.select()}
                       />
                     </FormControl>
@@ -244,7 +259,7 @@ export function OrderAdd() {
                   <FormControl>
                     <Input
                       type="string"
-                      value={field.value ?? ""}
+                      {...field}
                       onFocus={(e) => e.target.select()}
                     />
                   </FormControl>
@@ -261,7 +276,7 @@ export function OrderAdd() {
                   <FormControl>
                     <Input
                       type="number"
-                      value={field.value ?? ""}
+                      {...field}
                       onFocus={(e) => e.target.select()}
                     />
                   </FormControl>
@@ -278,7 +293,7 @@ export function OrderAdd() {
                   <FormControl>
                     <Input
                       type="number"
-                      value={field.value ?? ""}
+                      {...field}
                       onFocus={(e) => e.target.select()}
                     />
                   </FormControl>
@@ -295,7 +310,7 @@ export function OrderAdd() {
                   <FormControl>
                     <Input
                       type="string"
-                      value={field.value ?? ""}
+                      {...field}
                       onFocus={(e) => e.target.select()}
                     />
                   </FormControl>
@@ -314,7 +329,7 @@ export function OrderAdd() {
                   <FormControl>
                     <Input
                       type="string"
-                      value={field.value ?? ""}
+                      {...field}
                       onFocus={(e) => e.target.select()}
                     />
                   </FormControl>

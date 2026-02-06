@@ -12,6 +12,15 @@ export interface Client {
   email: string;
 }
 
+export interface ClientDetail extends Client {
+  state: string;
+  city: string;
+  neighborhood: string;
+  street: string;
+  number: string;
+  phones: Phone[];
+}
+
 export interface Phone {
   id: number;
   client: Client;
