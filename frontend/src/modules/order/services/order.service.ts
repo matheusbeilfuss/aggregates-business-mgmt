@@ -1,5 +1,12 @@
 import { api } from "@/lib/api";
-import { Client, ClientDetail, OrderItem, Phone, Price } from "../types";
+import {
+  Client,
+  ClientDetail,
+  CreateOrderPayload,
+  OrderItem,
+  Phone,
+  Price,
+} from "../types";
 
 export const orderService = {
   getByScheduledDate: (scheduledDate: string) =>
@@ -15,4 +22,6 @@ export const orderService = {
 
   getCategoryPrices: (categoryId: number) =>
     api.get<Price[]>(`/categories/${categoryId}/prices`),
+
+  create: (data: CreateOrderPayload) => api.post<OrderItem>(`/orders`, data),
 };

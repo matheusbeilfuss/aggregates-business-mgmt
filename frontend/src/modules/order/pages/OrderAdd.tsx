@@ -19,11 +19,13 @@ import { ProductSelect } from "../components/ProductSelect";
 import { useClient, useClients } from "../hooks/useClients";
 import { ClientCombobox } from "../components/ClientCombobox";
 import { selectPreferredPhone } from "../utils/selectPreferredPhone";
-import { Price } from "../types";
+import { CreateOrderPayload, Price } from "../types";
 import { orderService } from "../services/order.service";
+import { toast } from "sonner";
+import { useNavigate } from "react-router";
 
 export function OrderAdd() {
-  const [selectedDate, setSelectedDate] = useState(new Date());
+  const navigate = useNavigate();
 
   const [categoryPrices, setCategoryPrices] = useState<Price[]>([]);
   const [loadedCategoryId, setLoadedCategoryId] = useState<number | null>(null);
@@ -35,6 +37,7 @@ export function OrderAdd() {
     resolver: zodResolver(orderSchema),
     defaultValues: {
       type: "MATERIAL",
+      scheduledDate: new Date().toISOString().split("T")[0],
     },
   });
 
@@ -82,9 +85,11 @@ export function OrderAdd() {
 
     form.setValue("clientName", client.name);
     form.setValue("cpfCnpj", client.cpfCnpj);
+    form.setValue("state", client.state);
+    form.setValue("city", client.city);
+    form.setValue("neighborhood", client.neighborhood);
     form.setValue("street", client.street);
     form.setValue("number", client.number);
-    form.setValue("neighborhood", client.neighborhood);
 
     if (client.phones?.length) {
       form.setValue("phone", selectPreferredPhone(client.phones)?.number ?? "");
@@ -122,6 +127,35 @@ export function OrderAdd() {
     fetchPrices();
   }, [selectedProduct, loadedCategoryId]);
 
+  const onSubmit = async (data: OrderFormData) => {
+    const payload: CreateOrderPayload = {
+      type: data.type,
+      clientId: data.clientId!,
+      state: data.state,
+      city: data.city,
+      street: data.street,
+      number: data.number,
+      neighborhood: data.neighborhood,
+      scheduledDate: data.scheduledDate,
+      scheduledTime: data.scheduledTime,
+      observations: data.observations ?? null,
+      orderValue: data.orderValue!,
+      productId: data.type === "MATERIAL" ? data.productId! : null,
+      quantity: data.type === "MATERIAL" ? data.quantity : undefined,
+      service: data.type === "SERVICE" ? (data.service ?? null) : null,
+    };
+
+    console.log("Payload para criação do pedido:", payload);
+
+    try {
+      await orderService.create(payload);
+      toast.success("O pedido foi criado com sucesso.");
+      navigate("/orders");
+    } catch {
+      toast.error("Não foi possível salvar o pedido.");
+    }
+  };
+
   const loading = productsLoading || clientsLoading;
 
   if (loading) {
@@ -135,13 +169,24 @@ export function OrderAdd() {
   return (
     <PageContainer title="Adicionar pedido">
       <Form {...form}>
-        <form>
+        <form onSubmit={form.handleSubmit(onSubmit)}>
           <div className="mb-10">
-            <DatePicker
-              value={selectedDate}
-              onChange={function (date: Date): void {
-                setSelectedDate(date);
-              }}
+            <FormField
+              control={form.control}
+              name="scheduledDate"
+              render={({ field }) => (
+                <FormItem>
+                  <FormControl>
+                    <DatePicker
+                      value={field.value ? new Date(field.value) : new Date()}
+                      onChange={(date: Date) =>
+                        field.onChange(date.toISOString().split("T")[0])
+                      }
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
             />
           </div>
           <div className="mb-6">
@@ -239,6 +284,91 @@ export function OrderAdd() {
                 </FormItem>
               )}
             />
+            <FormField
+              control={form.control}
+              name="state"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Estado</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="string"
+                      {...field}
+                      onFocus={(e) => e.target.select()}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="city"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Cidade</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="string"
+                      {...field}
+                      onFocus={(e) => e.target.select()}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="street"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Rua</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="string"
+                      {...field}
+                      onFocus={(e) => e.target.select()}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="neighborhood"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Bairro</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="string"
+                      {...field}
+                      onFocus={(e) => e.target.select()}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="number"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Número</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="number"
+                      {...field}
+                      onFocus={(e) => e.target.select()}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
             {orderType === "MATERIAL" && (
               <FormField
                 control={form.control}
@@ -272,23 +402,6 @@ export function OrderAdd() {
               />
             )}
 
-            <FormField
-              control={form.control}
-              name="neighborhood"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Bairro</FormLabel>
-                  <FormControl>
-                    <Input
-                      type="string"
-                      {...field}
-                      onFocus={(e) => e.target.select()}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
             {orderType === "MATERIAL" && (
               <FormField
                 control={form.control}
@@ -309,46 +422,13 @@ export function OrderAdd() {
                 )}
               />
             )}
-            <FormField
-              control={form.control}
-              name="street"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Rua</FormLabel>
-                  <FormControl>
-                    <Input
-                      type="string"
-                      {...field}
-                      onFocus={(e) => e.target.select()}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+
             <FormField
               control={form.control}
               name="orderValue"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Valor</FormLabel>
-                  <FormControl>
-                    <Input
-                      type="number"
-                      {...field}
-                      onFocus={(e) => e.target.select()}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="number"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Número</FormLabel>
                   <FormControl>
                     <Input
                       type="number"
@@ -399,7 +479,11 @@ export function OrderAdd() {
           </div>
         </form>
       </Form>
-      <FormActions cancelPath="/orders" submitLabel="Adicionar" />
+      <FormActions
+        cancelPath="/orders"
+        submitLabel="Adicionar"
+        onSubmit={form.handleSubmit(onSubmit)}
+      />
     </PageContainer>
   );
 }

@@ -62,3 +62,26 @@ export interface OrderItem {
   paymentStatus: PaymentStatus;
   orderValue: number;
 }
+
+// Payloads para API
+export interface CreateOrderPayload {
+  productId: number | null;
+
+  clientId: number;
+  state: string;
+  city: string;
+  street: string;
+  number: string;
+  neighborhood: string;
+
+  quantity?: number;
+  service?: string | null;
+
+  type: OrderType;
+
+  scheduledDate: string;
+  scheduledTime: string;
+
+  observations: string | null;
+  orderValue: number;
+}
