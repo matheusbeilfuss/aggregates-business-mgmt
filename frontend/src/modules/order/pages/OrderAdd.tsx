@@ -24,6 +24,7 @@ import { orderService } from "../services/order.service";
 import { toast } from "sonner";
 import { useNavigate } from "react-router";
 import { toISODate } from "../utils/toIsoDate";
+import { QuantitySelect } from "../components/QuantitySelect";
 
 export function OrderAdd() {
   const navigate = useNavigate();
@@ -447,19 +448,19 @@ export function OrderAdd() {
               <FormField
                 control={form.control}
                 name="quantity"
-                render={({ field }) => (
+                render={({ field, fieldState }) => (
                   <FormItem>
-                    <FormLabel>Quantidade (m³)</FormLabel>
+                    <FormLabel>Quantidade</FormLabel>
                     <FormControl>
-                      <Input
-                        type="number"
-                        value={field.value ?? ""}
-                        onChange={(e) =>
-                          field.onChange(
-                            e.target.value === ""
-                              ? undefined
-                              : Number(e.target.value),
-                          )
+                      <QuantitySelect
+                        value={field.value}
+                        prices={categoryPrices}
+                        onChange={field.onChange}
+                        disabled={categoryPrices.length === 0}
+                        className={
+                          fieldState.error
+                            ? "border border-red-500 rounded-md"
+                            : ""
                         }
                       />
                     </FormControl>
