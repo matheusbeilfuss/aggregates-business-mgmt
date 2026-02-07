@@ -7,8 +7,8 @@ import { CreateOrderPayload } from "../types";
 import { orderService } from "../services/order.service";
 import { toast } from "sonner";
 import { useNavigate } from "react-router";
-import { toISODate } from "../utils/toIsoDate";
 import { OrderForm } from "../components/OrderForm";
+import { orderFormDefaults } from "../utils/orderFormDefaults";
 
 export function OrderAdd() {
   const navigate = useNavigate();
@@ -18,25 +18,7 @@ export function OrderAdd() {
   const form = useForm<OrderFormData>({
     resolver: zodResolver(orderSchema),
     mode: "onSubmit",
-    defaultValues: {
-      scheduledDate: toISODate(new Date()),
-      type: "MATERIAL",
-      clientName: "",
-      clientId: undefined,
-      phone: "",
-      cpfCnpj: "",
-      state: "",
-      city: "",
-      neighborhood: "",
-      street: "",
-      number: "",
-      productId: undefined,
-      service: "",
-      quantity: undefined,
-      orderValue: undefined,
-      scheduledTime: "",
-      observations: "",
-    },
+    defaultValues: orderFormDefaults,
   });
 
   const onSubmit = async (data: OrderFormData) => {

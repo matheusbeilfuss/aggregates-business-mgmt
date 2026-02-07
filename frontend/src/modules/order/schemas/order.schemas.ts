@@ -1,4 +1,5 @@
 import { z } from "zod";
+
 export const orderSchema = z
   .object({
     productId: z.number().optional(),
@@ -42,10 +43,10 @@ export const orderSchema = z
       (val) => (val === "" || val === null ? undefined : Number(val)),
       z
         .number({
-          invalid_type_error: "Valor do pedido inválido",
-          required_error: "Valor do pedido obrigatório",
+          invalid_type_error: "Valor do pedido obrigatório",
         })
-        .positive("Valor do pedido inválido"),
+        .positive("Valor do pedido obrigatório")
+        .optional(),
     ),
   })
   .superRefine((data, ctx) => {
@@ -84,9 +85,10 @@ export const orderSchema = z
     if (!data.orderValue || data.orderValue <= 0) {
       ctx.addIssue({
         path: ["orderValue"],
-        message: "Valor do pedido inválido",
+        message: "Valor do pedido obrigatório",
         code: z.ZodIssueCode.custom,
       });
     }
   });
+
 export type OrderFormData = z.infer<typeof orderSchema>;

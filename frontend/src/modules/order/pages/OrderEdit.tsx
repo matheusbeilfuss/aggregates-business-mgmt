@@ -10,6 +10,7 @@ import { orderService } from "../services/order.service";
 import { OrderForm } from "../components/OrderForm";
 import { CreateOrderPayload } from "../types";
 import { selectPreferredPhone } from "../utils/selectPreferredPhone";
+import { orderFormDefaults } from "../utils/orderFormDefaults";
 
 export function OrderEdit() {
   const { id } = useParams<{ id: string }>();
@@ -24,6 +25,7 @@ export function OrderEdit() {
 
   const form = useForm<OrderFormData>({
     resolver: zodResolver(orderSchema),
+    defaultValues: orderFormDefaults,
   });
 
   useEffect(() => {
@@ -51,7 +53,7 @@ export function OrderEdit() {
       quantity: order.quantity ?? undefined,
       service: order.service ?? "",
     });
-  }, [order, form]);
+  }, [order, client, form]);
 
   const onSubmit = async (data: OrderFormData) => {
     const payload: CreateOrderPayload = {
