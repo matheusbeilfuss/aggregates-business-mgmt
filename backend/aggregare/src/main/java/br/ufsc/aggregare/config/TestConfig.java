@@ -152,8 +152,8 @@ public class TestConfig implements CommandLineRunner {
 		Address address2 = new Address(null, client2, "SC", "Florianópolis", "Pantanal", "Rua dos Papagaios", "1500");
 		addressRepository.saveAll(Arrays.asList(address1, address2));
 
-		LocalDate dataTeste1 = LocalDate.of(2025, 11, 11);
-		LocalTime horaTeste1 = LocalTime.of(10, 30, 0);
+		LocalDate dataTeste1 = LocalDate.now();
+		LocalTime horaTeste1 = LocalTime.now();
 
 		OrderAddress orderAddress1 = new OrderAddress(null, "Rua A", "200", "Bairro B", "Cidade C", "SC");
 		OrderAddress orderAddress2 = new OrderAddress(null, "Avenida X", "500", "Bairro Y", "Cidade Z", "SC");

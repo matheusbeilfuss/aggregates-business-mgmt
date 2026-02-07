@@ -12,10 +12,12 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import br.ufsc.aggregare.model.Client;
+import br.ufsc.aggregare.model.Phone;
 import br.ufsc.aggregare.model.dto.ClientDTO;
 import br.ufsc.aggregare.model.dto.ClientInputDTO;
 import br.ufsc.aggregare.service.ClientService;
@@ -57,8 +59,19 @@ public class ClientController {
 	}
 
 	@GetMapping
-	public ResponseEntity<List<Client>> findAll() {
+	public ResponseEntity<List<Client>> findAll(@RequestParam(required = false) String search) {
+		if (search != null && !search.isBlank()) {
+			List<Client> clients = service.searchByName(search);
+			return ResponseEntity.ok().body(clients);
+		}
+
 		List<Client> clients = service.findAll();
 		return ResponseEntity.ok().body(clients);
+	}
+
+	@GetMapping(value = "/{id}/phones" )
+	public ResponseEntity<List<Phone>> findClientPhonesById(@PathVariable Long id) {
+		List<Phone> phones = service.findClientPhonesById(id);
+		return ResponseEntity.ok().body(phones);
 	}
 }

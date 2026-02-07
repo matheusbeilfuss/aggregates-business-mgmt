@@ -28,6 +28,8 @@ export const categoryService = {
 };
 
 export const productService = {
+  getAll: () => api.get<Product[]>("/products"),
+
   create: (data: CreateProductPayload) => api.post<Product>("/products", data),
 
   update: (id: number, data: UpdateProductPayload) =>
