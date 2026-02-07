@@ -12,11 +12,21 @@ export function useOrders(scheduledDate: string | null) {
   return useApi<OrderItem[]>(fetcher, { enabled: !!scheduledDate });
 }
 
+export function useOrder(id: string | null) {
+  const fetcher = useCallback(() => orderService.getById(id!), [id]);
+
+  return useApi<OrderItem>(fetcher, { enabled: !!id });
+}
+
 export function usePrices(categoryId: number | null) {
   const fetcher = useCallback(
     () => orderService.getCategoryPrices(categoryId!),
     [categoryId],
   );
 
-  return useApi<Price[]>(fetcher, { enabled: !!categoryId });
+  const { data, loading, error } = useApi<Price[]>(fetcher, {
+    enabled: !!categoryId,
+  });
+
+  return { data: data ?? [], loading, error };
 }

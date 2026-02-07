@@ -13,12 +13,7 @@ export function Order() {
 
   const [selectedDate, setSelectedDate] = useState(new Date());
 
-  const {
-    data: orders,
-    loading,
-    error,
-    refetch,
-  } = useOrders(toISODate(selectedDate));
+  const { data: orders, loading, error } = useOrders(toISODate(selectedDate));
 
   const pendingOrders = orders?.filter(
     (o: OrderItem) => o.status === "PENDING",

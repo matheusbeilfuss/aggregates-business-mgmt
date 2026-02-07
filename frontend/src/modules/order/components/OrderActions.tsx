@@ -13,12 +13,15 @@ import {
   X,
 } from "lucide-react";
 import { OrderItem } from "../types";
+import { useNavigate } from "react-router";
 
 interface Props {
   order: OrderItem;
 }
 
 export function OrderActions({ order }: Props) {
+  const navigate = useNavigate();
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -28,7 +31,12 @@ export function OrderActions({ order }: Props) {
       </DropdownMenuTrigger>
 
       <DropdownMenuContent align="end">
-        <DropdownMenuItem className="flex items-center gap-2">
+        <DropdownMenuItem
+          className="flex items-center gap-2 cursor-pointer"
+          onClick={() => {
+            navigate(`/orders/${order.id}`);
+          }}
+        >
           <Pencil className="h-4 w-4" />
           Editar
         </DropdownMenuItem>

@@ -5,6 +5,7 @@ import { Home } from "@/modules/home";
 import { Stock, StockEdit, StockReplenish } from "@/modules/stock";
 import { Order } from "./modules/order/pages/Order";
 import { OrderAdd } from "./modules/order/pages/OrderAdd";
+import { OrderEdit } from "./modules/order/pages/OrderEdit";
 
 export const router = createBrowserRouter([
   {
@@ -26,6 +27,10 @@ export const router = createBrowserRouter([
   {
     path: "/orders/new",
     element: <OrderAdd />,
+  },
+  {
+    path: "/orders/:id",
+    element: <OrderEdit />,
   },
   {
     path: "/stocks",

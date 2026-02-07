@@ -12,6 +12,8 @@ export const orderService = {
   getByScheduledDate: (scheduledDate: string) =>
     api.get<OrderItem[]>(`/orders?scheduledDate=${scheduledDate}`),
 
+  getById: (id: string) => api.get<OrderItem>(`/orders/${id}`),
+
   getPhonesByClientId: (clientId: number) =>
     api.get<Phone[]>(`/clients/${clientId}/phones`),
 
@@ -24,4 +26,7 @@ export const orderService = {
     api.get<Price[]>(`/categories/${categoryId}/prices`),
 
   create: (data: CreateOrderPayload) => api.post<OrderItem>(`/orders`, data),
+
+  update: (id: string, data: CreateOrderPayload) =>
+    api.put<OrderItem>(`/orders/${id}`, data),
 };
