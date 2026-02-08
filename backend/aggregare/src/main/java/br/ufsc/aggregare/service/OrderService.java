@@ -153,6 +153,16 @@ public class OrderService {
 	}
 
 	@Transactional
+	public Order markAsDelivered(Long id) {
+		Order existingOrder = orderRepository.findById(id)
+				.orElseThrow(() -> new ResourceNotFoundException(id));
+
+		existingOrder.setStatus(OrderStatusEnum.DELIVERED);
+		orderRepository.save(existingOrder);
+		return existingOrder;
+	}
+
+	@Transactional
 	public Order addPayment(Long id, PaymentInputDTO paymentDTO) {
 		Order existingOrder = orderRepository.findById(id)
 				.orElseThrow(() -> new ResourceNotFoundException(id));
