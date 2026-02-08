@@ -15,6 +15,7 @@ interface ClientComboboxProps {
   onChange: (value: string) => void;
   onClientSelect: (client: Client) => void;
 }
+
 export function ClientCombobox({
   value,
   clientId,

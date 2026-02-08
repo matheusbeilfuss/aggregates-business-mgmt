@@ -8,9 +8,7 @@ export const orderSchema = z
     phone: z
       .string({ required_error: "Telefone obrigatório" })
       .min(1, "Telefone obrigatório"),
-    cpfCnpj: z
-      .string({ required_error: "CPF/CNPJ obrigatório" })
-      .min(1, "CPF/CNPJ obrigatório"),
+    cpfCnpj: z.string().optional(),
     street: z
       .string({ required_error: "Rua obrigatória" })
       .min(1, "Rua obrigatória"),

@@ -14,7 +14,7 @@ import { UseFormReturn } from "react-hook-form";
 
 import { OrderFormData } from "../schemas/order.schemas";
 import { ProductSelect } from "./ProductSelect";
-import { QuantitySelect } from "./QuantitySelect";
+import { QuantityCombobox } from "./QuantityCombobox";
 import { ClientCombobox } from "./ClientCombobox";
 import { toISODate } from "../utils/toIsoDate";
 import { Product } from "@/modules/stock/types";
@@ -204,15 +204,9 @@ export function OrderForm({
                   <FormLabel>CPF/CNPJ</FormLabel>
                   <FormControl>
                     <Input
-                      type="number"
+                      type="string"
                       value={field.value ?? ""}
-                      onChange={(e) =>
-                        field.onChange(
-                          e.target.value === ""
-                            ? undefined
-                            : Number(e.target.value),
-                        )
-                      }
+                      onChange={(e) => field.onChange(e.target.value)}
                     />
                   </FormControl>
                   <FormMessage />
@@ -295,15 +289,9 @@ export function OrderForm({
                   <FormLabel>Número</FormLabel>
                   <FormControl>
                     <Input
-                      type="number"
+                      type="string"
                       value={field.value ?? ""}
-                      onChange={(e) =>
-                        field.onChange(
-                          e.target.value === ""
-                            ? undefined
-                            : Number(e.target.value),
-                        )
-                      }
+                      onChange={(e) => field.onChange(e.target.value)}
                     />
                   </FormControl>
                   <FormMessage />
@@ -362,11 +350,11 @@ export function OrderForm({
                   <FormItem>
                     <FormLabel>Quantidade</FormLabel>
                     <FormControl>
-                      <QuantitySelect // TROCAR PARA COMBOBOX
+                      <QuantityCombobox
                         value={field.value}
                         prices={categoryPrices}
                         onChange={field.onChange}
-                        disabled={categoryPrices.length === 0}
+                        disabled={!productId}
                         className={
                           fieldState.error
                             ? "border border-red-500 rounded-md"
