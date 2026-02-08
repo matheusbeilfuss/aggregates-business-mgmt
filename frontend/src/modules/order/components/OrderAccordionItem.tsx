@@ -33,8 +33,12 @@ export function OrderAccordionItem({
     <AccordionItem value={String(order.id)}>
       <AccordionTrigger className="w-full p-4 text-sm">
         <div className="grid w-full grid-cols-2 gap-x-2 gap-y-1 sm:grid-cols-4 sm:gap-y-0">
-          <span className="font-medium order-1 sm:order-1 sm:col-span-1">
+          <span className="font-medium order-1 sm:order-1 sm:col-span-1 flex items-center gap-2">
             {order.client.name}
+
+            <span className="text-xs rounded bg-muted px-2 py-0.5 text-muted-foreground">
+              #{order.id}
+            </span>
           </span>
 
           <span className="order-2 text-right sm:order-4 sm:col-span-1 sm:text-right">
