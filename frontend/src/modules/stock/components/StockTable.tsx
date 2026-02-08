@@ -21,17 +21,10 @@ import type { StockItem, Product } from "../types";
 
 interface StockTableProps {
   stocks: StockItem[];
-  openMenuId: number | null;
-  setOpenMenuId: (id: number | null) => void;
   onDeleteProduct: (product: Product) => void;
 }
 
-export function StockTable({
-  stocks,
-  openMenuId,
-  setOpenMenuId,
-  onDeleteProduct,
-}: StockTableProps) {
+export function StockTable({ stocks, onDeleteProduct }: StockTableProps) {
   const navigate = useNavigate();
 
   return (
@@ -52,16 +45,13 @@ export function StockTable({
             <TableCell>{stock.tonQuantity?.toFixed(2) ?? "-"}</TableCell>
             <TableCell>
               {stock.m3Quantity != null
-                ? `${stock.m3Quantity?.toFixed(2)} m³`
+                ? `${stock.m3Quantity.toFixed(2)} m³`
                 : "-"}
             </TableCell>
 
             <TableCell>
               <div className="flex justify-end">
-                <DropdownMenu
-                  open={openMenuId === stock.id}
-                  onOpenChange={(open) => setOpenMenuId(open ? stock.id : null)}
-                >
+                <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <Button
                       variant="ghost"
@@ -70,6 +60,7 @@ export function StockTable({
                       <MoreHorizontal className="h-4 w-4" />
                     </Button>
                   </DropdownMenuTrigger>
+
                   <DropdownMenuContent align="end">
                     <DropdownMenuItem
                       className="cursor-pointer"
