@@ -15,18 +15,19 @@ import {
 import { OrderItem } from "../types";
 import { useNavigate } from "react-router";
 
-interface Props {
+interface OrderActionsProps {
   order: OrderItem;
+  onMarkAsDelivered?: (order: OrderItem) => void;
 }
 
-export function OrderActions({ order }: Props) {
+export function OrderActions({ order, onMarkAsDelivered }: OrderActionsProps) {
   const navigate = useNavigate();
 
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <button>
-          <MoreHorizontal className="h-4 w-4" />
+          <MoreHorizontal className="h-4 w-4 cursor-pointer" />
         </button>
       </DropdownMenuTrigger>
 
@@ -41,8 +42,11 @@ export function OrderActions({ order }: Props) {
           Editar
         </DropdownMenuItem>
 
-        {order.status === "PENDING" && (
-          <DropdownMenuItem className="flex items-center gap-2">
+        {order.status === "PENDING" && onMarkAsDelivered && (
+          <DropdownMenuItem
+            className="flex items-center gap-2 cursor-pointer"
+            onClick={() => onMarkAsDelivered(order)}
+          >
             <Check className="h-4 w-4" />
             Marcar como entregue
           </DropdownMenuItem>

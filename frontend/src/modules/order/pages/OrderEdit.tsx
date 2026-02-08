@@ -16,7 +16,14 @@ export function OrderEdit() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
 
-  const { data: order, loading: orderLoading } = useOrder(id!);
+  const orderId = Number(id);
+
+  if (!id || Number.isNaN(orderId)) {
+    navigate("/orders");
+    return null;
+  }
+
+  const { data: order, loading: orderLoading } = useOrder(orderId);
   const { data: products } = useProducts();
   const { data: clients } = useClients();
   const { data: client } = useClient(
@@ -73,7 +80,7 @@ export function OrderEdit() {
       service: data.type === "SERVICE" ? (data.service ?? null) : null,
     };
 
-    await orderService.update(id!, payload);
+    await orderService.update(orderId, payload);
     navigate("/orders");
   };
 

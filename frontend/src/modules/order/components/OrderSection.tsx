@@ -5,9 +5,14 @@ import { OrderAccordionItem } from "./OrderAccordionItem";
 interface OrderSectionProps {
   title: string;
   orders?: OrderItem[];
+  onMarkAsDelivered?: (order: OrderItem) => void;
 }
 
-export function OrderSection({ title, orders }: OrderSectionProps) {
+export function OrderSection({
+  title,
+  orders,
+  onMarkAsDelivered,
+}: OrderSectionProps) {
   if (!orders || orders.length === 0) {
     return (
       <section>
@@ -28,7 +33,10 @@ export function OrderSection({ title, orders }: OrderSectionProps) {
           collapsible
           className="rounded-lg border"
         >
-          <OrderAccordionItem order={order} />
+          <OrderAccordionItem
+            order={order}
+            onMarkAsDelivered={onMarkAsDelivered}
+          />
         </Accordion>
       ))}
     </section>

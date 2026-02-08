@@ -10,11 +10,15 @@ import { formatTime } from "../utils/formatTime";
 import { useClientsPhones } from "../hooks/useClientsPhones";
 import { selectPreferredPhone } from "../utils/selectPreferredPhone";
 
-interface Props {
+interface OrderAccordionItemProps {
   order: OrderItem;
+  onMarkAsDelivered?: (order: OrderItem) => void;
 }
 
-export function OrderAccordionItem({ order }: Props) {
+export function OrderAccordionItem({
+  order,
+  onMarkAsDelivered,
+}: OrderAccordionItemProps) {
   const { data: phones } = useClientsPhones(order.client.id.toString());
 
   const preferredPhone: Phone | null = selectPreferredPhone(phones ?? []);
@@ -66,7 +70,7 @@ export function OrderAccordionItem({ order }: Props) {
         )}
 
         <div className="pt-2 flex justify-end px-5">
-          <OrderActions order={order} />
+          <OrderActions order={order} onMarkAsDelivered={onMarkAsDelivered} />
         </div>
       </AccordionContent>
     </AccordionItem>

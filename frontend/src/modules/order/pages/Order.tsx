@@ -1,4 +1,8 @@
-import { LoadingState, PageContainer } from "@/components/shared";
+import {
+  ConfirmDialog,
+  LoadingState,
+  PageContainer,
+} from "@/components/shared";
 import { DatePicker } from "@/components/shared/DatePicker";
 import { useOrders } from "../hooks/useOrders";
 import { OrderSection } from "../components/OrderSection";
@@ -7,13 +11,39 @@ import { useState } from "react";
 import { toISODate } from "../utils/toIsoDate";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router";
+import { orderService } from "../services/order.service";
+import { toast } from "sonner";
 
 export function Order() {
   const navigate = useNavigate();
 
   const [selectedDate, setSelectedDate] = useState(new Date());
 
-  const { data: orders, loading, error } = useOrders(toISODate(selectedDate));
+  const [orderToConfirm, setOrderToConfirm] = useState<OrderItem | null>(null);
+
+  const {
+    data: orders,
+    loading,
+    error,
+    refetch,
+  } = useOrders(toISODate(selectedDate));
+
+  function openConfirmDialog(order: OrderItem) {
+    setOrderToConfirm(order);
+  }
+
+  async function handleMarkOrderAsDelivered() {
+    if (!orderToConfirm) return;
+
+    try {
+      await orderService.markAsDelivered(orderToConfirm.id);
+      toast.success("O pedido foi marcado como entregue.");
+      setOrderToConfirm(null);
+      refetch();
+    } catch {
+      toast.error("Não foi possível marcar o pedido como entregue.");
+    }
+  }
 
   const pendingOrders = orders?.filter(
     (o: OrderItem) => o.status === "PENDING",
@@ -33,7 +63,12 @@ export function Order() {
         <div className="space-y-6">
           <DatePicker value={selectedDate} onChange={setSelectedDate} />
 
-          <OrderSection title="Pendentes" orders={pendingOrders} />
+          <OrderSection
+            title="Pendentes"
+            orders={pendingOrders}
+            onMarkAsDelivered={openConfirmDialog}
+          />
+
           <OrderSection title="Entregues" orders={completedOrders} />
         </div>
       )}
@@ -46,6 +81,16 @@ export function Order() {
           Adicionar Pedido
         </Button>
       </div>
+
+      <ConfirmDialog
+        open={!!orderToConfirm}
+        onOpenChange={(open) => !open && setOrderToConfirm(null)}
+        title="Você tem certeza que deseja marcar este pedido como entregue?"
+        description={orderToConfirm ? `Pedido #${orderToConfirm.id}` : ""}
+        onConfirm={handleMarkOrderAsDelivered}
+        confirmLabel="Confirmar"
+        variant="default"
+      />
     </PageContainer>
   );
 }
