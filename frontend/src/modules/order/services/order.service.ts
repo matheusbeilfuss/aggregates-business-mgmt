@@ -12,21 +12,26 @@ export const orderService = {
   getByScheduledDate: (scheduledDate: string) =>
     api.get<OrderItem[]>(`/orders?scheduledDate=${scheduledDate}`),
 
-  getById: (id: string) => api.get<OrderItem>(`/orders/${id}`),
-
-  getPhonesByClientId: (clientId: number) =>
-    api.get<Phone[]>(`/clients/${clientId}/phones`),
-
-  getAllClients: () => api.get<Client[]>(`/clients`),
-
-  getClientById: (clientId: number) =>
-    api.get<ClientDetail>(`/clients/${clientId}`),
-
-  getCategoryPrices: (categoryId: number) =>
-    api.get<Price[]>(`/categories/${categoryId}/prices`),
+  getById: (id: number) => api.get<OrderItem>(`/orders/${id}`),
 
   create: (data: CreateOrderPayload) => api.post<OrderItem>(`/orders`, data),
 
-  update: (id: string, data: CreateOrderPayload) =>
+  update: (id: number, data: CreateOrderPayload) =>
     api.put<OrderItem>(`/orders/${id}`, data),
+
+  markAsDelivered: (id: number) => api.patch(`/orders/${id}/delivered`, {}),
+};
+
+export const clientService = {
+  getPhonesById: (clientId: number) =>
+    api.get<Phone[]>(`/clients/${clientId}/phones`),
+
+  getAll: () => api.get<Client[]>(`/clients`),
+
+  getById: (clientId: number) => api.get<ClientDetail>(`/clients/${clientId}`),
+};
+
+export const categoryService = {
+  getPricesById: (categoryId: number) =>
+    api.get<Price[]>(`/categories/${categoryId}/prices`),
 };
