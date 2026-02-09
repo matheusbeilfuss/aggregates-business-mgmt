@@ -6,12 +6,14 @@ interface OrderSectionProps {
   title: string;
   orders?: OrderItem[];
   onMarkAsDelivered?: (order: OrderItem) => void;
+  onAddPayment?: (order: OrderItem) => void;
 }
 
 export function OrderSection({
   title,
   orders,
   onMarkAsDelivered,
+  onAddPayment,
 }: OrderSectionProps) {
   if (!orders || orders.length === 0) {
     return (
@@ -36,6 +38,7 @@ export function OrderSection({
           <OrderAccordionItem
             order={order}
             onMarkAsDelivered={onMarkAsDelivered}
+            onAddPayment={onAddPayment}
           />
         </Accordion>
       ))}

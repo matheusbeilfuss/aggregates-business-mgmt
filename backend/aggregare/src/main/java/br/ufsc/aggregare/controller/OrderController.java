@@ -78,8 +78,8 @@ public class OrderController {
 		return ResponseEntity.ok().body(order);
 	}
 
-	@PatchMapping(value = "/{id}/pay")
-	public ResponseEntity<Order> payOrder(@PathVariable Long id, @RequestBody PaymentInputDTO payment) {
+	@PatchMapping(value = "/{id}/payment")
+	public ResponseEntity<Order> addPayment(@PathVariable Long id, @RequestBody PaymentInputDTO payment) {
 		Order order = service.addPayment(id, payment);
 		return ResponseEntity.ok().body(order);
 	}

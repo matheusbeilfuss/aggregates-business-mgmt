@@ -90,3 +90,25 @@ export const orderSchema = z
   });
 
 export type OrderFormData = z.infer<typeof orderSchema>;
+
+export const orderPaymentSchema = z.object({
+  paymentValue: z.number().min(1, "Valor do pagamento obrigatório"),
+  paymentMethod: z
+    .string()
+    .min(1, "Método de pagamento obrigatório")
+    .refine(
+      (value) =>
+        [
+          "CREDIT_CARD",
+          "DEBIT_CARD",
+          "CASH",
+          "PIX",
+          "BANK_TRANSFER",
+          "BANK_SLIP",
+          "CHECK",
+        ].includes(value),
+      "Método de pagamento inválido",
+    ),
+});
+
+export type OrderPaymentFormData = z.infer<typeof orderPaymentSchema>;

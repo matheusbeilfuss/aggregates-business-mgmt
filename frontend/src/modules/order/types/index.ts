@@ -2,7 +2,7 @@ import { Product } from "@/modules/stock/types";
 
 export type OrderType = "MATERIAL" | "SERVICE";
 export type OrderStatus = "PENDING" | "DELIVERED";
-export type PaymentStatus = "PENDING" | "PAID";
+export type PaymentStatus = "PENDING" | "PARTIAL" | "PAID";
 export type PhoneType = "WHATSAPP" | "CELULAR" | "FIXO" | "OUTRO";
 
 export interface Client {

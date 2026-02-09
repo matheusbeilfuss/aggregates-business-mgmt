@@ -20,6 +20,12 @@ export const orderService = {
     api.put<OrderItem>(`/orders/${id}`, data),
 
   markAsDelivered: (id: number) => api.patch(`/orders/${id}/delivered`, {}),
+
+  addPayment: (orderId: number, paymentValue: number, paymentMethod: string) =>
+    api.patch(`/orders/${orderId}/payment`, {
+      paymentValue,
+      paymentMethod,
+    }),
 };
 
 export const clientService = {

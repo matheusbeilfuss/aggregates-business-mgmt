@@ -13,6 +13,7 @@ import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router";
 import { orderService } from "../services/order.service";
 import { toast } from "sonner";
+import { AddPaymentDialog } from "@/components/shared/AddPaymentDialog";
 
 export function Order() {
   const navigate = useNavigate();
@@ -20,6 +21,10 @@ export function Order() {
   const [selectedDate, setSelectedDate] = useState(new Date());
 
   const [orderToConfirm, setOrderToConfirm] = useState<OrderItem | null>(null);
+  const [isAddPaymentDialogOpen, setIsAddPaymentDialogOpen] = useState(false);
+  const [orderToAddPayment, setOrderToAddPayment] = useState<OrderItem | null>(
+    null,
+  );
 
   const {
     data: orders,
@@ -30,6 +35,11 @@ export function Order() {
 
   function openConfirmDialog(order: OrderItem) {
     setOrderToConfirm(order);
+  }
+
+  function openAddPaymentDialog(order: OrderItem) {
+    setOrderToAddPayment(order);
+    setIsAddPaymentDialogOpen(true);
   }
 
   async function handleMarkOrderAsDelivered() {
@@ -67,9 +77,14 @@ export function Order() {
             title="Pendentes"
             orders={pendingOrders}
             onMarkAsDelivered={openConfirmDialog}
+            onAddPayment={openAddPaymentDialog}
           />
 
-          <OrderSection title="Entregues" orders={completedOrders} />
+          <OrderSection
+            title="Entregues"
+            orders={completedOrders}
+            onAddPayment={openAddPaymentDialog}
+          />
         </div>
       )}
 
@@ -91,6 +106,22 @@ export function Order() {
         confirmLabel="Confirmar"
         variant="default"
       />
+
+      {orderToAddPayment && (
+        <AddPaymentDialog
+          open={isAddPaymentDialogOpen}
+          onOpenChange={(open) => {
+            setIsAddPaymentDialogOpen(open);
+            if (!open) setOrderToAddPayment(null);
+          }}
+          order={orderToAddPayment}
+          onSuccess={() => {
+            setIsAddPaymentDialogOpen(false);
+            setOrderToAddPayment(null);
+            refetch();
+          }}
+        />
+      )}
     </PageContainer>
   );
 }

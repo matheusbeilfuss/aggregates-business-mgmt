@@ -18,9 +18,14 @@ import { useNavigate } from "react-router";
 interface OrderActionsProps {
   order: OrderItem;
   onMarkAsDelivered?: (order: OrderItem) => void;
+  onAddPayment?: (order: OrderItem) => void;
 }
 
-export function OrderActions({ order, onMarkAsDelivered }: OrderActionsProps) {
+export function OrderActions({
+  order,
+  onMarkAsDelivered,
+  onAddPayment,
+}: OrderActionsProps) {
   const navigate = useNavigate();
 
   return (
@@ -52,12 +57,17 @@ export function OrderActions({ order, onMarkAsDelivered }: OrderActionsProps) {
           </DropdownMenuItem>
         )}
 
-        {order.paymentStatus === "PENDING" && (
-          <DropdownMenuItem className="flex items-center gap-2">
-            <DollarSign className="h-4 w-4" />
-            Marcar como pago
-          </DropdownMenuItem>
-        )}
+        {onAddPayment &&
+          (order.paymentStatus === "PENDING" ||
+            order.paymentStatus === "PARTIAL") && (
+            <DropdownMenuItem
+              className="flex items-center gap-2 cursor-pointer"
+              onClick={() => onAddPayment(order)}
+            >
+              <DollarSign className="h-4 w-4" />
+              Adicionar pagamento
+            </DropdownMenuItem>
+          )}
 
         <DropdownMenuItem className="flex items-center gap-2">
           <User className="h-4 w-4" />

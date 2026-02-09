@@ -13,11 +13,13 @@ import { selectPreferredPhone } from "../utils/selectPreferredPhone";
 interface OrderAccordionItemProps {
   order: OrderItem;
   onMarkAsDelivered?: (order: OrderItem) => void;
+  onAddPayment?: (order: OrderItem) => void;
 }
 
 export function OrderAccordionItem({
   order,
   onMarkAsDelivered,
+  onAddPayment,
 }: OrderAccordionItemProps) {
   const { data: phones } = useClientsPhones(order.client.id.toString());
 
@@ -74,7 +76,11 @@ export function OrderAccordionItem({
         )}
 
         <div className="pt-2 flex justify-end px-5">
-          <OrderActions order={order} onMarkAsDelivered={onMarkAsDelivered} />
+          <OrderActions
+            order={order}
+            onMarkAsDelivered={onMarkAsDelivered}
+            onAddPayment={onAddPayment}
+          />
         </div>
       </AccordionContent>
     </AccordionItem>
