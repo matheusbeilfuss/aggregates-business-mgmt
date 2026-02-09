@@ -20,7 +20,9 @@ export function Order() {
 
   const [selectedDate, setSelectedDate] = useState(new Date());
 
-  const [orderToConfirm, setOrderToConfirm] = useState<OrderItem | null>(null);
+  const [orderToMarkAsDelivered, setOrderToMarkAsDelivered] =
+    useState<OrderItem | null>(null);
+  const [orderToDelete, setOrderToDelete] = useState<OrderItem | null>(null);
   const [isAddPaymentDialogOpen, setIsAddPaymentDialogOpen] = useState(false);
   const [orderToAddPayment, setOrderToAddPayment] = useState<OrderItem | null>(
     null,
@@ -33,8 +35,12 @@ export function Order() {
     refetch,
   } = useOrders(toISODate(selectedDate));
 
-  function openConfirmDialog(order: OrderItem) {
-    setOrderToConfirm(order);
+  function openDeliveredDialog(order: OrderItem) {
+    setOrderToMarkAsDelivered(order);
+  }
+
+  function openDeleteDialog(order: OrderItem) {
+    setOrderToDelete(order);
   }
 
   function openAddPaymentDialog(order: OrderItem) {
@@ -43,12 +49,12 @@ export function Order() {
   }
 
   async function handleMarkOrderAsDelivered() {
-    if (!orderToConfirm) return;
+    if (!orderToMarkAsDelivered) return;
 
     try {
-      await orderService.markAsDelivered(orderToConfirm.id);
+      await orderService.markAsDelivered(orderToMarkAsDelivered.id);
       toast.success("O pedido foi marcado como entregue.");
-      setOrderToConfirm(null);
+      setOrderToMarkAsDelivered(null);
       refetch();
     } catch {
       toast.error("Não foi possível marcar o pedido como entregue.");
@@ -56,15 +62,15 @@ export function Order() {
   }
 
   async function handleDeleteOrder() {
-    if (!orderToConfirm) return;
+    if (!orderToDelete) return;
 
     try {
-      await orderService.delete(orderToConfirm.id);
+      await orderService.delete(orderToDelete.id);
       toast.success("O pedido foi excluído com sucesso.");
     } catch {
       toast.error("Não foi possível excluir o pedido.");
     } finally {
-      setOrderToConfirm(null);
+      setOrderToDelete(null);
       refetch();
     }
   }
@@ -90,16 +96,16 @@ export function Order() {
           <OrderSection
             title="Pendentes"
             orders={pendingOrders}
-            onMarkAsDelivered={openConfirmDialog}
+            onMarkAsDelivered={openDeliveredDialog}
             onAddPayment={openAddPaymentDialog}
-            onDeleteOrder={openConfirmDialog}
+            onDeleteOrder={openDeleteDialog}
           />
 
           <OrderSection
             title="Entregues"
             orders={completedOrders}
             onAddPayment={openAddPaymentDialog}
-            onDeleteOrder={openConfirmDialog}
+            onDeleteOrder={openDeleteDialog}
           />
         </div>
       )}
@@ -114,20 +120,22 @@ export function Order() {
       </div>
 
       <ConfirmDialog
-        open={!!orderToConfirm}
-        onOpenChange={(open) => !open && setOrderToConfirm(null)}
+        open={!!orderToMarkAsDelivered}
+        onOpenChange={(open) => !open && setOrderToMarkAsDelivered(null)}
         title="Você tem certeza que deseja marcar este pedido como entregue?"
-        description={orderToConfirm ? `Pedido #${orderToConfirm.id}` : ""}
+        description={
+          orderToMarkAsDelivered ? `Pedido #${orderToMarkAsDelivered.id}` : ""
+        }
         onConfirm={handleMarkOrderAsDelivered}
         confirmLabel="Confirmar"
         variant="default"
       />
 
       <ConfirmDialog
-        open={!!orderToConfirm}
-        onOpenChange={(open) => !open && setOrderToConfirm(null)}
+        open={!!orderToDelete}
+        onOpenChange={(open) => !open && setOrderToDelete(null)}
         title="Você tem certeza de que deseja excluir o pedido abaixo?"
-        description={orderToConfirm ? `Pedido #${orderToConfirm.id}` : ""}
+        description={orderToDelete ? `Pedido #${orderToDelete.id}` : ""}
         onConfirm={handleDeleteOrder}
         confirmLabel="Excluir"
         variant="destructive"

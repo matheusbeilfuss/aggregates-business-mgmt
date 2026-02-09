@@ -33,7 +33,7 @@ import { orderService } from "@/modules/order/services/order.service";
 import { Loader2 } from "lucide-react";
 import { formatTime } from "@/modules/order/utils/formatTime";
 import { formatDate } from "@/modules/order/utils/formatDate";
-import { MoneyInput } from "./MoneyInput";
+import { Input } from "../ui/input";
 
 interface AddPaymentDialogProps {
   open: boolean;
@@ -122,7 +122,17 @@ export function AddPaymentDialog({
                 <FormItem>
                   <FormLabel>Valor do pagamento</FormLabel>
                   <FormControl>
-                    <MoneyInput value={field.value} onChange={field.onChange} />
+                    <Input
+                      type="number"
+                      value={field.value ?? ""}
+                      onChange={(e) =>
+                        field.onChange(
+                          e.target.value === ""
+                            ? undefined
+                            : Number(e.target.value),
+                        )
+                      }
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
