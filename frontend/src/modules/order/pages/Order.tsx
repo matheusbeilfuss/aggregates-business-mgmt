@@ -55,6 +55,20 @@ export function Order() {
     }
   }
 
+  async function handleDeleteOrder() {
+    if (!orderToConfirm) return;
+
+    try {
+      await orderService.delete(orderToConfirm.id);
+      toast.success("O pedido foi excluído com sucesso.");
+    } catch {
+      toast.error("Não foi possível excluir o pedido.");
+    } finally {
+      setOrderToConfirm(null);
+      refetch();
+    }
+  }
+
   const pendingOrders = orders?.filter(
     (o: OrderItem) => o.status === "PENDING",
   );
@@ -78,12 +92,14 @@ export function Order() {
             orders={pendingOrders}
             onMarkAsDelivered={openConfirmDialog}
             onAddPayment={openAddPaymentDialog}
+            onDeleteOrder={openConfirmDialog}
           />
 
           <OrderSection
             title="Entregues"
             orders={completedOrders}
             onAddPayment={openAddPaymentDialog}
+            onDeleteOrder={openConfirmDialog}
           />
         </div>
       )}
@@ -105,6 +121,16 @@ export function Order() {
         onConfirm={handleMarkOrderAsDelivered}
         confirmLabel="Confirmar"
         variant="default"
+      />
+
+      <ConfirmDialog
+        open={!!orderToConfirm}
+        onOpenChange={(open) => !open && setOrderToConfirm(null)}
+        title="Você tem certeza de que deseja excluir o pedido abaixo?"
+        description={orderToConfirm ? `Pedido #${orderToConfirm.id}` : ""}
+        onConfirm={handleDeleteOrder}
+        confirmLabel="Excluir"
+        variant="destructive"
       />
 
       {orderToAddPayment && (

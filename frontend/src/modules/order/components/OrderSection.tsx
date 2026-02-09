@@ -7,6 +7,7 @@ interface OrderSectionProps {
   orders?: OrderItem[];
   onMarkAsDelivered?: (order: OrderItem) => void;
   onAddPayment?: (order: OrderItem) => void;
+  onDeleteOrder?: (order: OrderItem) => void;
 }
 
 export function OrderSection({
@@ -14,6 +15,7 @@ export function OrderSection({
   orders,
   onMarkAsDelivered,
   onAddPayment,
+  onDeleteOrder,
 }: OrderSectionProps) {
   if (!orders || orders.length === 0) {
     return (
@@ -39,6 +41,7 @@ export function OrderSection({
             order={order}
             onMarkAsDelivered={onMarkAsDelivered}
             onAddPayment={onAddPayment}
+            onDeleteOrder={onDeleteOrder}
           />
         </Accordion>
       ))}

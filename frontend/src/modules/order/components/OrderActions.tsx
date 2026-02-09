@@ -19,12 +19,14 @@ interface OrderActionsProps {
   order: OrderItem;
   onMarkAsDelivered?: (order: OrderItem) => void;
   onAddPayment?: (order: OrderItem) => void;
+  onDeleteOrder?: (order: OrderItem) => void;
 }
 
 export function OrderActions({
   order,
   onMarkAsDelivered,
   onAddPayment,
+  onDeleteOrder,
 }: OrderActionsProps) {
   const navigate = useNavigate();
 
@@ -74,7 +76,10 @@ export function OrderActions({
           Cliente
         </DropdownMenuItem>
 
-        <DropdownMenuItem className="flex items-center gap-2 text-destructive">
+        <DropdownMenuItem
+          className="flex items-center gap-2 text-destructive"
+          onClick={() => onDeleteOrder && onDeleteOrder(order)}
+        >
           <X className="h-4 w-4 text-destructive" />
           Excluir
         </DropdownMenuItem>

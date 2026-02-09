@@ -14,12 +14,14 @@ interface OrderAccordionItemProps {
   order: OrderItem;
   onMarkAsDelivered?: (order: OrderItem) => void;
   onAddPayment?: (order: OrderItem) => void;
+  onDeleteOrder?: (order: OrderItem) => void;
 }
 
 export function OrderAccordionItem({
   order,
   onMarkAsDelivered,
   onAddPayment,
+  onDeleteOrder,
 }: OrderAccordionItemProps) {
   const { data: phones } = useClientsPhones(order.client.id.toString());
 
@@ -80,6 +82,7 @@ export function OrderAccordionItem({
             order={order}
             onMarkAsDelivered={onMarkAsDelivered}
             onAddPayment={onAddPayment}
+            onDeleteOrder={onDeleteOrder}
           />
         </div>
       </AccordionContent>

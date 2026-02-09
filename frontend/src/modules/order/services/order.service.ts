@@ -26,6 +26,8 @@ export const orderService = {
       paymentValue,
       paymentMethod,
     }),
+
+  delete: (id: number) => api.delete(`/orders/${id}`),
 };
 
 export const clientService = {
