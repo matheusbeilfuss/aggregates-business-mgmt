@@ -27,6 +27,7 @@ export function ClientCombobox({
   const filteredClients = clients.filter((client) =>
     client.name.toLowerCase().includes(value.toLowerCase()),
   );
+
   return (
     <Combobox
       value={clientId ? String(clientId) : ""}

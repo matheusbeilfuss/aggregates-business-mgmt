@@ -74,6 +74,8 @@ export function AddPaymentDialog({
 
   const isSubmitting = form.formState.isSubmitting;
 
+  const orderLabel = order.product ? order.product.name : order.service;
+
   return (
     <Dialog
       open={open}
@@ -96,7 +98,7 @@ export function AddPaymentDialog({
           <div className="space-y-1">
             <p className="text-sm font-medium">Pedido #{order.id}</p>
             <p className="text-sm text-muted-foreground">
-              {order.client.name} - {order.product.name}
+              {order.client.name} - {orderLabel}
             </p>
             <p className="text-sm text-muted-foreground">
               {formatDate(order.scheduledDate)} às{" "}

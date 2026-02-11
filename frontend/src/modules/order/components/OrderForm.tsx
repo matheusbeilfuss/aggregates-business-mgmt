@@ -163,7 +163,10 @@ export function OrderForm({
                       value={field.value ?? ""}
                       clientId={form.watch("clientId")}
                       clients={clients ?? []}
-                      onChange={field.onChange}
+                      onChange={(value) => {
+                        field.onChange(value);
+                        form.setValue("clientId", undefined);
+                      }}
                       onClientSelect={(client) => {
                         field.onChange(client.name);
                         form.setValue("clientId", client.id);

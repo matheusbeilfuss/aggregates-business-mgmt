@@ -43,16 +43,10 @@ export interface OrderAddress {
   state: string;
 }
 
-export interface OrderItem {
+interface BaseOrderItem {
   id: number;
-  product: Product;
   client: Client;
   orderAddress: OrderAddress;
-
-  quantity: number | null;
-  service: string | null;
-
-  type: OrderType;
 
   scheduledDate: string;
   scheduledTime: string;
@@ -62,6 +56,26 @@ export interface OrderItem {
   paymentStatus: PaymentStatus;
   orderValue: number;
 }
+
+interface MaterialOrderItem extends BaseOrderItem {
+  type: "MATERIAL";
+
+  product: Product;
+  quantity: number;
+
+  service: null;
+}
+
+interface ServiceOrderItem extends BaseOrderItem {
+  type: "SERVICE";
+
+  product: null;
+  quantity: null;
+
+  service: string;
+}
+
+export type OrderItem = MaterialOrderItem | ServiceOrderItem;
 
 // Payloads para API
 export interface CreateOrderPayload {
