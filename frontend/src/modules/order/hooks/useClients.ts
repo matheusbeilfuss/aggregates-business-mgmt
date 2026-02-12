@@ -1,6 +1,6 @@
 import { useCallback } from "react";
 import { clientService } from "../services/order.service";
-import { Client, ClientDetail } from "../types";
+import { Client } from "../types";
 import { useApi } from "@/hooks/useApi";
 
 export function useClients() {
@@ -12,5 +12,5 @@ export function useClients() {
 export function useClient(id: string | null) {
   const fetcher = useCallback(() => clientService.getById(Number(id!)), [id]);
 
-  return useApi<ClientDetail>(fetcher, { enabled: !!id });
+  return useApi<Client>(fetcher, { enabled: !!id });
 }

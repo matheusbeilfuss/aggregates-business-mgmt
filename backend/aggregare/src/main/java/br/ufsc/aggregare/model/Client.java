@@ -3,6 +3,7 @@ package br.ufsc.aggregare.model;
 import java.io.Serial;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
@@ -85,7 +86,7 @@ public class Client implements Serializable {
 	}
 
 	public List<Phone> getPhones() {
-		return phones;
+		return Collections.unmodifiableList(phones);
 	}
 
 	public void addPhone(Phone phone) {

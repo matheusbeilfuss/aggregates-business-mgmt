@@ -4,13 +4,14 @@ import {
   CreateClientPayload,
   CreateOrderPayload,
   OrderItem,
-  Phone,
   Price,
 } from "../types";
 
 export const orderService = {
   getByScheduledDate: (scheduledDate: string) =>
-    api.get<OrderItem[]>(`/orders?scheduledDate=${scheduledDate}`),
+    api.get<OrderItem[]>(
+      `/orders?scheduledDate=${encodeURIComponent(scheduledDate)}`,
+    ),
 
   getById: (id: number) => api.get<OrderItem>(`/orders/${id}`),
 
@@ -31,9 +32,6 @@ export const orderService = {
 };
 
 export const clientService = {
-  getPhonesById: (clientId: number) =>
-    api.get<Phone[]>(`/clients/${clientId}/phones`),
-
   getAll: () => api.get<Client[]>(`/clients`),
 
   getById: (clientId: number) => api.get<Client>(`/clients/${clientId}`),

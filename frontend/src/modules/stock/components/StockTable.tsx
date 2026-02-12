@@ -72,8 +72,7 @@ export function StockTable({ stocks, onDeleteProduct }: StockTableProps) {
 
                     <DropdownMenuItem
                       className="cursor-pointer"
-                      onSelect={(e) => {
-                        e.preventDefault();
+                      onSelect={() => {
                         onDeleteProduct(stock.product);
                       }}
                     >
