@@ -7,7 +7,6 @@ import { OrderItem, Phone } from "../types";
 import { OrderActions } from "./OrderActions";
 import { Separator } from "@/components/ui/separator";
 import { formatTime } from "../utils/formatTime";
-import { useClientsPhones } from "../hooks/useClientsPhones";
 import { selectPreferredPhone } from "../utils/selectPreferredPhone";
 
 interface OrderAccordionItemProps {
@@ -23,9 +22,9 @@ export function OrderAccordionItem({
   onAddPayment,
   onDeleteOrder,
 }: OrderAccordionItemProps) {
-  const { data: phones } = useClientsPhones(order.client.id.toString());
-
-  const preferredPhone: Phone | null = selectPreferredPhone(phones ?? []);
+  const preferredPhone: Phone | null = selectPreferredPhone(
+    order.client.phones ?? [],
+  );
 
   const isMaterial = order.type === "MATERIAL";
 

@@ -10,22 +10,23 @@ export interface Client {
   name: string;
   cpfCnpj: string;
   email: string;
-}
-
-export interface ClientDetail extends Client {
-  state: string;
-  city: string;
-  neighborhood: string;
-  street: string;
-  number: string;
+  address?: Address;
   phones: Phone[];
 }
 
 export interface Phone {
   id: number;
-  client: Client;
   number: string;
   type: PhoneType;
+}
+
+export interface Address {
+  id: number;
+  street: string;
+  number: string;
+  neighborhood: string;
+  city: string;
+  state: string;
 }
 
 export interface Price {

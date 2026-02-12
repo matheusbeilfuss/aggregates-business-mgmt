@@ -64,11 +64,14 @@ export function OrderForm({
 
     form.setValue("clientName", client.name);
     form.setValue("cpfCnpj", client.cpfCnpj);
-    form.setValue("state", client.state);
-    form.setValue("city", client.city);
-    form.setValue("neighborhood", client.neighborhood);
-    form.setValue("street", client.street);
-    form.setValue("number", client.number);
+
+    if (client.address) {
+      form.setValue("state", client.address.state);
+      form.setValue("city", client.address.city);
+      form.setValue("neighborhood", client.address.neighborhood);
+      form.setValue("street", client.address.street);
+      form.setValue("number", client.address.number);
+    }
 
     if (client.phones?.length) {
       form.setValue("phone", selectPreferredPhone(client.phones)?.number ?? "");
