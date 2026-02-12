@@ -108,7 +108,9 @@ export function AddPaymentDialog({
 
           <div className="text-right">
             <p className="text-xs text-muted-foreground">Valor total</p>
-            <p className="text-lg font-semibold">R$ {order.orderValue}</p>
+            <p className="text-lg font-semibold">
+              R$ {order.orderValue.toFixed(2)}
+            </p>
           </div>
         </div>
 

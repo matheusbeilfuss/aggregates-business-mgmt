@@ -2,8 +2,6 @@ package br.ufsc.aggregare.service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -13,16 +11,11 @@ import org.springframework.transaction.annotation.Transactional;
 import br.ufsc.aggregare.model.Address;
 import br.ufsc.aggregare.model.Client;
 import br.ufsc.aggregare.model.Phone;
-import br.ufsc.aggregare.model.dto.ClientDTO;
 import br.ufsc.aggregare.model.dto.ClientInputDTO;
 import br.ufsc.aggregare.model.dto.PhoneDTO;
-import br.ufsc.aggregare.repository.AddressRepository;
 import br.ufsc.aggregare.repository.ClientRepository;
-import br.ufsc.aggregare.repository.PhoneRepository;
 import br.ufsc.aggregare.service.exception.DatabaseException;
 import br.ufsc.aggregare.service.exception.ResourceNotFoundException;
-
-import jakarta.persistence.EntityNotFoundException;
 
 @Service
 public class ClientService {

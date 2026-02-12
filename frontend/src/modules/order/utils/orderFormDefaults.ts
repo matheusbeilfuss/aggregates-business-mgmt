@@ -7,6 +7,7 @@ export const orderFormDefaults: OrderFormData = {
   clientName: "",
   clientId: undefined,
   phone: "",
+  phoneType: "WHATSAPP",
   cpfCnpj: "",
   state: "",
   city: "",

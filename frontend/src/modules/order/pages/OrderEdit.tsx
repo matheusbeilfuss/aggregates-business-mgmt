@@ -1,4 +1,4 @@
-import { useNavigate, useParams } from "react-router-dom";
+import { Navigate, useNavigate, useParams } from "react-router-dom";
 import { useOrder } from "../hooks/useOrders";
 import { useProducts } from "@/modules/stock/hooks/useStocks";
 import { useClient, useClients } from "../hooks/useClients";
@@ -19,8 +19,7 @@ export function OrderEdit() {
   const orderId = Number(id);
 
   if (!id || Number.isNaN(orderId)) {
-    navigate("/orders");
-    return null;
+    return <Navigate to="/orders" replace />;
   }
 
   const { data: order, loading: orderLoading } = useOrder(orderId);

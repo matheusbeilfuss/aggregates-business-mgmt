@@ -13,7 +13,8 @@ import {
   X,
 } from "lucide-react";
 import { OrderItem } from "../types";
-import { useNavigate } from "react-router";
+import { Button } from "@/components/ui/button";
+import { useNavigate } from "react-router-dom";
 
 interface OrderActionsProps {
   order: OrderItem;
@@ -33,9 +34,9 @@ export function OrderActions({
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <button>
+        <Button type="button" variant="ghost">
           <MoreHorizontal className="h-4 w-4 cursor-pointer" />
-        </button>
+        </Button>
       </DropdownMenuTrigger>
 
       <DropdownMenuContent align="end">

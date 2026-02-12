@@ -100,3 +100,19 @@ export interface CreateOrderPayload {
   observations: string | null;
   orderValue: number;
 }
+
+export interface CreatePhonePayload {
+  number: string;
+  type: PhoneType;
+}
+
+export interface CreateClientPayload {
+  name: string;
+  cpfCnpj?: string;
+  phones: CreatePhonePayload[];
+  street: string;
+  number: string;
+  neighborhood: string;
+  city: string;
+  state: string;
+}

@@ -40,7 +40,7 @@ export function ClientCombobox({
     >
       <ComboboxInput
         className={className}
-        value={value}
+        value={value ?? ""}
         onChange={(e) => onChange(e.target.value)}
         placeholder="Busque ou digite o nome do cliente"
       />

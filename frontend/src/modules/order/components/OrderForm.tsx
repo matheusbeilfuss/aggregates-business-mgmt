@@ -24,6 +24,7 @@ import { useEffect, useMemo } from "react";
 import { usePrices } from "../hooks/useOrders";
 import { useClient } from "../hooks/useClients";
 import { selectPreferredPhone } from "../utils/selectPreferredPhone";
+import { PhoneTypeSelect } from "./PhoneTypeSelect";
 
 interface OrderFormProps {
   title: string;
@@ -74,18 +75,40 @@ export function OrderForm({
     }
 
     if (client.phones?.length) {
-      form.setValue("phone", selectPreferredPhone(client.phones)?.number ?? "");
+      const preferredPhone = selectPreferredPhone(client.phones);
+      if (preferredPhone) {
+        form.setValue("phone", preferredPhone.number);
+        form.setValue("phoneType", preferredPhone.type);
+      }
     }
   }, [client, form]);
 
-  const calculatedOrderValue = useMemo(() => {
-    if (orderType !== "MATERIAL" || quantity == null) return 0;
-    return categoryPrices.find((p) => p.m3Volume === quantity)?.price ?? 0;
-  }, [orderType, quantity, categoryPrices]);
+  useEffect(() => {
+    if (orderType === "SERVICE") {
+      form.setValue("productId", undefined);
+      form.setValue("quantity", undefined);
+
+      form.setValue("orderValue", undefined);
+    }
+
+    if (orderType === "MATERIAL") {
+      form.setValue("service", "");
+    }
+  }, [orderType, form]);
 
   useEffect(() => {
-    form.setValue("orderValue", calculatedOrderValue);
-  }, [calculatedOrderValue, form]);
+    if (orderType !== "MATERIAL") return;
+
+    if (quantity == null) {
+      form.setValue("orderValue", undefined);
+      return;
+    }
+
+    const price =
+      categoryPrices.find((p) => p.m3Volume === quantity)?.price ?? 0;
+
+    form.setValue("orderValue", price);
+  }, [orderType, quantity, categoryPrices, form]);
 
   if (loading) {
     return (
@@ -185,23 +208,39 @@ export function OrderForm({
                 </FormItem>
               )}
             />
-            <FormField
-              control={form.control}
-              name="phone"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Telefone</FormLabel>
-                  <FormControl>
-                    <Input
-                      {...field}
-                      type="string"
-                      onFocus={(e) => e.target.select()}
+            <div className="flex gap-4 w-full">
+              <FormField
+                control={form.control}
+                name="phone"
+                render={({ field }) => (
+                  <FormItem className="w-full">
+                    <FormLabel>Telefone</FormLabel>
+                    <FormControl>
+                      <Input
+                        {...field}
+                        type="string"
+                        onFocus={(e) => e.target.select()}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="phoneType"
+                render={({ field }) => (
+                  <FormItem className="w-full">
+                    <FormLabel>Tipo</FormLabel>
+                    <PhoneTypeSelect
+                      value={field.value}
+                      onChange={field.onChange}
                     />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
             <FormField
               control={form.control}
               name="cpfCnpj"

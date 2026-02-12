@@ -17,8 +17,6 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import br.ufsc.aggregare.model.Client;
-import br.ufsc.aggregare.model.Phone;
-import br.ufsc.aggregare.model.dto.ClientDTO;
 import br.ufsc.aggregare.model.dto.ClientInputDTO;
 import br.ufsc.aggregare.service.ClientService;
 

@@ -1,7 +1,7 @@
 import { api } from "@/lib/api";
 import {
   Client,
-  ClientDetail,
+  CreateClientPayload,
   CreateOrderPayload,
   OrderItem,
   Phone,
@@ -36,7 +36,9 @@ export const clientService = {
 
   getAll: () => api.get<Client[]>(`/clients`),
 
-  getById: (clientId: number) => api.get<ClientDetail>(`/clients/${clientId}`),
+  getById: (clientId: number) => api.get<Client>(`/clients/${clientId}`),
+
+  create: (data: CreateClientPayload) => api.post<Client>(`/clients`, data),
 };
 
 export const categoryService = {
