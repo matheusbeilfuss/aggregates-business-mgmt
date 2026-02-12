@@ -6,6 +6,8 @@ import java.util.Objects;
 
 import br.ufsc.aggregare.model.enums.PhoneTypeEnum;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -27,6 +29,7 @@ public class Phone implements Serializable {
 
 	@ManyToOne
 	@JoinColumn(name = "client_id")
+	@JsonIgnore
 	private Client client;
 
 	private String number;

@@ -2,12 +2,17 @@ package br.ufsc.aggregare.model;
 
 import java.io.Serial;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 
 @Entity
@@ -21,6 +26,12 @@ public class Client implements Serializable {
 	private String name;
 	private String cpfCnpj;
 	private String email;
+
+	@OneToOne(mappedBy = "client", cascade = CascadeType.ALL, orphanRemoval = true)
+	private Address address;
+
+	@OneToMany(mappedBy = "client", cascade = CascadeType.ALL, orphanRemoval = true)
+	private List<Phone> phones = new ArrayList<>();
 
 	public Client() {
 	}
@@ -62,6 +73,24 @@ public class Client implements Serializable {
 
 	public void setEmail(String email) {
 		this.email = email;
+	}
+
+	public Address getAddress() {
+		return address;
+	}
+
+	public void setAddress(Address address) {
+		this.address = address;
+		address.setClient(this);
+	}
+
+	public List<Phone> getPhones() {
+		return phones;
+	}
+
+	public void addPhone(Phone phone) {
+		phones.add(phone);
+		phone.setClient(this);
 	}
 
 	@Override public boolean equals(Object o) {

@@ -47,14 +47,14 @@ public class ClientController {
 	}
 
 	@PutMapping(value = "/{id}")
-	public ResponseEntity<ClientDTO> update(@PathVariable Long id, @RequestBody ClientInputDTO dto) {
-		ClientDTO client = service.update(id, dto);
+	public ResponseEntity<Client> update(@PathVariable Long id, @RequestBody ClientInputDTO dto) {
+		Client client = service.update(id, dto);
 		return ResponseEntity.ok().body(client);
 	}
 
 	@GetMapping(value = "/{id}")
-	public ResponseEntity<ClientDTO> findClientDtoById(@PathVariable Long id) {
-		ClientDTO client = service.findClientDtoById(id);
+	public ResponseEntity<Client> findById(@PathVariable Long id) {
+		Client client = service.findById(id);
 		return ResponseEntity.ok().body(client);
 	}
 
@@ -67,11 +67,5 @@ public class ClientController {
 
 		List<Client> clients = service.findAll();
 		return ResponseEntity.ok().body(clients);
-	}
-
-	@GetMapping(value = "/{id}/phones" )
-	public ResponseEntity<List<Phone>> findClientPhonesById(@PathVariable Long id) {
-		List<Phone> phones = service.findClientPhonesById(id);
-		return ResponseEntity.ok().body(phones);
 	}
 }
