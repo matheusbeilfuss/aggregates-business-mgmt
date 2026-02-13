@@ -82,7 +82,12 @@ public class Client implements Serializable {
 
 	public void setAddress(Address address) {
 		this.address = address;
-		address.setClient(this);
+		if (address != null) {
+			Client currentClient = address.getClient();
+			if (currentClient == null || currentClient == this) {
+				address.setClient(this);
+			}
+		}
 	}
 
 	public List<Phone> getPhones() {

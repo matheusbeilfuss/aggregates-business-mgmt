@@ -16,7 +16,7 @@ import { OrderFormData } from "../schemas/order.schemas";
 import { ProductSelect } from "./ProductSelect";
 import { QuantityCombobox } from "./QuantityCombobox";
 import { ClientCombobox } from "./ClientCombobox";
-import { toISODate } from "../utils/toIsoDate";
+import { toIsoDate } from "../utils/toIsoDate";
 import { Product } from "@/modules/stock/types";
 import { Client } from "../types";
 import { useEffect, useMemo } from "react";
@@ -134,7 +134,7 @@ export function OrderForm({
                           ? new Date(`${field.value}T00:00:00`)
                           : new Date()
                       }
-                      onChange={(date: Date) => field.onChange(toISODate(date))}
+                      onChange={(date: Date) => field.onChange(toIsoDate(date))}
                     />
                   </FormControl>
                   <FormMessage />

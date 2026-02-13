@@ -7,6 +7,8 @@ import {
   ComboboxList,
 } from "@/components/ui/combobox";
 import { Client } from "../types";
+import { useMemo } from "react";
+
 interface ClientComboboxProps {
   value: string;
   clientId?: number;
@@ -24,9 +26,11 @@ export function ClientCombobox({
   onChange,
   onClientSelect,
 }: ClientComboboxProps) {
-  const filteredClients = clients.filter((client) =>
-    client.name.toLowerCase().includes(value.toLowerCase()),
-  );
+  const filteredClients = useMemo(() => {
+    return clients.filter((client) =>
+      client.name.toLowerCase().includes(value.toLowerCase()),
+    );
+  }, [clients, value]);
 
   return (
     <Combobox
