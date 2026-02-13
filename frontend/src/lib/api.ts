@@ -46,4 +46,11 @@ export const api = {
     fetch(`${API_URL}${endpoint}`, { method: "DELETE" }).then(
       handleResponse<void>,
     ),
+
+  patch: <T>(endpoint: string, data: unknown): Promise<T> =>
+    fetch(`${API_URL}${endpoint}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data),
+    }).then(handleResponse<T>),
 };

@@ -20,7 +20,7 @@ export const items = [
   },
   {
     title: "Pedidos",
-    url: "#",
+    url: "/orders",
     icon: Truck,
   },
   {

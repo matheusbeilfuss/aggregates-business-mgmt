@@ -16,16 +16,8 @@ export function Stock() {
   const { data: stocks, loading, error, refetch } = useStocks();
   const { data: categories } = useCategories();
 
-  const [openMenuId, setOpenMenuId] = useState<number | null>(null);
   const [isAddProductDialogOpen, setIsAddProductDialogOpen] = useState(false);
   const [productToDelete, setProductToDelete] = useState<Product | null>(null);
-
-  function openDeleteDialog(product: Product) {
-    setOpenMenuId(null);
-    requestAnimationFrame(() => {
-      setProductToDelete(product);
-    });
-  }
 
   async function handleDeleteProduct() {
     if (!productToDelete) return;
@@ -50,9 +42,7 @@ export function Stock() {
       ) : (
         <StockTable
           stocks={stocks ?? []}
-          openMenuId={openMenuId}
-          setOpenMenuId={setOpenMenuId}
-          onDeleteProduct={openDeleteDialog}
+          onDeleteProduct={setProductToDelete}
         />
       )}
 

@@ -1,6 +1,7 @@
 package br.ufsc.aggregare.controller;
 
 import java.net.URI;
+import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -58,13 +60,26 @@ public class OrderController {
 	}
 
 	@GetMapping
-	public ResponseEntity<List<Order>> findAll() {
-		List<Order> orders = service.findAll();
+	public ResponseEntity<List<Order>> findAll(@RequestParam(value = "scheduledDate", required = false) LocalDate scheduledDate) {
+		List<Order> orders;
+
+		if (scheduledDate != null) {
+			orders = service.findByScheduledDate(scheduledDate);
+		} else {
+			orders = service.findAll();
+		}
+
 		return ResponseEntity.ok().body(orders);
 	}
 
-	@PatchMapping(value = "/{id}/pay")
-	public ResponseEntity<Order> payOrder(@PathVariable Long id, @RequestBody PaymentInputDTO payment) {
+	@PatchMapping(value = "/{id}/delivered")
+	public ResponseEntity<Order> markAsDelivered(@PathVariable Long id) {
+		Order order = service.markAsDelivered(id);
+		return ResponseEntity.ok().body(order);
+	}
+
+	@PatchMapping(value = "/{id}/payment")
+	public ResponseEntity<Order> addPayment(@PathVariable Long id, @RequestBody PaymentInputDTO payment) {
 		Order order = service.addPayment(id, payment);
 		return ResponseEntity.ok().body(order);
 	}

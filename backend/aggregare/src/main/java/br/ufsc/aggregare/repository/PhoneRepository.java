@@ -8,7 +8,4 @@ import br.ufsc.aggregare.model.Phone;
 
 public interface PhoneRepository extends JpaRepository<Phone, Long> {
 
-	List<Phone> findByClientId(Long clientId);
-
-	void deleteAllByClientId(Long clientId);
 }

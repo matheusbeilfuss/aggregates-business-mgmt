@@ -12,11 +12,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import br.ufsc.aggregare.model.Client;
-import br.ufsc.aggregare.model.dto.ClientDTO;
 import br.ufsc.aggregare.model.dto.ClientInputDTO;
 import br.ufsc.aggregare.service.ClientService;
 
@@ -45,19 +45,24 @@ public class ClientController {
 	}
 
 	@PutMapping(value = "/{id}")
-	public ResponseEntity<ClientDTO> update(@PathVariable Long id, @RequestBody ClientInputDTO dto) {
-		ClientDTO client = service.update(id, dto);
+	public ResponseEntity<Client> update(@PathVariable Long id, @RequestBody ClientInputDTO dto) {
+		Client client = service.update(id, dto);
 		return ResponseEntity.ok().body(client);
 	}
 
 	@GetMapping(value = "/{id}")
-	public ResponseEntity<ClientDTO> findClientDtoById(@PathVariable Long id) {
-		ClientDTO client = service.findClientDtoById(id);
+	public ResponseEntity<Client> findById(@PathVariable Long id) {
+		Client client = service.findById(id);
 		return ResponseEntity.ok().body(client);
 	}
 
 	@GetMapping
-	public ResponseEntity<List<Client>> findAll() {
+	public ResponseEntity<List<Client>> findAll(@RequestParam(required = false) String search) {
+		if (search != null && !search.isBlank()) {
+			List<Client> clients = service.searchByName(search);
+			return ResponseEntity.ok().body(clients);
+		}
+
 		List<Client> clients = service.findAll();
 		return ResponseEntity.ok().body(clients);
 	}

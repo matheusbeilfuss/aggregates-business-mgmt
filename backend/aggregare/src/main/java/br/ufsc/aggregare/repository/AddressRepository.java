@@ -8,7 +8,4 @@ import br.ufsc.aggregare.model.Address;
 
 public interface AddressRepository extends JpaRepository<Address, Long> {
 
-	Optional<Address> findByClientId(Long clientId);
-
-	void deleteByClientId(Long clientId);
 }

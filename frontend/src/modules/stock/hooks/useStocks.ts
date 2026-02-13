@@ -1,7 +1,11 @@
 import { useCallback } from "react";
-import { stockService, categoryService } from "../services/stock.service";
+import {
+  stockService,
+  categoryService,
+  productService,
+} from "../services/stock.service";
 import { useApi } from "@/hooks/useApi";
-import { Category, StockDetail, StockItem } from "../types";
+import { Category, Product, StockDetail, StockItem } from "../types";
 
 export function useStocks() {
   const fetcher = useCallback(() => stockService.getAll(), []);
@@ -19,4 +23,10 @@ export function useCategories() {
   const fetcher = useCallback(() => categoryService.getAll(), []);
 
   return useApi<Category[]>(fetcher);
+}
+
+export function useProducts() {
+  const fetcher = useCallback(() => productService.getAll(), []);
+
+  return useApi<Product[]>(fetcher);
 }
