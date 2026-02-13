@@ -104,8 +104,7 @@ export function OrderForm({
       return;
     }
 
-    const price =
-      categoryPrices.find((p) => p.m3Volume === quantity)?.price ?? 0;
+    const price = categoryPrices.find((p) => p.m3Volume === quantity)?.price;
 
     form.setValue("orderValue", price);
   }, [orderType, quantity, categoryPrices, form]);

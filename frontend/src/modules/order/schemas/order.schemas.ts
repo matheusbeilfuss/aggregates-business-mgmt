@@ -64,7 +64,7 @@ export const orderSchema = z
           code: z.ZodIssueCode.custom,
         });
       }
-      if (data.type === "MATERIAL" && data.quantity == null) {
+      if (data.quantity == null) {
         ctx.addIssue({
           path: ["quantity"],
           message: "Quantidade obrigatória",

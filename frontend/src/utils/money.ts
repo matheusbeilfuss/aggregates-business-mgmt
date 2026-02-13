@@ -5,12 +5,14 @@ export function formatCurrency(value: number) {
   });
 }
 
-export function parseCurrency(value: string) {
-  return Number(
+export function parseCurrency(value: string): number | undefined {
+  const parsed = Number(
     value
       .replace(/\s/g, "")
       .replace("R$", "")
       .replace(/\./g, "")
       .replace(",", "."),
   );
+
+  return Number.isNaN(parsed) ? undefined : parsed;
 }

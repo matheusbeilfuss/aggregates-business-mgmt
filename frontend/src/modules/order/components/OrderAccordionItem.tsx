@@ -69,7 +69,7 @@ export function OrderAccordionItem({
 
           <p>{order.orderAddress.city}</p>
 
-          <p>{preferredPhone?.number}</p>
+          <p>{preferredPhone?.number || "Telefone não cadastrado"}</p>
         </div>
 
         {order.observations && (
