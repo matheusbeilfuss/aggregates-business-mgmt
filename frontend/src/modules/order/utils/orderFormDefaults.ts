@@ -1,8 +1,8 @@
 import { OrderFormData } from "../schemas/order.schemas";
-import { toISODate } from "./toIsoDate";
+import { toIsoDate } from "./toIsoDate";
 
 export const orderFormDefaults: OrderFormData = {
-  scheduledDate: toISODate(new Date()),
+  scheduledDate: toIsoDate(new Date()),
   type: "MATERIAL",
   clientName: "",
   clientId: undefined,
