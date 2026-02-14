@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
+import br.ufsc.aggregare.security.exception.TokenException;
 import br.ufsc.aggregare.service.exception.FileStorageException;
 import br.ufsc.aggregare.service.exception.ResourceNotFoundException;
 
@@ -27,6 +28,14 @@ public class ControllerExceptionHandler {
 	public ResponseEntity<StandardError> emptyUploadedFile(FileStorageException e, HttpServletRequest request) {
 		String error = "Empty uploaded file";
 		HttpStatus status = HttpStatus.BAD_REQUEST;
+		StandardError err = new StandardError(Instant.now(), status.value(), error, e.getMessage(), request.getRequestURI());
+		return ResponseEntity.status(status).body(err);
+	}
+
+	@ExceptionHandler(TokenException.class)
+	public ResponseEntity<StandardError> tokenError(TokenException e, HttpServletRequest request) {
+		String error = "Authentication error";
+		HttpStatus status = HttpStatus.FORBIDDEN;
 		StandardError err = new StandardError(Instant.now(), status.value(), error, e.getMessage(), request.getRequestURI());
 		return ResponseEntity.status(status).body(err);
 	}

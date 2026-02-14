@@ -5,6 +5,10 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -15,18 +19,21 @@ import br.ufsc.aggregare.service.exception.ResourceNotFoundException;
 import jakarta.persistence.EntityNotFoundException;
 
 @Service
-public class UserService {
+public class UserService implements UserDetailsService {
 
 	private final UserRepository repository;
 	private final FileService fileService;
+	private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
 	@Autowired
-	public UserService(UserRepository repository, FileService fileService) {
+	public UserService(UserRepository repository, FileService fileService, BCryptPasswordEncoder bCryptPasswordEncoder) {
 		this.repository = repository;
 		this.fileService = fileService;
+		this.bCryptPasswordEncoder = bCryptPasswordEncoder;
 	}
 
 	public User insert(User user, MultipartFile image) {
+		user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
 		String imgUrl = fileService.saveImage(image);
 		user.setImgUrl(imgUrl);
 		return repository.save(user);
@@ -83,5 +90,15 @@ public class UserService {
 
 	public List<User> findAll() {
 		return repository.findAll();
+	}
+
+	@Override public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+		User user = repository.findByUsername(username);
+
+		if (user == null) {
+			throw new UsernameNotFoundException("Usuário não encontrado com username: " + username);
+		}
+
+		return user;
 	}
 }

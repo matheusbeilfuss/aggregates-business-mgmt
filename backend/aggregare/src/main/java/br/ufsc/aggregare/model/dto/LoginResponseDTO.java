@@ -1,0 +1,4 @@
+package br.ufsc.aggregare.model.dto;
+
+public record LoginResponseDTO(String token) {
+}
