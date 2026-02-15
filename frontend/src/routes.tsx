@@ -1,6 +1,7 @@
 import { createBrowserRouter } from "react-router-dom";
-
 import { Login } from "@/modules/auth";
+import { PrivateRoute } from "@/modules/auth/components/PrivateRoute";
+
 import { Home } from "@/modules/home";
 import { Stock, StockEdit, StockReplenish } from "@/modules/stock";
 import { Order } from "./modules/order/pages/Order";
@@ -13,35 +14,40 @@ export const router = createBrowserRouter([
     element: <Login />,
   },
   {
-    path: "/",
-    element: <Home />,
-  },
-  {
-    path: "/home",
-    element: <Home />,
-  },
-  {
-    path: "/orders",
-    element: <Order />,
-  },
-  {
-    path: "/orders/new",
-    element: <OrderAdd />,
-  },
-  {
-    path: "/orders/:id",
-    element: <OrderEdit />,
-  },
-  {
-    path: "/stocks",
-    element: <Stock />,
-  },
-  {
-    path: "/stocks/:id",
-    element: <StockEdit />,
-  },
-  {
-    path: "/stocks/:id/replenish",
-    element: <StockReplenish />,
+    element: <PrivateRoute />,
+    children: [
+      {
+        path: "/",
+        element: <Home />,
+      },
+      {
+        path: "/home",
+        element: <Home />,
+      },
+      {
+        path: "/orders",
+        element: <Order />,
+      },
+      {
+        path: "/orders/new",
+        element: <OrderAdd />,
+      },
+      {
+        path: "/orders/:id",
+        element: <OrderEdit />,
+      },
+      {
+        path: "/stocks",
+        element: <Stock />,
+      },
+      {
+        path: "/stocks/:id",
+        element: <StockEdit />,
+      },
+      {
+        path: "/stocks/:id/replenish",
+        element: <StockReplenish />,
+      },
+    ],
   },
 ]);

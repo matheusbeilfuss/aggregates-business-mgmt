@@ -10,27 +10,40 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-
-const loginSchema = z.object({
-  user: z.string().nonempty(),
-  password: z.string().nonempty(),
-});
-
-type LoginSchema = z.infer<typeof loginSchema>;
-
-export interface LoginProps {}
+import { loginSchema } from "../schemas/login.schema";
+import { loginService } from "../services/login.service";
+import { toast } from "sonner";
+import { useNavigate } from "react-router-dom";
+import { LoginPayload } from "../types";
 
 export function Login() {
-  const form = useForm<LoginSchema>({
+  const navigate = useNavigate();
+
+  const form = useForm<LoginPayload>({
     resolver: zodResolver(loginSchema),
-    values: {
-      user: "",
+    mode: "onSubmit",
+    defaultValues: {
+      username: "",
       password: "",
     },
   });
 
-  function onSubmit(values: z.infer<typeof loginSchema>) {
-    console.log(values);
+  async function onSubmit(values: z.infer<typeof loginSchema>) {
+    try {
+      const payload: LoginPayload = {
+        username: values.username,
+        password: values.password,
+      };
+
+      const response = await loginService.login(payload);
+
+      localStorage.setItem("token", response.token);
+
+      toast.success("Login bem-sucedido!");
+      navigate("/home");
+    } catch (error) {
+      toast.error("Falha no login. Verifique suas credenciais.");
+    }
   }
 
   return (
@@ -44,7 +57,7 @@ export function Login() {
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
             <FormField
               control={form.control}
-              name="user"
+              name="username"
               render={({ field }) => (
                 <>
                   <FormItem>

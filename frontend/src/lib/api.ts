@@ -10,6 +10,14 @@ export class ApiError extends Error {
   }
 }
 
+function getAuthHeaders(): HeadersInit {
+  const token = localStorage.getItem("token");
+
+  if (!token) return {};
+
+  return { Authorization: `Bearer ${token}` };
+}
+
 async function handleResponse<T>(response: Response): Promise<T> {
   if (!response.ok) {
     const message = await response.text().catch(() => "Erro desconhecido");
@@ -26,31 +34,35 @@ async function handleResponse<T>(response: Response): Promise<T> {
 
 export const api = {
   get: <T>(endpoint: string): Promise<T> =>
-    fetch(`${API_URL}${endpoint}`).then(handleResponse<T>),
+    fetch(`${API_URL}${endpoint}`, {
+      method: "GET",
+      headers: { "Content-Type": "application/json", ...getAuthHeaders() },
+    }).then(handleResponse<T>),
 
   post: <T>(endpoint: string, data: unknown): Promise<T> =>
     fetch(`${API_URL}${endpoint}`, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: { "Content-Type": "application/json", ...getAuthHeaders() },
       body: JSON.stringify(data),
     }).then(handleResponse<T>),
 
   put: <T>(endpoint: string, data: unknown): Promise<T> =>
     fetch(`${API_URL}${endpoint}`, {
       method: "PUT",
-      headers: { "Content-Type": "application/json" },
+      headers: { "Content-Type": "application/json", ...getAuthHeaders() },
       body: JSON.stringify(data),
     }).then(handleResponse<T>),
 
   delete: (endpoint: string): Promise<void> =>
-    fetch(`${API_URL}${endpoint}`, { method: "DELETE" }).then(
-      handleResponse<void>,
-    ),
+    fetch(`${API_URL}${endpoint}`, {
+      method: "DELETE",
+      headers: getAuthHeaders(),
+    }).then(handleResponse<void>),
 
   patch: <T>(endpoint: string, data: unknown): Promise<T> =>
     fetch(`${API_URL}${endpoint}`, {
       method: "PATCH",
-      headers: { "Content-Type": "application/json" },
+      headers: { "Content-Type": "application/json", ...getAuthHeaders() },
       body: JSON.stringify(data),
     }).then(handleResponse<T>),
 };
