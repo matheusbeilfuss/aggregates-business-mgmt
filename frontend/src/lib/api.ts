@@ -1,3 +1,5 @@
+import { triggerLogout } from "@/modules/auth/utils/authEvents";
+
 export const API_URL = import.meta.env.VITE_API_URL;
 
 export class ApiError extends Error {
@@ -19,6 +21,11 @@ function getAuthHeaders(): HeadersInit {
 }
 
 async function handleResponse<T>(response: Response): Promise<T> {
+  if (response.status === 401) {
+    triggerLogout();
+    throw new ApiError(401, "Não autorizado");
+  }
+
   if (!response.ok) {
     const message = await response.text().catch(() => "Erro desconhecido");
     throw new ApiError(response.status, message);

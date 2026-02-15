@@ -11,13 +11,14 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { loginSchema } from "../schemas/login.schema";
-import { loginService } from "../services/login.service";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
 import { LoginPayload } from "../types";
+import { useAuth } from "../hooks/useAuth";
 
 export function Login() {
   const navigate = useNavigate();
+  const { login } = useAuth();
 
   const form = useForm<LoginPayload>({
     resolver: zodResolver(loginSchema),
@@ -30,14 +31,7 @@ export function Login() {
 
   async function onSubmit(values: z.infer<typeof loginSchema>) {
     try {
-      const payload: LoginPayload = {
-        username: values.username,
-        password: values.password,
-      };
-
-      const response = await loginService.login(payload);
-
-      localStorage.setItem("token", response.token);
+      await login(values);
 
       toast.success("Login bem-sucedido!");
       navigate("/home");
