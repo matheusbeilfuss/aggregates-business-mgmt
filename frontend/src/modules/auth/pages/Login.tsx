@@ -7,6 +7,7 @@ import {
   FormField,
   FormItem,
   FormLabel,
+  FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -53,28 +54,26 @@ export function Login() {
               control={form.control}
               name="username"
               render={({ field }) => (
-                <>
-                  <FormItem>
-                    <FormLabel className="font-bold">Usuário</FormLabel>
-                    <FormControl>
-                      <Input {...field} />
-                    </FormControl>
-                  </FormItem>
-                </>
+                <FormItem>
+                  <FormLabel className="font-bold">Usuário</FormLabel>
+                  <FormControl>
+                    <Input {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
               )}
             />
             <FormField
               control={form.control}
               name="password"
               render={({ field }) => (
-                <>
-                  <FormItem>
-                    <FormLabel className="font-bold">Senha</FormLabel>
-                    <FormControl>
-                      <Input {...field} />
-                    </FormControl>
-                  </FormItem>
-                </>
+                <FormItem>
+                  <FormLabel className="font-bold">Senha</FormLabel>
+                  <FormControl>
+                    <Input {...field} type="password" />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
               )}
             />
             <Button

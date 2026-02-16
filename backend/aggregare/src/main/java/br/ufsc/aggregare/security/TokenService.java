@@ -16,11 +16,20 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTCreationException;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 
+import jakarta.annotation.PostConstruct;
+
 @Service
 public class TokenService {
 
 	@Value("${api.security.jwt.secret}")
 	private String secret;
+
+	@PostConstruct
+	public void validade() {
+		if (secret == null || secret.isBlank() || "secret".equals(secret) || secret.length() < 32) {
+			throw new IllegalStateException("A chave secreta para JWT é inválida. Por favor, configure uma chave forte e segura.");
+		}
+	}
 
 	public String generateToken(User user) {
 		try {

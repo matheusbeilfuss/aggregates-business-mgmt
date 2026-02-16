@@ -1,4 +1,4 @@
-import { createContext, useEffect, useMemo, useState } from "react";
+import { createContext, useCallback, useEffect, useState } from "react";
 import { LoginPayload } from "../types";
 import { loginService } from "../services/login.service";
 import { Outlet, useNavigate } from "react-router-dom";
@@ -29,33 +29,30 @@ export function AuthProvider() {
     setIsLoading(false);
   }, []);
 
-  const login = async (payload: LoginPayload) => {
+  const login = useCallback(async (payload: LoginPayload) => {
     const response = await loginService.login(payload);
 
     localStorage.setItem("token", response.token);
     setToken(response.token);
-  };
+  }, []);
 
-  const logout = () => {
+  const logout = useCallback(() => {
     localStorage.removeItem("token");
     setToken(null);
     navigate("/login");
-  };
+  }, [navigate]);
 
   useEffect(() => {
     setLogoutListener(logout);
   }, [logout]);
 
-  const value = useMemo(
-    () => ({
-      token,
-      isAuthenticated: !!token,
-      isLoading,
-      login,
-      logout,
-    }),
-    [token, isLoading],
-  );
+  const value = {
+    token,
+    isAuthenticated: !!token,
+    isLoading,
+    login,
+    logout,
+  };
 
   return (
     <AuthContext.Provider value={value}>

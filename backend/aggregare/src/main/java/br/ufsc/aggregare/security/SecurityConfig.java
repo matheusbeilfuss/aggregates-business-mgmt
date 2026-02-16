@@ -57,7 +57,6 @@ public class SecurityConfig {
 				)
 				.headers(headers -> headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::disable))
 				.addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)
-				.httpBasic(Customizer.withDefaults())
 				.build();
 	}
 
