@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
+import br.ufsc.aggregare.security.exception.LoginException;
 import br.ufsc.aggregare.security.exception.TokenException;
 import br.ufsc.aggregare.service.exception.FileStorageException;
 import br.ufsc.aggregare.service.exception.ResourceNotFoundException;
@@ -35,6 +36,14 @@ public class ControllerExceptionHandler {
 	@ExceptionHandler(TokenException.class)
 	public ResponseEntity<StandardError> tokenError(TokenException e, HttpServletRequest request) {
 		String error = "Authentication error";
+		HttpStatus status = HttpStatus.UNAUTHORIZED;
+		StandardError err = new StandardError(Instant.now(), status.value(), error, e.getMessage(), request.getRequestURI());
+		return ResponseEntity.status(status).body(err);
+	}
+
+	@ExceptionHandler(LoginException.class)
+	public ResponseEntity<StandardError> loginError(LoginException e, HttpServletRequest request) {
+		String error = "Login error";
 		HttpStatus status = HttpStatus.UNAUTHORIZED;
 		StandardError err = new StandardError(Instant.now(), status.value(), error, e.getMessage(), request.getRequestURI());
 		return ResponseEntity.status(status).body(err);

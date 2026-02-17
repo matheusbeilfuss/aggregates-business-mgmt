@@ -16,6 +16,7 @@ import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
 import { LoginPayload } from "../types";
 import { useAuth } from "../hooks/useAuth";
+import { ApiError } from "@/lib/api";
 
 export function Login() {
   const navigate = useNavigate();
@@ -37,7 +38,11 @@ export function Login() {
       toast.success("Login bem-sucedido!");
       navigate("/home");
     } catch (error) {
-      toast.error("Falha no login. Verifique suas credenciais.");
+      if (error instanceof ApiError) {
+        toast.error(error.message);
+      } else {
+        toast.error("Falha no login. Verifique suas credenciais.");
+      }
     }
   }
 

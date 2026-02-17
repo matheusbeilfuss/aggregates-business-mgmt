@@ -15,6 +15,7 @@ import br.ufsc.aggregare.model.dto.AuthenticationDTO;
 import br.ufsc.aggregare.model.dto.LoginResponseDTO;
 import br.ufsc.aggregare.security.LoginAttemptService;
 import br.ufsc.aggregare.security.TokenService;
+import br.ufsc.aggregare.security.exception.LoginException;
 
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -38,7 +39,7 @@ public class AuthenticationController {
 		String ip = request.getRemoteAddr();
 
 		if (loginAttemptService.isBlocked(authDTO.username(), ip)) {
-			throw new BadCredentialsException("Credenciais inválidas");
+			throw new LoginException("Múltiplas tentativas inválidas. Tente novamente mais tarde.");
 		}
 
 		try {
@@ -51,7 +52,14 @@ public class AuthenticationController {
 			return ResponseEntity.ok(new LoginResponseDTO(token));
 		} catch (BadCredentialsException e) {
 			loginAttemptService.loginFailed(authDTO.username(), ip);
-			throw new BadCredentialsException("Credenciais inválidas");
+
+			int remainingAttempts = loginAttemptService.getRemainingAttempts(authDTO.username());
+
+			if (remainingAttempts > 0) {
+				throw new LoginException("Falha no login. Verifique suas credenciais.");
+			} else {
+				throw new LoginException("Múltiplas tentativas inválidas. Tente novamente mais tarde.");
+			}
 		}
 	}
 }

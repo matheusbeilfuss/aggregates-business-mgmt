@@ -1,5 +1,6 @@
 package br.ufsc.aggregare.security;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -17,6 +18,10 @@ public class LoginAttemptService {
 
 	private final Map<String, LocalDateTime> userLockTime = new ConcurrentHashMap<>();
 	private final Map<String, LocalDateTime> ipLockTime = new ConcurrentHashMap<>();
+
+	public int getRemainingAttempts(String username) {
+		return MAX_ATTEMPT - userAttempts.getOrDefault(username, 0);
+	}
 
 	public void loginFailed(String username, String ip) {
 		int userCount = userAttempts.getOrDefault(username, 0) + 1;
@@ -43,10 +48,29 @@ public class LoginAttemptService {
 	}
 
 	public boolean isBlocked(String username, String ip) {
-		return (userLockTime.containsKey(username) &&
-				userLockTime.get(username).isAfter(LocalDateTime.now()))
-				||
-				(ipLockTime.containsKey(ip) &&
-						ipLockTime.get(ip).isAfter(LocalDateTime.now()));
+
+		LocalDateTime now = LocalDateTime.now();
+
+		LocalDateTime userLock = userLockTime.get(username);
+		if (userLock != null) {
+			if (userLock.isAfter(now)) {
+				return true;
+			} else {
+				userLockTime.remove(username);
+				userAttempts.remove(username);
+			}
+		}
+
+		LocalDateTime ipLock = ipLockTime.get(ip);
+		if (ipLock != null) {
+			if (ipLock.isAfter(now)) {
+				return true;
+			} else {
+				ipLockTime.remove(ip);
+				ipAttempts.remove(ip);
+			}
+		}
+
+		return false;
 	}
 }

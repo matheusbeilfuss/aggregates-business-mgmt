@@ -21,13 +21,17 @@ function getAuthHeaders(): HeadersInit {
 }
 
 async function handleResponse<T>(response: Response): Promise<T> {
-  if (response.status === 401) {
+  if (response.status === 401 && localStorage.getItem("token")) {
     triggerLogout();
     throw new Promise(() => {});
   }
 
   if (!response.ok) {
-    const message = await response.text().catch(() => "Erro desconhecido");
+    const errorBody = await response.json().catch(() => null);
+
+    const message =
+      errorBody?.message || errorBody?.error || "Erro desconhecido";
+
     throw new ApiError(response.status, message);
   }
 
