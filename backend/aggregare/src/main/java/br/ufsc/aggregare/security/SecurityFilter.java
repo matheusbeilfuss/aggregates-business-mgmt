@@ -50,6 +50,13 @@ public class SecurityFilter extends OncePerRequestFilter {
 				}
 			} catch (TokenException e) {
 				LOGGER.warn("Falha na validação do token: {}", e.getMessage());
+
+				SecurityContextHolder.clearContext();
+
+				response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+				response.getWriter().write(e.getMessage());
+
+				return;
 			}
 		}
 

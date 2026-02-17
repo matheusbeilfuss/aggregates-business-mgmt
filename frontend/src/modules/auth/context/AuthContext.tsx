@@ -1,7 +1,7 @@
 import { createContext, useCallback, useEffect, useState } from "react";
 import { LoginPayload } from "../types";
 import { loginService } from "../services/login.service";
-import { Outlet, useNavigate } from "react-router-dom";
+import { Outlet } from "react-router-dom";
 import { setLogoutListener } from "../utils/authEvents";
 
 export interface AuthContextData {
@@ -17,7 +17,6 @@ export const AuthContext = createContext<AuthContextData | undefined>(
 );
 
 export function AuthProvider() {
-  const navigate = useNavigate();
   const [token, setToken] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -39,8 +38,7 @@ export function AuthProvider() {
   const logout = useCallback(() => {
     localStorage.removeItem("token");
     setToken(null);
-    navigate("/login");
-  }, [navigate]);
+  }, []);
 
   useEffect(() => {
     setLogoutListener(logout);

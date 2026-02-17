@@ -25,7 +25,7 @@ public class TokenService {
 	private String secret;
 
 	@PostConstruct
-	public void validade() {
+	public void validate() {
 		if (secret == null || secret.isBlank() || "secret".equals(secret) || secret.length() < 32) {
 			throw new IllegalStateException("A chave secreta para JWT é inválida. Por favor, configure uma chave forte e segura.");
 		}

@@ -35,7 +35,7 @@ public class ControllerExceptionHandler {
 	@ExceptionHandler(TokenException.class)
 	public ResponseEntity<StandardError> tokenError(TokenException e, HttpServletRequest request) {
 		String error = "Authentication error";
-		HttpStatus status = HttpStatus.FORBIDDEN;
+		HttpStatus status = HttpStatus.UNAUTHORIZED;
 		StandardError err = new StandardError(Instant.now(), status.value(), error, e.getMessage(), request.getRequestURI());
 		return ResponseEntity.status(status).body(err);
 	}

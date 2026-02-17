@@ -20,10 +20,10 @@ public class DataInitializer implements CommandLineRunner {
 	private final UserRepository userRepository;
 	private final PasswordEncoder passwordEncoder;
 
-	@Value("${admin.initial.username:#{null}}")
+	@Value("${admin.initial-username:#{null}}")
 	private String adminUsername;
 
-	@Value("${admin.initial.password:#{null}}")
+	@Value("${admin.initial-password:#{null}}")
 	private String adminPassword;
 
 	public DataInitializer(UserRepository userRepository, PasswordEncoder passwordEncoder) {
