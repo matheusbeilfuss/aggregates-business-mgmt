@@ -24,15 +24,15 @@ public class LoginAttemptService {
 	}
 
 	public void loginFailed(String username, String ip) {
-		int userCount = userAttempts.getOrDefault(username, 0) + 1;
-		userAttempts.put(username, userCount);
+		int userCount = userAttempts.compute(username,
+				(k, v) -> (v == null ? 0 : v) + 1);
 
 		if (userCount >= MAX_ATTEMPT) {
 			userLockTime.put(username, LocalDateTime.now().plusMinutes(LOCK_MINUTES));
 		}
 
-		int ipCount = ipAttempts.getOrDefault(ip, 0) + 1;
-		ipAttempts.put(ip, ipCount);
+		int ipCount = ipAttempts.compute(ip,
+				(k, v) -> (v == null ? 0 : v) + 1);
 
 		if (ipCount >= MAX_ATTEMPT) {
 			ipLockTime.put(ip, LocalDateTime.now().plusMinutes(LOCK_MINUTES));
