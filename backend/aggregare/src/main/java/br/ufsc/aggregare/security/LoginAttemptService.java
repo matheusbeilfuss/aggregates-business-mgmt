@@ -1,6 +1,5 @@
 package br.ufsc.aggregare.security;
 
-import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -18,10 +17,6 @@ public class LoginAttemptService {
 
 	private final Map<String, LocalDateTime> userLockTime = new ConcurrentHashMap<>();
 	private final Map<String, LocalDateTime> ipLockTime = new ConcurrentHashMap<>();
-
-	public int getRemainingAttempts(String username) {
-		return MAX_ATTEMPT - userAttempts.getOrDefault(username, 0);
-	}
 
 	public void loginFailed(String username, String ip) {
 		int userCount = userAttempts.compute(username,

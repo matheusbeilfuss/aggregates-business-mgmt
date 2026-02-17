@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import br.ufsc.aggregare.model.User;
 import br.ufsc.aggregare.model.dto.AuthenticationDTO;
 import br.ufsc.aggregare.model.dto.LoginResponseDTO;
+import br.ufsc.aggregare.repository.UserRepository;
 import br.ufsc.aggregare.security.LoginAttemptService;
 import br.ufsc.aggregare.security.TokenService;
 import br.ufsc.aggregare.security.exception.LoginException;
@@ -26,40 +27,41 @@ public class AuthenticationController {
 	private final AuthenticationManager authenticationManager;
 	private final TokenService tokenService;
 	private final LoginAttemptService loginAttemptService;
+	private final UserRepository userRepository;
 
 	@Autowired
-	public AuthenticationController(AuthenticationManager authenticationManager, TokenService tokenService, LoginAttemptService loginAttemptService) {
+	public AuthenticationController(AuthenticationManager authenticationManager, TokenService tokenService, LoginAttemptService loginAttemptService, UserRepository userRepository) {
 		this.authenticationManager = authenticationManager;
 		this.tokenService = tokenService;
 		this.loginAttemptService = loginAttemptService;
+		this.userRepository = userRepository;
 	}
 
 	@PostMapping
 	public ResponseEntity<LoginResponseDTO> login(@RequestBody AuthenticationDTO authDTO, HttpServletRequest request) {
+		String username = authDTO.username();
 		String ip = request.getRemoteAddr();
 
-		if (loginAttemptService.isBlocked(authDTO.username(), ip)) {
-			throw new LoginException("Múltiplas tentativas inválidas. Tente novamente mais tarde.");
-		}
-
 		try {
-			var tokenAuth = new UsernamePasswordAuthenticationToken(authDTO.username(), authDTO.password());
+			if (userRepository.existsByUsername(username)) {
+				loginAttemptService.loginFailed(username, ip);
+			}
+
+			if (loginAttemptService.isBlocked(username, ip)) {
+				throw new LoginException("Falha no login. Verifique suas credenciais.");
+			}
+
+			var tokenAuth = new UsernamePasswordAuthenticationToken(username, authDTO.password());
 			var auth = authenticationManager.authenticate(tokenAuth);
 
-			loginAttemptService.loginSucceeded(authDTO.username(), ip);
+			loginAttemptService.loginSucceeded(username, ip);
 
 			var token = tokenService.generateToken((User) auth.getPrincipal());
 			return ResponseEntity.ok(new LoginResponseDTO(token));
 		} catch (BadCredentialsException e) {
-			loginAttemptService.loginFailed(authDTO.username(), ip);
+			loginAttemptService.loginFailed(username, ip);
 
-			int remainingAttempts = loginAttemptService.getRemainingAttempts(authDTO.username());
-
-			if (remainingAttempts > 0) {
-				throw new LoginException("Falha no login. Verifique suas credenciais.");
-			} else {
-				throw new LoginException("Múltiplas tentativas inválidas. Tente novamente mais tarde.");
-			}
+			throw new LoginException("Falha no login. Verifique suas credenciais.");
 		}
 	}
 }

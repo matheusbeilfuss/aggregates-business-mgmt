@@ -32,8 +32,7 @@ public class DataInitializer implements CommandLineRunner {
 	}
 
 	@Override public void run(String... args) throws Exception {
-		if (adminUsername != null && adminPassword != null) {
-			if (userRepository.findByUsername(adminUsername) == null) {
+		if (adminUsername != null && adminPassword != null && !userRepository.existsByUsername(adminUsername)) {
 				User admin = new User();
 				admin.setFirstName("Admin");
 				admin.setLastName("User");
@@ -45,6 +44,6 @@ public class DataInitializer implements CommandLineRunner {
 				userRepository.save(admin);
 				LOGGER.warn("Admin user created with username: {}", adminUsername);
 			}
-		}
+
 	}
 }
