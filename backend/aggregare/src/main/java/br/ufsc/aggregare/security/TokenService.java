@@ -1,9 +1,8 @@
 package br.ufsc.aggregare.security;
 
 
+import java.time.Duration;
 import java.time.Instant;
-import java.time.LocalDateTime;
-import java.time.ZoneOffset;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -23,6 +22,9 @@ public class TokenService {
 
 	@Value("${api.security.jwt.secret}")
 	private String secret;
+
+	@Value("${api.security.jwt.expiration}")
+	private Duration expiration;
 
 	@PostConstruct
 	public void validate() {
@@ -58,6 +60,6 @@ public class TokenService {
 	}
 
 	private Instant getExpirationDate() {
-		return LocalDateTime.now().plusHours(2).toInstant(ZoneOffset.of("-03:00"));
+		return Instant.now().plus(expiration);
 	}
 }
