@@ -2,8 +2,6 @@ package br.ufsc.aggregare.security;
 
 import java.io.IOException;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -12,7 +10,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import br.ufsc.aggregare.repository.UserRepository;
-import br.ufsc.aggregare.security.exception.TokenException;
 
 import jakarta.annotation.Nonnull;
 import jakarta.servlet.FilterChain;
@@ -22,8 +19,6 @@ import jakarta.servlet.http.HttpServletResponse;
 
 @Component
 public class SecurityFilter extends OncePerRequestFilter {
-
-	private static final Logger LOGGER = LoggerFactory.getLogger(SecurityFilter.class);
 
 	private final TokenService tokenService;
 	private final UserRepository userRepository;
@@ -38,25 +33,14 @@ public class SecurityFilter extends OncePerRequestFilter {
 		var token = this.recoverToken(request);
 
 		if (token != null) {
-			try {
-				var login = tokenService.validateToken(token);
+			var login = tokenService.validateToken(token);
 
-				if (login != null && !login.isEmpty()) {
-					UserDetails user = userRepository.findByUsername(login);
-					if (user != null) {
-						var authentication = new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
-						SecurityContextHolder.getContext().setAuthentication(authentication);
-					}
+			if (login != null && !login.isEmpty()) {
+				UserDetails user = userRepository.findByUsername(login);
+				if (user != null) {
+					var authentication = new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
+					SecurityContextHolder.getContext().setAuthentication(authentication);
 				}
-			} catch (TokenException e) {
-				LOGGER.warn("Falha na validação do token: {}", e.getMessage());
-
-				SecurityContextHolder.clearContext();
-
-				response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-				response.getWriter().write(e.getMessage());
-
-				return;
 			}
 		}
 
