@@ -36,7 +36,7 @@ export function Login() {
       await login(values);
 
       toast.success("Login bem-sucedido!");
-      navigate("/home");
+      navigate("/");
     } catch (error) {
       if (error instanceof ApiError) {
         toast.error(error.message);
