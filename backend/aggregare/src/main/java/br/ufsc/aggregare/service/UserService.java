@@ -79,7 +79,7 @@ public class UserService implements UserDetailsService {
 		existingUser.setLastName(newUser.getLastName());
 		existingUser.setUsername(newUser.getUsername());
 		existingUser.setEmail(newUser.getEmail());
-		existingUser.setPassword(newUser.getPassword());
+		existingUser.setPassword(bCryptPasswordEncoder.encode(newUser.getPassword()));
 		existingUser.setImgUrl(newUser.getImgUrl());
 	}
 
