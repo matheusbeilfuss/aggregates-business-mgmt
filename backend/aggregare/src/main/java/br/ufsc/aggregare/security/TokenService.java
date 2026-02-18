@@ -3,6 +3,7 @@ package br.ufsc.aggregare.security;
 
 import java.time.Duration;
 import java.time.Instant;
+import java.util.Base64;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -27,9 +28,18 @@ public class TokenService {
 	private Duration expiration;
 
 	@PostConstruct
-	public void validate() {
-		if (secret == null || secret.isBlank() || "secret".equals(secret) || secret.length() < 32) {
-			throw new IllegalStateException("A chave secreta para JWT é inválida. Por favor, configure uma chave forte e segura.");
+	public Algorithm validate() {
+		try {
+			byte[] secretBytes = Base64.getDecoder().decode(secret);
+
+			if (secretBytes.length < 32) {
+				throw new IllegalArgumentException("A chave secreta deve ter pelo menos 256 bits (32 bytes)");
+			}
+
+			return Algorithm.HMAC256(secretBytes);
+
+		} catch (IllegalArgumentException e) {
+			throw new TokenException("JWT secret deve estar em formato Base64 válido");
 		}
 	}
 
