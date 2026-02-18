@@ -23,7 +23,7 @@ function getAuthHeaders(): HeadersInit {
 async function handleResponse<T>(response: Response): Promise<T> {
   if (response.status === 401 && localStorage.getItem("token")) {
     triggerLogout();
-    throw new Promise(() => {});
+    throw new ApiError(401, "Não autorizado.");
   }
 
   if (!response.ok) {
