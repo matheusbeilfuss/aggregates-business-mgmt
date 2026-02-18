@@ -112,14 +112,36 @@ public class SecurityConfig {
 
 	@Bean
 	public CorsConfigurationSource corsConfigurationSource() {
+
+		if (allowedOrigins == null || allowedOrigins.isBlank()) {
+			throw new IllegalStateException(
+					"api.cors.allowed-origins não configurado"
+			);
+		}
+
+		if (allowedOrigins.contains("*")) {
+			throw new IllegalStateException(
+					"Wildcard '*' não é permitido em api.cors.allowed-origins"
+			);
+		}
+
 		CorsConfiguration configuration = new CorsConfiguration();
-		configuration.addAllowedOriginPattern(allowedOrigins);
-		configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
+
+		List<String> origins = List.of(allowedOrigins.split(","));
+		configuration.setAllowedOrigins(origins);
+
+		configuration.setAllowedMethods(
+				List.of("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS")
+		);
+
 		configuration.setAllowedHeaders(List.of("*"));
 		configuration.setAllowCredentials(true);
 
-		UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+		UrlBasedCorsConfigurationSource source =
+				new UrlBasedCorsConfigurationSource();
+
 		source.registerCorsConfiguration("/**", configuration);
+
 		return source;
 	}
 }
