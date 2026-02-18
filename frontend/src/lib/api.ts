@@ -21,9 +21,18 @@ function getAuthHeaders(): HeadersInit {
 }
 
 async function handleResponse<T>(response: Response): Promise<T> {
-  if (response.status === 401 && localStorage.getItem("token")) {
+  if (response.status === 401) {
     triggerLogout();
-    throw new ApiError(401, "Não autorizado.");
+    throw new ApiError(401, "Sua sessão expirou. Faça login novamente.");
+  }
+
+  if (response.status === 403) {
+    const errorBody = await response.json().catch(() => null);
+
+    throw new ApiError(
+      403,
+      errorBody?.message || "Você não tem permissão para acessar este recurso.",
+    );
   }
 
   if (!response.ok) {
