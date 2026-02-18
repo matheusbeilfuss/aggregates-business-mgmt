@@ -22,8 +22,14 @@ function getAuthHeaders(): HeadersInit {
 
 async function handleResponse<T>(response: Response): Promise<T> {
   if (response.status === 401) {
+    const errorBody = await response.json().catch(() => null);
+
     triggerLogout();
-    throw new ApiError(401, "Sua sessão expirou. Faça login novamente.");
+
+    throw new ApiError(
+      401,
+      errorBody?.message || "Sua sessão expirou. Faça login novamente.",
+    );
   }
 
   if (response.status === 403) {

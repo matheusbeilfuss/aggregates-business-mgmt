@@ -41,7 +41,7 @@ public class AuthenticationController {
 		String ip = request.getRemoteAddr();
 
 		if (loginAttemptService.isBlocked(username, ip)) {
-			throw new LoginException("Falha no login. Verifique suas credenciais.");
+			throw new LoginException("Múltiplas tentativas inválidas. Tente novamente mais tarde.");
 		}
 
 		try {
@@ -55,7 +55,13 @@ public class AuthenticationController {
 		} catch (BadCredentialsException e) {
 			loginAttemptService.loginFailed(username, ip);
 
-			throw new LoginException("Falha no login. Verifique suas credenciais.");
+			int remainingAttempts = loginAttemptService.getRemainingAttempts(authDTO.username());
+
+			if (remainingAttempts > 0) {
+				throw new LoginException("Falha no login. Verifique suas credenciais.");
+			} else {
+				throw new LoginException("Múltiplas tentativas inválidas. Tente novamente mais tarde.");
+			}
 		}
 	}
 }

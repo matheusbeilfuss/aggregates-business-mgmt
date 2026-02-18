@@ -42,7 +42,7 @@ public class DataInitializer implements CommandLineRunner {
 				admin.setPassword(passwordEncoder.encode(adminPassword));
 
 				userRepository.save(admin);
-				LOGGER.warn("Admin user created with username: {}", adminUsername);
+				LOGGER.info("Admin user created with username: {}", adminUsername);
 			}
 
 	}
