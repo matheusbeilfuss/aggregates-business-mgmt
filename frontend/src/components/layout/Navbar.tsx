@@ -14,6 +14,11 @@ export function Navbar() {
   const navigate = useNavigate();
   const { logout } = useAuth();
 
+  const onLogout = () => {
+    logout();
+    navigate("/login");
+  };
+
   return (
     <nav className="w-full h-22 bg-gray-300 flex justify-between items-center px-4">
       <SidebarTrigger className="hover:bg-gray-400 h-10 w-10" />
@@ -34,7 +39,7 @@ export function Navbar() {
           <DropdownMenuSeparator />
 
           <DropdownMenuItem
-            onClick={logout}
+            onClick={onLogout}
             className="text-red-600 focus:text-red-600"
           >
             <LogOut className="text-red-600 mr-2 h-4 w-4" />
