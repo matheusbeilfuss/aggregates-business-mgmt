@@ -19,7 +19,6 @@ export const router = createBrowserRouter([
         element: <PrivateRoute />,
         children: [
           { index: true, element: <Home /> },
-          { path: "home", element: <Home /> },
           { path: "orders", element: <Order /> },
           { path: "orders/new", element: <OrderAdd /> },
           { path: "orders/:id", element: <OrderEdit /> },
