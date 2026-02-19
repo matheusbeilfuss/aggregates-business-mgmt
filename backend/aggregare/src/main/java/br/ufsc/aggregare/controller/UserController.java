@@ -75,19 +75,18 @@ public class UserController {
 	}
 
 	@GetMapping("/me/avatar")
-	public ResponseEntity<Resource> findMyAvatar(Principal principal) throws IOException {
-		Path filePath = service.loadUserAvatar(principal);
+	public ResponseEntity<Resource> findMyAvatar(Principal principal) {
 
-		if (filePath == null) {
+		Resource resource = service.loadUserAvatarResource(principal);
+
+		if (resource == null) {
 			return ResponseEntity.notFound().build();
 		}
 
-		Resource resource = new UrlResource(filePath.toUri());
-
-		String contentType = Files.probeContentType(filePath);
+		MediaType mediaType = service.getUserAvatarMediaType(principal);
 
 		return ResponseEntity.ok()
-				.contentType(MediaType.parseMediaType(contentType))
+				.contentType(mediaType)
 				.header("Cache-Control", "max-age=86400")
 				.body(resource);
 	}

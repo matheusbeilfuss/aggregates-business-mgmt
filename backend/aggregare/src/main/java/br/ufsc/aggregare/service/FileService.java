@@ -6,6 +6,9 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.UUID;
 
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -65,5 +68,33 @@ public class FileService {
 			return this.uploadPath.resolve(filename);
 		}
 		return null;
+	}
+
+	public Resource loadFileAsResource(Path filePath) {
+		try {
+			Resource resource = new UrlResource(filePath.toUri());
+
+			if (!resource.exists() || !resource.isReadable()) {
+				throw new FileStorageException("File not found or not readable");
+			}
+
+			return resource;
+		} catch (IOException e) {
+			throw new FileStorageException("Failed to load file as resource");
+		}
+	}
+
+	public MediaType getFileMediaType(Path filePath) {
+		try {
+			String contentType = Files.probeContentType(filePath);
+
+			if (contentType == null) {
+				return MediaType.APPLICATION_OCTET_STREAM;
+			}
+
+			return MediaType.parseMediaType(contentType);
+		} catch (IOException e) {
+			return MediaType.APPLICATION_OCTET_STREAM;
+		}
 	}
 }

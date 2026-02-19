@@ -6,7 +6,9 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.http.MediaType;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -104,11 +106,27 @@ public class UserService implements UserDetailsService {
 		return user;
 	}
 
-	public Path loadUserAvatar(Principal principal) {
+	public Resource loadUserAvatarResource(Principal principal) {
 		User user = (User) loadUserByUsername(principal.getName());
-		if (user.getImgUrl() != null && !user.getImgUrl().isEmpty()) {
-			return fileService.getFilePath(user.getImgUrl());
+
+		if (user.getImgUrl() == null || user.getImgUrl().isEmpty()) {
+			return null;
 		}
-		return null;
+
+		Path filePath = fileService.getFilePath(user.getImgUrl());
+
+		return fileService.loadFileAsResource(filePath);
+	}
+
+	public MediaType getUserAvatarMediaType(Principal principal) {
+		User user = (User) loadUserByUsername(principal.getName());
+
+		if (user.getImgUrl() == null || user.getImgUrl().isEmpty()) {
+			return null;
+		}
+
+		Path filePath = fileService.getFilePath(user.getImgUrl());
+
+		return fileService.getFileMediaType(filePath);
 	}
 }
