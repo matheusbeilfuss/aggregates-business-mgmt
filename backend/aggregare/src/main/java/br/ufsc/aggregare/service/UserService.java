@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import br.ufsc.aggregare.model.User;
+import br.ufsc.aggregare.model.dto.PasswordUpdateDTO;
 import br.ufsc.aggregare.repository.UserRepository;
 import br.ufsc.aggregare.service.exception.ResourceNotFoundException;
 
@@ -79,8 +80,17 @@ public class UserService implements UserDetailsService {
 		existingUser.setLastName(newUser.getLastName());
 		existingUser.setUsername(newUser.getUsername());
 		existingUser.setEmail(newUser.getEmail());
-		existingUser.setPassword(bCryptPasswordEncoder.encode(newUser.getPassword()));
 		existingUser.setImgUrl(newUser.getImgUrl());
+	}
+
+	public User updatePassword(Long id, PasswordUpdateDTO newPassword) {
+		try {
+			User user = repository.getReferenceById(id);
+			user.setPassword(bCryptPasswordEncoder.encode(newPassword.getNewPassword()));
+			return repository.save(user);
+		} catch (EntityNotFoundException e) {
+			throw new ResourceNotFoundException(id);
+		}
 	}
 
 	public User findById(Long id) {
