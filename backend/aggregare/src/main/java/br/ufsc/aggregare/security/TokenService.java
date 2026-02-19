@@ -1,6 +1,5 @@
 package br.ufsc.aggregare.security;
 
-
 import java.time.Duration;
 import java.time.Instant;
 import java.util.Base64;
@@ -27,16 +26,19 @@ public class TokenService {
 	@Value("${api.security.jwt.expiration}")
 	private Duration expiration;
 
+	private Algorithm algorithm;
+
 	@PostConstruct
-	public Algorithm validate() {
+	public void init() {
 		try {
 			byte[] secretBytes = Base64.getDecoder().decode(secret);
 
 			if (secretBytes.length < 32) {
-				throw new IllegalArgumentException("A chave secreta deve ter pelo menos 256 bits (32 bytes)");
+				throw new IllegalArgumentException(
+						"A chave secreta deve ter pelo menos 256 bits (32 bytes)");
 			}
 
-			return Algorithm.HMAC256(secretBytes);
+			this.algorithm = Algorithm.HMAC256(secretBytes);
 
 		} catch (IllegalArgumentException e) {
 			throw new TokenException("JWT secret deve estar em formato Base64 válido");
@@ -45,7 +47,6 @@ public class TokenService {
 
 	public String generateToken(User user) {
 		try {
-			Algorithm algorithm = Algorithm.HMAC256(secret);
 			return JWT.create()
 					.withIssuer("aggregare-api")
 					.withSubject(user.getUsername())
@@ -58,7 +59,6 @@ public class TokenService {
 
 	public String validateToken(String token) {
 		try {
-			Algorithm algorithm = Algorithm.HMAC256(secret);
 			return JWT.require(algorithm)
 					.withIssuer("aggregare-api")
 					.build()
