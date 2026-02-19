@@ -1,6 +1,7 @@
 package br.ufsc.aggregare.controller;
 
 import java.net.URI;
+import java.security.Principal;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -74,5 +75,11 @@ public class UserController {
 				.toList();
 
 		return ResponseEntity.ok(list);
+	}
+
+	@GetMapping(value = "/me")
+	public ResponseEntity<UserResponseDTO> findMe(Principal principal) {
+		User user = (User) service.loadUserByUsername(principal.getName());
+		return ResponseEntity.ok().body(new UserResponseDTO(user));
 	}
 }

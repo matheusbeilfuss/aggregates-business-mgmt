@@ -50,6 +50,7 @@ public class SecurityFilter extends OncePerRequestFilter {
 				}
 			} catch (TokenException e) {
 				LOGGER.debug("Token inválido ou expirado: {}", e.getMessage());
+				SecurityContextHolder.clearContext();
 			}
 		}
 
