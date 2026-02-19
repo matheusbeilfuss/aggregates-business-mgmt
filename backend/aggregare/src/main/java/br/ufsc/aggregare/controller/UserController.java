@@ -5,6 +5,7 @@ import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.security.Principal;
+import java.security.Principal;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -83,9 +84,9 @@ public class UserController {
 	}
 
 	@GetMapping(value = "/me")
-	public ResponseEntity<User> findMe(Principal principal) {
+	public ResponseEntity<UserResponseDTO> findMe(Principal principal) {
 		User user = (User) service.loadUserByUsername(principal.getName());
-		return ResponseEntity.ok().body(user);
+		return ResponseEntity.ok().body(new UserResponseDTO(user));
 	}
 
 	@GetMapping("/me/avatar")

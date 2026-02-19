@@ -3,6 +3,7 @@ import { LoginPayload } from "../types";
 import { loginService } from "../services/login.service";
 import { Outlet } from "react-router-dom";
 import { setLogoutListener } from "../utils/authEvents";
+import { api } from "@/lib/api";
 
 export interface AuthContextData {
   token: string | null;
@@ -21,11 +22,26 @@ export function AuthProvider() {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    const storedToken = localStorage.getItem("token");
-    if (storedToken) {
-      setToken(storedToken);
+    async function validateToken() {
+      const storedToken = localStorage.getItem("token");
+
+      if (!storedToken) {
+        setIsLoading(false);
+        return;
+      }
+
+      try {
+        await api.get("/me");
+        setToken(storedToken);
+      } catch {
+        localStorage.removeItem("token");
+        setToken(null);
+      } finally {
+        setIsLoading(false);
+      }
     }
-    setIsLoading(false);
+
+    validateToken();
   }, []);
 
   const login = useCallback(async (payload: LoginPayload) => {
