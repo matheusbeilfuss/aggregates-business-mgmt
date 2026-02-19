@@ -16,6 +16,7 @@ import br.ufsc.aggregare.model.dto.LoginResponseDTO;
 import br.ufsc.aggregare.security.LoginAttemptService;
 import br.ufsc.aggregare.security.TokenService;
 import br.ufsc.aggregare.security.exception.LoginException;
+import br.ufsc.aggregare.service.UserService;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
@@ -27,12 +28,14 @@ public class AuthenticationController {
 	private final AuthenticationManager authenticationManager;
 	private final TokenService tokenService;
 	private final LoginAttemptService loginAttemptService;
+	private final UserService userService;
 
 	@Autowired
-	public AuthenticationController(AuthenticationManager authenticationManager, TokenService tokenService, LoginAttemptService loginAttemptService) {
+	public AuthenticationController(AuthenticationManager authenticationManager, TokenService tokenService, LoginAttemptService loginAttemptService, UserService userService) {
 		this.authenticationManager = authenticationManager;
 		this.tokenService = tokenService;
 		this.loginAttemptService = loginAttemptService;
+		this.userService = userService;
 	}
 
 	@PostMapping
@@ -40,7 +43,9 @@ public class AuthenticationController {
 		String username = authDTO.username();
 		String ip = request.getRemoteAddr();
 
-		if (loginAttemptService.isBlocked(username, ip)) {
+		boolean userExists = userService.existsByUsername(username);
+
+		if (loginAttemptService.isBlocked(userExists ? username : null, ip)) {
 			throw new LoginException("Múltiplas tentativas inválidas. Tente novamente mais tarde.");
 		}
 
@@ -53,9 +58,9 @@ public class AuthenticationController {
 			var token = tokenService.generateToken((User) auth.getPrincipal());
 			return ResponseEntity.ok(new LoginResponseDTO(token));
 		} catch (BadCredentialsException e) {
-			loginAttemptService.loginFailed(username, ip);
+			loginAttemptService.loginFailed(userExists ? username : null, ip);
 
-			int remainingAttempts = loginAttemptService.getRemainingAttempts(authDTO.username());
+			int remainingAttempts = loginAttemptService.getRemainingAttempts(userExists ? username : null);
 
 			if (remainingAttempts > 0) {
 				throw new LoginException("Falha no login. Verifique suas credenciais.");

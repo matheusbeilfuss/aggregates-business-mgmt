@@ -101,4 +101,8 @@ public class UserService implements UserDetailsService {
 
 		return user;
 	}
+
+	public boolean existsByUsername(String username) {
+		return repository.existsByUsername(username);
+	}
 }
