@@ -83,11 +83,11 @@ public class UserService implements UserDetailsService {
 		existingUser.setImgUrl(newUser.getImgUrl());
 	}
 
-	public User updatePassword(Long id, PasswordUpdateDTO newPassword) {
+	public void updatePassword(Long id, PasswordUpdateDTO newPassword) {
 		try {
 			User user = repository.getReferenceById(id);
 			user.setPassword(bCryptPasswordEncoder.encode(newPassword.getNewPassword()));
-			return repository.save(user);
+			repository.save(user);
 		} catch (EntityNotFoundException e) {
 			throw new ResourceNotFoundException(id);
 		}
