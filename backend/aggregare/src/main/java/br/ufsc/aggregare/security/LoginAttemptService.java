@@ -1,75 +1,71 @@
 package br.ufsc.aggregare.security;
 
-import java.time.LocalDateTime;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.TimeUnit;
 
 import org.springframework.stereotype.Component;
+
+import com.github.benmanes.caffeine.cache.Cache;
+import com.github.benmanes.caffeine.cache.Caffeine;
 
 @Component
 public class LoginAttemptService {
 
-	private static final int MAX_ATTEMPT = 5;
+	private static final int MAX_ATTEMPTS = 5;
 	private static final int LOCK_MINUTES = 5;
+	private static final int MAX_CACHE_SIZE = 10_000;
 
-	private final Map<String, Integer> userAttempts = new ConcurrentHashMap<>();
-	private final Map<String, Integer> ipAttempts = new ConcurrentHashMap<>();
+	private final Cache<String, Integer> userAttempts = Caffeine.newBuilder()
+			.expireAfterWrite(LOCK_MINUTES, TimeUnit.MINUTES)
+			.maximumSize(MAX_CACHE_SIZE)
+			.build();
 
-	private final Map<String, LocalDateTime> userLockTime = new ConcurrentHashMap<>();
-	private final Map<String, LocalDateTime> ipLockTime = new ConcurrentHashMap<>();
-
-	public int getRemainingAttempts(String username) {
-		return MAX_ATTEMPT - userAttempts.getOrDefault(username, 0);
-	}
+	private final Cache<String, Integer> ipAttempts = Caffeine.newBuilder()
+			.expireAfterWrite(LOCK_MINUTES, TimeUnit.MINUTES)
+			.maximumSize(MAX_CACHE_SIZE)
+			.build();
 
 	public void loginFailed(String username, String ip) {
-		int userCount = userAttempts.compute(username,
-				(k, v) -> (v == null ? 0 : v) + 1);
 
-		if (userCount >= MAX_ATTEMPT) {
-			userLockTime.put(username, LocalDateTime.now().plusMinutes(LOCK_MINUTES));
+		if (username != null) {
+			increment(userAttempts, username);
 		}
 
-		int ipCount = ipAttempts.compute(ip,
-				(k, v) -> (v == null ? 0 : v) + 1);
-
-		if (ipCount >= MAX_ATTEMPT) {
-			ipLockTime.put(ip, LocalDateTime.now().plusMinutes(LOCK_MINUTES));
-		}
+		increment(ipAttempts, ip);
 	}
 
 	public void loginSucceeded(String username, String ip) {
-		userAttempts.remove(username);
-		userLockTime.remove(username);
-
-		ipAttempts.remove(ip);
-		ipLockTime.remove(ip);
+		if (username != null) {
+			userAttempts.invalidate(username);
+		}
+		ipAttempts.invalidate(ip);
 	}
 
 	public boolean isBlocked(String username, String ip) {
 
-		LocalDateTime now = LocalDateTime.now();
+		boolean userBlocked = false;
 
-		LocalDateTime userLock = userLockTime.get(username);
-		if (userLock != null) {
-			if (userLock.isAfter(now)) {
-				return true;
-			} else {
-				userLockTime.remove(username);
-				userAttempts.remove(username);
-			}
+		if (username != null) {
+			userBlocked = isMaxAttempts(userAttempts, username);
 		}
 
-		LocalDateTime ipLock = ipLockTime.get(ip);
-		if (ipLock != null) {
-			if (ipLock.isAfter(now)) {
-				return true;
-			} else {
-				ipLockTime.remove(ip);
-				ipAttempts.remove(ip);
-			}
-		}
+		boolean ipBlocked = isMaxAttempts(ipAttempts, ip);
 
-		return false;
+		return userBlocked || ipBlocked;
+	}
+
+	public int getRemainingAttempts(String username) {
+		if (username == null) return MAX_ATTEMPTS;
+
+		Integer attempts = userAttempts.getIfPresent(username);
+		return MAX_ATTEMPTS - (attempts == null ? 0 : attempts);
+	}
+
+	private void increment(Cache<String, Integer> cache, String key) {
+		cache.asMap().merge(key, 1, Integer::sum);
+	}
+
+	private boolean isMaxAttempts(Cache<String, Integer> cache, String key) {
+		Integer attempts = cache.getIfPresent(key);
+		return attempts != null && attempts >= MAX_ATTEMPTS;
 	}
 }

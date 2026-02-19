@@ -106,6 +106,10 @@ public class UserService implements UserDetailsService {
 		return user;
 	}
 
+	public boolean existsByUsername(String username) {
+		return repository.existsByUsername(username);
+	}
+
 	public Resource loadUserAvatarResource(Principal principal) {
 		User user = (User) loadUserByUsername(principal.getName());
 
