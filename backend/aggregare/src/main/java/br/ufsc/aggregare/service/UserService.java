@@ -1,5 +1,7 @@
 package br.ufsc.aggregare.service;
 
+import java.nio.file.Path;
+import java.security.Principal;
 import java.util.List;
 import java.util.Optional;
 
@@ -100,5 +102,13 @@ public class UserService implements UserDetailsService {
 		}
 
 		return user;
+	}
+
+	public Path loadUserAvatar(Principal principal) {
+		User user = (User) loadUserByUsername(principal.getName());
+		if (user.getImgUrl() != null && !user.getImgUrl().isEmpty()) {
+			return fileService.getFilePath(user.getImgUrl());
+		}
+		return null;
 	}
 }

@@ -1,9 +1,15 @@
 package br.ufsc.aggregare.controller;
 
+import java.io.IOException;
 import java.net.URI;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.security.Principal;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -60,5 +66,29 @@ public class UserController {
 	public ResponseEntity<List<User>> findAll() {
 		List<User> users = service.findAll();
 		return ResponseEntity.ok().body(users);
+	}
+
+	@GetMapping(value = "/me")
+	public ResponseEntity<User> findMe(Principal principal) {
+		User user = (User) service.loadUserByUsername(principal.getName());
+		return ResponseEntity.ok().body(user);
+	}
+
+	@GetMapping("/me/avatar")
+	public ResponseEntity<Resource> findMyAvatar(Principal principal) throws IOException {
+		Path filePath = service.loadUserAvatar(principal);
+
+		if (filePath == null) {
+			return ResponseEntity.notFound().build();
+		}
+
+		Resource resource = new UrlResource(filePath.toUri());
+
+		String contentType = Files.probeContentType(filePath);
+
+		return ResponseEntity.ok()
+				.contentType(MediaType.parseMediaType(contentType))
+				.header("Cache-Control", "max-age=86400")
+				.body(resource);
 	}
 }

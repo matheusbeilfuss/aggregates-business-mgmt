@@ -15,7 +15,7 @@ import {
 export const items = [
   {
     title: "Home",
-    url: "/home",
+    url: "/",
     icon: Home,
   },
   {
@@ -65,7 +65,7 @@ export const items = [
   },
   {
     title: "Minha Conta",
-    url: "#",
+    url: "/user",
     icon: UserRound,
   },
 ];

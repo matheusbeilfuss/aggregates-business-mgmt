@@ -58,4 +58,12 @@ public class FileService {
 			}
 		}
 	}
+
+	public Path getFilePath(String imgUrl) {
+		if (imgUrl != null && !imgUrl.isEmpty()) {
+			String filename = imgUrl.replace("/uploads/", "");
+			return this.uploadPath.resolve(filename);
+		}
+		return null;
+	}
 }

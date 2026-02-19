@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.graphql.GraphQlProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -93,6 +94,8 @@ public class SecurityConfig {
 						.requestMatchers("/login").permitAll()
 						.requestMatchers("/h2-console/**").permitAll()
 						.requestMatchers("/favicon.ico").permitAll()
+						.requestMatchers(HttpMethod.GET, "/users/me").authenticated()
+						.requestMatchers(HttpMethod.GET, "/users/me/avatar").authenticated()
 						.requestMatchers(HttpMethod.GET, usersRoutes).hasRole(adminRole)
 						.requestMatchers(HttpMethod.POST, usersRoutes).hasRole(adminRole)
 						.requestMatchers(HttpMethod.PUT, usersRoutes).hasRole(adminRole)

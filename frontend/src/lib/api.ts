@@ -65,6 +65,19 @@ export const api = {
       headers: { "Content-Type": "application/json", ...getAuthHeaders() },
     }).then(handleResponse<T>),
 
+  getBlob: async (endpoint: string): Promise<Blob> => {
+    const response = await fetch(`${API_URL}${endpoint}`, {
+      method: "GET",
+      headers: getAuthHeaders(),
+    });
+
+    if (!response.ok) {
+      throw new ApiError(response.status, "Erro ao carregar imagem");
+    }
+
+    return response.blob();
+  },
+
   post: <T>(endpoint: string, data: unknown): Promise<T> =>
     fetch(`${API_URL}${endpoint}`, {
       method: "POST",
