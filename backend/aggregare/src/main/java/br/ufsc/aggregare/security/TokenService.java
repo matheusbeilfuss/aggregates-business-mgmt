@@ -41,7 +41,7 @@ public class TokenService {
 			this.algorithm = Algorithm.HMAC256(secretBytes);
 
 		} catch (IllegalArgumentException e) {
-			throw new TokenException("JWT secret deve estar em formato Base64 válido");
+			throw new IllegalArgumentException("JWT secret deve estar em formato Base64 válido", e);
 		}
 	}
 
