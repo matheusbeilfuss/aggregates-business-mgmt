@@ -93,6 +93,7 @@ public class SecurityConfig {
 						.requestMatchers("/login").permitAll()
 						.requestMatchers("/h2-console/**").permitAll()
 						.requestMatchers("/favicon.ico").permitAll()
+						.requestMatchers(HttpMethod.GET, "/users/me").authenticated()
 						.requestMatchers(HttpMethod.GET, usersRoutes).hasRole(adminRole)
 						.requestMatchers(HttpMethod.POST, usersRoutes).hasRole(adminRole)
 						.requestMatchers(HttpMethod.PUT, usersRoutes).hasRole(adminRole)
