@@ -33,7 +33,7 @@ export function Navbar() {
         <DropdownMenuContent align="end" className="w-48">
           <DropdownMenuItem onClick={() => navigate("/user")}>
             <User className="mr-2 h-4 w-4" />
-            Minha conta
+            Meu perfil
           </DropdownMenuItem>
 
           <DropdownMenuSeparator />

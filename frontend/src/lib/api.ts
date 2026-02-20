@@ -104,4 +104,18 @@ export const api = {
       headers: { "Content-Type": "application/json", ...getAuthHeaders() },
       body: JSON.stringify(data),
     }).then(handleResponse<T>),
+
+  putMultipart: <T>(endpoint: string, formData: FormData): Promise<T> =>
+    fetch(`${API_URL}${endpoint}`, {
+      method: "PUT",
+      headers: getAuthHeaders(),
+      body: formData,
+    }).then(handleResponse<T>),
+
+  postMultipart: <T>(endpoint: string, formData: FormData): Promise<T> =>
+    fetch(`${API_URL}${endpoint}`, {
+      method: "POST",
+      headers: getAuthHeaders(),
+      body: formData,
+    }).then(handleResponse<T>),
 };

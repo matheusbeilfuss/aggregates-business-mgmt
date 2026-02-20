@@ -64,7 +64,7 @@ export const items = [
     icon: Fuel,
   },
   {
-    title: "Minha Conta",
+    title: "Meu perfil",
     url: "/user",
     icon: UserRound,
   },

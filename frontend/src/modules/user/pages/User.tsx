@@ -14,7 +14,9 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { PageContainer, FormActions, LoadingState } from "@/components/shared";
 import { User as UserIcon, Pencil } from "lucide-react";
 import { useUser, useUserAvatar } from "../hooks/useUsers";
-import { useEffect } from "react";
+import { useEffect, useRef, useState } from "react";
+import { userService } from "../services/user.service";
+import { toast } from "sonner";
 
 interface UserFormData {
   firstName: string;
@@ -26,9 +28,19 @@ interface UserFormData {
 
 export function User() {
   const { data: user, loading: userLoading } = useUser();
-  const { data: avatar, loading: avatarLoading } = useUserAvatar();
+  const {
+    data: avatar,
+    loading: avatarLoading,
+    refetch: refetchAvatar,
+  } = useUserAvatar();
 
   const isAdmin = user?.admin;
+
+  const [selectedImage, setSelectedImage] = useState<File | undefined>(
+    undefined,
+  );
+
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const form = useForm<UserFormData>({
     defaultValues: {
@@ -52,22 +64,57 @@ export function User() {
     }
   }, [user, avatar, form]);
 
-  const onSubmit = (data: UserFormData) => {
-    console.log(data);
+  const onSubmit = async (data: UserFormData) => {
+    if (!user) return;
+
+    try {
+      await userService.update(
+        user.id,
+        {
+          firstName: data.firstName,
+          lastName: data.lastName,
+          username: data.username,
+          email: data.email,
+        },
+        selectedImage,
+      );
+
+      if (selectedImage) {
+        refetchAvatar();
+      }
+
+      toast.success("Perfil atualizado com sucesso!");
+    } catch (error) {
+      toast.error("Erro ao atualizar perfil. Tente novamente.");
+    }
   };
 
   if (userLoading || avatarLoading) {
     return (
-      <PageContainer title="Minha conta">
+      <PageContainer title="Meu perfil">
         <LoadingState rows={4} variant="form" />
       </PageContainer>
     );
   }
 
   return (
-    <PageContainer title="Minha conta">
+    <PageContainer title="Meu perfil">
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept="image/*"
+            hidden
+            onChange={(e) => {
+              const file = e.target.files?.[0];
+              if (file) {
+                setSelectedImage(file);
+                form.setValue("imgUrl", URL.createObjectURL(file));
+              }
+            }}
+          />
+
           {isAdmin && (
             <div className="flex justify-center">
               <Badge variant="secondary">Administrador</Badge>
@@ -78,7 +125,7 @@ export function User() {
             <div className="flex justify-center">
               <div className="relative w-56 h-56 md:w-80 md:h-80">
                 <Avatar className="w-full h-full">
-                  <AvatarImage src={avatar || undefined} />
+                  <AvatarImage src={form.watch("imgUrl")} />
                   <AvatarFallback>
                     <UserIcon className="w-24 h-24 md:w-40 md:h-40 text-muted-foreground" />
                   </AvatarFallback>
@@ -89,6 +136,7 @@ export function User() {
                   size="icon"
                   variant="outline"
                   className="absolute bottom-3 right-3 md:bottom-5 md:right-5 rounded-full"
+                  onClick={() => fileInputRef.current?.click()}
                 >
                   <Pencil className="w-4 h-4" />
                 </Button>
