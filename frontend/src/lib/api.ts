@@ -20,12 +20,10 @@ function getAuthHeaders(): HeadersInit {
   return { Authorization: `Bearer ${token}` };
 }
 
-async function handleResponse<T>(response: Response): Promise<T> {
+async function handleError(response: Response) {
   if (response.status === 401) {
     const errorBody = await response.json().catch(() => null);
-
     triggerLogout();
-
     throw new ApiError(
       401,
       errorBody?.message || "Sua sessão expirou. Faça login novamente.",
@@ -34,21 +32,20 @@ async function handleResponse<T>(response: Response): Promise<T> {
 
   if (response.status === 403) {
     const errorBody = await response.json().catch(() => null);
-
-    throw new ApiError(
-      403,
-      errorBody?.message || "Você não tem permissão para acessar este recurso.",
-    );
+    throw new ApiError(403, errorBody?.message || "Você não tem permissão.");
   }
 
   if (!response.ok) {
     const errorBody = await response.json().catch(() => null);
-
     const message =
       errorBody?.message || errorBody?.error || "Erro desconhecido";
 
     throw new ApiError(response.status, message);
   }
+}
+
+async function handleResponse<T>(response: Response): Promise<T> {
+  await handleError(response);
 
   if (response.status === 204) {
     return undefined as T;
@@ -58,6 +55,11 @@ async function handleResponse<T>(response: Response): Promise<T> {
   return text ? JSON.parse(text) : (undefined as T);
 }
 
+async function handleBlobResponse(response: Response): Promise<Blob> {
+  await handleError(response);
+  return response.blob();
+}
+
 export const api = {
   get: <T>(endpoint: string): Promise<T> =>
     fetch(`${API_URL}${endpoint}`, {
@@ -65,18 +67,11 @@ export const api = {
       headers: { "Content-Type": "application/json", ...getAuthHeaders() },
     }).then(handleResponse<T>),
 
-  getBlob: async (endpoint: string): Promise<Blob> => {
-    const response = await fetch(`${API_URL}${endpoint}`, {
+  getBlob: (endpoint: string): Promise<Blob> =>
+    fetch(`${API_URL}${endpoint}`, {
       method: "GET",
       headers: getAuthHeaders(),
-    });
-
-    if (!response.ok) {
-      throw new ApiError(response.status, "Erro ao carregar imagem");
-    }
-
-    return response.blob();
-  },
+    }).then(handleBlobResponse),
 
   post: <T>(endpoint: string, data: unknown): Promise<T> =>
     fetch(`${API_URL}${endpoint}`, {

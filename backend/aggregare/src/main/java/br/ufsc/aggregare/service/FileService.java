@@ -44,7 +44,7 @@ public class FileService {
 
 			Files.copy(file.getInputStream(), filePath);
 
-			return "/uploads/" + uniqueFileName;
+			return uniqueFileName;
 		} catch (IOException e) {
 			throw new FileStorageException("Failed to save file: " + file.getOriginalFilename());
 		}
@@ -53,8 +53,7 @@ public class FileService {
 	public void deleteImage(String imgUrl) {
 		if (imgUrl != null && !imgUrl.isEmpty()) {
 			try {
-				String filename = imgUrl.replace("/uploads/", "");
-				Path filePath = this.uploadPath.resolve(filename);
+				Path filePath = this.uploadPath.resolve(imgUrl);
 				Files.deleteIfExists(filePath);
 			} catch (IOException e) {
 				throw new FileStorageException("Failed to delete previous image: " + imgUrl);
@@ -64,8 +63,7 @@ public class FileService {
 
 	public Path getFilePath(String imgUrl) {
 		if (imgUrl != null && !imgUrl.isEmpty()) {
-			String filename = imgUrl.replace("/uploads/", "");
-			return this.uploadPath.resolve(filename);
+			return this.uploadPath.resolve(imgUrl);
 		}
 		return null;
 	}

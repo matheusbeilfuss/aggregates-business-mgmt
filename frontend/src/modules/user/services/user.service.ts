@@ -4,7 +4,8 @@ import { User } from "../types";
 export const userService = {
   getMe: () => api.get<User>("/users/me"),
 
-  getAvatar: () => api.getBlob("/users/me/avatar"),
+  getAvatar: (version?: string) =>
+    api.getBlob(`/users/me/avatar${version ? `?v=${version}` : ""}`),
 
   update: async (
     id: number,

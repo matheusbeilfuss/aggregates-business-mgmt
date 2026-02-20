@@ -27,12 +27,8 @@ interface UserFormData {
 }
 
 export function User() {
-  const { data: user, loading: userLoading } = useUser();
-  const {
-    data: avatar,
-    loading: avatarLoading,
-    refetch: refetchAvatar,
-  } = useUserAvatar();
+  const { data: user, loading: userLoading, refetch: refetchUser } = useUser();
+  const avatar = useUserAvatar(user?.imgUrl);
 
   const isAdmin = user?.admin;
 
@@ -48,7 +44,7 @@ export function User() {
       lastName: user?.lastName || "",
       username: user?.username || "",
       email: user?.email || "",
-      imgUrl: avatar || undefined,
+      imgUrl: undefined,
     },
   });
 
@@ -59,7 +55,7 @@ export function User() {
         lastName: user.lastName,
         username: user.username,
         email: user.email,
-        imgUrl: avatar || undefined,
+        imgUrl: avatar,
       });
     }
   }, [user, avatar, form]);
@@ -79,9 +75,9 @@ export function User() {
         selectedImage,
       );
 
-      if (selectedImage) {
-        refetchAvatar();
-      }
+      await refetchUser();
+
+      setSelectedImage(undefined);
 
       toast.success("Perfil atualizado com sucesso!");
     } catch (error) {
@@ -89,7 +85,7 @@ export function User() {
     }
   };
 
-  if (userLoading || avatarLoading) {
+  if (userLoading) {
     return (
       <PageContainer title="Meu perfil">
         <LoadingState rows={4} variant="form" />

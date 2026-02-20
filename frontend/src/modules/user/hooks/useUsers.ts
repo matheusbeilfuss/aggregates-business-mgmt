@@ -1,4 +1,4 @@
-import { useCallback } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { userService } from "../services/user.service";
 import { User } from "../types";
 import { useApi } from "@/hooks/useApi";
@@ -9,11 +9,28 @@ export function useUser() {
   return useApi<User>(fetcher);
 }
 
-export function useUserAvatar() {
-  const fetcher = useCallback(async () => {
-    const blob = await userService.getAvatar();
-    return URL.createObjectURL(blob);
-  }, []);
+export function useUserAvatar(version?: string) {
+  const [avatarUrl, setAvatarUrl] = useState<string>();
 
-  return useApi<string>(fetcher);
+  useEffect(() => {
+    let objectUrl: string;
+
+    async function fetchAvatar() {
+      if (!version) return;
+
+      const blob = await userService.getAvatar(version);
+      objectUrl = URL.createObjectURL(blob);
+      setAvatarUrl(objectUrl);
+    }
+
+    fetchAvatar();
+
+    return () => {
+      if (objectUrl) {
+        URL.revokeObjectURL(objectUrl);
+      }
+    };
+  }, [version]);
+
+  return avatarUrl;
 }
