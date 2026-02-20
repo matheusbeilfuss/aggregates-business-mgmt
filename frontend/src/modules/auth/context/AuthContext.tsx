@@ -31,7 +31,7 @@ export function AuthProvider() {
       }
 
       try {
-        await api.get("/me");
+        await api.get("/users/me");
         setToken(storedToken);
       } catch {
         localStorage.removeItem("token");
