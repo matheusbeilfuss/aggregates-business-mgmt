@@ -17,6 +17,9 @@ import { useUser, useUserAvatar } from "../hooks/useUsers";
 import { useEffect, useRef, useState } from "react";
 import { userService } from "../services/user.service";
 import { toast } from "sonner";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { userSchema } from "../schemas/user.schemas";
+import { UpdatePasswordDialog } from "../components/UpdatePasswordDialog";
 
 interface UserFormData {
   firstName: string;
@@ -35,10 +38,13 @@ export function User() {
   const [selectedImage, setSelectedImage] = useState<File | undefined>(
     undefined,
   );
+  const [isUpdatePasswordDialogOpen, setIsUpdatePasswordDialogOpen] =
+    useState(false);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const form = useForm<UserFormData>({
+    resolver: zodResolver(userSchema),
     defaultValues: {
       firstName: user?.firstName || "",
       lastName: user?.lastName || "",
@@ -217,18 +223,25 @@ export function User() {
                   <Button type="button" variant="secondary" className="w-full">
                     Gerenciar acessos
                   </Button>
+
+                  <UpdatePasswordDialog
+                    open={isUpdatePasswordDialogOpen}
+                    onOpenChange={setIsUpdatePasswordDialogOpen}
+                    onSuccess={() => {
+                      setIsUpdatePasswordDialogOpen(false);
+                    }}
+                  />
                 </>
               )}
-
-              <Button type="button" variant="secondary" className="w-full">
-                Trocar senha
-              </Button>
             </div>
           </div>
-
-          <FormActions cancelPath="/" submitLabel="Salvar" />
         </form>
       </Form>
+      <FormActions
+        cancelPath="/"
+        submitLabel="Salvar"
+        onSubmit={form.handleSubmit(onSubmit)}
+      />
     </PageContainer>
   );
 }

@@ -25,4 +25,7 @@ export const userService = {
 
     return api.putMultipart<User>(`/users/${id}`, formData);
   },
+
+  updatePassword: (newPassword: string) =>
+    api.patch("/users/me/password", { newPassword }),
 };
