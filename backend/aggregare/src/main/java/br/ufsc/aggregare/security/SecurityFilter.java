@@ -39,16 +39,18 @@ public class SecurityFilter extends OncePerRequestFilter {
 
 		if (token != null) {
 			try {
-				var login = tokenService.validateToken(token);
+				var subject = tokenService.validateToken(token);
 
-				if (login != null && !login.isEmpty()) {
-					UserDetails user = userRepository.findByUsername(login);
+				if (subject != null && !subject.isEmpty()) {
+					Long userId = Long.parseLong(subject);
+					UserDetails user = userRepository.findById(userId).orElse(null);
+
 					if (user != null) {
 						var authentication = new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
 						SecurityContextHolder.getContext().setAuthentication(authentication);
 					}
 				}
-			} catch (TokenException e) {
+			} catch (TokenException | NumberFormatException e) {
 				LOGGER.debug("Token inválido ou expirado: {}", e.getMessage());
 				SecurityContextHolder.clearContext();
 			}
