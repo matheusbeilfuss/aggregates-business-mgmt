@@ -49,7 +49,7 @@ public class TokenService {
 		try {
 			return JWT.create()
 					.withIssuer("aggregare-api")
-					.withSubject(user.getUsername())
+					.withSubject(String.valueOf(user.getId()))
 					.withExpiresAt(getExpirationDate())
 					.sign(algorithm);
 		} catch (JWTCreationException e) {

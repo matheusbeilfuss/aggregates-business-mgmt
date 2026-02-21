@@ -1,13 +1,13 @@
 package br.ufsc.aggregare.controller;
 
 import java.net.URI;
-import java.security.Principal;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -78,10 +78,10 @@ public class UserController {
 		return ResponseEntity.ok(list);
 	}
 
-	@GetMapping(value = "/me")
-	public ResponseEntity<UserResponseDTO> findMe(Principal principal) {
-		User user = (User) service.loadUserByUsername(principal.getName());
-		return ResponseEntity.ok().body(new UserResponseDTO(user));
+	@GetMapping("/me")
+	public ResponseEntity<UserResponseDTO> findMe(Authentication authentication) {
+		User user = (User) authentication.getPrincipal();
+		return ResponseEntity.ok(new UserResponseDTO(user));
 	}
 
 	@GetMapping("/me/avatar")
