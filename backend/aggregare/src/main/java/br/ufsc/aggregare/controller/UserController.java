@@ -85,15 +85,15 @@ public class UserController {
 	}
 
 	@GetMapping("/me/avatar")
-	public ResponseEntity<Resource> findMyAvatar(Principal principal) {
-
-		Resource resource = service.loadUserAvatarResource(principal);
+	public ResponseEntity<Resource> findMyAvatar(Authentication authentication) {
+		User user = (User) authentication.getPrincipal();
+		Resource resource = service.loadUserAvatarResource(user);
 
 		if (resource == null) {
 			return ResponseEntity.notFound().build();
 		}
 
-		MediaType mediaType = service.getUserAvatarMediaType(principal);
+		MediaType mediaType = service.getUserAvatarMediaType(user);
 
 		return ResponseEntity.ok()
 				.contentType(mediaType)

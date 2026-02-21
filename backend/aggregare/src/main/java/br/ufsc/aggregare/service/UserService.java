@@ -1,7 +1,6 @@
 package br.ufsc.aggregare.service;
 
 import java.nio.file.Path;
-import java.security.Principal;
 import java.util.List;
 import java.util.Optional;
 
@@ -120,8 +119,7 @@ public class UserService implements UserDetailsService {
 		return repository.existsByUsername(username);
 	}
 
-	public Resource loadUserAvatarResource(Principal principal) {
-		User user = (User) loadUserByUsername(principal.getName());
+	public Resource loadUserAvatarResource(User user) {
 
 		if (user.getImgUrl() == null || user.getImgUrl().isEmpty()) {
 			return null;
@@ -132,8 +130,7 @@ public class UserService implements UserDetailsService {
 		return fileService.loadFileAsResource(filePath);
 	}
 
-	public MediaType getUserAvatarMediaType(Principal principal) {
-		User user = (User) loadUserByUsername(principal.getName());
+	public MediaType getUserAvatarMediaType(User user) {
 
 		if (user.getImgUrl() == null || user.getImgUrl().isEmpty()) {
 			return null;
