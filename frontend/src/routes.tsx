@@ -11,6 +11,7 @@ import { AuthProvider } from "./modules/auth/context/AuthContext";
 import { User } from "./modules/user/pages/User";
 import { NotFound } from "./modules/not-found";
 import { UsersManage } from "./modules/user/pages/UsersManage";
+import { AdminRoute } from "./modules/auth/components/AdminRoute";
 
 export const router = createBrowserRouter([
   {
@@ -29,7 +30,10 @@ export const router = createBrowserRouter([
           { path: "stocks/:id/replenish", element: <StockReplenish /> },
           { path: "user", element: <User /> },
 
-          { path: "admin/users", element: <UsersManage /> },
+          {
+            element: <AdminRoute />,
+            children: [{ path: "admin/users", element: <UsersManage /> }],
+          },
           { path: "*", element: <NotFound /> },
         ],
       },
