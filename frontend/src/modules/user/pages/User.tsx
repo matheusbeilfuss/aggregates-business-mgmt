@@ -204,48 +204,32 @@ export function User() {
                   </FormItem>
                 )}
               />
-
-              {isAdmin && (
-                <>
-                  {
-                    // TODO: Adicionar campo para nome do comércio
-                    /* <FormField
-                    control={form.control}
-                    name="businessName"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Nome do Comércio</FormLabel>
-                        <FormControl>
-                          <Input className="h-9" {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  /> */
-                  }
-                  <Button
-                    type="button"
-                    variant="secondary"
-                    className="w-full cursor-pointer"
-                    onClick={() => navigate("/admin/users")}
-                  >
-                    <Users className="w-4 h-4 mr-2" />
-                    Gerenciar acessos
-                  </Button>
-
-                  <UpdatePasswordDialog
-                    open={isUpdatePasswordDialogOpen}
-                    onOpenChange={setIsUpdatePasswordDialogOpen}
-                    onSuccess={() => {
-                      setIsUpdatePasswordDialogOpen(false);
-                    }}
-                  />
-                </>
-              )}
             </div>
           </div>
         </form>
       </Form>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-start mt-4">
+        <div />
+        <div className="space-y-4">
+          {isAdmin && (
+            <Button
+              type="button"
+              variant="secondary"
+              className="w-full cursor-pointer"
+              onClick={() => navigate("/admin/users")}
+            >
+              <Users className="w-4 h-4 mr-2" />
+              Gerenciar acessos
+            </Button>
+          )}
+
+          <UpdatePasswordDialog
+            open={isUpdatePasswordDialogOpen}
+            onOpenChange={setIsUpdatePasswordDialogOpen}
+            onSuccess={() => setIsUpdatePasswordDialogOpen(false)}
+          />
+        </div>
+      </div>
       <FormActions
         cancelPath="/"
         submitLabel="Salvar"
