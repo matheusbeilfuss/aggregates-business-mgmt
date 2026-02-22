@@ -12,7 +12,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { PageContainer, FormActions, LoadingState } from "@/components/shared";
-import { User as UserIcon, Pencil } from "lucide-react";
+import { User as UserIcon, Pencil, Users } from "lucide-react";
 import { useUser, useUserAvatar } from "../hooks/useUsers";
 import { useEffect, useRef, useState } from "react";
 import { userService } from "../services/user.service";
@@ -20,6 +20,7 @@ import { toast } from "sonner";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { userSchema } from "../schemas/user.schemas";
 import { UpdatePasswordDialog } from "../components/UpdatePasswordDialog";
+import { useNavigate } from "react-router-dom";
 
 interface UserFormData {
   firstName: string;
@@ -30,6 +31,8 @@ interface UserFormData {
 }
 
 export function User() {
+  const navigate = useNavigate();
+
   const { data: user, loading: userLoading, refetch: refetchUser } = useUser();
   const avatar = useUserAvatar(user?.imgUrl);
 
@@ -220,7 +223,13 @@ export function User() {
                     )}
                   /> */
                   }
-                  <Button type="button" variant="secondary" className="w-full">
+                  <Button
+                    type="button"
+                    variant="secondary"
+                    className="w-full cursor-pointer"
+                    onClick={() => navigate("/admin/users")}
+                  >
+                    <Users className="w-4 h-4 mr-2" />
                     Gerenciar acessos
                   </Button>
 

@@ -7,6 +7,8 @@ export const userService = {
   getAvatar: (version?: string) =>
     api.getBlob(`/users/me/avatar${version ? `?v=${version}` : ""}`),
 
+  getAll: () => api.get<User[]>(`/users`),
+
   update: async (
     id: number,
     data: Partial<User>,
@@ -28,4 +30,6 @@ export const userService = {
 
   updatePassword: (newPassword: string) =>
     api.patch("/users/me/password", { newPassword }),
+
+  delete: (id: number) => api.delete(`/users/${id}`),
 };

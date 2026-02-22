@@ -24,6 +24,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { Lock } from "lucide-react";
 
 interface UpdatePasswordDialogProps {
   open: boolean;
@@ -59,7 +60,12 @@ export function UpdatePasswordDialog({
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogTrigger asChild>
-        <Button type="button" variant="secondary" className="w-full">
+        <Button
+          type="button"
+          variant="secondary"
+          className="w-full cursor-pointer"
+        >
+          <Lock className="w-4 h-4 mr-2" />
           Trocar senha
         </Button>
       </DialogTrigger>

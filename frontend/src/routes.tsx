@@ -10,6 +10,7 @@ import { OrderEdit } from "./modules/order/pages/OrderEdit";
 import { AuthProvider } from "./modules/auth/context/AuthContext";
 import { User } from "./modules/user/pages/User";
 import { NotFound } from "./modules/not-found";
+import { UsersManage } from "./modules/user/pages/UsersManage";
 
 export const router = createBrowserRouter([
   {
@@ -28,6 +29,7 @@ export const router = createBrowserRouter([
           { path: "stocks/:id/replenish", element: <StockReplenish /> },
           { path: "user", element: <User /> },
 
+          { path: "admin/users", element: <UsersManage /> },
           { path: "*", element: <NotFound /> },
         ],
       },

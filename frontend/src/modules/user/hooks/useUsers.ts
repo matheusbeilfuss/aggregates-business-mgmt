@@ -34,3 +34,9 @@ export function useUserAvatar(version?: string) {
 
   return avatarUrl;
 }
+
+export function useUsers() {
+  const fetcher = useCallback(() => userService.getAll(), []);
+
+  return useApi<User[]>(fetcher);
+}
