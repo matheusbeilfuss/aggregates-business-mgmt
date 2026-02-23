@@ -9,6 +9,7 @@ import { UpdateUserFormData } from "../schemas/user.schemas";
 import { UpdatePasswordDialog } from "../components/UpdatePasswordDialog";
 import { UserForm } from "../components/UserForm";
 import { useNavigate } from "react-router-dom";
+import { ApiError } from "@/lib/api";
 
 export function User() {
   const navigate = useNavigate();
@@ -34,8 +35,13 @@ export function User() {
       await userService.update(user.id, data, image);
       await refetchUser();
       toast.success("Perfil atualizado com sucesso!");
-    } catch {
-      toast.error("Erro ao atualizar perfil. Tente novamente.");
+    } catch (error) {
+      if (error instanceof ApiError) {
+        toast.error(error.message);
+      } else {
+        toast.error("Erro ao atualizar perfil. Tente novamente.");
+      }
+      throw error;
     }
   };
 

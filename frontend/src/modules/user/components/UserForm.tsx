@@ -90,16 +90,30 @@ export function UserForm({
   }, [defaultValues?.imgName]);
 
   const handleSubmit = async (data: CombinedFormData) => {
-    if (mode === "create") {
-      await (onSubmit as CreateMode["onSubmit"])(
-        data as CreateUserFormData,
-        selectedImage,
+    try {
+      if (mode === "create") {
+        await (onSubmit as CreateMode["onSubmit"])(
+          data as CreateUserFormData,
+          selectedImage,
+        );
+      } else {
+        await (onSubmit as EditMode["onSubmit"])(
+          data as UpdateUserFormData,
+          selectedImage,
+        );
+      }
+    } catch (error) {
+      form.setValue(
+        "imgName",
+        mode === "edit" ? defaultValues?.imgName : undefined,
       );
-    } else {
-      await (onSubmit as EditMode["onSubmit"])(
-        data as UpdateUserFormData,
-        selectedImage,
-      );
+      setSelectedImage(undefined);
+
+      if (fileInputRef.current) {
+        fileInputRef.current.value = "";
+      }
+
+      throw error;
     }
   };
 

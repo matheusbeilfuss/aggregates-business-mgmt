@@ -14,14 +14,19 @@ import org.springframework.web.multipart.MultipartFile;
 
 import br.ufsc.aggregare.service.exception.FileStorageException;
 
+import net.coobird.thumbnailator.Thumbnails;
+
 @Service
 public class FileService {
+
+	private static final int MAX_DIMENSION = 800;
+	private static final double COMPRESSION_QUALITY = 0.8;
 
 	private final Path uploadPath = Paths.get("uploads");
 
 	public String saveImage(MultipartFile file) {
 		if (file.isEmpty()) {
-			throw new FileStorageException("Failed to save empty file.");
+			throw new FileStorageException("Não é permitido salvar um arquivo vazio.");
 		}
 
 		try {
@@ -29,24 +34,18 @@ public class FileService {
 				Files.createDirectories(uploadPath);
 			}
 
-			String originalFileName = file.getOriginalFilename();
-			String extension = "";
-
-			if (originalFileName != null) {
-				int dotIndex = originalFileName.lastIndexOf('.');
-				if (dotIndex > 0) {
-					extension = originalFileName.substring(dotIndex);
-				}
-			}
-
-			String uniqueFileName = UUID.randomUUID() + extension;
+			String uniqueFileName = UUID.randomUUID() + ".jpg";
 			Path filePath = this.uploadPath.resolve(uniqueFileName);
 
-			Files.copy(file.getInputStream(), filePath);
+			Thumbnails.of(file.getInputStream())
+					.size(MAX_DIMENSION, MAX_DIMENSION)
+					.outputFormat("jpg")
+					.outputQuality(COMPRESSION_QUALITY)
+					.toFile(filePath.toFile());
 
 			return uniqueFileName;
 		} catch (IOException e) {
-			throw new FileStorageException("Failed to save file: " + file.getOriginalFilename());
+			throw new FileStorageException("Não foi possível salvar o arquivo: " + file.getOriginalFilename());
 		}
 	}
 
@@ -56,7 +55,7 @@ public class FileService {
 				Path filePath = this.uploadPath.resolve(imgName);
 				Files.deleteIfExists(filePath);
 			} catch (IOException e) {
-				throw new FileStorageException("Failed to delete previous image: " + imgName);
+				throw new FileStorageException("Não foi possível deletar imagem anterior: " + imgName);
 			}
 		}
 	}
@@ -73,12 +72,12 @@ public class FileService {
 			Resource resource = new UrlResource(filePath.toUri());
 
 			if (!resource.exists() || !resource.isReadable()) {
-				throw new FileStorageException("File not found or not readable");
+				throw new FileStorageException("Arquivo não encontrado ou não é legível");
 			}
 
 			return resource;
 		} catch (IOException e) {
-			throw new FileStorageException("Failed to load file as resource");
+			throw new FileStorageException("Não foi possível carregar o arquivo");
 		}
 	}
 
