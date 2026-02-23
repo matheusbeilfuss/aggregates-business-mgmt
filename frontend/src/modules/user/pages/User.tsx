@@ -52,6 +52,7 @@ export function User() {
   return (
     <PageContainer title="Meu perfil">
       <UserForm
+        key={avatar}
         mode="edit"
         defaultValues={{
           firstName: user.firstName,

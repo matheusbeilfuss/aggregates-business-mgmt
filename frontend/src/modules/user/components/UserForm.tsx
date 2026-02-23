@@ -15,7 +15,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Checkbox } from "@/components/ui/checkbox";
 import { FormActions } from "@/components/shared";
 import { User as UserIcon, Pencil } from "lucide-react";
-import { useRef, useState, useEffect, ReactNode } from "react";
+import { useRef, useState, ReactNode } from "react";
 import {
   createUserSchema,
   updateUserSchema,
@@ -82,12 +82,6 @@ export function UserForm({
             imgName: undefined,
           },
   });
-
-  useEffect(() => {
-    if (mode === "edit" && defaultValues) {
-      form.reset(defaultValues);
-    }
-  }, [defaultValues?.imgName]);
 
   const handleSubmit = async (data: CombinedFormData) => {
     try {
