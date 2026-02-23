@@ -145,7 +145,7 @@ export function UserForm({
             </div>
           )}
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 items-center">
             <div className="flex justify-center">
               <div className="relative w-56 h-56 md:w-80 md:h-80">
                 <Avatar className="w-full h-full">

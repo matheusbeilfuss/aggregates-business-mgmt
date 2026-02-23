@@ -20,7 +20,7 @@ import { ApiError } from "@/lib/api";
 
 export function Login() {
   const navigate = useNavigate();
-  const { login } = useAuth();
+  const { login, businessName } = useAuth();
 
   const form = useForm<LoginPayload>({
     resolver: zodResolver(loginSchema),
@@ -49,7 +49,7 @@ export function Login() {
   return (
     <>
       <div className="w-full h-[30vh] bg-blue-300 flex flex-col justify-center items-center gap-2">
-        <h1 className="font-bold text-xl text-blue-600">Nome do Comércio</h1>
+        <h1 className="font-bold text-xl text-blue-600">{businessName}</h1>
         <h3 className="font-medium text-blue-600">Seja bem vindo!</h3>
       </div>
       <div className="w-full h-[55vh] flex flex-col justify-center items-center gap-4">

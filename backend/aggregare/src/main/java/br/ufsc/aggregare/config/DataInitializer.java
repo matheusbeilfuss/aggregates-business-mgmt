@@ -8,7 +8,9 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import br.ufsc.aggregare.model.Settings;
 import br.ufsc.aggregare.model.User;
+import br.ufsc.aggregare.repository.SettingsRepository;
 import br.ufsc.aggregare.repository.UserRepository;
 
 @Configuration
@@ -19,6 +21,7 @@ public class DataInitializer implements CommandLineRunner {
 
 	private final UserRepository userRepository;
 	private final PasswordEncoder passwordEncoder;
+	private final SettingsRepository settingsRepository;
 
 	@Value("${admin.initial-username:#{null}}")
 	private String adminUsername;
@@ -26,9 +29,10 @@ public class DataInitializer implements CommandLineRunner {
 	@Value("${admin.initial-password:#{null}}")
 	private String adminPassword;
 
-	public DataInitializer(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+	public DataInitializer(UserRepository userRepository, SettingsRepository settingsRepository, PasswordEncoder passwordEncoder) {
 		this.userRepository = userRepository;
 		this.passwordEncoder = passwordEncoder;
+		this.settingsRepository = settingsRepository;
 	}
 
 	@Override public void run(String... args) throws Exception {
@@ -43,7 +47,10 @@ public class DataInitializer implements CommandLineRunner {
 
 				userRepository.save(admin);
 				LOGGER.info("Admin user created with username: {}", adminUsername);
-			}
-
+		}
+		if (!settingsRepository.existsById(1L)) {
+			settingsRepository.save(new Settings("Nome do Comércio"));
+			LOGGER.info("Default settings created.");
+		}
 	}
 }

@@ -6,6 +6,7 @@ import { setLogoutListener } from "../utils/authEvents";
 import { api } from "@/lib/api";
 import { User } from "@/modules/user/types";
 import { userService } from "@/modules/user/services/user.service";
+import { settingsService } from "@/modules/settings/services/settings.service";
 
 export interface AuthContextData {
   token: string | null;
@@ -13,6 +14,8 @@ export interface AuthContextData {
   isLoading: boolean;
   user: User | null;
   refetchUser: () => Promise<void>;
+  businessName?: string;
+  refetchSettings: () => Promise<void>;
   login: (payload: LoginPayload) => Promise<void>;
   logout: () => void;
 }
@@ -25,6 +28,9 @@ export function AuthProvider() {
   const [token, setToken] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [user, setUser] = useState<User | null>(null);
+  const [businessName, setBusinessName] = useState<string | undefined>(
+    "Nome do Comércio",
+  );
 
   const fetchUser = useCallback(async () => {
     try {
@@ -32,6 +38,15 @@ export function AuthProvider() {
       setUser(me);
     } catch {
       setUser(null);
+    }
+  }, []);
+
+  const fetchSettings = useCallback(async () => {
+    try {
+      const settings = await settingsService.get();
+      setBusinessName(settings.businessName);
+    } catch {
+      setBusinessName("Nome do Comércio");
     }
   }, []);
 
@@ -58,6 +73,10 @@ export function AuthProvider() {
 
     validateToken();
   }, [fetchUser]);
+
+  useEffect(() => {
+    fetchSettings();
+  }, [fetchSettings]);
 
   const login = useCallback(
     async (payload: LoginPayload) => {
@@ -86,6 +105,8 @@ export function AuthProvider() {
     isLoading,
     user,
     refetchUser: fetchUser,
+    businessName,
+    refetchSettings: fetchSettings,
     login,
     logout,
   };

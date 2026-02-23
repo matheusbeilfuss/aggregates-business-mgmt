@@ -14,7 +14,7 @@ import { useUserAvatar } from "@/modules/user/hooks/useUsers";
 
 export function Navbar() {
   const navigate = useNavigate();
-  const { logout, user } = useAuth();
+  const { logout, user, businessName } = useAuth();
   const avatar = useUserAvatar(user?.imgName);
 
   const onLogout = () => {
@@ -25,7 +25,7 @@ export function Navbar() {
   return (
     <nav className="w-full h-22 bg-gray-300 flex justify-between items-center px-4">
       <SidebarTrigger className="hover:bg-gray-400 h-10 w-10" />
-      <h3>Nome do Comércio</h3>
+      <h3>{businessName}</h3>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <button className="rounded-full h-10 w-10 flex items-center justify-center hover:bg-gray-400 transition-colors">

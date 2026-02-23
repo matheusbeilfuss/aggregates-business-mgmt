@@ -11,6 +11,7 @@ import { UserForm } from "../components/UserForm";
 import { useNavigate } from "react-router-dom";
 import { ApiError } from "@/lib/api";
 import { useAuth } from "@/modules/auth/hooks/useAuth";
+import { UpdateBusinessNameDialog } from "@/modules/settings/components/UpdateBusinessNameDialog";
 
 export function User() {
   const navigate = useNavigate();
@@ -19,6 +20,8 @@ export function User() {
   const avatar = useUserAvatar(user?.imgName);
 
   const [isUpdatePasswordDialogOpen, setIsUpdatePasswordDialogOpen] =
+    useState(false);
+  const [isUpdateBusinessNameDialogOpen, setIsUpdateBusinessNameDialogOpen] =
     useState(false);
 
   if (isLoading) {
@@ -62,23 +65,29 @@ export function User() {
         cancelPath="/"
         extraActions={
           <>
-            {user.admin && (
-              <Button
-                type="button"
-                variant="secondary"
-                className="w-full cursor-pointer"
-                onClick={() => navigate("/admin/users")}
-              >
-                <Users className="w-4 h-4 mr-2" />
-                Gerenciar acessos
-              </Button>
-            )}
-
             <UpdatePasswordDialog
               open={isUpdatePasswordDialogOpen}
               onOpenChange={setIsUpdatePasswordDialogOpen}
               onSuccess={() => setIsUpdatePasswordDialogOpen(false)}
             />
+            {user.admin && (
+              <>
+                <Button
+                  type="button"
+                  variant="secondary"
+                  className="w-full cursor-pointer"
+                  onClick={() => navigate("/admin/users")}
+                >
+                  <Users className="w-4 h-4 mr-2" />
+                  Gerenciar acessos
+                </Button>
+
+                <UpdateBusinessNameDialog
+                  open={isUpdateBusinessNameDialogOpen}
+                  onOpenChange={setIsUpdateBusinessNameDialogOpen}
+                />
+              </>
+            )}
           </>
         }
       />
