@@ -3,7 +3,7 @@ import {
   PageContainer,
   ConfirmDialog,
 } from "@/components/shared";
-import { useUsers, useUser } from "../hooks/useUsers";
+import { useUsers } from "../hooks/useUsers";
 import {
   Card,
   CardHeader,
@@ -26,12 +26,13 @@ import { useState } from "react";
 import { userService } from "../services/user.service";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "@/modules/auth/hooks/useAuth";
 
 export function UsersManage() {
   const navigate = useNavigate();
 
   const { data: users, loading, refetch } = useUsers();
-  const { data: loggedUser } = useUser();
+  const { user: loggedUser } = useAuth();
 
   const [userToDelete, setUserToDelete] = useState<number | null>(null);
 

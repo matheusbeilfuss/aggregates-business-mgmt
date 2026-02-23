@@ -1,5 +1,6 @@
 import { SidebarTrigger } from "@/components/ui/sidebar";
-import { CircleUserRound, LogOut, User } from "lucide-react";
+import { LogOut, User, CircleUserRound } from "lucide-react";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -9,10 +10,12 @@ import {
 } from "../ui/dropdown-menu";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/modules/auth/hooks/useAuth";
+import { useUserAvatar } from "@/modules/user/hooks/useUsers";
 
 export function Navbar() {
   const navigate = useNavigate();
-  const { logout } = useAuth();
+  const { logout, user } = useAuth();
+  const avatar = useUserAvatar(user?.imgName);
 
   const onLogout = () => {
     logout();
@@ -25,8 +28,13 @@ export function Navbar() {
       <h3>Nome do Comércio</h3>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <button className="h-10 w-10 hover:bg-gray-400 rounded-full flex justify-center items-center">
-            <CircleUserRound className="h-6 w-6" />
+          <button className="rounded-full h-10 w-10 flex items-center justify-center hover:bg-gray-400 transition-colors">
+            <Avatar className="h-9 w-9 border-gray-400">
+              <AvatarImage src={avatar} />
+              <AvatarFallback className="bg-gray-200">
+                <CircleUserRound className="h-5 w-5 text-gray-700" />
+              </AvatarFallback>
+            </Avatar>
           </button>
         </DropdownMenuTrigger>
 

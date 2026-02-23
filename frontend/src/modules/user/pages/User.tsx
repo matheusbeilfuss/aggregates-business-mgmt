@@ -1,7 +1,7 @@
 import { PageContainer, LoadingState } from "@/components/shared";
 import { Button } from "@/components/ui/button";
 import { Users } from "lucide-react";
-import { useUser, useUserAvatar } from "../hooks/useUsers";
+import { useUserAvatar } from "../hooks/useUsers";
 import { useState } from "react";
 import { userService } from "../services/user.service";
 import { toast } from "sonner";
@@ -10,17 +10,18 @@ import { UpdatePasswordDialog } from "../components/UpdatePasswordDialog";
 import { UserForm } from "../components/UserForm";
 import { useNavigate } from "react-router-dom";
 import { ApiError } from "@/lib/api";
+import { useAuth } from "@/modules/auth/hooks/useAuth";
 
 export function User() {
   const navigate = useNavigate();
 
-  const { data: user, loading: userLoading, refetch: refetchUser } = useUser();
+  const { user, isLoading, refetchUser } = useAuth();
   const avatar = useUserAvatar(user?.imgName);
 
   const [isUpdatePasswordDialogOpen, setIsUpdatePasswordDialogOpen] =
     useState(false);
 
-  if (userLoading) {
+  if (isLoading) {
     return (
       <PageContainer title="Meu perfil">
         <LoadingState rows={4} variant="form" />

@@ -1,11 +1,11 @@
 import { Navigate, Outlet } from "react-router-dom";
-import { useUser } from "@/modules/user/hooks/useUsers";
 import { Loader } from "lucide-react";
+import { useAuth } from "../hooks/useAuth";
 
 export function AdminRoute() {
-  const { data: user, loading } = useUser();
+  const { user, isLoading } = useAuth();
 
-  if (loading) {
+  if (isLoading) {
     return (
       <div className="flex items-center justify-center h-screen">
         <Loader className="animate-spin" /> Loading...
