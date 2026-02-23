@@ -1,5 +1,5 @@
 import { api } from "@/lib/api";
-import { User } from "../types";
+import { CreateUserPayload, UpdateUserPayload, User } from "../types";
 
 export const userService = {
   getMe: () => api.get<User>("/users/me"),
@@ -9,9 +9,24 @@ export const userService = {
 
   getAll: () => api.get<User[]>(`/users`),
 
+  create: async (data: CreateUserPayload, image?: File): Promise<User> => {
+    const formData = new FormData();
+
+    formData.append(
+      "user",
+      new Blob([JSON.stringify(data)], {
+        type: "application/json",
+      }),
+    );
+
+    if (image) formData.append("image", image);
+
+    return api.postMultipart<User>("/users", formData);
+  },
+
   update: async (
     id: number,
-    data: Partial<User>,
+    data: UpdateUserPayload,
     image?: File,
   ): Promise<User> => {
     const formData = new FormData();

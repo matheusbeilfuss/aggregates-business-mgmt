@@ -21,12 +21,15 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { MoreHorizontal, Pencil, Trash2, Ban } from "lucide-react";
+import { MoreHorizontal, Trash2, UserPlus } from "lucide-react";
 import { useState } from "react";
 import { userService } from "../services/user.service";
 import { toast } from "sonner";
+import { useNavigate } from "react-router-dom";
 
 export function UsersManage() {
+  const navigate = useNavigate();
+
   const { data: users, loading, refetch } = useUsers();
   const { data: loggedUser } = useUser();
 
@@ -109,16 +112,6 @@ export function UsersManage() {
                   </DropdownMenuTrigger>
 
                   <DropdownMenuContent align="end">
-                    <DropdownMenuItem>
-                      <Pencil className="w-4 h-4 mr-2" />
-                      Editar
-                    </DropdownMenuItem>
-
-                    <DropdownMenuItem disabled>
-                      <Ban className="w-4 h-4 mr-2" />
-                      Desabilitar
-                    </DropdownMenuItem>
-
                     <DropdownMenuItem
                       className="text-destructive"
                       disabled={isSelf}
@@ -135,13 +128,23 @@ export function UsersManage() {
         })}
       </div>
 
+      <div className="mt-auto flex justify-end py-12">
+        <Button
+          className="bg-slate-500 hover:bg-slate-600 text-white px-6 py-6 text-base cursor-pointer"
+          onClick={() => navigate("/admin/users/new")}
+        >
+          <UserPlus />
+          Adicionar acesso
+        </Button>
+      </div>
+
       <ConfirmDialog
         open={!!userToDelete}
         onOpenChange={(open) => !open && setUserToDelete(null)}
         title="Você tem certeza que deseja excluir este usuário?"
         description={
           userToDelete
-            ? `O usuário ${users?.find((u) => u.id === userToDelete)?.username || ""} será removido permanentemente.`
+            ? `O usuário ${users?.find((u) => u.id === userToDelete)?.firstName || ""} será removido permanentemente.`
             : ""
         }
         onConfirm={handleDeleteUser}

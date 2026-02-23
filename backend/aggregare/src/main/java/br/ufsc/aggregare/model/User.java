@@ -29,20 +29,20 @@ public class User implements Serializable, UserDetails {
 	private String username;
 	private String email;
 	private String password;
-	private String imgUrl;
+	private String imgName;
 	private Boolean admin;
 
 	public User() {
 	}
 
-	public User(Long id, String firstName, String lastName, String username, String email, String password, String imgUrl, Boolean admin) {
+	public User(Long id, String firstName, String lastName, String username, String email, String password, String imgName, Boolean admin) {
 		this.id = id;
 		this.firstName = firstName;
 		this.lastName = lastName;
 		this.username = username;
 		this.email = email;
 		this.password = password;
-		this.imgUrl = imgUrl;
+		this.imgName = imgName;
 		this.admin = admin;
 	}
 
@@ -94,12 +94,12 @@ public class User implements Serializable, UserDetails {
 		this.password = password;
 	}
 
-	public String getImgUrl() {
-		return imgUrl;
+	public String getImgName() {
+		return imgName;
 	}
 
-	public void setImgUrl(String imgUrl) {
-		this.imgUrl = imgUrl;
+	public void setImgName(String imgName) {
+		this.imgName = imgName;
 	}
 
 	public Boolean getAdmin() {

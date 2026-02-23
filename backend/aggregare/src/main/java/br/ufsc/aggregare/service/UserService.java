@@ -38,8 +38,8 @@ public class UserService implements UserDetailsService {
 
 	public User insert(User user, MultipartFile image) {
 		user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
-		String imgUrl = fileService.saveImage(image);
-		user.setImgUrl(imgUrl);
+		String imgName = fileService.saveImage(image);
+		user.setImgName(imgName);
 		return repository.save(user);
 	}
 
@@ -47,8 +47,8 @@ public class UserService implements UserDetailsService {
 		try {
 			User user = findById(id);
 
-			if (user.getImgUrl() != null && !user.getImgUrl().isEmpty()) {
-				fileService.deleteImage(user.getImgUrl());
+			if (user.getImgName() != null && !user.getImgName().isEmpty()) {
+				fileService.deleteImage(user.getImgName());
 			}
 
 			repository.delete(user);
@@ -60,14 +60,14 @@ public class UserService implements UserDetailsService {
 	public User update(Long id, User newUser, MultipartFile image) {
 		try {
 			User existingUser = repository.getReferenceById(id);
-			String oldImgUrl = existingUser.getImgUrl();
+			String oldImgName = existingUser.getImgName();
 
 			if (image != null && !image.isEmpty()) {
-				String newImgUrl = fileService.saveImage(image);
-				newUser.setImgUrl(newImgUrl);
+				String newImgName = fileService.saveImage(image);
+				newUser.setImgName(newImgName);
 
-				if (oldImgUrl != null && !oldImgUrl.isEmpty()) {
-					fileService.deleteImage(oldImgUrl);
+				if (oldImgName != null && !oldImgName.isEmpty()) {
+					fileService.deleteImage(oldImgName);
 				}
 			}
 
@@ -83,7 +83,7 @@ public class UserService implements UserDetailsService {
 		existingUser.setLastName(newUser.getLastName());
 		existingUser.setUsername(newUser.getUsername());
 		existingUser.setEmail(newUser.getEmail());
-		existingUser.setImgUrl(newUser.getImgUrl());
+		existingUser.setImgName(newUser.getImgName());
 	}
 
 	public void updatePassword(Long id, PasswordUpdateDTO newPassword) {
@@ -121,22 +121,22 @@ public class UserService implements UserDetailsService {
 
 	public Resource loadUserAvatarResource(User user) {
 
-		if (user.getImgUrl() == null || user.getImgUrl().isEmpty()) {
+		if (user.getImgName() == null || user.getImgName().isEmpty()) {
 			return null;
 		}
 
-		Path filePath = fileService.getFilePath(user.getImgUrl());
+		Path filePath = fileService.getFilePath(user.getImgName());
 
 		return fileService.loadFileAsResource(filePath);
 	}
 
 	public MediaType getUserAvatarMediaType(User user) {
 
-		if (user.getImgUrl() == null || user.getImgUrl().isEmpty()) {
+		if (user.getImgName() == null || user.getImgName().isEmpty()) {
 			return null;
 		}
 
-		Path filePath = fileService.getFilePath(user.getImgUrl());
+		Path filePath = fileService.getFilePath(user.getImgName());
 
 		return fileService.getFileMediaType(filePath);
 	}

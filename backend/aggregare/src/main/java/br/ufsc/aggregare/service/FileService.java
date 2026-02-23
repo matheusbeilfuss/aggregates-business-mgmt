@@ -50,20 +50,20 @@ public class FileService {
 		}
 	}
 
-	public void deleteImage(String imgUrl) {
-		if (imgUrl != null && !imgUrl.isEmpty()) {
+	public void deleteImage(String imgName) {
+		if (imgName != null && !imgName.isEmpty()) {
 			try {
-				Path filePath = this.uploadPath.resolve(imgUrl);
+				Path filePath = this.uploadPath.resolve(imgName);
 				Files.deleteIfExists(filePath);
 			} catch (IOException e) {
-				throw new FileStorageException("Failed to delete previous image: " + imgUrl);
+				throw new FileStorageException("Failed to delete previous image: " + imgName);
 			}
 		}
 	}
 
-	public Path getFilePath(String imgUrl) {
-		if (imgUrl != null && !imgUrl.isEmpty()) {
-			return this.uploadPath.resolve(imgUrl);
+	public Path getFilePath(String imgName) {
+		if (imgName != null && !imgName.isEmpty()) {
+			return this.uploadPath.resolve(imgName);
 		}
 		return null;
 	}

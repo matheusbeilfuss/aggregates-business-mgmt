@@ -7,3 +7,15 @@ export interface User {
   imgUrl?: string;
   admin: boolean;
 }
+
+export interface UpdateUserPayload {
+  firstName: string;
+  lastName: string;
+  username: string;
+  email: string;
+}
+
+export interface CreateUserPayload extends UpdateUserPayload {
+  password: string;
+  admin: boolean;
+}

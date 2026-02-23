@@ -12,6 +12,7 @@ import { User } from "./modules/user/pages/User";
 import { NotFound } from "./modules/not-found";
 import { UsersManage } from "./modules/user/pages/UsersManage";
 import { AdminRoute } from "./modules/auth/components/AdminRoute";
+import { UserAdd } from "./modules/user/pages/UserAdd";
 
 export const router = createBrowserRouter([
   {
@@ -32,7 +33,10 @@ export const router = createBrowserRouter([
 
           {
             element: <AdminRoute />,
-            children: [{ path: "admin/users", element: <UsersManage /> }],
+            children: [
+              { path: "admin/users", element: <UsersManage /> },
+              { path: "admin/users/new", element: <UserAdd /> },
+            ],
           },
           { path: "*", element: <NotFound /> },
         ],
