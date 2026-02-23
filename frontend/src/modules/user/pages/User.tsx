@@ -14,7 +14,7 @@ export function User() {
   const navigate = useNavigate();
 
   const { data: user, loading: userLoading, refetch: refetchUser } = useUser();
-  const avatar = useUserAvatar(user?.imgUrl);
+  const avatar = useUserAvatar(user?.imgName);
 
   const [isUpdatePasswordDialogOpen, setIsUpdatePasswordDialogOpen] =
     useState(false);
@@ -48,7 +48,7 @@ export function User() {
           lastName: user.lastName,
           username: user.username,
           email: user.email,
-          imgUrl: avatar,
+          imgName: avatar,
         }}
         isAdmin={user.admin}
         onSubmit={handleSubmit}

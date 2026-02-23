@@ -4,7 +4,7 @@ export interface User {
   lastName: string;
   username: string;
   email: string;
-  imgUrl?: string;
+  imgName?: string;
   admin: boolean;
 }
 

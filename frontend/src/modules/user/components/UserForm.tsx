@@ -35,7 +35,7 @@ type CreateMode = {
 type EditMode = {
   mode: "edit";
   onSubmit: (data: UpdateUserFormData, image?: File) => Promise<void>;
-  defaultValues: UpdateUserFormData & { imgUrl?: string };
+  defaultValues: UpdateUserFormData & { imgName?: string };
   isAdmin?: boolean;
 };
 
@@ -46,7 +46,7 @@ type UserFormProps = (CreateMode | EditMode) & {
 };
 
 type CombinedFormData = UpdateUserFormData & {
-  imgUrl?: string;
+  imgName?: string;
   password?: string;
   admin?: boolean;
 };
@@ -79,7 +79,7 @@ export function UserForm({
             email: "",
             password: "",
             admin: false,
-            imgUrl: undefined,
+            imgName: undefined,
           },
   });
 
@@ -87,7 +87,7 @@ export function UserForm({
     if (mode === "edit" && defaultValues) {
       form.reset(defaultValues);
     }
-  }, [defaultValues?.imgUrl]);
+  }, [defaultValues?.imgName]);
 
   const handleSubmit = async (data: CombinedFormData) => {
     if (mode === "create") {
@@ -120,7 +120,7 @@ export function UserForm({
               const file = e.target.files?.[0];
               if (file) {
                 setSelectedImage(file);
-                form.setValue("imgUrl", URL.createObjectURL(file));
+                form.setValue("imgName", URL.createObjectURL(file));
               }
             }}
           />
@@ -135,7 +135,7 @@ export function UserForm({
             <div className="flex justify-center">
               <div className="relative w-56 h-56 md:w-80 md:h-80">
                 <Avatar className="w-full h-full">
-                  <AvatarImage src={form.watch("imgUrl")} />
+                  <AvatarImage src={form.watch("imgName")} />
                   <AvatarFallback>
                     <UserIcon className="w-24 h-24 md:w-40 md:h-40 text-muted-foreground" />
                   </AvatarFallback>

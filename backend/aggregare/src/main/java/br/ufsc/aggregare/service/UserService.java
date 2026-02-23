@@ -38,8 +38,12 @@ public class UserService implements UserDetailsService {
 
 	public User insert(User user, MultipartFile image) {
 		user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
-		String imgName = fileService.saveImage(image);
-		user.setImgName(imgName);
+
+		if (image != null && !image.isEmpty()) {
+			String imgName = fileService.saveImage(image);
+			user.setImgName(imgName);
+		}
+
 		return repository.save(user);
 	}
 
@@ -60,30 +64,26 @@ public class UserService implements UserDetailsService {
 	public User update(Long id, User newUser, MultipartFile image) {
 		try {
 			User existingUser = repository.getReferenceById(id);
-			String oldImgName = existingUser.getImgName();
+
+			existingUser.setFirstName(newUser.getFirstName());
+			existingUser.setLastName(newUser.getLastName());
+			existingUser.setUsername(newUser.getUsername());
+			existingUser.setEmail(newUser.getEmail());
 
 			if (image != null && !image.isEmpty()) {
+				String oldImgName = existingUser.getImgName();
 				String newImgName = fileService.saveImage(image);
-				newUser.setImgName(newImgName);
+				existingUser.setImgName(newImgName);
 
 				if (oldImgName != null && !oldImgName.isEmpty()) {
 					fileService.deleteImage(oldImgName);
 				}
 			}
 
-			updateData(existingUser, newUser);
 			return repository.save(existingUser);
 		} catch (EntityNotFoundException e) {
 			throw new ResourceNotFoundException(id);
 		}
-	}
-
-	public void updateData(User existingUser, User newUser) {
-		existingUser.setFirstName(newUser.getFirstName());
-		existingUser.setLastName(newUser.getLastName());
-		existingUser.setUsername(newUser.getUsername());
-		existingUser.setEmail(newUser.getEmail());
-		existingUser.setImgName(newUser.getImgName());
 	}
 
 	public void updatePassword(Long id, PasswordUpdateDTO newPassword) {

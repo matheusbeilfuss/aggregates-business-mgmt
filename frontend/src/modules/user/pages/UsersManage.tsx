@@ -73,8 +73,8 @@ export function UsersManage() {
                   <Avatar>
                     <AvatarImage
                       src={
-                        user.imgUrl
-                          ? `/users/${user.id}/avatar?v=${user.imgUrl}`
+                        user.imgName
+                          ? `/users/${user.id}/avatar?v=${user.imgName}`
                           : undefined
                       }
                     />

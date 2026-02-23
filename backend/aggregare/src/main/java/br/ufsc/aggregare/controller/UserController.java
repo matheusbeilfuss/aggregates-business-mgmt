@@ -38,7 +38,7 @@ public class UserController {
 	}
 
 	@PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-	public ResponseEntity<UserResponseDTO> insert(@RequestPart("user") User user, @RequestPart("image") MultipartFile image) {
+	public ResponseEntity<UserResponseDTO> insert(@RequestPart("user") User user, @RequestPart(value = "image", required = false) MultipartFile image) {
 		user = service.insert(user, image);
 		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(user.getId()).toUri();
 		return ResponseEntity.created(uri).body(new UserResponseDTO(user));
