@@ -101,4 +101,17 @@ public class UserController {
 				.header("Cache-Control", "max-age=86400")
 				.body(resource);
 	}
+
+	@GetMapping("/{id}/avatar")
+	public ResponseEntity<Resource> findAvatarById(@PathVariable Long id) {
+		User user = service.findById(id);
+		Resource resource = service.loadUserAvatarResource(user);
+
+		if (resource == null) return ResponseEntity.notFound().build();
+
+		return ResponseEntity.ok()
+				.contentType(service.getUserAvatarMediaType(user))
+				.header("Cache-Control", "max-age=86400")
+				.body(resource);
+	}
 }

@@ -9,6 +9,9 @@ export const userService = {
 
   getAll: () => api.get<User[]>(`/users`),
 
+  getAvatarById: (id: number, version?: string) =>
+    api.getBlob(`/users/${id}/avatar${version ? `?v=${version}` : ""}`),
+
   create: async (data: CreateUserPayload, image?: File): Promise<User> => {
     const formData = new FormData();
 
