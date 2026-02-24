@@ -1,36 +1,15 @@
-import { createContext, useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { LoginPayload } from "../types";
 import { loginService } from "../services/login.service";
 import { Outlet } from "react-router-dom";
-import { setLogoutListener } from "../utils/authEvents";
-import { api } from "@/lib/api";
 import { User } from "@/modules/user/types";
 import { userService } from "@/modules/user/services/user.service";
-import { settingsService } from "@/modules/settings/services/settings.service";
-
-export interface AuthContextData {
-  token: string | null;
-  isAuthenticated: boolean;
-  isLoading: boolean;
-  user: User | null;
-  refetchUser: () => Promise<void>;
-  businessName?: string;
-  refetchSettings: () => Promise<void>;
-  login: (payload: LoginPayload) => Promise<void>;
-  logout: () => void;
-}
-
-export const AuthContext = createContext<AuthContextData | undefined>(
-  undefined,
-);
+import { AuthContext } from "./auth.context";
 
 export function AuthProvider() {
   const [token, setToken] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [user, setUser] = useState<User | null>(null);
-  const [businessName, setBusinessName] = useState<string | undefined>(
-    "Nome do Comércio",
-  );
 
   const fetchUser = useCallback(async () => {
     try {
@@ -38,15 +17,6 @@ export function AuthProvider() {
       setUser(me);
     } catch {
       setUser(null);
-    }
-  }, []);
-
-  const fetchSettings = useCallback(async () => {
-    try {
-      const settings = await settingsService.get();
-      setBusinessName(settings.businessName);
-    } catch {
-      setBusinessName("Nome do Comércio");
     }
   }, []);
 
@@ -60,9 +30,9 @@ export function AuthProvider() {
       }
 
       try {
-        await api.get("/users/me");
+        const me = await userService.getMe();
         setToken(storedToken);
-        await fetchUser();
+        setUser(me);
       } catch {
         localStorage.removeItem("token");
         setToken(null);
@@ -72,11 +42,7 @@ export function AuthProvider() {
     }
 
     validateToken();
-  }, [fetchUser]);
-
-  useEffect(() => {
-    fetchSettings();
-  }, [fetchSettings]);
+  }, []);
 
   const login = useCallback(
     async (payload: LoginPayload) => {
@@ -93,10 +59,13 @@ export function AuthProvider() {
   const logout = useCallback(() => {
     localStorage.removeItem("token");
     setToken(null);
+    setUser(null);
   }, []);
 
   useEffect(() => {
-    setLogoutListener(logout);
+    const handler = () => logout();
+    window.addEventListener("auth:logout", handler);
+    return () => window.removeEventListener("auth:logout", handler);
   }, [logout]);
 
   const value = {
@@ -105,8 +74,6 @@ export function AuthProvider() {
     isLoading,
     user,
     refetchUser: fetchUser,
-    businessName,
-    refetchSettings: fetchSettings,
     login,
     logout,
   };

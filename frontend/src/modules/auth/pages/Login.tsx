@@ -17,10 +17,12 @@ import { useNavigate } from "react-router-dom";
 import { LoginPayload } from "../types";
 import { useAuth } from "../hooks/useAuth";
 import { ApiError } from "@/lib/api";
+import { useSettings } from "@/modules/settings/hooks/useSettings";
 
 export function Login() {
   const navigate = useNavigate();
-  const { login, businessName } = useAuth();
+  const { login } = useAuth();
+  const { businessName } = useSettings();
 
   const form = useForm<LoginPayload>({
     resolver: zodResolver(loginSchema),

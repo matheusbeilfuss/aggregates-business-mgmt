@@ -25,6 +25,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Lock } from "lucide-react";
+import { ApiError } from "@/lib/api";
 
 interface UpdatePasswordDialogProps {
   open: boolean;
@@ -52,8 +53,12 @@ export function UpdatePasswordDialog({
       onOpenChange(false);
       form.reset();
       onSuccess();
-    } catch {
-      toast.error("Erro ao atualizar a senha. Tente novamente.");
+    } catch (error) {
+      if (error instanceof ApiError) {
+        toast.error(error.message);
+      } else {
+        toast.error("Não foi possível atualizar a senha. Tente novamente.");
+      }
     }
   }
 

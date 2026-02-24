@@ -22,9 +22,9 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Store } from "lucide-react";
-import { useAuth } from "@/modules/auth/hooks/useAuth";
 import { ApiError } from "@/lib/api";
 import { useEffect } from "react";
+import { useSettings } from "../hooks/useSettings";
 
 const businessNameSchema = z.object({
   businessName: z.string().min(1, "O nome do comércio é obrigatório."),
@@ -41,7 +41,7 @@ export function UpdateBusinessNameDialog({
   open,
   onOpenChange,
 }: UpdateBusinessNameDialogProps) {
-  const { businessName, refetchSettings } = useAuth();
+  const { businessName, refetchSettings } = useSettings();
 
   const form = useForm<BusinessNameFormData>({
     resolver: zodResolver(businessNameSchema),
@@ -83,7 +83,7 @@ export function UpdateBusinessNameDialog({
         </Button>
       </DialogTrigger>
 
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent className="sm:max-w-106.25">
         <DialogHeader>
           <DialogTitle>Nome do comércio</DialogTitle>
           <DialogDescription>

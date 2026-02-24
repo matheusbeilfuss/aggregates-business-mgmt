@@ -23,7 +23,10 @@ function getAuthHeaders(): HeadersInit {
 async function handleError(response: Response) {
   if (response.status === 401) {
     const errorBody = await response.json().catch(() => null);
-    triggerLogout();
+    const hasToken = !!localStorage.getItem("token");
+
+    if (hasToken) triggerLogout();
+
     throw new ApiError(
       401,
       errorBody?.message || "Sua sessão expirou. Faça login novamente.",
@@ -39,7 +42,6 @@ async function handleError(response: Response) {
     const errorBody = await response.json().catch(() => null);
     const message =
       errorBody?.message || errorBody?.error || "Erro desconhecido";
-
     throw new ApiError(response.status, message);
   }
 }

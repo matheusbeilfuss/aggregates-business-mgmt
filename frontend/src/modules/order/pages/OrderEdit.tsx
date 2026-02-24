@@ -18,10 +18,6 @@ export function OrderEdit() {
 
   const orderId = Number(id);
 
-  if (!id || Number.isNaN(orderId)) {
-    return <Navigate to="/orders" replace />;
-  }
-
   const { data: order, loading: orderLoading } = useOrder(orderId);
   const { data: products } = useProducts();
   const { data: clients } = useClients();
@@ -60,6 +56,10 @@ export function OrderEdit() {
       service: order.service ?? "",
     });
   }, [order, client, form]);
+
+  if (!id || Number.isNaN(orderId)) {
+    return <Navigate to="/orders" replace />;
+  }
 
   const onSubmit = async (data: OrderFormData) => {
     const payload: CreateOrderPayload = {

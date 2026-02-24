@@ -27,6 +27,7 @@ import { userService } from "../services/user.service";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/modules/auth/hooks/useAuth";
+import { ApiError } from "@/lib/api";
 
 export function UsersManage() {
   const navigate = useNavigate();
@@ -48,11 +49,13 @@ export function UsersManage() {
         return [u.id, URL.createObjectURL(blob)] as const;
       }),
     ).then((entries) => setAvatarUrls(Object.fromEntries(entries)));
+  }, [users]);
 
+  useEffect(() => {
     return () => {
       Object.values(avatarUrls).forEach(URL.revokeObjectURL);
     };
-  }, [users]);
+  }, [avatarUrls]);
 
   async function handleDeleteUser() {
     if (!userToDelete) return;
@@ -60,8 +63,12 @@ export function UsersManage() {
     try {
       await userService.delete(userToDelete);
       toast.success("Usuário excluído com sucesso.");
-    } catch {
-      toast.error("Não foi possível excluir o usuário.");
+    } catch (error) {
+      if (error instanceof ApiError) {
+        toast.error(error.message);
+      } else {
+        toast.error("Não foi possível excluir o usuário.");
+      }
     } finally {
       setUserToDelete(null);
       refetch();

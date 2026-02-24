@@ -9,6 +9,7 @@ import { toast } from "sonner";
 import { useNavigate } from "react-router";
 import { OrderForm } from "../components/OrderForm";
 import { orderFormDefaults } from "../utils/orderFormDefaults";
+import { ApiError } from "@/lib/api";
 
 export function OrderAdd() {
   const navigate = useNavigate();
@@ -75,8 +76,11 @@ export function OrderAdd() {
       toast.success("O pedido foi criado com sucesso.");
       navigate("/orders");
     } catch (error) {
-      console.error(error);
-      toast.error("Não foi possível salvar o pedido.");
+      if (error instanceof ApiError) {
+        toast.error(error.message);
+      } else {
+        toast.error("Não foi possível salvar o pedido.");
+      }
     }
   };
 

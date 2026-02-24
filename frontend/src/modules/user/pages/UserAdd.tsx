@@ -18,7 +18,7 @@ export function UserAdd() {
       if (error instanceof ApiError) {
         toast.error(error.message);
       } else {
-        toast.error("Erro ao criar usuário. Tente novamente.");
+        toast.error("Não foi possível criar o usuário. Tente novamente.");
       }
       throw error;
     }

@@ -43,7 +43,7 @@ export function User() {
       if (error instanceof ApiError) {
         toast.error(error.message);
       } else {
-        toast.error("Erro ao atualizar perfil. Tente novamente.");
+        toast.error("Não foi possível atualizar o perfil. Tente novamente.");
       }
       throw error;
     }

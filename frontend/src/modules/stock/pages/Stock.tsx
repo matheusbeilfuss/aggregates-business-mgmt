@@ -11,6 +11,7 @@ import { AddProductDialog } from "../components/AddProductDialog";
 import { useStocks, useCategories } from "../hooks";
 import { productService } from "../services/stock.service";
 import type { Product } from "../types";
+import { ApiError } from "@/lib/api";
 
 export function Stock() {
   const { data: stocks, loading, error, refetch } = useStocks();
@@ -25,8 +26,12 @@ export function Stock() {
     try {
       await productService.delete(productToDelete.id);
       toast.success("O produto foi excluído com sucesso.");
-    } catch {
-      toast.error("Não foi possível excluir o produto.");
+    } catch (error) {
+      if (error instanceof ApiError) {
+        toast.error(error.message);
+      } else {
+        toast.error("Não foi possível excluir o produto.");
+      }
     } finally {
       setProductToDelete(null);
       refetch();

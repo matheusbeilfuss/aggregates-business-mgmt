@@ -14,6 +14,7 @@ import { useNavigate } from "react-router";
 import { orderService } from "../services/order.service";
 import { toast } from "sonner";
 import { AddPaymentDialog } from "@/components/shared/AddPaymentDialog";
+import { ApiError } from "@/lib/api";
 
 export function Order() {
   const navigate = useNavigate();
@@ -56,8 +57,12 @@ export function Order() {
       toast.success("O pedido foi marcado como entregue.");
       setOrderToMarkAsDelivered(null);
       refetch();
-    } catch {
-      toast.error("Não foi possível marcar o pedido como entregue.");
+    } catch (error) {
+      if (error instanceof ApiError) {
+        toast.error(error.message);
+      } else {
+        toast.error("Não foi possível marcar o pedido como entregue.");
+      }
     }
   }
 
@@ -67,8 +72,12 @@ export function Order() {
     try {
       await orderService.delete(orderToDelete.id);
       toast.success("O pedido foi excluído com sucesso.");
-    } catch {
-      toast.error("Não foi possível excluir o pedido.");
+    } catch (error) {
+      if (error instanceof ApiError) {
+        toast.error(error.message);
+      } else {
+        toast.error("Não foi possível excluir o pedido.");
+      }
     } finally {
       setOrderToDelete(null);
       refetch();

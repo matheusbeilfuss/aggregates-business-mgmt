@@ -2,6 +2,7 @@ package br.ufsc.aggregare.controller.exception;
 
 import java.time.Instant;
 
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -65,6 +66,15 @@ public class ControllerExceptionHandler {
 		String error = "Database error";
 		HttpStatus status = HttpStatus.CONFLICT;
 		StandardError err = new StandardError(Instant.now(), status.value(), error, e.getMessage(), request.getRequestURI());
+		return ResponseEntity.status(status).body(err);
+	}
+
+	@ExceptionHandler(DataIntegrityViolationException.class)
+	public ResponseEntity<StandardError> dataIntegrityViolation(DataIntegrityViolationException e, HttpServletRequest request) {
+		String error = "Database integrity error";
+		String message = "Não é possível excluir este registro pois ele está sendo utilizado por outros dados do sistema.";
+		HttpStatus status = HttpStatus.CONFLICT;
+		StandardError err = new StandardError(Instant.now(), status.value(), error, message, request.getRequestURI());
 		return ResponseEntity.status(status).body(err);
 	}
 }

@@ -1,10 +1,10 @@
-import { useCallback } from "react";
-import { settingsService } from "../services/settings.service";
-import { Settings } from "../types";
-import { useApi } from "@/hooks/useApi";
+import { useContext } from "react";
+import { SettingsContext } from "../context/settings.context";
 
 export function useSettings() {
-  const fetcher = useCallback(() => settingsService.get(), []);
-
-  return useApi<Settings>(fetcher);
+  const context = useContext(SettingsContext);
+  if (!context) {
+    throw new Error("useSettings deve ser usado dentro de um SettingsProvider");
+  }
+  return context;
 }

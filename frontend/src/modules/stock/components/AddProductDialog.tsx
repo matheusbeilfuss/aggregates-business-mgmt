@@ -26,6 +26,7 @@ import { CategorySelect } from "./CategorySelect";
 import { productService } from "../services/stock.service";
 import { productSchema, type ProductFormData } from "../schemas/stock.schemas";
 import type { Category } from "../types";
+import { ApiError } from "@/lib/api";
 
 interface AddProductDialogProps {
   open: boolean;
@@ -64,8 +65,12 @@ export function AddProductDialog({
       onOpenChange(false);
       form.reset();
       onSuccess();
-    } catch {
-      toast.error("Não foi possível salvar o produto.");
+    } catch (error) {
+      if (error instanceof ApiError) {
+        toast.error(error.message);
+      } else {
+        toast.error("Não foi possível salvar o produto.");
+      }
     }
   }
 
@@ -77,7 +82,7 @@ export function AddProductDialog({
         </Button>
       </DialogTrigger>
 
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent className="sm:max-w-106.25">
         <DialogHeader>
           <DialogTitle>Novo produto</DialogTitle>
           <DialogDescription>
