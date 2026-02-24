@@ -45,20 +45,22 @@ export function UsersManage() {
     if (!users?.length) return;
 
     const usersWithAvatar = users.filter((u) => u.imgName);
+    let localUrls: Record<number, string> = {};
 
     Promise.all(
       usersWithAvatar.map(async (u) => {
         const blob = await userService.getAvatarById(u.id, u.imgName);
         return [u.id, URL.createObjectURL(blob)] as const;
       }),
-    ).then((entries) => setAvatarUrls(Object.fromEntries(entries)));
-  }, [users]);
+    ).then((entries) => {
+      localUrls = Object.fromEntries(entries);
+      setAvatarUrls(localUrls);
+    });
 
-  useEffect(() => {
     return () => {
-      Object.values(avatarUrls).forEach(URL.revokeObjectURL);
+      Object.values(localUrls).forEach(URL.revokeObjectURL);
     };
-  }, [avatarUrls]);
+  }, [users]);
 
   async function handleDeleteUser() {
     if (!userToDelete) return;
