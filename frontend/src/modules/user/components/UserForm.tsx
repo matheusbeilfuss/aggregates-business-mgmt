@@ -15,7 +15,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Checkbox } from "@/components/ui/checkbox";
 import { FormActions } from "@/components/shared";
 import { User as UserIcon, Pencil } from "lucide-react";
-import { useRef, useState, ReactNode } from "react";
+import { useRef, useState, ReactNode, useEffect } from "react";
 import {
   createUserSchema,
   updateUserSchema,
@@ -61,6 +61,7 @@ export function UserForm({
   extraActions,
 }: UserFormProps) {
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const previewUrlRef = useRef<string | undefined>(undefined);
   const [selectedImage, setSelectedImage] = useState<File | undefined>(
     undefined,
   );
@@ -97,6 +98,11 @@ export function UserForm({
         );
       }
     } catch (error) {
+      if (previewUrlRef.current) {
+        URL.revokeObjectURL(previewUrlRef.current);
+        previewUrlRef.current = undefined;
+      }
+
       form.setValue(
         "imgName",
         mode === "edit" ? defaultValues?.imgName : undefined,
@@ -110,6 +116,14 @@ export function UserForm({
       throw error;
     }
   };
+
+  useEffect(() => {
+    return () => {
+      if (previewUrlRef.current) {
+        URL.revokeObjectURL(previewUrlRef.current);
+      }
+    };
+  }, []);
 
   return (
     <div className="flex flex-col flex-1">
@@ -127,8 +141,15 @@ export function UserForm({
             onChange={(e) => {
               const file = e.target.files?.[0];
               if (file) {
+                if (previewUrlRef.current) {
+                  URL.revokeObjectURL(previewUrlRef.current);
+                }
+
+                const newUrl = URL.createObjectURL(file);
+                previewUrlRef.current = newUrl;
+
                 setSelectedImage(file);
-                form.setValue("imgName", URL.createObjectURL(file));
+                form.setValue("imgName", newUrl);
               }
             }}
           />
