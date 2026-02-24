@@ -19,6 +19,7 @@ import br.ufsc.aggregare.model.User;
 import br.ufsc.aggregare.model.dto.PasswordUpdateDTO;
 import br.ufsc.aggregare.repository.UserRepository;
 import br.ufsc.aggregare.service.exception.DatabaseException;
+import br.ufsc.aggregare.service.exception.ForbiddenException;
 import br.ufsc.aggregare.service.exception.ResourceNotFoundException;
 
 import jakarta.persistence.EntityNotFoundException;
@@ -70,7 +71,15 @@ public class UserService implements UserDetailsService {
 		}
 	}
 
-	public User update(Long id, User newUser, MultipartFile image) {
+	public User update(Long id, User newUser, MultipartFile image, User loggedUser) {
+		boolean isSelf = loggedUser.getId().equals(id);
+		boolean isAdmin = loggedUser.getAuthorities().stream()
+				.anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"));
+
+		if (!isSelf && !isAdmin) {
+			throw new ForbiddenException("Você não tem permissão para editar este usuário.");
+		}
+
 		try {
 			User existingUser = repository.getReferenceById(id);
 

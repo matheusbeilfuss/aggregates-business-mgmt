@@ -51,8 +51,9 @@ public class UserController {
 	}
 
 	@PutMapping(value = "/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-	public ResponseEntity<UserResponseDTO> update(@PathVariable Long id, @RequestPart("user") User user, @RequestPart(value = "image", required = false) MultipartFile image) {
-		user = service.update(id, user, image);
+	public ResponseEntity<UserResponseDTO> update(@PathVariable Long id, @RequestPart("user") User user, @RequestPart(value = "image", required = false) MultipartFile image, Authentication authentication) {
+		User loggedUser = (User) authentication.getPrincipal();
+		user = service.update(id, user, image, loggedUser);
 		return ResponseEntity.ok().body(new UserResponseDTO(user));
 	}
 
