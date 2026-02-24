@@ -12,8 +12,10 @@ import { useNavigate } from "react-router-dom";
 import { ApiError } from "@/lib/api";
 import { useAuth } from "@/modules/auth/hooks/useAuth";
 import { UpdateBusinessNameDialog } from "@/modules/settings/components/UpdateBusinessNameDialog";
+import { usePageTitle } from "@/hooks/usePageTitle";
 
 export function User() {
+  usePageTitle("Meu perfil");
   const navigate = useNavigate();
 
   const { user, isLoading, refetchUser } = useAuth();

@@ -32,8 +32,11 @@ import {
 import { tonToM3, m3ToTon, calculateExpenseValue } from "../utils/calculations";
 import type { ProductSupplier } from "../types";
 import { ApiError } from "@/lib/api";
+import { usePageTitle } from "@/hooks/usePageTitle";
 
 export function StockReplenish() {
+  usePageTitle("Reabastecer estoque");
+
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
 

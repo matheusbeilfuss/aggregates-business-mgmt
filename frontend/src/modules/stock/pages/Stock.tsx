@@ -12,8 +12,11 @@ import { useStocks, useCategories } from "../hooks";
 import { productService } from "../services/stock.service";
 import type { Product } from "../types";
 import { ApiError } from "@/lib/api";
+import { usePageTitle } from "@/hooks/usePageTitle";
 
 export function Stock() {
+  usePageTitle("Estoque");
+
   const { data: stocks, loading, error, refetch } = useStocks();
   const { data: categories } = useCategories();
 

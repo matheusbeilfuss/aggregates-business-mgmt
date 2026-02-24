@@ -3,8 +3,11 @@ import { HomeCard } from "@/modules/home/components/HomeCard";
 import { useEffect, useState } from "react";
 import { MockFetchData } from "@/MockFetchData";
 import { Skeleton } from "@/components/ui/skeleton";
+import { usePageTitle } from "@/hooks/usePageTitle";
 
 export function Home() {
+  usePageTitle("Início");
+
   const [homeData, setHomeData] = useState<{
     user: string;
     cards: { title: string; content: string[] }[];

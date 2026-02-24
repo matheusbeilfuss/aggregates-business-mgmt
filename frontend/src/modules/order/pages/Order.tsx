@@ -15,8 +15,11 @@ import { orderService } from "../services/order.service";
 import { toast } from "sonner";
 import { AddPaymentDialog } from "@/components/shared/AddPaymentDialog";
 import { ApiError } from "@/lib/api";
+import { usePageTitle } from "@/hooks/usePageTitle";
 
 export function Order() {
+  usePageTitle("Pedidos");
+
   const navigate = useNavigate();
 
   const [selectedDate, setSelectedDate] = useState(new Date());

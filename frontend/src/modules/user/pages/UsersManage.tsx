@@ -28,8 +28,11 @@ import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/modules/auth/hooks/useAuth";
 import { ApiError } from "@/lib/api";
+import { usePageTitle } from "@/hooks/usePageTitle";
 
 export function UsersManage() {
+  usePageTitle("Gerenciar acessos");
+
   const navigate = useNavigate();
 
   const { data: users, loading, refetch } = useUsers();

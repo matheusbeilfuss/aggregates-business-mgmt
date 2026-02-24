@@ -24,8 +24,11 @@ import {
   type EditStockFormData,
 } from "../schemas/stock.schemas";
 import { ApiError } from "@/lib/api";
+import { usePageTitle } from "@/hooks/usePageTitle";
 
 export function StockEdit() {
+  usePageTitle("Editar estoque");
+
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
 

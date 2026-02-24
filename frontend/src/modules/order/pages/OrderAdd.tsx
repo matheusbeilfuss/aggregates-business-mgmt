@@ -10,8 +10,11 @@ import { useNavigate } from "react-router";
 import { OrderForm } from "../components/OrderForm";
 import { orderFormDefaults } from "../utils/orderFormDefaults";
 import { ApiError } from "@/lib/api";
+import { usePageTitle } from "@/hooks/usePageTitle";
 
 export function OrderAdd() {
+  usePageTitle("Adicionar pedido");
+
   const navigate = useNavigate();
   const { data: products, loading: productsLoading } = useProducts();
   const { data: clients, loading: clientsLoading } = useClients();

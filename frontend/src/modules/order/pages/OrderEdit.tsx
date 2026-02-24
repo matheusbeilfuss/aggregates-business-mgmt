@@ -11,8 +11,11 @@ import { OrderForm } from "../components/OrderForm";
 import { CreateOrderPayload } from "../types";
 import { selectPreferredPhone } from "../utils/selectPreferredPhone";
 import { orderFormDefaults } from "../utils/orderFormDefaults";
+import { usePageTitle } from "@/hooks/usePageTitle";
 
 export function OrderEdit() {
+  usePageTitle("Editar pedido");
+
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
 

@@ -18,8 +18,11 @@ import { LoginPayload } from "../types";
 import { useAuth } from "../hooks/useAuth";
 import { ApiError } from "@/lib/api";
 import { useSettings } from "@/modules/settings/hooks/useSettings";
+import { usePageTitle } from "@/hooks/usePageTitle";
 
 export function Login() {
+  usePageTitle("Login");
+
   const navigate = useNavigate();
   const { login } = useAuth();
   const { businessName } = useSettings();
