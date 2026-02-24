@@ -10,7 +10,10 @@ export const updateUserSchema = z.object({
 export type UpdateUserFormData = z.infer<typeof updateUserSchema>;
 
 export const createUserSchema = updateUserSchema.extend({
-  password: z.string().min(8, "A senha deve conter no mínimo 8 caracteres."),
+  password: z
+    .string()
+    .trim()
+    .min(8, "A senha deve conter no mínimo 8 caracteres."),
   admin: z.boolean(),
 });
 
@@ -20,9 +23,11 @@ export const updatePasswordSchema = z
   .object({
     newPassword: z
       .string()
+      .trim()
       .min(8, "A nova senha deve conter no mínimo 8 caracteres."),
     confirmPassword: z
       .string()
+      .trim()
       .min(8, "A confirmação de senha deve conter no mínimo 8 caracteres."),
   })
   .refine((data) => data.newPassword === data.confirmPassword, {

@@ -47,7 +47,7 @@ export function UpdatePasswordDialog({
 
   async function onSubmit(data: UpdatePasswordFormData) {
     try {
-      await userService.updatePassword(data.newPassword.trim());
+      await userService.updatePassword(data.newPassword);
       toast.success("Senha atualizada com sucesso.");
       onOpenChange(false);
       form.reset();
@@ -70,7 +70,7 @@ export function UpdatePasswordDialog({
         </Button>
       </DialogTrigger>
 
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent className="sm:max-w-106.25">
         <DialogHeader>
           <DialogTitle>Trocar senha</DialogTitle>
           <DialogDescription>
