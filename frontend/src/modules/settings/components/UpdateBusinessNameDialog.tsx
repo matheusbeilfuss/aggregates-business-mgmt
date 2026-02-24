@@ -48,11 +48,12 @@ export function UpdateBusinessNameDialog({
     defaultValues: { businessName: "" },
   });
 
+  const { reset } = form;
   useEffect(() => {
     if (open) {
-      form.reset({ businessName });
+      reset({ businessName });
     }
-  }, [open, businessName]);
+  }, [open, businessName, reset]);
 
   async function onSubmit(data: BusinessNameFormData) {
     try {
