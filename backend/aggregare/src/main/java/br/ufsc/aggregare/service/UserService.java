@@ -18,6 +18,7 @@ import org.springframework.web.multipart.MultipartFile;
 import br.ufsc.aggregare.model.User;
 import br.ufsc.aggregare.model.dto.PasswordUpdateDTO;
 import br.ufsc.aggregare.repository.UserRepository;
+import br.ufsc.aggregare.service.exception.DatabaseException;
 import br.ufsc.aggregare.service.exception.ResourceNotFoundException;
 
 import jakarta.persistence.EntityNotFoundException;
@@ -37,6 +38,14 @@ public class UserService implements UserDetailsService {
 	}
 
 	public User insert(User user, MultipartFile image) {
+		if (repository.existsByUsername(user.getUsername())) {
+			throw new DatabaseException("Nome de usuário já existe.");
+		}
+
+		if (repository.existsByEmail(user.getEmail())) {
+			throw new DatabaseException("Email já existe.");
+		}
+
 		user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
 
 		if (image != null && !image.isEmpty()) {
@@ -64,6 +73,16 @@ public class UserService implements UserDetailsService {
 	public User update(Long id, User newUser, MultipartFile image) {
 		try {
 			User existingUser = repository.getReferenceById(id);
+
+			if (!existingUser.getUsername().equals(newUser.getUsername())
+					&& repository.existsByUsername(newUser.getUsername())) {
+				throw new DatabaseException("Nome de usuário já existe.");
+			}
+
+			if (!existingUser.getEmail().equals(newUser.getEmail())
+					&& repository.existsByEmail(newUser.getEmail())) {
+				throw new DatabaseException("Email já existe.");
+			}
 
 			existingUser.setFirstName(newUser.getFirstName());
 			existingUser.setLastName(newUser.getLastName());

@@ -10,6 +10,7 @@ import org.springframework.web.multipart.MaxUploadSizeExceededException;
 
 import br.ufsc.aggregare.security.exception.LoginException;
 import br.ufsc.aggregare.security.exception.TokenException;
+import br.ufsc.aggregare.service.exception.DatabaseException;
 import br.ufsc.aggregare.service.exception.FileStorageException;
 import br.ufsc.aggregare.service.exception.ResourceNotFoundException;
 
@@ -36,7 +37,7 @@ public class ControllerExceptionHandler {
 
 	@ExceptionHandler(MaxUploadSizeExceededException.class)
 	public ResponseEntity<StandardError> maxUploadSizeExceeded(MaxUploadSizeExceededException e, HttpServletRequest request) {
-		String error = "Arquivo muito grande";
+		String error = "File size exceeds limit";
 		String message = "O arquivo enviado excede o limite máximo permitido. Por favor, envie um arquivo menor.";
 		HttpStatus status = HttpStatus.BAD_REQUEST;
 		StandardError err = new StandardError(Instant.now(), status.value(), error, message, request.getRequestURI());
@@ -55,6 +56,14 @@ public class ControllerExceptionHandler {
 	public ResponseEntity<StandardError> loginError(LoginException e, HttpServletRequest request) {
 		String error = "Login error";
 		HttpStatus status = HttpStatus.UNAUTHORIZED;
+		StandardError err = new StandardError(Instant.now(), status.value(), error, e.getMessage(), request.getRequestURI());
+		return ResponseEntity.status(status).body(err);
+	}
+
+	@ExceptionHandler(DatabaseException.class)
+	public ResponseEntity<StandardError> databaseError(DatabaseException e, HttpServletRequest request) {
+		String error = "Database error";
+		HttpStatus status = HttpStatus.CONFLICT;
 		StandardError err = new StandardError(Instant.now(), status.value(), error, e.getMessage(), request.getRequestURI());
 		return ResponseEntity.status(status).body(err);
 	}
