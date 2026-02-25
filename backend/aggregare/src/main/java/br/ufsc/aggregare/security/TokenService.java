@@ -30,19 +30,20 @@ public class TokenService {
 
 	@PostConstruct
 	public void init() {
+		byte[] secretBytes;
+
 		try {
-			byte[] secretBytes = Base64.getDecoder().decode(secret);
-
-			if (secretBytes.length < 32) {
-				throw new IllegalArgumentException(
-						"A chave secreta deve ter pelo menos 256 bits (32 bytes)");
-			}
-
-			this.algorithm = Algorithm.HMAC256(secretBytes);
-
+			secretBytes = Base64.getDecoder().decode(secret);
 		} catch (IllegalArgumentException e) {
 			throw new IllegalArgumentException("JWT secret deve estar em formato Base64 válido", e);
 		}
+
+		if (secretBytes.length < 32) {
+			throw new IllegalArgumentException(
+					"A chave secreta deve ter pelo menos 256 bits (32 bytes)");
+		}
+
+		this.algorithm = Algorithm.HMAC256(secretBytes);
 	}
 
 	public String generateToken(User user) {
