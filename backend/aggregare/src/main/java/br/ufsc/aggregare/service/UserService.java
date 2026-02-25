@@ -16,7 +16,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import br.ufsc.aggregare.model.User;
+import br.ufsc.aggregare.model.dto.CreateUserDTO;
 import br.ufsc.aggregare.model.dto.PasswordUpdateDTO;
+import br.ufsc.aggregare.model.dto.UpdateUserDTO;
 import br.ufsc.aggregare.repository.UserRepository;
 import br.ufsc.aggregare.service.exception.DatabaseException;
 import br.ufsc.aggregare.service.exception.ForbiddenException;
@@ -38,16 +40,16 @@ public class UserService implements UserDetailsService {
 		this.bCryptPasswordEncoder = bCryptPasswordEncoder;
 	}
 
-	public User insert(User user, MultipartFile image) {
-		if (repository.existsByUsername(user.getUsername())) {
+	public User insert(CreateUserDTO dto, MultipartFile image) {
+		if (repository.existsByUsername(dto.getUsername())) {
 			throw new DatabaseException("Nome de usuário já existe.");
 		}
 
-		if (repository.existsByEmail(user.getEmail())) {
+		if (repository.existsByEmail(dto.getEmail())) {
 			throw new DatabaseException("Email já existe.");
 		}
 
-		user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
+		User user = fromCreateUserDTO(dto);
 
 		if (image != null && !image.isEmpty()) {
 			String imgName = fileService.saveImage(image);
@@ -55,6 +57,17 @@ public class UserService implements UserDetailsService {
 		}
 
 		return repository.save(user);
+	}
+
+	private User fromCreateUserDTO(CreateUserDTO dto) {
+		User user = new User();
+		user.setFirstName(dto.getFirstName());
+		user.setLastName(dto.getLastName());
+		user.setUsername(dto.getUsername());
+		user.setEmail(dto.getEmail());
+		user.setPassword(bCryptPasswordEncoder.encode(dto.getPassword()));
+		user.setAdmin(dto.getAdmin() != null && dto.getAdmin());
+		return user;
 	}
 
 	public void delete(Long id, User loggedUser) {
@@ -82,7 +95,7 @@ public class UserService implements UserDetailsService {
 		}
 	}
 
-	public User update(Long id, User newUser, MultipartFile image, User loggedUser) {
+	public User update(Long id, UpdateUserDTO dto, MultipartFile image, User loggedUser) {
 		boolean isSelf = loggedUser.getId().equals(id);
 		boolean isAdmin = loggedUser.getAuthorities().stream()
 				.anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"));
@@ -94,20 +107,20 @@ public class UserService implements UserDetailsService {
 		try {
 			User existingUser = repository.getReferenceById(id);
 
-			if (!existingUser.getUsername().equals(newUser.getUsername())
-					&& repository.existsByUsername(newUser.getUsername())) {
+			if (!existingUser.getUsername().equals(dto.getUsername())
+					&& repository.existsByUsername(dto.getUsername())) {
 				throw new DatabaseException("Nome de usuário já existe.");
 			}
 
-			if (!existingUser.getEmail().equals(newUser.getEmail())
-					&& repository.existsByEmail(newUser.getEmail())) {
+			if (!existingUser.getEmail().equals(dto.getEmail())
+					&& repository.existsByEmail(dto.getEmail())) {
 				throw new DatabaseException("Email já existe.");
 			}
 
-			existingUser.setFirstName(newUser.getFirstName());
-			existingUser.setLastName(newUser.getLastName());
-			existingUser.setUsername(newUser.getUsername());
-			existingUser.setEmail(newUser.getEmail());
+			existingUser.setFirstName(dto.getFirstName());
+			existingUser.setLastName(dto.getLastName());
+			existingUser.setUsername(dto.getUsername());
+			existingUser.setEmail(dto.getEmail());
 
 			if (image != null && !image.isEmpty()) {
 				String oldImgName = existingUser.getImgName();

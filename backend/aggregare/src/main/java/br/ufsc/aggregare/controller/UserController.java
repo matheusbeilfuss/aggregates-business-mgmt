@@ -22,7 +22,9 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import br.ufsc.aggregare.model.User;
+import br.ufsc.aggregare.model.dto.CreateUserDTO;
 import br.ufsc.aggregare.model.dto.PasswordUpdateDTO;
+import br.ufsc.aggregare.model.dto.UpdateUserDTO;
 import br.ufsc.aggregare.model.dto.UserResponseDTO;
 import br.ufsc.aggregare.service.UserService;
 
@@ -38,8 +40,8 @@ public class UserController {
 	}
 
 	@PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-	public ResponseEntity<UserResponseDTO> insert(@RequestPart("user") User user, @RequestPart(value = "image", required = false) MultipartFile image) {
-		user = service.insert(user, image);
+	public ResponseEntity<UserResponseDTO> insert(@RequestPart("user") CreateUserDTO dto, @RequestPart(value = "image", required = false) MultipartFile image) {
+		User user = service.insert(dto, image);
 		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(user.getId()).toUri();
 		return ResponseEntity.created(uri).body(new UserResponseDTO(user));
 	}
@@ -52,10 +54,10 @@ public class UserController {
 	}
 
 	@PutMapping(value = "/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-	public ResponseEntity<UserResponseDTO> update(@PathVariable Long id, @RequestPart("user") User user, @RequestPart(value = "image", required = false) MultipartFile image, Authentication authentication) {
+	public ResponseEntity<UserResponseDTO> update(@PathVariable Long id, @RequestPart("user") UpdateUserDTO dto, @RequestPart(value = "image", required = false) MultipartFile image, Authentication authentication) {
 		User loggedUser = (User) authentication.getPrincipal();
-		user = service.update(id, user, image, loggedUser);
-		return ResponseEntity.ok().body(new UserResponseDTO(user));
+		User updatedUser = service.update(id, dto, image, loggedUser);
+		return ResponseEntity.ok().body(new UserResponseDTO(updatedUser));
 	}
 
 	@PatchMapping(value = "/me/password")
