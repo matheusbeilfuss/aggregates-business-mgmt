@@ -19,9 +19,12 @@ export function Navbar() {
   const { businessName } = useSettings();
   const avatar = useUserAvatar(user?.imgName);
 
-  const onLogout = () => {
-    logout();
-    navigate("/login");
+  const onLogout = async () => {
+    try {
+      await logout();
+    } finally {
+      navigate("/login");
+    }
   };
 
   return (
