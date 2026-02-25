@@ -100,7 +100,7 @@ public class UserController {
 
 		return ResponseEntity.ok()
 				.contentType(mediaType)
-				.header("Cache-Control", "max-age=86400")
+				.header("Cache-Control", "private, max-age=86400")
 				.body(resource);
 	}
 
@@ -113,7 +113,7 @@ public class UserController {
 
 		return ResponseEntity.ok()
 				.contentType(service.getUserAvatarMediaType(user))
-				.header("Cache-Control", "max-age=86400")
+				.header("Cache-Control", "private, max-age=86400")
 				.body(resource);
 	}
 }
