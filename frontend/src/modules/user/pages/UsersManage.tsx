@@ -76,7 +76,7 @@ export function UsersManage() {
   }, [users]);
 
   async function handleDeleteUser() {
-    if (!userToDelete) return;
+    if (userToDelete === null) return;
 
     try {
       await userService.delete(userToDelete);
@@ -177,7 +177,7 @@ export function UsersManage() {
       </div>
 
       <ConfirmDialog
-        open={!!userToDelete}
+        open={userToDelete !== null}
         onOpenChange={(open) => !open && setUserToDelete(null)}
         title="Você tem certeza que deseja excluir este usuário?"
         description={
