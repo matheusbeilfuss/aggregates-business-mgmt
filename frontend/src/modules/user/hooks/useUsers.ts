@@ -12,9 +12,13 @@ export function useUserAvatar(version?: string) {
     async function fetchAvatar() {
       if (!version) return;
 
-      const blob = await userService.getAvatar(version);
-      objectUrl = URL.createObjectURL(blob);
-      setAvatarUrl(objectUrl);
+      try {
+        const blob = await userService.getAvatar(version);
+        objectUrl = URL.createObjectURL(blob);
+        setAvatarUrl(objectUrl);
+      } catch {
+        setAvatarUrl(undefined);
+      }
     }
 
     fetchAvatar();
