@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Set;
 import java.util.UUID;
 
 import org.springframework.core.io.Resource;
@@ -21,12 +22,30 @@ public class FileService {
 
 	private static final int MAX_DIMENSION = 800;
 	private static final double COMPRESSION_QUALITY = 0.8;
+	private static final Set<String> ALLOWED_CONTENT_TYPES = Set.of(
+			"image/jpeg", "image/png", "image/webp"
+	);
 
-	private final Path uploadPath = Paths.get("uploads");
+	private final Path uploadPath = Paths.get("uploads").toAbsolutePath().normalize();
+
+	private Path resolveAndValidate(String imgName) {
+		Path resolved = uploadPath.resolve(imgName).normalize();
+
+		if (!resolved.startsWith(uploadPath)) {
+			throw new FileStorageException("Caminho de arquivo inválido.");
+		}
+
+		return resolved;
+	}
 
 	public String saveImage(MultipartFile file) {
 		if (file.isEmpty()) {
 			throw new FileStorageException("Não é permitido salvar um arquivo vazio.");
+		}
+
+		String contentType = file.getContentType();
+		if (contentType == null || !ALLOWED_CONTENT_TYPES.contains(contentType)) {
+			throw new FileStorageException("Tipo de arquivo não permitido. Envie uma imagem JPEG, PNG, GIF ou WebP.");
 		}
 
 		try {
@@ -35,7 +54,7 @@ public class FileService {
 			}
 
 			String uniqueFileName = UUID.randomUUID() + ".jpg";
-			Path filePath = this.uploadPath.resolve(uniqueFileName);
+			Path filePath = resolveAndValidate(uniqueFileName);
 
 			Thumbnails.of(file.getInputStream())
 					.size(MAX_DIMENSION, MAX_DIMENSION)
@@ -52,7 +71,7 @@ public class FileService {
 	public void deleteImage(String imgName) {
 		if (imgName != null && !imgName.isEmpty()) {
 			try {
-				Path filePath = this.uploadPath.resolve(imgName);
+				Path filePath = resolveAndValidate(imgName);
 				Files.deleteIfExists(filePath);
 			} catch (IOException e) {
 				throw new FileStorageException("Não foi possível deletar imagem anterior: " + imgName);
@@ -62,7 +81,7 @@ public class FileService {
 
 	public Path getFilePath(String imgName) {
 		if (imgName != null && !imgName.isEmpty()) {
-			return this.uploadPath.resolve(imgName);
+			return resolveAndValidate(imgName);
 		}
 		return null;
 	}
