@@ -34,6 +34,7 @@ import { Loader2 } from "lucide-react";
 import { formatTime } from "@/modules/order/utils/formatTime";
 import { formatDate } from "@/modules/order/utils/formatDate";
 import { Input } from "../ui/input";
+import { ApiError } from "@/lib/api";
 
 interface AddPaymentDialogProps {
   open: boolean;
@@ -67,8 +68,12 @@ export function AddPaymentDialog({
       toast.success("Pagamento adicionado com sucesso");
       form.reset();
       onSuccess();
-    } catch {
-      toast.error("Não foi possível adicionar o pagamento");
+    } catch (error) {
+      if (error instanceof ApiError) {
+        toast.error(error.message);
+      } else {
+        toast.error("Não foi possível adicionar o pagamento");
+      }
     }
   }
 

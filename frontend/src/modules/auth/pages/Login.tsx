@@ -7,36 +7,54 @@ import {
   FormField,
   FormItem,
   FormLabel,
+  FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-
-const loginSchema = z.object({
-  user: z.string().nonempty(),
-  password: z.string().nonempty(),
-});
-
-type LoginSchema = z.infer<typeof loginSchema>;
-
-export interface LoginProps {}
+import { loginSchema } from "../schemas/login.schema";
+import { toast } from "sonner";
+import { useNavigate } from "react-router-dom";
+import { LoginPayload } from "../types";
+import { useAuth } from "../hooks/useAuth";
+import { ApiError } from "@/lib/api";
+import { useSettings } from "@/modules/settings/hooks/useSettings";
+import { usePageTitle } from "@/hooks/usePageTitle";
 
 export function Login() {
-  const form = useForm<LoginSchema>({
+  usePageTitle("Login");
+
+  const navigate = useNavigate();
+  const { login } = useAuth();
+  const { businessName } = useSettings();
+
+  const form = useForm<LoginPayload>({
     resolver: zodResolver(loginSchema),
-    values: {
-      user: "",
+    mode: "onSubmit",
+    defaultValues: {
+      username: "",
       password: "",
     },
   });
 
-  function onSubmit(values: z.infer<typeof loginSchema>) {
-    console.log(values);
+  async function onSubmit(values: z.infer<typeof loginSchema>) {
+    try {
+      await login(values);
+
+      toast.success("Login bem-sucedido!");
+      navigate("/");
+    } catch (error) {
+      if (error instanceof ApiError) {
+        toast.error(error.message);
+      } else {
+        toast.error("Falha no login. Verifique suas credenciais.");
+      }
+    }
   }
 
   return (
     <>
       <div className="w-full h-[30vh] bg-blue-300 flex flex-col justify-center items-center gap-2">
-        <h1 className="font-bold text-xl text-blue-600">Nome do Comércio</h1>
+        <h1 className="font-bold text-xl text-blue-600">{businessName}</h1>
         <h3 className="font-medium text-blue-600">Seja bem vindo!</h3>
       </div>
       <div className="w-full h-[55vh] flex flex-col justify-center items-center gap-4">
@@ -44,30 +62,28 @@ export function Login() {
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
             <FormField
               control={form.control}
-              name="user"
+              name="username"
               render={({ field }) => (
-                <>
-                  <FormItem>
-                    <FormLabel className="font-bold">Usuário</FormLabel>
-                    <FormControl>
-                      <Input {...field} />
-                    </FormControl>
-                  </FormItem>
-                </>
+                <FormItem>
+                  <FormLabel className="font-bold">Usuário</FormLabel>
+                  <FormControl>
+                    <Input {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
               )}
             />
             <FormField
               control={form.control}
               name="password"
               render={({ field }) => (
-                <>
-                  <FormItem>
-                    <FormLabel className="font-bold">Senha</FormLabel>
-                    <FormControl>
-                      <Input {...field} />
-                    </FormControl>
-                  </FormItem>
-                </>
+                <FormItem>
+                  <FormLabel className="font-bold">Senha</FormLabel>
+                  <FormControl>
+                    <Input {...field} type="password" />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
               )}
             />
             <Button

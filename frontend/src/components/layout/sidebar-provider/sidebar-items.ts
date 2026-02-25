@@ -15,7 +15,7 @@ import {
 export const items = [
   {
     title: "Home",
-    url: "/home",
+    url: "/",
     icon: Home,
   },
   {
@@ -64,8 +64,8 @@ export const items = [
     icon: Fuel,
   },
   {
-    title: "Minha Conta",
-    url: "#",
+    title: "Meu perfil",
+    url: "/user",
     icon: UserRound,
   },
 ];

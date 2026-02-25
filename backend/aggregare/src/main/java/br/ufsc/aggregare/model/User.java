@@ -2,7 +2,13 @@ package br.ufsc.aggregare.model;
 
 import java.io.Serial;
 import java.io.Serializable;
+import java.util.Collection;
+import java.util.List;
 import java.util.Objects;
+
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -12,7 +18,7 @@ import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "tb_user")
-public class User implements Serializable {
+public class User implements Serializable, UserDetails {
 	@Serial private static final long serialVersionUID = 1L;
 
 	@Id
@@ -23,20 +29,20 @@ public class User implements Serializable {
 	private String username;
 	private String email;
 	private String password;
-	private String imgUrl;
+	private String imgName;
 	private Boolean admin;
 
 	public User() {
 	}
 
-	public User(Long id, String firstName, String lastName, String username, String email, String password, String imgUrl, Boolean admin) {
+	public User(Long id, String firstName, String lastName, String username, String email, String password, String imgName, Boolean admin) {
 		this.id = id;
 		this.firstName = firstName;
 		this.lastName = lastName;
 		this.username = username;
 		this.email = email;
 		this.password = password;
-		this.imgUrl = imgUrl;
+		this.imgName = imgName;
 		this.admin = admin;
 	}
 
@@ -88,12 +94,12 @@ public class User implements Serializable {
 		this.password = password;
 	}
 
-	public String getImgUrl() {
-		return imgUrl;
+	public String getImgName() {
+		return imgName;
 	}
 
-	public void setImgUrl(String imgUrl) {
-		this.imgUrl = imgUrl;
+	public void setImgName(String imgName) {
+		this.imgName = imgName;
 	}
 
 	public Boolean getAdmin() {
@@ -113,5 +119,28 @@ public class User implements Serializable {
 
 	@Override public int hashCode() {
 		return Objects.hashCode(id);
+	}
+
+	@Override public boolean isAccountNonExpired() {
+		return UserDetails.super.isAccountNonExpired();
+	}
+
+	@Override public boolean isAccountNonLocked() {
+		return UserDetails.super.isAccountNonLocked();
+	}
+
+	@Override public boolean isCredentialsNonExpired() {
+		return UserDetails.super.isCredentialsNonExpired();
+	}
+
+	@Override public boolean isEnabled() {
+		return UserDetails.super.isEnabled();
+	}
+
+	@Override public Collection<? extends GrantedAuthority> getAuthorities() {
+		if (this.admin != null && this.admin) {
+			return List.of(new SimpleGrantedAuthority("ROLE_ADMIN"), new SimpleGrantedAuthority("ROLE_USER"));
+		}
+		return List.of(new SimpleGrantedAuthority("ROLE_USER"));
 	}
 }
