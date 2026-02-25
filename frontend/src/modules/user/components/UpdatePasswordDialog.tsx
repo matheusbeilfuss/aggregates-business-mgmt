@@ -75,7 +75,7 @@ export function UpdatePasswordDialog({
         </Button>
       </DialogTrigger>
 
-      <DialogContent className="sm:max-w-106.25">
+      <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle>Trocar senha</DialogTitle>
           <DialogDescription>

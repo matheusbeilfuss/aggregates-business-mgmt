@@ -83,7 +83,7 @@ export function UpdateBusinessNameDialog({
         </Button>
       </DialogTrigger>
 
-      <DialogContent className="sm:max-w-106.25">
+      <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle>Nome do comércio</DialogTitle>
           <DialogDescription>
