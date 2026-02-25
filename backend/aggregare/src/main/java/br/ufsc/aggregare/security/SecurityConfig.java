@@ -1,6 +1,7 @@
 package br.ufsc.aggregare.security;
 
 import java.time.Instant;
+import java.util.Arrays;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -92,7 +93,7 @@ public class SecurityConfig {
 				)
 				.authorizeHttpRequests(authorize -> authorize
 						.requestMatchers("/login").permitAll()
-						.requestMatchers("/logout").authenticated()
+						.requestMatchers("/logout").permitAll()
 						.requestMatchers("/h2-console/**").permitAll()
 						.requestMatchers("/favicon.ico").permitAll()
 						.requestMatchers(HttpMethod.GET, "/settings").permitAll()
@@ -133,7 +134,7 @@ public class SecurityConfig {
 
 		CorsConfiguration configuration = new CorsConfiguration();
 
-		List<String> origins = List.of(allowedOrigins.split(","));
+		List<String> origins = Arrays.stream(allowedOrigins.split(",")).map(String::trim).filter(s -> !s.isBlank()).toList();
 		configuration.setAllowedOrigins(origins);
 
 		configuration.setAllowedMethods(
