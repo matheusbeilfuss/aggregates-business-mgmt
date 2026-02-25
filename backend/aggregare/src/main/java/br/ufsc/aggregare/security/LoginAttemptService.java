@@ -19,53 +19,27 @@ public class LoginAttemptService {
 			.maximumSize(MAX_CACHE_SIZE)
 			.build();
 
-	private final Cache<String, Integer> ipAttempts = Caffeine.newBuilder()
-			.expireAfterWrite(LOCK_MINUTES, TimeUnit.MINUTES)
-			.maximumSize(MAX_CACHE_SIZE)
-			.build();
-
-	public void loginFailed(String username, String ip) {
-
-		if (username != null) {
-			increment(userAttempts, username);
+	public void loginFailed(String username) {
+		if (username != null && !isBlocked(username)) {
+			userAttempts.asMap().merge(username, 1, Integer::sum);
 		}
-
-		increment(ipAttempts, ip);
 	}
 
-	public void loginSucceeded(String username, String ip) {
+	public void loginSucceeded(String username) {
 		if (username != null) {
 			userAttempts.invalidate(username);
 		}
-		ipAttempts.invalidate(ip);
 	}
 
-	public boolean isBlocked(String username, String ip) {
-
-		boolean userBlocked = false;
-
-		if (username != null) {
-			userBlocked = isMaxAttempts(userAttempts, username);
-		}
-
-		boolean ipBlocked = isMaxAttempts(ipAttempts, ip);
-
-		return userBlocked || ipBlocked;
+	public boolean isBlocked(String username) {
+		if (username == null) return false;
+		Integer attempts = userAttempts.getIfPresent(username);
+		return attempts != null && attempts >= MAX_ATTEMPTS;
 	}
 
 	public int getRemainingAttempts(String username) {
 		if (username == null) return MAX_ATTEMPTS;
-
 		Integer attempts = userAttempts.getIfPresent(username);
-		return MAX_ATTEMPTS - (attempts == null ? 0 : attempts);
-	}
-
-	private void increment(Cache<String, Integer> cache, String key) {
-		cache.asMap().merge(key, 1, Integer::sum);
-	}
-
-	private boolean isMaxAttempts(Cache<String, Integer> cache, String key) {
-		Integer attempts = cache.getIfPresent(key);
-		return attempts != null && attempts >= MAX_ATTEMPTS;
+		return Math.max(0, MAX_ATTEMPTS - (attempts == null ? 0 : attempts));
 	}
 }

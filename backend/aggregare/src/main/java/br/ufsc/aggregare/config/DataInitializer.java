@@ -5,7 +5,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Profile;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import br.ufsc.aggregare.model.Settings;
@@ -14,7 +13,6 @@ import br.ufsc.aggregare.repository.SettingsRepository;
 import br.ufsc.aggregare.repository.UserRepository;
 
 @Configuration
-@Profile("test")
 public class DataInitializer implements CommandLineRunner {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(DataInitializer.class);
