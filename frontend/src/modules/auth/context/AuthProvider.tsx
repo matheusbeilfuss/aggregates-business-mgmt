@@ -32,19 +32,22 @@ export function AuthProvider() {
     [fetchUser],
   );
 
+  const clearSession = useCallback(() => {
+    setUser(null);
+  }, []);
+
   const logout = useCallback(async () => {
     try {
       await api.post("/logout", {});
     } finally {
-      setUser(null);
+      clearSession();
     }
-  }, []);
+  }, [clearSession]);
 
   useEffect(() => {
-    const handler = () => logout();
-    window.addEventListener("auth:logout", handler);
-    return () => window.removeEventListener("auth:logout", handler);
-  }, [logout]);
+    window.addEventListener("auth:logout", clearSession);
+    return () => window.removeEventListener("auth:logout", clearSession);
+  }, [clearSession]);
 
   const value = {
     isAuthenticated: user !== null,
