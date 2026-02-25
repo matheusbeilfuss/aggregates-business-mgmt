@@ -83,7 +83,8 @@ public class SecurityConfig {
 
 		return httpSecurity
 				.cors(Customizer.withDefaults())
-				.csrf(AbstractHttpConfigurer::disable)
+				.csrf(AbstractHttpConfigurer::disable) // SameSite=Strict in cookie mitigates CSRF without additional token.
+				.logout(AbstractHttpConfigurer::disable) // Logout is handled by the AuthenticationController
 				.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 				.exceptionHandling(exception -> exception
 						.authenticationEntryPoint(authenticationEntryPoint)
@@ -91,6 +92,7 @@ public class SecurityConfig {
 				)
 				.authorizeHttpRequests(authorize -> authorize
 						.requestMatchers("/login").permitAll()
+						.requestMatchers("/logout").authenticated()
 						.requestMatchers("/h2-console/**").permitAll()
 						.requestMatchers("/favicon.ico").permitAll()
 						.requestMatchers(HttpMethod.GET, "/settings").permitAll()

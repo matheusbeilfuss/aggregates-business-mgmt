@@ -69,6 +69,10 @@ public class TokenService {
 		}
 	}
 
+	public Duration getExpiration() {
+		return expiration;
+	}
+
 	private Instant getExpirationDate() {
 		return Instant.now().plus(expiration);
 	}

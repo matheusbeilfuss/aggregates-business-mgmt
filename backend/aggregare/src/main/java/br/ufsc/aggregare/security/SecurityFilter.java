@@ -60,8 +60,15 @@ public class SecurityFilter extends OncePerRequestFilter {
 	}
 
 	private String recoverToken(HttpServletRequest request) {
-		var authHeader = request.getHeader("Authorization");
-		if (authHeader == null || !authHeader.startsWith("Bearer ")) return null;
-		return authHeader.substring(7);
+		if (request.getCookies() == null) return null;
+
+		for (var cookie : request.getCookies()) {
+			if ("auth_token".equals(cookie.getName())) {
+				var value = cookie.getValue();
+				return (value != null && !value.isBlank()) ? value : null;
+			}
+		}
+
+		return null;
 	}
 }

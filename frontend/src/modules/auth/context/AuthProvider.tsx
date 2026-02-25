@@ -5,9 +5,9 @@ import { Outlet } from "react-router-dom";
 import { User } from "@/modules/user/types";
 import { userService } from "@/modules/user/services/user.service";
 import { AuthContext } from "./auth.context";
+import { api } from "@/lib/api";
 
 export function AuthProvider() {
-  const [token, setToken] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [user, setUser] = useState<User | null>(null);
 
@@ -21,45 +21,23 @@ export function AuthProvider() {
   }, []);
 
   useEffect(() => {
-    async function validateToken() {
-      const storedToken = localStorage.getItem("token");
-
-      if (!storedToken) {
-        setIsLoading(false);
-        return;
-      }
-
-      try {
-        const me = await userService.getMe();
-        setToken(storedToken);
-        setUser(me);
-      } catch {
-        localStorage.removeItem("token");
-        setToken(null);
-      } finally {
-        setIsLoading(false);
-      }
-    }
-
-    validateToken();
-  }, []);
+    fetchUser().finally(() => setIsLoading(false));
+  }, [fetchUser]);
 
   const login = useCallback(
     async (payload: LoginPayload) => {
-      const response = await loginService.login(payload);
-
-      localStorage.setItem("token", response.token);
-      setToken(response.token);
-
+      await loginService.login(payload);
       await fetchUser();
     },
     [fetchUser],
   );
 
-  const logout = useCallback(() => {
-    localStorage.removeItem("token");
-    setToken(null);
-    setUser(null);
+  const logout = useCallback(async () => {
+    try {
+      await api.post("/logout", {});
+    } finally {
+      setUser(null);
+    }
   }, []);
 
   useEffect(() => {
@@ -69,8 +47,7 @@ export function AuthProvider() {
   }, [logout]);
 
   const value = {
-    token,
-    isAuthenticated: !!token,
+    isAuthenticated: user !== null,
     isLoading,
     user,
     refetchUser: fetchUser,

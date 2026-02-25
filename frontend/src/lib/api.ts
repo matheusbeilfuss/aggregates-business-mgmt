@@ -12,20 +12,13 @@ export class ApiError extends Error {
   }
 }
 
-function getAuthHeaders(): HeadersInit {
-  const token = localStorage.getItem("token");
-
-  if (!token) return {};
-
-  return { Authorization: `Bearer ${token}` };
-}
-
 async function handleError(response: Response) {
   if (response.status === 401) {
     const errorBody = await response.json().catch(() => null);
-    const hasToken = !!localStorage.getItem("token");
 
-    if (hasToken) triggerLogout();
+    if (window.location.pathname !== "/login") {
+      triggerLogout();
+    }
 
     throw new ApiError(
       401,
@@ -49,9 +42,7 @@ async function handleError(response: Response) {
 async function handleResponse<T>(response: Response): Promise<T> {
   await handleError(response);
 
-  if (response.status === 204) {
-    return undefined as T;
-  }
+  if (response.status === 204) return undefined as T;
 
   const text = await response.text();
   return text ? JSON.parse(text) : (undefined as T);
@@ -62,57 +53,63 @@ async function handleBlobResponse(response: Response): Promise<Blob> {
   return response.blob();
 }
 
+const defaultOptions: RequestInit = { credentials: "include" };
+
 export const api = {
   get: <T>(endpoint: string): Promise<T> =>
     fetch(`${API_URL}${endpoint}`, {
+      ...defaultOptions,
       method: "GET",
-      headers: { "Content-Type": "application/json", ...getAuthHeaders() },
+      headers: { "Content-Type": "application/json" },
     }).then(handleResponse<T>),
 
   getBlob: (endpoint: string): Promise<Blob> =>
     fetch(`${API_URL}${endpoint}`, {
+      ...defaultOptions,
       method: "GET",
-      headers: getAuthHeaders(),
     }).then(handleBlobResponse),
 
   post: <T>(endpoint: string, data: unknown): Promise<T> =>
     fetch(`${API_URL}${endpoint}`, {
+      ...defaultOptions,
       method: "POST",
-      headers: { "Content-Type": "application/json", ...getAuthHeaders() },
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify(data),
     }).then(handleResponse<T>),
 
   put: <T>(endpoint: string, data: unknown): Promise<T> =>
     fetch(`${API_URL}${endpoint}`, {
+      ...defaultOptions,
       method: "PUT",
-      headers: { "Content-Type": "application/json", ...getAuthHeaders() },
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify(data),
     }).then(handleResponse<T>),
 
   delete: (endpoint: string): Promise<void> =>
     fetch(`${API_URL}${endpoint}`, {
+      ...defaultOptions,
       method: "DELETE",
-      headers: getAuthHeaders(),
     }).then(handleResponse<void>),
 
   patch: <T>(endpoint: string, data: unknown): Promise<T> =>
     fetch(`${API_URL}${endpoint}`, {
+      ...defaultOptions,
       method: "PATCH",
-      headers: { "Content-Type": "application/json", ...getAuthHeaders() },
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify(data),
     }).then(handleResponse<T>),
 
   putMultipart: <T>(endpoint: string, formData: FormData): Promise<T> =>
     fetch(`${API_URL}${endpoint}`, {
+      ...defaultOptions,
       method: "PUT",
-      headers: getAuthHeaders(),
       body: formData,
     }).then(handleResponse<T>),
 
   postMultipart: <T>(endpoint: string, formData: FormData): Promise<T> =>
     fetch(`${API_URL}${endpoint}`, {
+      ...defaultOptions,
       method: "POST",
-      headers: getAuthHeaders(),
       body: formData,
     }).then(handleResponse<T>),
 };
