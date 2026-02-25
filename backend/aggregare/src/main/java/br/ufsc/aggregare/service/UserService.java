@@ -57,7 +57,18 @@ public class UserService implements UserDetailsService {
 		return repository.save(user);
 	}
 
-	public void delete(Long id) {
+	public void delete(Long id, User loggedUser) {
+		if (loggedUser.getId().equals(id)) {
+			throw new ForbiddenException("Você não pode deletar sua própria conta.");
+		}
+
+		boolean isAdmin = loggedUser.getAuthorities().stream()
+				.anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"));
+
+		if (!isAdmin) {
+			throw new ForbiddenException("Você não tem permissão para deletar usuários.");
+		}
+
 		try {
 			User user = findById(id);
 
