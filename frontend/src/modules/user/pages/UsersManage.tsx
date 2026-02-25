@@ -22,7 +22,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { MoreHorizontal, Trash2, UserPlus } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { userService } from "../services/user.service";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
@@ -41,11 +41,12 @@ export function UsersManage() {
   const [userToDelete, setUserToDelete] = useState<number | null>(null);
   const [avatarUrls, setAvatarUrls] = useState<Record<number, string>>({});
 
+  const avatarUrlsRef = useRef<Record<number, string>>({});
+
   useEffect(() => {
     if (!users?.length) return;
 
     const usersWithAvatar = users.filter((u) => u.imgName);
-    let localUrls: Record<number, string> = {};
 
     Promise.all(
       usersWithAvatar.map(async (u) => {
@@ -53,12 +54,16 @@ export function UsersManage() {
         return [u.id, URL.createObjectURL(blob)] as const;
       }),
     ).then((entries) => {
-      localUrls = Object.fromEntries(entries);
-      setAvatarUrls(localUrls);
+      Object.values(avatarUrlsRef.current).forEach(URL.revokeObjectURL);
+
+      const newUrls = Object.fromEntries(entries);
+      avatarUrlsRef.current = newUrls;
+      setAvatarUrls(newUrls);
     });
 
     return () => {
-      Object.values(localUrls).forEach(URL.revokeObjectURL);
+      Object.values(avatarUrlsRef.current).forEach(URL.revokeObjectURL);
+      avatarUrlsRef.current = {};
     };
   }, [users]);
 
