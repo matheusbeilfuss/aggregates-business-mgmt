@@ -45,7 +45,7 @@ public class FileService {
 
 		String contentType = file.getContentType();
 		if (contentType == null || !ALLOWED_CONTENT_TYPES.contains(contentType)) {
-			throw new FileStorageException("Tipo de arquivo não permitido. Envie uma imagem JPEG, PNG, GIF ou WebP.");
+			throw new FileStorageException("Tipo de arquivo não permitido. Envie uma imagem JPEG, PNG ou WebP.");
 		}
 
 		try {

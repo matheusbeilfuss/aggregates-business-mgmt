@@ -1,8 +1,8 @@
-import { useCallback, useEffect, useState } from "react";
+import { ReactNode, useCallback, useEffect, useState } from "react";
 import { settingsService } from "../services/settings.service";
 import { SettingsContext } from "./settings.context";
 
-export function SettingsProvider({ children }: { children: React.ReactNode }) {
+export function SettingsProvider({ children }: { children: ReactNode }) {
   const [businessName, setBusinessName] = useState("Nome do Comércio");
   const [isLoading, setIsLoading] = useState(true);
 
