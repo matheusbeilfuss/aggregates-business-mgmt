@@ -1,5 +1,6 @@
 import { Navigate, Outlet } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
+import { Layout } from "@/components/layout/Layout";
 import { Loader } from "lucide-react";
 
 export function PrivateRoute() {
@@ -13,5 +14,11 @@ export function PrivateRoute() {
     );
   }
 
-  return isAuthenticated ? <Outlet /> : <Navigate to="/login" replace />;
+  return isAuthenticated ? (
+    <Layout>
+      <Outlet />
+    </Layout>
+  ) : (
+    <Navigate to="/login" replace />
+  );
 }

@@ -7,7 +7,7 @@ import { Order } from "./modules/order/pages/Order";
 import { OrderAdd } from "./modules/order/pages/OrderAdd";
 import { OrderEdit } from "./modules/order/pages/OrderEdit";
 import { User } from "./modules/user/pages/User";
-import { NotFound } from "./modules/not-found";
+import { NotFound } from "./components/shared";
 import { UsersManage } from "./modules/user/pages/UsersManage";
 import { AdminRoute } from "./modules/auth/components/AdminRoute";
 import { UserAdd } from "./modules/user/pages/UserAdd";
