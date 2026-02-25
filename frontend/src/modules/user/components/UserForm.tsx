@@ -125,6 +125,12 @@ export function UserForm({
     };
   }, []);
 
+  useEffect(() => {
+    if (mode === "edit" && defaultValues?.imgName && !selectedImage) {
+      form.setValue("imgName", defaultValues.imgName);
+    }
+  }, [defaultValues?.imgName, form, mode, selectedImage]);
+
   return (
     <div className="flex flex-col flex-1">
       <Form {...form}>
