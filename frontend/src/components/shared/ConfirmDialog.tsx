@@ -34,7 +34,7 @@ export function ConfirmDialog({
 
   return (
     <AlertDialog open={open} onOpenChange={onOpenChange}>
-      <AlertDialogContent className="sm:max-w-105">
+      <AlertDialogContent className="sm:max-w-[420px]">
         <AlertDialogHeader>
           <div className="flex items-start gap-4">
             {isDestructive && (
