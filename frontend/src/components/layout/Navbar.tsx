@@ -11,10 +11,12 @@ import {
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/modules/auth/hooks/useAuth";
 import { useUserAvatar } from "@/modules/user/hooks/useUsers";
+import { useSettings } from "@/modules/settings/hooks/useSettings";
 
 export function Navbar() {
   const navigate = useNavigate();
-  const { logout, user, businessName } = useAuth();
+  const { logout, user } = useAuth();
+  const { businessName } = useSettings();
   const avatar = useUserAvatar(user?.imgName);
 
   const onLogout = () => {

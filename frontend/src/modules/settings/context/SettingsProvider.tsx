@@ -5,6 +5,7 @@ import { SettingsContext } from "./settings.context";
 export function SettingsProvider({ children }: { children: React.ReactNode }) {
   const [businessName, setBusinessName] = useState("Nome do Comércio");
   const [isLoading, setIsLoading] = useState(true);
+
   const fetchSettings = useCallback(async () => {
     setIsLoading(true);
     try {
