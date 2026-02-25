@@ -6,6 +6,7 @@ interface FormActionsProps {
   submitLabel?: string;
   onSubmit?: () => void;
   isSubmitting?: boolean;
+  formId?: string;
 }
 
 export function FormActions({
@@ -13,6 +14,7 @@ export function FormActions({
   submitLabel = "Salvar",
   onSubmit,
   isSubmitting = false,
+  formId,
 }: FormActionsProps) {
   const navigate = useNavigate();
 
@@ -30,6 +32,7 @@ export function FormActions({
 
       <Button
         type={onSubmit ? "button" : "submit"}
+        form={!onSubmit ? formId : undefined}
         className="bg-slate-500 hover:bg-slate-600 text-white px-6 py-6 text-base cursor-pointer"
         onClick={onSubmit}
         disabled={isSubmitting}

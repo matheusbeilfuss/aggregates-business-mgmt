@@ -23,8 +23,12 @@ import {
   editStockSchema,
   type EditStockFormData,
 } from "../schemas/stock.schemas";
+import { ApiError } from "@/lib/api";
+import { usePageTitle } from "@/hooks/usePageTitle";
 
 export function StockEdit() {
+  usePageTitle("Editar estoque");
+
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
 
@@ -87,8 +91,12 @@ export function StockEdit() {
 
       toast.success("Estoque atualizado com sucesso!");
       navigate("/stocks");
-    } catch {
-      toast.error("Não foi possível atualizar o estoque.");
+    } catch (error) {
+      if (error instanceof ApiError) {
+        toast.error(error.message);
+      } else {
+        toast.error("Não foi possível atualizar o estoque.");
+      }
     }
   }
 

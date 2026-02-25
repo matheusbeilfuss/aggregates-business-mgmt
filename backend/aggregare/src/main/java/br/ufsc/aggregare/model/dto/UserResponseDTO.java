@@ -9,7 +9,7 @@ public class UserResponseDTO {
 	private String lastName;
 	private String username;
 	private String email;
-	private String imgUrl;
+	private String imgName;
 	private Boolean admin;
 
 	public UserResponseDTO(User user) {
@@ -18,7 +18,7 @@ public class UserResponseDTO {
 		this.lastName = user.getLastName();
 		this.username = user.getUsername();
 		this.email = user.getEmail();
-		this.imgUrl = user.getImgUrl();
+		this.imgName = user.getImgName();
 		this.admin = user.getAdmin();
 	}
 
@@ -62,12 +62,12 @@ public class UserResponseDTO {
 		this.email = email;
 	}
 
-	public String getImgUrl() {
-		return imgUrl;
+	public String getImgName() {
+		return imgName;
 	}
 
-	public void setImgUrl(String imgUrl) {
-		this.imgUrl = imgUrl;
+	public void setImgName(String imgName) {
+		this.imgName = imgName;
 	}
 
 	public Boolean getAdmin() {

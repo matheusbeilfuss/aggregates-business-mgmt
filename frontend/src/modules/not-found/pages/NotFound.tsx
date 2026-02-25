@@ -1,8 +1,10 @@
 import { Layout } from "@/components/layout/Layout";
 import { Button } from "@/components/ui/button";
+import { usePageTitle } from "@/hooks/usePageTitle";
 import { useNavigate } from "react-router-dom";
 
 export function NotFound() {
+  usePageTitle("Página não encontrada");
   const navigate = useNavigate();
 
   return (

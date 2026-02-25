@@ -11,16 +11,15 @@ import { OrderForm } from "../components/OrderForm";
 import { CreateOrderPayload } from "../types";
 import { selectPreferredPhone } from "../utils/selectPreferredPhone";
 import { orderFormDefaults } from "../utils/orderFormDefaults";
+import { usePageTitle } from "@/hooks/usePageTitle";
 
 export function OrderEdit() {
+  usePageTitle("Editar pedido");
+
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
 
   const orderId = Number(id);
-
-  if (!id || Number.isNaN(orderId)) {
-    return <Navigate to="/orders" replace />;
-  }
 
   const { data: order, loading: orderLoading } = useOrder(orderId);
   const { data: products } = useProducts();
@@ -60,6 +59,10 @@ export function OrderEdit() {
       service: order.service ?? "",
     });
   }, [order, client, form]);
+
+  if (!id || Number.isNaN(orderId)) {
+    return <Navigate to="/orders" replace />;
+  }
 
   const onSubmit = async (data: OrderFormData) => {
     const payload: CreateOrderPayload = {

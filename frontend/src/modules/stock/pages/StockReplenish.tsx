@@ -31,8 +31,12 @@ import {
 } from "../schemas/stock.schemas";
 import { tonToM3, m3ToTon, calculateExpenseValue } from "../utils/calculations";
 import type { ProductSupplier } from "../types";
+import { ApiError } from "@/lib/api";
+import { usePageTitle } from "@/hooks/usePageTitle";
 
 export function StockReplenish() {
+  usePageTitle("Reabastecer estoque");
+
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
 
@@ -163,8 +167,12 @@ export function StockReplenish() {
 
       toast.success("Estoque reabastecido com sucesso!");
       navigate("/stocks");
-    } catch {
-      toast.error("Erro ao reabastecer o estoque.");
+    } catch (error) {
+      if (error instanceof ApiError) {
+        toast.error(error.message);
+      } else {
+        toast.error("Não foi possível reabastecer o estoque.");
+      }
     }
   };
 

@@ -2,14 +2,18 @@ package br.ufsc.aggregare.controller.exception;
 
 import java.time.Instant;
 
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.multipart.MaxUploadSizeExceededException;
 
 import br.ufsc.aggregare.security.exception.LoginException;
 import br.ufsc.aggregare.security.exception.TokenException;
+import br.ufsc.aggregare.service.exception.DatabaseException;
 import br.ufsc.aggregare.service.exception.FileStorageException;
+import br.ufsc.aggregare.service.exception.ForbiddenException;
 import br.ufsc.aggregare.service.exception.ResourceNotFoundException;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -33,6 +37,15 @@ public class ControllerExceptionHandler {
 		return ResponseEntity.status(status).body(err);
 	}
 
+	@ExceptionHandler(MaxUploadSizeExceededException.class)
+	public ResponseEntity<StandardError> maxUploadSizeExceeded(MaxUploadSizeExceededException e, HttpServletRequest request) {
+		String error = "File size exceeds limit";
+		String message = "O arquivo enviado excede o limite máximo permitido. Por favor, envie um arquivo menor.";
+		HttpStatus status = HttpStatus.BAD_REQUEST;
+		StandardError err = new StandardError(Instant.now(), status.value(), error, message, request.getRequestURI());
+		return ResponseEntity.status(status).body(err);
+	}
+
 	@ExceptionHandler(TokenException.class)
 	public ResponseEntity<StandardError> tokenError(TokenException e, HttpServletRequest request) {
 		String error = "Authentication error";
@@ -45,6 +58,31 @@ public class ControllerExceptionHandler {
 	public ResponseEntity<StandardError> loginError(LoginException e, HttpServletRequest request) {
 		String error = "Login error";
 		HttpStatus status = HttpStatus.UNAUTHORIZED;
+		StandardError err = new StandardError(Instant.now(), status.value(), error, e.getMessage(), request.getRequestURI());
+		return ResponseEntity.status(status).body(err);
+	}
+
+	@ExceptionHandler(DatabaseException.class)
+	public ResponseEntity<StandardError> databaseError(DatabaseException e, HttpServletRequest request) {
+		String error = "Database error";
+		HttpStatus status = HttpStatus.CONFLICT;
+		StandardError err = new StandardError(Instant.now(), status.value(), error, e.getMessage(), request.getRequestURI());
+		return ResponseEntity.status(status).body(err);
+	}
+
+	@ExceptionHandler(DataIntegrityViolationException.class)
+	public ResponseEntity<StandardError> dataIntegrityViolation(DataIntegrityViolationException e, HttpServletRequest request) {
+		String error = "Database integrity error";
+		String message = "Não é possível excluir este registro pois ele está sendo utilizado por outros dados do sistema.";
+		HttpStatus status = HttpStatus.CONFLICT;
+		StandardError err = new StandardError(Instant.now(), status.value(), error, message, request.getRequestURI());
+		return ResponseEntity.status(status).body(err);
+	}
+
+	@ExceptionHandler(ForbiddenException.class)
+	public ResponseEntity<StandardError> forbidden(ForbiddenException e, HttpServletRequest request) {
+		String error = "Forbidden";
+		HttpStatus status = HttpStatus.FORBIDDEN;
 		StandardError err = new StandardError(Instant.now(), status.value(), error, e.getMessage(), request.getRequestURI());
 		return ResponseEntity.status(status).body(err);
 	}

@@ -9,8 +9,12 @@ import { toast } from "sonner";
 import { useNavigate } from "react-router";
 import { OrderForm } from "../components/OrderForm";
 import { orderFormDefaults } from "../utils/orderFormDefaults";
+import { ApiError } from "@/lib/api";
+import { usePageTitle } from "@/hooks/usePageTitle";
 
 export function OrderAdd() {
+  usePageTitle("Adicionar pedido");
+
   const navigate = useNavigate();
   const { data: products, loading: productsLoading } = useProducts();
   const { data: clients, loading: clientsLoading } = useClients();
@@ -75,8 +79,11 @@ export function OrderAdd() {
       toast.success("O pedido foi criado com sucesso.");
       navigate("/orders");
     } catch (error) {
-      console.error(error);
-      toast.error("Não foi possível salvar o pedido.");
+      if (error instanceof ApiError) {
+        toast.error(error.message);
+      } else {
+        toast.error("Não foi possível salvar o pedido.");
+      }
     }
   };
 

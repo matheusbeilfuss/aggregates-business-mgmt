@@ -1,10 +1,13 @@
 package br.ufsc.aggregare.service;
 
+import java.nio.file.Path;
 import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.http.MediaType;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -15,6 +18,8 @@ import org.springframework.web.multipart.MultipartFile;
 import br.ufsc.aggregare.model.User;
 import br.ufsc.aggregare.model.dto.PasswordUpdateDTO;
 import br.ufsc.aggregare.repository.UserRepository;
+import br.ufsc.aggregare.service.exception.DatabaseException;
+import br.ufsc.aggregare.service.exception.ForbiddenException;
 import br.ufsc.aggregare.service.exception.ResourceNotFoundException;
 
 import jakarta.persistence.EntityNotFoundException;
@@ -34,18 +39,41 @@ public class UserService implements UserDetailsService {
 	}
 
 	public User insert(User user, MultipartFile image) {
+		if (repository.existsByUsername(user.getUsername())) {
+			throw new DatabaseException("Nome de usuário já existe.");
+		}
+
+		if (repository.existsByEmail(user.getEmail())) {
+			throw new DatabaseException("Email já existe.");
+		}
+
 		user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
-		String imgUrl = fileService.saveImage(image);
-		user.setImgUrl(imgUrl);
+
+		if (image != null && !image.isEmpty()) {
+			String imgName = fileService.saveImage(image);
+			user.setImgName(imgName);
+		}
+
 		return repository.save(user);
 	}
 
-	public void delete(Long id) {
+	public void delete(Long id, User loggedUser) {
+		if (loggedUser.getId().equals(id)) {
+			throw new ForbiddenException("Você não pode deletar sua própria conta.");
+		}
+
+		boolean isAdmin = loggedUser.getAuthorities().stream()
+				.anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"));
+
+		if (!isAdmin) {
+			throw new ForbiddenException("Você não tem permissão para deletar usuários.");
+		}
+
 		try {
 			User user = findById(id);
 
-			if (user.getImgUrl() != null && !user.getImgUrl().isEmpty()) {
-				fileService.deleteImage(user.getImgUrl());
+			if (user.getImgName() != null && !user.getImgName().isEmpty()) {
+				fileService.deleteImage(user.getImgName());
 			}
 
 			repository.delete(user);
@@ -54,33 +82,47 @@ public class UserService implements UserDetailsService {
 		}
 	}
 
-	public User update(Long id, User newUser, MultipartFile image) {
+	public User update(Long id, User newUser, MultipartFile image, User loggedUser) {
+		boolean isSelf = loggedUser.getId().equals(id);
+		boolean isAdmin = loggedUser.getAuthorities().stream()
+				.anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"));
+
+		if (!isSelf && !isAdmin) {
+			throw new ForbiddenException("Você não tem permissão para editar este usuário.");
+		}
+
 		try {
 			User existingUser = repository.getReferenceById(id);
-			String oldImgUrl = existingUser.getImgUrl();
+
+			if (!existingUser.getUsername().equals(newUser.getUsername())
+					&& repository.existsByUsername(newUser.getUsername())) {
+				throw new DatabaseException("Nome de usuário já existe.");
+			}
+
+			if (!existingUser.getEmail().equals(newUser.getEmail())
+					&& repository.existsByEmail(newUser.getEmail())) {
+				throw new DatabaseException("Email já existe.");
+			}
+
+			existingUser.setFirstName(newUser.getFirstName());
+			existingUser.setLastName(newUser.getLastName());
+			existingUser.setUsername(newUser.getUsername());
+			existingUser.setEmail(newUser.getEmail());
 
 			if (image != null && !image.isEmpty()) {
-				String newImgUrl = fileService.saveImage(image);
-				newUser.setImgUrl(newImgUrl);
+				String oldImgName = existingUser.getImgName();
+				String newImgName = fileService.saveImage(image);
+				existingUser.setImgName(newImgName);
 
-				if (oldImgUrl != null && !oldImgUrl.isEmpty()) {
-					fileService.deleteImage(oldImgUrl);
+				if (oldImgName != null && !oldImgName.isEmpty()) {
+					fileService.deleteImage(oldImgName);
 				}
 			}
 
-			updateData(existingUser, newUser);
 			return repository.save(existingUser);
 		} catch (EntityNotFoundException e) {
 			throw new ResourceNotFoundException(id);
 		}
-	}
-
-	public void updateData(User existingUser, User newUser) {
-		existingUser.setFirstName(newUser.getFirstName());
-		existingUser.setLastName(newUser.getLastName());
-		existingUser.setUsername(newUser.getUsername());
-		existingUser.setEmail(newUser.getEmail());
-		existingUser.setImgUrl(newUser.getImgUrl());
 	}
 
 	public void updatePassword(Long id, PasswordUpdateDTO newPassword) {
@@ -114,5 +156,27 @@ public class UserService implements UserDetailsService {
 
 	public boolean existsByUsername(String username) {
 		return repository.existsByUsername(username);
+	}
+
+	public Resource loadUserAvatarResource(User user) {
+
+		if (user.getImgName() == null || user.getImgName().isEmpty()) {
+			return null;
+		}
+
+		Path filePath = fileService.getFilePath(user.getImgName());
+
+		return fileService.loadFileAsResource(filePath);
+	}
+
+	public MediaType getUserAvatarMediaType(User user) {
+
+		if (user.getImgName() == null || user.getImgName().isEmpty()) {
+			return null;
+		}
+
+		Path filePath = fileService.getFilePath(user.getImgName());
+
+		return fileService.getFileMediaType(filePath);
 	}
 }
