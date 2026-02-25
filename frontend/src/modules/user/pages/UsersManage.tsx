@@ -48,15 +48,23 @@ export function UsersManage() {
 
     const usersWithAvatar = users.filter((u) => u.imgName);
 
-    Promise.all(
+    Promise.allSettled(
       usersWithAvatar.map(async (u) => {
         const blob = await userService.getAvatarById(u.id, u.imgName);
         return [u.id, URL.createObjectURL(blob)] as const;
       }),
-    ).then((entries) => {
+    ).then((results) => {
       Object.values(avatarUrlsRef.current).forEach(URL.revokeObjectURL);
 
-      const newUrls = Object.fromEntries(entries);
+      const newUrls = Object.fromEntries(
+        results
+          .filter((r) => r.status === "fulfilled")
+          .map(
+            (r) =>
+              (r as PromiseFulfilledResult<readonly [number, string]>).value,
+          ),
+      );
+
       avatarUrlsRef.current = newUrls;
       setAvatarUrls(newUrls);
     });
