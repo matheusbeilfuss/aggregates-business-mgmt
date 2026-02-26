@@ -18,6 +18,8 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import br.ufsc.aggregare.model.Supplier;
 import br.ufsc.aggregare.service.SupplierService;
 
+import jakarta.validation.Valid;
+
 @RestController
 @RequestMapping(value = "/suppliers")
 public class SupplierController {
@@ -30,7 +32,7 @@ public class SupplierController {
 	}
 
 	@PostMapping
-	public ResponseEntity<Supplier> insert(@RequestBody Supplier supplier) {
+	public ResponseEntity<Supplier> insert(@RequestBody @Valid Supplier supplier) {
 		supplier = service.insert(supplier);
 		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(supplier.getId()).toUri();
 		return ResponseEntity.created(uri).body(supplier);
@@ -43,7 +45,7 @@ public class SupplierController {
 	}
 
 	@PutMapping(value = "/{id}")
-	public ResponseEntity<Supplier> update(@PathVariable Long id, @RequestBody Supplier supplier) {
+	public ResponseEntity<Supplier> update(@PathVariable Long id, @RequestBody @Valid Supplier supplier) {
 		supplier = service.update(id, supplier);
 		return ResponseEntity.ok().body(supplier);
 	}
