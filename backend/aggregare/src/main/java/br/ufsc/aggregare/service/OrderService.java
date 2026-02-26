@@ -228,17 +228,6 @@ public class OrderService {
 				.orElseThrow(() -> new ResourceNotFoundException(id));
 	}
 
-	private void validateMaterialOrder(OrderInputDTO dto) {
-		if (dto.getType() == OrderTypeEnum.MATERIAL) {
-			if (dto.getProductId() == null) {
-				throw new IllegalArgumentException("Pedido do tipo MATERIAL deve conter um produto.");
-			}
-			if (dto.getM3Quantity() == null || dto.getM3Quantity() <= 0) {
-				throw new IllegalArgumentException("Pedido do tipo MATERIAL deve conter uma quantidade válida.");
-			}
-		}
-	}
-
 	private boolean hasValidStockData(Order order) {
 		return order.getType() == OrderTypeEnum.MATERIAL
 				&& order.getProduct() != null

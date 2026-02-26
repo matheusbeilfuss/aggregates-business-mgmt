@@ -20,6 +20,8 @@ import br.ufsc.aggregare.model.dto.PaymentInputDTO;
 import br.ufsc.aggregare.model.dto.PaymentInsertDTO;
 import br.ufsc.aggregare.service.PaymentService;
 
+import jakarta.validation.Valid;
+
 @RestController
 @RequestMapping(value = "/payments")
 public class PaymentController {
@@ -32,7 +34,7 @@ public class PaymentController {
 	}
 
 	@PostMapping
-	public ResponseEntity<Payment> insert(@RequestBody PaymentInsertDTO dto) {
+	public ResponseEntity<Payment> insert(@RequestBody @Valid PaymentInsertDTO dto) {
 		Payment payment = service.insert(dto);
 		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(payment.getId()).toUri();
 		return ResponseEntity.created(uri).body(payment);
@@ -45,7 +47,7 @@ public class PaymentController {
 	}
 
 	@PutMapping(value = "/{id}")
-	public ResponseEntity<Payment> update(@PathVariable Long id, @RequestBody PaymentInputDTO dto) {
+	public ResponseEntity<Payment> update(@PathVariable Long id, @RequestBody @Valid PaymentInputDTO dto) {
 		Payment payment = service.update(id, dto);
 		return ResponseEntity.ok().body(payment);
 	}

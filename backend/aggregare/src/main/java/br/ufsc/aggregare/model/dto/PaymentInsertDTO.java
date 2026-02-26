@@ -1,7 +1,10 @@
 package br.ufsc.aggregare.model.dto;
 
+import jakarta.validation.constraints.NotNull;
+
 public class PaymentInsertDTO extends PaymentInputDTO {
 
+	@NotNull(message = "O pedido é obrigatório.")
 	private Long orderId;
 
 	public PaymentInsertDTO() {
