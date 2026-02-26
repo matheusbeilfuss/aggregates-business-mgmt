@@ -17,7 +17,10 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import br.ufsc.aggregare.model.dto.ProductSupplierDTO;
 import br.ufsc.aggregare.model.dto.ProductSupplierInputDTO;
+import br.ufsc.aggregare.model.dto.ProductSupplierUpdateDTO;
 import br.ufsc.aggregare.service.ProductSupplierService;
+
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping(value = "/product-suppliers")
@@ -37,14 +40,14 @@ public class ProductSupplierController {
 	}
 
 	@PostMapping
-	public ResponseEntity<ProductSupplierDTO> insert(@RequestBody ProductSupplierInputDTO productSupplier) {
+	public ResponseEntity<ProductSupplierDTO> insert(@RequestBody @Valid ProductSupplierInputDTO productSupplier) {
 		ProductSupplierDTO newProductSupplier = service.insert(productSupplier);
 		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(newProductSupplier.getId()).toUri();
 		return ResponseEntity.created(uri).body(newProductSupplier);
 	}
 
 	@PutMapping(value = "/{id}")
-	public ResponseEntity<ProductSupplierDTO> update(@PathVariable Long id, @RequestBody ProductSupplierInputDTO dto) {
+	public ResponseEntity<ProductSupplierDTO> update(@PathVariable Long id, @RequestBody @Valid ProductSupplierUpdateDTO dto) {
 		ProductSupplierDTO updatedProductSupplier = service.update(id, dto);
 		return ResponseEntity.ok().body(updatedProductSupplier);
 	}

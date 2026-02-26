@@ -13,6 +13,7 @@ import br.ufsc.aggregare.model.ProductSupplier;
 import br.ufsc.aggregare.model.Supplier;
 import br.ufsc.aggregare.model.dto.ProductSupplierDTO;
 import br.ufsc.aggregare.model.dto.ProductSupplierInputDTO;
+import br.ufsc.aggregare.model.dto.ProductSupplierUpdateDTO;
 import br.ufsc.aggregare.repository.ProductRepository;
 import br.ufsc.aggregare.repository.ProductSupplierRepository;
 import br.ufsc.aggregare.repository.SupplierRepository;
@@ -64,7 +65,7 @@ public class ProductSupplierService {
 	}
 
 	@Transactional
-	public ProductSupplierDTO update(Long id, ProductSupplierInputDTO dto) {
+	public ProductSupplierDTO update(Long id, ProductSupplierUpdateDTO dto) {
 		try {
 			ProductSupplier productSupplier = repository.getReferenceById(id);
 			updateData(productSupplier, dto);
@@ -75,7 +76,7 @@ public class ProductSupplierService {
 		}
 	}
 
-	private void updateData(ProductSupplier productSupplier, ProductSupplierInputDTO dto) {
+	private void updateData(ProductSupplier productSupplier, ProductSupplierUpdateDTO dto) {
 		productSupplier.setTonCost(dto.getTonCost());
 		productSupplier.setCostPerCubicMeter(dto.getCostPerCubicMeter());
 		productSupplier.setCostFor5CubicMeters(dto.getCostFor5CubicMeters());
