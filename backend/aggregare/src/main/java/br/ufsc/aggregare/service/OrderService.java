@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.stereotype.Service;
 
 import br.ufsc.aggregare.model.Client;
@@ -29,21 +30,38 @@ public class OrderService {
 	private final ProductService productService;
 	private final ClientService clientService;
 	private final PaymentService paymentService;
+	private final StockService stockService;
 
 	@Autowired
 	public OrderService(OrderRepository orderRepository, OrderAddressRepository orderAddressRepository,
-			ProductService productService, ClientService clientService, PaymentService paymentService) {
+			ProductService productService, ClientService clientService, PaymentService paymentService, StockService stockService) {
 		this.orderRepository = orderRepository;
 		this.orderAddressRepository = orderAddressRepository;
 		this.productService = productService;
 		this.clientService = clientService;
 		this.paymentService = paymentService;
+		this.stockService = stockService;
 	}
 
 	@Transactional
 	public Order insert(OrderInputDTO dto) {
+		validateMaterialOrder(dto);
+
 		Order order = orderFromInputDTO(dto);
 		orderRepository.save(order);
+
+		if (hasValidStockData(order)) {
+			try {
+				Double tonQuantity = stockService.deductStockForOrder(
+						order.getProduct(), order.getM3Quantity());
+				order.setTonQuantity(tonQuantity);
+				orderRepository.save(order);
+			} catch (ObjectOptimisticLockingFailureException e) {
+				throw new IllegalStateException(
+						"O estoque foi modificado por outra operação simultânea. Tente novamente.");
+			}
+		}
+
 		return order;
 	}
 
@@ -63,10 +81,11 @@ public class OrderService {
 		if (dto.getType() == OrderTypeEnum.MATERIAL) {
 			Product existingProduct = productService.findById(dto.getProductId());
 			order.setProduct(existingProduct);
-			order.setQuantity(dto.getQuantity());
+			order.setM3Quantity(dto.getM3Quantity());
 		} else {
 			order.setProduct(null);
-			order.setQuantity(null);
+			order.setM3Quantity(null);
+			order.setTonQuantity(null);
 		}
 
 		Client existingClient = clientService.findById(dto.getClientId());
@@ -92,6 +111,19 @@ public class OrderService {
 	public void delete(Long id) {
 		Order existingOrder = orderRepository.findById(id)
 				.orElseThrow(() -> new ResourceNotFoundException(id));
+
+		if (hasValidStockData(existingOrder)) {
+			try {
+				stockService.restoreStockForOrder(
+						existingOrder.getProduct(),
+						existingOrder.getM3Quantity(),
+						existingOrder.getTonQuantity() != null ? existingOrder.getTonQuantity() : 0.0);
+			} catch (ObjectOptimisticLockingFailureException e) {
+				throw new IllegalStateException(
+						"O estoque foi modificado por outra operação simultânea. Tente novamente.");
+			}
+		}
+
 		OrderAddress existingOrderAddress = existingOrder.getOrderAddress();
 		orderAddressRepository.delete(existingOrderAddress);
 		orderRepository.delete(existingOrder);
@@ -99,25 +131,45 @@ public class OrderService {
 
 	@Transactional
 	public Order update(Long id, OrderInputDTO dto) {
+		validateMaterialOrder(dto);
+
 		Order existingOrder = orderRepository.findById(id)
 				.orElseThrow(() -> new ResourceNotFoundException(id));
 
-		if (dto.getType() == OrderTypeEnum.MATERIAL) {
-			Product existingProduct = productService.findById(dto.getProductId());
-			existingOrder.setProduct(existingProduct);
-			existingOrder.setQuantity(dto.getQuantity());
-		} else {
-			existingOrder.setProduct(null);
-			existingOrder.setQuantity(null);
+		try {
+			if (hasValidStockData(existingOrder)) {
+				stockService.restoreStockForOrder(
+						existingOrder.getProduct(),
+						existingOrder.getM3Quantity(),
+						existingOrder.getTonQuantity() != null ? existingOrder.getTonQuantity() : 0.0);
+			}
+
+			if (dto.getType() == OrderTypeEnum.MATERIAL) {
+				Product existingProduct = productService.findById(dto.getProductId());
+				existingOrder.setProduct(existingProduct);
+				existingOrder.setM3Quantity(dto.getM3Quantity());
+			} else {
+				existingOrder.setProduct(null);
+				existingOrder.setM3Quantity(null);
+				existingOrder.setTonQuantity(null);
+			}
+
+			Client existingClient = clientService.findById(dto.getClientId());
+			existingOrder.setClient(existingClient);
+
+			OrderAddress existingOrderAddress = existingOrder.getOrderAddress();
+			updateOrderAddress(existingOrderAddress, dto);
+			updateOrder(existingOrder, dto);
+
+			if (hasValidStockData(existingOrder)) {
+				Double tonQuantity = stockService.deductStockForOrder(
+						existingOrder.getProduct(), existingOrder.getM3Quantity());
+				existingOrder.setTonQuantity(tonQuantity);
+			}
+		} catch (ObjectOptimisticLockingFailureException e) {
+			throw new IllegalStateException(
+					"O estoque foi modificado por outra operação simultânea. Tente novamente.");
 		}
-
-		Client existingClient = clientService.findById(dto.getClientId());
-		existingOrder.setClient(existingClient);
-
-		OrderAddress existingOrderAddress = existingOrder.getOrderAddress();
-		updateOrderAddress(existingOrderAddress, dto);
-
-		updateOrder(existingOrder, dto);
 
 		return existingOrder;
 	}
@@ -171,5 +223,23 @@ public class OrderService {
 
 		return orderRepository.findById(id)
 				.orElseThrow(() -> new ResourceNotFoundException(id));
+	}
+
+	private void validateMaterialOrder(OrderInputDTO dto) {
+		if (dto.getType() == OrderTypeEnum.MATERIAL) {
+			if (dto.getProductId() == null) {
+				throw new IllegalArgumentException("Pedido do tipo MATERIAL deve conter um produto.");
+			}
+			if (dto.getM3Quantity() == null || dto.getM3Quantity() <= 0) {
+				throw new IllegalArgumentException("Pedido do tipo MATERIAL deve conter uma quantidade válida.");
+			}
+		}
+	}
+
+	private boolean hasValidStockData(Order order) {
+		return order.getType() == OrderTypeEnum.MATERIAL
+				&& order.getProduct() != null
+				&& order.getM3Quantity() != null
+				&& order.getM3Quantity() > 0;
 	}
 }

@@ -8,15 +8,17 @@ public class StockReplenishDTO {
 
 	private Double tonQuantity;
 	private Double m3Quantity;
+	private Double density;
 	private BigDecimal expenseValue;
 	private PaymentStatusEnum paymentStatus;
 
 	public StockReplenishDTO() {
 	}
 
-	public StockReplenishDTO(Double tonQuantity, Double m3Quantity, BigDecimal expenseValue, PaymentStatusEnum paymentStatus) {
+	public StockReplenishDTO(Double tonQuantity, Double m3Quantity, Double density, BigDecimal expenseValue, PaymentStatusEnum paymentStatus) {
 		this.tonQuantity = tonQuantity;
 		this.m3Quantity = m3Quantity;
+		this.density = density;
 		this.expenseValue = expenseValue;
 		this.paymentStatus = paymentStatus;
 	}
@@ -35,6 +37,14 @@ public class StockReplenishDTO {
 
 	public void setM3Quantity(Double m3Quantity) {
 		this.m3Quantity = m3Quantity;
+	}
+
+	public Double getDensity() {
+		return density;
+	}
+
+	public void setDensity(Double density) {
+		this.density = density;
 	}
 
 	public BigDecimal getExpenseValue() {

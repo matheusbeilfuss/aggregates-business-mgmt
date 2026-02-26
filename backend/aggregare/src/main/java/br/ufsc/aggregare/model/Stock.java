@@ -11,6 +11,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
+import jakarta.persistence.Version;
 
 @Entity
 @Table(name = "tb_stock")
@@ -20,8 +21,13 @@ public class Stock implements Serializable {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
+
+	@Version
+	private Long version;
+
 	private Double tonQuantity;
 	private Double m3Quantity;
+	private Double density;
 
 	@OneToOne
 	@JoinColumn(name = "product_id")
@@ -30,10 +36,11 @@ public class Stock implements Serializable {
 	public Stock() {
 	}
 
-	public Stock(Long id, Double tonQuantity, Double m3Quantity, Product product) {
+	public Stock(Long id, Double tonQuantity, Double m3Quantity, Double density, Product product) {
 		this.id = id;
 		this.tonQuantity = tonQuantity;
 		this.m3Quantity = m3Quantity;
+		this.density = density;
 		this.product = product;
 	}
 
@@ -43,6 +50,10 @@ public class Stock implements Serializable {
 
 	public void setId(Long id) {
 		this.id = id;
+	}
+
+	public Long getVersion() {
+		return version;
 	}
 
 	public Double getTonQuantity() {
@@ -59,6 +70,14 @@ public class Stock implements Serializable {
 
 	public void setM3Quantity(Double m3Quantity) {
 		this.m3Quantity = m3Quantity;
+	}
+
+	public Double getDensity() {
+		return density;
+	}
+
+	public void setDensity(Double density) {
+		this.density = density;
 	}
 
 	public Product getProduct() {

@@ -17,7 +17,7 @@ public class OrderInputDTO {
 	private String city;
 	private String state;
 
-	private Double quantity;
+	private Double m3Quantity;
 	private String service;
 	private OrderTypeEnum type;
 	private LocalDate scheduledDate;
@@ -28,7 +28,7 @@ public class OrderInputDTO {
 	public OrderInputDTO() {
 	}
 
-	public OrderInputDTO(Long productId, Long clientId, String street, String number, String neighborhood, String city, String state, Double quantity, String service, OrderTypeEnum type, LocalDate scheduledDate, LocalTime scheduledTime, String observations, BigDecimal orderValue) {
+	public OrderInputDTO(Long productId, Long clientId, String street, String number, String neighborhood, String city, String state, Double m3Quantity, String service, OrderTypeEnum type, LocalDate scheduledDate, LocalTime scheduledTime, String observations, BigDecimal orderValue) {
 		this.productId = productId;
 		this.clientId = clientId;
 		this.street = street;
@@ -36,7 +36,7 @@ public class OrderInputDTO {
 		this.neighborhood = neighborhood;
 		this.city = city;
 		this.state = state;
-		this.quantity = quantity;
+		this.m3Quantity = m3Quantity;
 		this.service = service;
 		this.type = type;
 		this.scheduledDate = scheduledDate;
@@ -125,12 +125,12 @@ public class OrderInputDTO {
 		this.state = state;
 	}
 
-	public Double getQuantity() {
-		return quantity;
+	public Double getM3Quantity() {
+		return m3Quantity;
 	}
 
-	public void setQuantity(Double quantity) {
-		this.quantity = quantity;
+	public void setM3Quantity(Double m3Quantity) {
+		this.m3Quantity = m3Quantity;
 	}
 
 	public String getService() {

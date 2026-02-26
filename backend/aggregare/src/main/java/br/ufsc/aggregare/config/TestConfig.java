@@ -132,7 +132,7 @@ public class TestConfig implements CommandLineRunner {
 		ProductSupplier productSupplier3 = new ProductSupplier(null, product2, supplier1, 54.00, 71.00, 355.00, 1.48);
 		productSupplierRepository.saveAll(Arrays.asList(productSupplier1, productSupplier2, productSupplier3));
 
-		Stock stock1 = new Stock(null, 10000.0, 15.0, product1);
+		Stock stock1 = new Stock(null, 10000.0, 15.0, 1.5, product1);
 		stockRepository.save(stock1);
 
 		Price price1 = new Price(null, 0, 83.00, category1);
@@ -159,8 +159,8 @@ public class TestConfig implements CommandLineRunner {
 		OrderAddress orderAddress2 = new OrderAddress(null, "Avenida X", "500", "Bairro Y", "Cidade Z", "SC");
 		orderAddressRepository.saveAll(Arrays.asList(orderAddress1, orderAddress2));
 
-		Order order1 = new Order(null, product1, client1, orderAddress1, 5.0, null, OrderTypeEnum.MATERIAL, dataTeste1, horaTeste1, "Entregar no portão", OrderStatusEnum.PENDING, PaymentStatusEnum.PENDING, BigDecimal.valueOf(415.00));
-		Order order2 = new Order(null, product2, client2, orderAddress2, null, "Serviço de máquina", OrderTypeEnum.SERVICE, dataTeste1, horaTeste1, "Ligar antes de chegar", OrderStatusEnum.PENDING, PaymentStatusEnum.PENDING, BigDecimal.valueOf(500.00));
+		Order order1 = new Order(null, product1, client1, orderAddress1, 5.0, 7.5, null, OrderTypeEnum.MATERIAL, dataTeste1, horaTeste1, "Entregar no portão", OrderStatusEnum.PENDING, PaymentStatusEnum.PENDING, BigDecimal.valueOf(415.00));
+		Order order2 = new Order(null, product2, client2, orderAddress2, null, null, "Serviço de máquina", OrderTypeEnum.SERVICE, dataTeste1, horaTeste1, "Ligar antes de chegar", OrderStatusEnum.PENDING, PaymentStatusEnum.PENDING, BigDecimal.valueOf(500.00));
 		orderRepository.saveAll(Arrays.asList(order1, order2));
 
 		Payment payment1 = new Payment(null, order1, BigDecimal.valueOf(200.00), dataTeste1, PaymentMethodEnum.CASH);

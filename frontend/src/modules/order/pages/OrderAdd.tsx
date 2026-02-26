@@ -71,7 +71,7 @@ export function OrderAdd() {
         observations: data.observations ?? null,
         orderValue: data.orderValue!,
         productId: data.type === "MATERIAL" ? data.productId! : null,
-        quantity: data.type === "MATERIAL" ? data.quantity : undefined,
+        m3Quantity: data.type === "MATERIAL" ? data.m3Quantity : undefined,
         service: data.type === "SERVICE" ? (data.service ?? null) : null,
       };
 

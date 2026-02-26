@@ -27,13 +27,14 @@ export const editStockSchema = z.object({
     .min(1, "Categoria obrigatória"),
   tonQuantity: z.coerce.number().nonnegative("Quantidade inválida"),
   m3Quantity: z.coerce.number().nonnegative("Quantidade inválida"),
+  density: z.coerce.number().nonnegative("Densidade inválida"),
 });
 
 export type EditStockFormData = z.infer<typeof editStockSchema>;
 
 export const replenishSchema = z.object({
   supplierId: z.number().min(1, "Selecione um fornecedor"),
-  density: z.coerce.number().min(0.001, "Densidade inválida"),
+  density: z.coerce.number().nonnegative("Densidade inválida"),
   tonQuantity: z.coerce.number().min(0.01, "Quantidade inválida"),
   m3Quantity: z.coerce.number().min(0.01, "Quantidade inválida"),
   expenseValue: z.coerce.number().min(0, "Valor inválido"),

@@ -37,6 +37,7 @@ public class StockService {
 		initialStock.setProduct(product);
 		initialStock.setTonQuantity(0.0);
 		initialStock.setM3Quantity(0.0);
+		initialStock.setDensity(null);
 		repository.save(initialStock);
 	}
 
@@ -52,6 +53,9 @@ public class StockService {
 		Double currentM3Quantity = stock.getM3Quantity() != null ? stock.getM3Quantity() : 0.0;
 		Double m3QuantityToAdd = dto.getM3Quantity() != null ? dto.getM3Quantity() : 0.0;
 		stock.setM3Quantity(currentM3Quantity + m3QuantityToAdd);
+
+		Double densityToSet = dto.getDensity() != null ? dto.getDensity() : stock.getDensity();
+		stock.setDensity(densityToSet);
 
 		repository.save(stock);
 
@@ -81,6 +85,33 @@ public class StockService {
 		existingStock.setProduct(newStock.getProduct());
 		existingStock.setTonQuantity(newStock.getTonQuantity());
 		existingStock.setM3Quantity(newStock.getM3Quantity());
+		existingStock.setDensity(newStock.getDensity());
+	}
+
+	@Transactional
+	public Double deductStockForOrder(Product product, Double m3Quantity) {
+		Stock stock = repository.findByProductId(product.getId())
+				.orElseThrow(() -> new ResourceNotFoundException(product.getId()));
+
+		Double density = stock.getDensity() != null ? stock.getDensity() : 0.0;
+		double tonToDeduct = m3Quantity * density;
+
+		stock.setM3Quantity((stock.getM3Quantity() != null ? stock.getM3Quantity() : 0.0) - m3Quantity);
+		stock.setTonQuantity((stock.getTonQuantity() != null ? stock.getTonQuantity() : 0.0) - tonToDeduct);
+
+		repository.save(stock);
+		return tonToDeduct;
+	}
+
+	@Transactional
+	public void restoreStockForOrder(Product product, Double m3Quantity, Double tonQuantity) {
+		Stock stock = repository.findByProductId(product.getId())
+				.orElseThrow(() -> new ResourceNotFoundException(product.getId()));
+
+		stock.setM3Quantity((stock.getM3Quantity() != null ? stock.getM3Quantity() : 0.0) + m3Quantity);
+		stock.setTonQuantity((stock.getTonQuantity() != null ? stock.getTonQuantity() : 0.0) + tonQuantity);
+
+		repository.save(stock);
 	}
 
 	public Stock findById(Long id) {
@@ -97,6 +128,6 @@ public class StockService {
 		Product product = optionalProduct.orElseThrow(
 				() -> new ResourceNotFoundException(dto.getProductId())
 		);
-		return new Stock(null, dto.getTonQuantity(), dto.getM3Quantity(), product);
+		return new Stock(null, dto.getTonQuantity(), dto.getM3Quantity(), dto.getDensity(), product);
 	}
 }

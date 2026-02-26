@@ -55,7 +55,7 @@ export function OrderEditForm({ orderId }: OrderEditFormProps) {
       street: order.orderAddress.street,
       number: order.orderAddress.number,
       productId: order.product?.id,
-      quantity: order.quantity ?? undefined,
+      m3Quantity: order.m3Quantity ?? undefined,
       service: order.service ?? "",
     });
   }, [order, client, form]);
@@ -74,7 +74,7 @@ export function OrderEditForm({ orderId }: OrderEditFormProps) {
       observations: data.observations ?? null,
       orderValue: data.orderValue!,
       productId: data.type === "MATERIAL" ? data.productId! : null,
-      quantity: data.type === "MATERIAL" ? data.quantity : undefined,
+      m3Quantity: data.type === "MATERIAL" ? data.m3Quantity : undefined,
       service: data.type === "SERVICE" ? (data.service ?? null) : null,
     };
 

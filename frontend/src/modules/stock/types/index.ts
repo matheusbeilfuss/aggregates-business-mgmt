@@ -13,6 +13,7 @@ export interface StockItem {
   id: number;
   tonQuantity: number;
   m3Quantity: number;
+  density: number;
   product: Product;
 }
 
@@ -47,12 +48,14 @@ export interface UpdateProductPayload {
 export interface UpdateStockPayload {
   tonQuantity: number;
   m3Quantity: number;
+  density: number;
   productId: number;
 }
 
 export interface ReplenishStockPayload {
   tonQuantity: number;
   m3Quantity: number;
+  density: number;
   expenseValue: number;
   paymentStatus: "PAID" | "PENDING";
 }

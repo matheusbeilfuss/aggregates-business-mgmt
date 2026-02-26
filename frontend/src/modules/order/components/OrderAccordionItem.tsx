@@ -29,7 +29,7 @@ export function OrderAccordionItem({
   const isMaterial = order.type === "MATERIAL";
 
   const materialLabel = isMaterial
-    ? `${order.quantity ?? 0} m³ de ${order.product.name}`
+    ? `${order.m3Quantity ?? 0} m³ de ${order.product.name}`
     : order.service;
 
   return (
@@ -62,14 +62,16 @@ export function OrderAccordionItem({
         <Separator />
         <div className="flex flex-col gap-2 p-5 sm:flex-row sm:justify-between">
           <span className="font-medium">R$ {order.orderValue.toFixed(2)}</span>
-
           <p>
             {order.orderAddress.street}, Nº {order.orderAddress.number}
           </p>
-
           <p>{order.orderAddress.city}</p>
-
           <p>{preferredPhone?.number || "Telefone não cadastrado"}</p>
+          {isMaterial && order.tonQuantity != null && (
+            <p>
+              {order.m3Quantity} m³ · {order.tonQuantity.toFixed(2)} ton
+            </p>
+          )}
         </div>
 
         {order.observations && (

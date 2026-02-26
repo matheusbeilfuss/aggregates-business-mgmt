@@ -16,7 +16,7 @@ export const orderFormDefaults: OrderFormData = {
   number: "",
   productId: undefined,
   service: "",
-  quantity: undefined,
+  m3Quantity: undefined,
   orderValue: undefined,
   scheduledTime: "",
   observations: "",

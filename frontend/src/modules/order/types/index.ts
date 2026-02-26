@@ -60,19 +60,17 @@ interface BaseOrderItem {
 
 interface MaterialOrderItem extends BaseOrderItem {
   type: "MATERIAL";
-
   product: Product;
-  quantity: number;
-
+  m3Quantity: number;
+  tonQuantity: number;
   service: null;
 }
 
 interface ServiceOrderItem extends BaseOrderItem {
   type: "SERVICE";
-
   product: null;
-  quantity: null;
-
+  m3Quantity: null;
+  tonQuantity: null;
   service: string;
 }
 
@@ -89,7 +87,7 @@ export interface CreateOrderPayload {
   number: string;
   neighborhood: string;
 
-  quantity?: number;
+  m3Quantity?: number;
   service?: string | null;
 
   type: OrderType;

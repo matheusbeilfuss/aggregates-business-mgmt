@@ -33,6 +33,8 @@ import { tonToM3, m3ToTon, calculateExpenseValue } from "../utils/calculations";
 import type { ProductSupplier } from "../types";
 import { ApiError } from "@/lib/api";
 import { usePageTitle } from "@/hooks/usePageTitle";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { TriangleAlert } from "lucide-react";
 
 export function StockReplenish() {
   usePageTitle("Reabastecer estoque");
@@ -161,6 +163,7 @@ export function StockReplenish() {
       await stockService.replenish(id, {
         tonQuantity: data.tonQuantity,
         m3Quantity: data.m3Quantity,
+        density: data.density,
         expenseValue: data.expenseValue,
         paymentStatus: data.paymentStatus,
       });
@@ -333,6 +336,22 @@ export function StockReplenish() {
               )}
             />
           </div>
+
+          <Alert variant="destructive" className="md:col-span-2">
+            <TriangleAlert />
+            <AlertTitle>Atenção</AlertTitle>
+            <AlertDescription className="space-y-1 mt-1">
+              <p>
+                - Uma{" "}
+                <strong>saída financeira será criada automaticamente</strong>{" "}
+                com o valor informado nesta tela.
+              </p>
+              <p>
+                - A densidade informada aqui será salva no estoque e usada para
+                calcular a conversão entre toneladas e m³ nos próximos pedidos.
+              </p>
+            </AlertDescription>
+          </Alert>
         </form>
       </Form>
 
