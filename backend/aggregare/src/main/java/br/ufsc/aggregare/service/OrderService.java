@@ -102,7 +102,7 @@ public class OrderService {
 		Order existingOrder = orderRepository.findById(id)
 				.orElseThrow(() -> new ResourceNotFoundException(id));
 
-		if (existingOrder.getType() == OrderTypeEnum.MATERIAL && existingOrder.getProduct() != null) {
+		if (hasValidStockData(existingOrder)) {
 			stockService.restoreStockForOrder(existingOrder.getProduct(), existingOrder.getQuantity());
 		}
 
@@ -118,7 +118,7 @@ public class OrderService {
 		Order existingOrder = orderRepository.findById(id)
 				.orElseThrow(() -> new ResourceNotFoundException(id));
 
-		if (existingOrder.getType() == OrderTypeEnum.MATERIAL && existingOrder.getProduct() != null) {
+		if (hasValidStockData(existingOrder)) {
 			stockService.restoreStockForOrder(existingOrder.getProduct(), existingOrder.getQuantity());
 		}
 
@@ -138,7 +138,7 @@ public class OrderService {
 		updateOrderAddress(existingOrderAddress, dto);
 		updateOrder(existingOrder, dto);
 
-		if (existingOrder.getType() == OrderTypeEnum.MATERIAL && existingOrder.getProduct() != null) {
+		if (hasValidStockData(existingOrder)) {
 			stockService.deductStockForOrder(existingOrder.getProduct(), existingOrder.getQuantity());
 		}
 
@@ -205,5 +205,12 @@ public class OrderService {
 				throw new IllegalArgumentException("Pedido do tipo MATERIAL deve conter uma quantidade válida.");
 			}
 		}
+	}
+
+	private boolean hasValidStockData(Order order) {
+		return order.getType() == OrderTypeEnum.MATERIAL
+				&& order.getProduct() != null
+				&& order.getQuantity() != null
+				&& order.getQuantity() > 0;
 	}
 }

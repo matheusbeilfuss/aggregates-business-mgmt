@@ -37,7 +37,7 @@ public class StockService {
 		initialStock.setProduct(product);
 		initialStock.setTonQuantity(0.0);
 		initialStock.setM3Quantity(0.0);
-		initialStock.setDensity(0.0);
+		initialStock.setDensity(null);
 		repository.save(initialStock);
 	}
 
