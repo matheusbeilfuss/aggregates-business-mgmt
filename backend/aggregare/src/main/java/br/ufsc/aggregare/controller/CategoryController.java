@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -22,6 +23,7 @@ import br.ufsc.aggregare.service.PriceService;
 
 import jakarta.validation.Valid;
 
+@Validated
 @RestController
 @RequestMapping(value = "/categories")
 public class CategoryController {
@@ -73,7 +75,7 @@ public class CategoryController {
 	}
 
 	@PutMapping(value = "/{id}/prices")
-	public ResponseEntity<List<PriceDTO>> updatePricesForCategory(@PathVariable Long id, @RequestBody @Valid List<PriceDTO> prices) {
+	public ResponseEntity<List<PriceDTO>> updatePricesForCategory(@PathVariable Long id, @RequestBody List<@Valid PriceDTO> prices) {
 		List<PriceDTO> updatedPrices = priceService.updatePricesForCategory(id, prices);
 		return ResponseEntity.ok().body(updatedPrices);
 	}

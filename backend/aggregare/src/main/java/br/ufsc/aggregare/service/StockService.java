@@ -15,7 +15,6 @@ import br.ufsc.aggregare.model.dto.StockUpdateDTO;
 import br.ufsc.aggregare.repository.ProductRepository;
 import br.ufsc.aggregare.repository.StockRepository;
 import br.ufsc.aggregare.service.exception.ResourceNotFoundException;
-import br.ufsc.aggregare.validator.StockValidator;
 
 import jakarta.persistence.EntityNotFoundException;
 
@@ -25,14 +24,12 @@ public class StockService {
 	private final StockRepository repository;
 	private final ProductRepository productRepository;
 	private final ExpenseService expenseService;
-	private final StockValidator stockValidator;
 
 	@Autowired
-	public StockService(StockRepository repository, ProductRepository productRepository, ExpenseService expenseService, StockValidator stockValidator) {
+	public StockService(StockRepository repository, ProductRepository productRepository, ExpenseService expenseService) {
 		this.repository = repository;
 		this.productRepository = productRepository;
 		this.expenseService = expenseService;
-		this.stockValidator = stockValidator;
 	}
 
 	public void createInitialStockForProduct(Product product) {
@@ -46,8 +43,6 @@ public class StockService {
 
 	@Transactional
 	public Stock replenishStock(Long id, StockReplenishDTO dto) {
-		stockValidator.validateReplenish(dto);
-
 		Stock stock = repository.findById(id)
 				.orElseThrow(() -> new ResourceNotFoundException(id));
 
