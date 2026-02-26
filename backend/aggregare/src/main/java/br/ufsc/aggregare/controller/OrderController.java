@@ -23,6 +23,8 @@ import br.ufsc.aggregare.model.dto.OrderInputDTO;
 import br.ufsc.aggregare.model.dto.PaymentInputDTO;
 import br.ufsc.aggregare.service.OrderService;
 
+import jakarta.validation.Valid;
+
 @RestController
 @RequestMapping(value = "/orders")
 public class OrderController {
@@ -35,7 +37,7 @@ public class OrderController {
 	}
 
 	@PostMapping
-	public ResponseEntity<Order> insert(@RequestBody OrderInputDTO dto) {
+	public ResponseEntity<Order> insert(@RequestBody @Valid OrderInputDTO dto) {
 		Order order = service.insert(dto);
 		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(order.getId()).toUri();
 		return ResponseEntity.created(uri).body(order);
@@ -48,7 +50,7 @@ public class OrderController {
 	}
 
 	@PutMapping(value = "/{id}")
-	public ResponseEntity<Order> update(@PathVariable Long id, @RequestBody OrderInputDTO dto) {
+	public ResponseEntity<Order> update(@PathVariable Long id, @RequestBody @Valid OrderInputDTO dto) {
 		Order order = service.update(id, dto);
 		return ResponseEntity.ok().body(order);
 	}

@@ -5,6 +5,7 @@ import java.time.Instant;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.multipart.MaxUploadSizeExceededException;
@@ -15,6 +16,7 @@ import br.ufsc.aggregare.service.exception.DatabaseException;
 import br.ufsc.aggregare.service.exception.FileStorageException;
 import br.ufsc.aggregare.service.exception.ForbiddenException;
 import br.ufsc.aggregare.service.exception.ResourceNotFoundException;
+import br.ufsc.aggregare.validator.exception.ValidationException;
 
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -98,6 +100,25 @@ public class ControllerExceptionHandler {
 	@ExceptionHandler(IllegalArgumentException.class)
 	public ResponseEntity<StandardError> illegalArgument(IllegalArgumentException e, HttpServletRequest request) {
 		String error = "Illegal argument";
+		HttpStatus status = HttpStatus.BAD_REQUEST;
+		StandardError err = new StandardError(Instant.now(), status.value(), error, e.getMessage(), request.getRequestURI());
+		return ResponseEntity.status(status).body(err);
+	}
+
+	@ExceptionHandler(MethodArgumentNotValidException.class)
+	public ResponseEntity<StandardError> methodArgumentNotValid(MethodArgumentNotValidException e, HttpServletRequest request) {
+		String error = "Validation error";
+		HttpStatus status = HttpStatus.BAD_REQUEST;
+		String message = e.getBindingResult().getFieldErrors().stream()
+				.map(fieldError -> fieldError.getField() + ": " + fieldError.getDefaultMessage())
+				.collect(java.util.stream.Collectors.joining(", "));
+		StandardError err = new StandardError(Instant.now(), status.value(), error, message, request.getRequestURI());
+		return ResponseEntity.status(status).body(err);
+	}
+
+	@ExceptionHandler(ValidationException.class)
+	public ResponseEntity<StandardError> validationError(ValidationException e, HttpServletRequest request) {
+		String error = "Validation error";
 		HttpStatus status = HttpStatus.BAD_REQUEST;
 		StandardError err = new StandardError(Instant.now(), status.value(), error, e.getMessage(), request.getRequestURI());
 		return ResponseEntity.status(status).body(err);
