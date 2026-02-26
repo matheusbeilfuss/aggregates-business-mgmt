@@ -73,7 +73,7 @@ public class CategoryController {
 	}
 
 	@PutMapping(value = "/{id}/prices")
-	public ResponseEntity<List<PriceDTO>> updatePricesForCategory(@PathVariable Long id, @RequestBody List<PriceDTO> prices) {
+	public ResponseEntity<List<PriceDTO>> updatePricesForCategory(@PathVariable Long id, @RequestBody @Valid List<PriceDTO> prices) {
 		List<PriceDTO> updatedPrices = priceService.updatePricesForCategory(id, prices);
 		return ResponseEntity.ok().body(updatedPrices);
 	}
