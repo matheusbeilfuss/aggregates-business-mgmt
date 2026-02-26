@@ -195,8 +195,8 @@ export function StockEdit() {
                 registrar uma entrada com custo, use a opção <em>Adicionar</em>.
               </p>
               <p>
-                Ao alterar a densidade, ela será usada para calcular a conversão
-                de m³ para toneladas nos{" "}
+                - Ao alterar a densidade, ela será usada para calcular a
+                conversão de m³ para toneladas nos{" "}
                 <strong>próximos pedidos criados</strong>. Pedidos já existentes
                 não são afetados por esta alteração.
               </p>
