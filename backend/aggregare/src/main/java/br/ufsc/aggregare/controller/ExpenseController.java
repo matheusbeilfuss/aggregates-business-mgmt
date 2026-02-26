@@ -19,6 +19,8 @@ import br.ufsc.aggregare.model.Expense;
 import br.ufsc.aggregare.model.dto.ExpenseInputDTO;
 import br.ufsc.aggregare.service.ExpenseService;
 
+import jakarta.validation.Valid;
+
 @RestController
 @RequestMapping(value = "/expenses")
 public class ExpenseController {
@@ -31,7 +33,7 @@ public class ExpenseController {
 	}
 
 	@PostMapping
-	public ResponseEntity<Expense> insert(@RequestBody ExpenseInputDTO dto) {
+	public ResponseEntity<Expense> insert(@RequestBody @Valid ExpenseInputDTO dto) {
 		Expense expense = service.insert(dto);
 		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(expense.getId()).toUri();
 		return ResponseEntity.created(uri).body(expense);
@@ -44,7 +46,7 @@ public class ExpenseController {
 	}
 
 	@PutMapping(value = "/{id}")
-	public ResponseEntity<Expense> update(@PathVariable Long id, @RequestBody ExpenseInputDTO dto) {
+	public ResponseEntity<Expense> update(@PathVariable Long id, @RequestBody @Valid ExpenseInputDTO dto) {
 		Expense expense = service.update(id, dto);
 		return ResponseEntity.ok().body(expense);
 	}
