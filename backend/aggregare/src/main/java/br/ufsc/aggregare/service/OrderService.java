@@ -114,6 +114,10 @@ public class OrderService {
 		Order existingOrder = orderRepository.findById(id)
 				.orElseThrow(() -> new ResourceNotFoundException(id));
 
+		if (existingOrder.getType() == OrderTypeEnum.MATERIAL && existingOrder.getProduct() != null) {
+			stockService.restoreStockForOrder(existingOrder.getProduct(), existingOrder.getQuantity());
+		}
+
 		if (dto.getType() == OrderTypeEnum.MATERIAL) {
 			Product existingProduct = productService.findById(dto.getProductId());
 			existingOrder.setProduct(existingProduct);
@@ -128,8 +132,11 @@ public class OrderService {
 
 		OrderAddress existingOrderAddress = existingOrder.getOrderAddress();
 		updateOrderAddress(existingOrderAddress, dto);
-
 		updateOrder(existingOrder, dto);
+
+		if (existingOrder.getType() == OrderTypeEnum.MATERIAL && existingOrder.getProduct() != null) {
+			stockService.deductStockForOrder(existingOrder.getProduct(), existingOrder.getQuantity());
+		}
 
 		return existingOrder;
 	}
