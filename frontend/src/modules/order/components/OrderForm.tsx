@@ -47,7 +47,7 @@ export function OrderForm({
 }: OrderFormProps) {
   const orderType = form.watch("type");
   const productId = form.watch("productId");
-  const quantity = form.watch("quantity");
+  const m3Quantity = form.watch("m3Quantity");
   const clientId = form.watch("clientId");
 
   const selectedProduct = useMemo(
@@ -86,8 +86,7 @@ export function OrderForm({
   useEffect(() => {
     if (orderType === "SERVICE") {
       form.setValue("productId", undefined);
-      form.setValue("quantity", undefined);
-
+      form.setValue("m3Quantity", undefined);
       form.setValue("orderValue", undefined);
     }
 
@@ -99,15 +98,15 @@ export function OrderForm({
   useEffect(() => {
     if (orderType !== "MATERIAL") return;
 
-    if (quantity == null) {
+    if (m3Quantity == null) {
       form.setValue("orderValue", undefined);
       return;
     }
 
-    const price = categoryPrices.find((p) => p.m3Volume === quantity)?.price;
+    const price = categoryPrices.find((p) => p.m3Volume === m3Quantity)?.price;
 
     form.setValue("orderValue", price);
-  }, [orderType, quantity, categoryPrices, form]);
+  }, [orderType, m3Quantity, categoryPrices, form]);
 
   if (loading) {
     return (
@@ -389,7 +388,7 @@ export function OrderForm({
             {orderType === "MATERIAL" && (
               <FormField
                 control={form.control}
-                name="quantity"
+                name="m3Quantity"
                 render={({ field, fieldState }) => (
                   <FormItem>
                     <FormLabel>Quantidade</FormLabel>

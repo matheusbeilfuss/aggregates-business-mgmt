@@ -89,7 +89,7 @@ public class StockService {
 	}
 
 	@Transactional
-	public void deductStockForOrder(Product product, Double m3Quantity) {
+	public Double deductStockForOrder(Product product, Double m3Quantity) {
 		Stock stock = repository.findByProductId(product.getId())
 				.orElseThrow(() -> new ResourceNotFoundException(product.getId()));
 
@@ -100,18 +100,16 @@ public class StockService {
 		stock.setTonQuantity((stock.getTonQuantity() != null ? stock.getTonQuantity() : 0.0) - tonToDeduct);
 
 		repository.save(stock);
+		return tonToDeduct;
 	}
 
 	@Transactional
-	public void restoreStockForOrder(Product product, Double m3Quantity) {
+	public void restoreStockForOrder(Product product, Double m3Quantity, Double tonQuantity) {
 		Stock stock = repository.findByProductId(product.getId())
 				.orElseThrow(() -> new ResourceNotFoundException(product.getId()));
 
-		Double density = stock.getDensity() != null ? stock.getDensity() : 0.0;
-		double tonToRestore = m3Quantity * density;
-
 		stock.setM3Quantity((stock.getM3Quantity() != null ? stock.getM3Quantity() : 0.0) + m3Quantity);
-		stock.setTonQuantity((stock.getTonQuantity() != null ? stock.getTonQuantity() : 0.0) + tonToRestore);
+		stock.setTonQuantity((stock.getTonQuantity() != null ? stock.getTonQuantity() : 0.0) + tonQuantity);
 
 		repository.save(stock);
 	}

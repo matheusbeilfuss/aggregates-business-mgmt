@@ -42,7 +42,8 @@ public class Order implements Serializable {
 	@JoinColumn(name = "address_id")
 	private OrderAddress orderAddress;
 
-	private Double quantity;
+	private Double m3Quantity;
+	private Double tonQuantity;
 	private String service;
 
 	@Enumerated(EnumType.STRING)
@@ -63,14 +64,15 @@ public class Order implements Serializable {
 	public Order() {
 	}
 
-	public Order(Long id, Product product, Client client, OrderAddress orderAddress, Double quantity,
+	public Order(Long id, Product product, Client client, OrderAddress orderAddress, Double m3Quantity, Double tonQuantity,
 			String service, OrderTypeEnum type, LocalDate scheduledDate, LocalTime scheduledTime,
 			String observations, OrderStatusEnum status, PaymentStatusEnum paymentStatus, BigDecimal orderValue) {
 		this.id = id;
 		this.product = product;
 		this.client = client;
 		this.orderAddress = orderAddress;
-		this.quantity = quantity;
+		this.m3Quantity = m3Quantity;
+		this.tonQuantity = tonQuantity;
 		this.service = service;
 		this.type = type;
 		this.scheduledDate = scheduledDate;
@@ -113,12 +115,20 @@ public class Order implements Serializable {
 		this.orderAddress = orderAddress;
 	}
 
-	public Double getQuantity() {
-		return quantity;
+	public Double getM3Quantity() {
+		return m3Quantity;
 	}
 
-	public void setQuantity(Double quantity) {
-		this.quantity = quantity;
+	public void setM3Quantity(Double m3Quantity) {
+		this.m3Quantity = m3Quantity;
+	}
+
+	public Double getTonQuantity() {
+		return tonQuantity;
+	}
+
+	public void setTonQuantity(Double tonQuantity) {
+		this.tonQuantity = tonQuantity;
 	}
 
 	public String getService() {

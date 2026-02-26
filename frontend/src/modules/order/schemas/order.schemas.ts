@@ -25,7 +25,7 @@ export const orderSchema = z
     state: z
       .string({ required_error: "Estado obrigatório" })
       .min(2, "Estado obrigatório"),
-    quantity: z.coerce
+    m3Quantity: z.coerce
       .number({ invalid_type_error: "Quantidade obrigatória" })
       .positive("Quantidade obrigatória")
       .optional(),
@@ -64,9 +64,9 @@ export const orderSchema = z
           code: z.ZodIssueCode.custom,
         });
       }
-      if (data.quantity == null) {
+      if (data.m3Quantity == null) {
         ctx.addIssue({
-          path: ["quantity"],
+          path: ["m3Quantity"],
           message: "Quantidade obrigatória",
           code: z.ZodIssueCode.custom,
         });

@@ -49,8 +49,10 @@ public class OrderService {
 		Order order = orderFromInputDTO(dto);
 		orderRepository.save(order);
 
-		if (order.getType() == OrderTypeEnum.MATERIAL && order.getProduct() != null) {
-			stockService.deductStockForOrder(order.getProduct(), order.getQuantity());
+		if (hasValidStockData(order)) {
+			Double tonQuantity = stockService.deductStockForOrder(order.getProduct(), order.getM3Quantity());
+			order.setTonQuantity(tonQuantity);
+			orderRepository.save(order);
 		}
 
 		return order;
@@ -72,10 +74,11 @@ public class OrderService {
 		if (dto.getType() == OrderTypeEnum.MATERIAL) {
 			Product existingProduct = productService.findById(dto.getProductId());
 			order.setProduct(existingProduct);
-			order.setQuantity(dto.getQuantity());
+			order.setM3Quantity(dto.getM3Quantity());
 		} else {
 			order.setProduct(null);
-			order.setQuantity(null);
+			order.setM3Quantity(null);
+			order.setTonQuantity(null);
 		}
 
 		Client existingClient = clientService.findById(dto.getClientId());
@@ -103,7 +106,11 @@ public class OrderService {
 				.orElseThrow(() -> new ResourceNotFoundException(id));
 
 		if (hasValidStockData(existingOrder)) {
-			stockService.restoreStockForOrder(existingOrder.getProduct(), existingOrder.getQuantity());
+			stockService.restoreStockForOrder(
+					existingOrder.getProduct(),
+					existingOrder.getM3Quantity(),
+					existingOrder.getTonQuantity() != null ? existingOrder.getTonQuantity() : 0.0
+			);
 		}
 
 		OrderAddress existingOrderAddress = existingOrder.getOrderAddress();
@@ -119,16 +126,21 @@ public class OrderService {
 				.orElseThrow(() -> new ResourceNotFoundException(id));
 
 		if (hasValidStockData(existingOrder)) {
-			stockService.restoreStockForOrder(existingOrder.getProduct(), existingOrder.getQuantity());
+			stockService.restoreStockForOrder(
+					existingOrder.getProduct(),
+					existingOrder.getM3Quantity(),
+					existingOrder.getTonQuantity() != null ? existingOrder.getTonQuantity() : 0.0
+			);
 		}
 
 		if (dto.getType() == OrderTypeEnum.MATERIAL) {
 			Product existingProduct = productService.findById(dto.getProductId());
 			existingOrder.setProduct(existingProduct);
-			existingOrder.setQuantity(dto.getQuantity());
+			existingOrder.setM3Quantity(dto.getM3Quantity());
 		} else {
 			existingOrder.setProduct(null);
-			existingOrder.setQuantity(null);
+			existingOrder.setM3Quantity(null);
+			existingOrder.setTonQuantity(null);
 		}
 
 		Client existingClient = clientService.findById(dto.getClientId());
@@ -139,7 +151,9 @@ public class OrderService {
 		updateOrder(existingOrder, dto);
 
 		if (hasValidStockData(existingOrder)) {
-			stockService.deductStockForOrder(existingOrder.getProduct(), existingOrder.getQuantity());
+			Double tonQuantity = stockService.deductStockForOrder(
+					existingOrder.getProduct(), existingOrder.getM3Quantity());
+			existingOrder.setTonQuantity(tonQuantity);
 		}
 
 		return existingOrder;
@@ -201,7 +215,7 @@ public class OrderService {
 			if (dto.getProductId() == null) {
 				throw new IllegalArgumentException("Pedido do tipo MATERIAL deve conter um produto.");
 			}
-			if (dto.getQuantity() == null || dto.getQuantity() <= 0) {
+			if (dto.getM3Quantity() == null || dto.getM3Quantity() <= 0) {
 				throw new IllegalArgumentException("Pedido do tipo MATERIAL deve conter uma quantidade válida.");
 			}
 		}
@@ -210,7 +224,7 @@ public class OrderService {
 	private boolean hasValidStockData(Order order) {
 		return order.getType() == OrderTypeEnum.MATERIAL
 				&& order.getProduct() != null
-				&& order.getQuantity() != null
-				&& order.getQuantity() > 0;
+				&& order.getM3Quantity() != null
+				&& order.getM3Quantity() > 0;
 	}
 }
