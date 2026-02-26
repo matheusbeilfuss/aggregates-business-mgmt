@@ -44,6 +44,8 @@ public class OrderService {
 
 	@Transactional
 	public Order insert(OrderInputDTO dto) {
+		validateMaterialOrder(dto);
+
 		Order order = orderFromInputDTO(dto);
 		orderRepository.save(order);
 
@@ -111,6 +113,8 @@ public class OrderService {
 
 	@Transactional
 	public Order update(Long id, OrderInputDTO dto) {
+		validateMaterialOrder(dto);
+
 		Order existingOrder = orderRepository.findById(id)
 				.orElseThrow(() -> new ResourceNotFoundException(id));
 
@@ -190,5 +194,16 @@ public class OrderService {
 
 		return orderRepository.findById(id)
 				.orElseThrow(() -> new ResourceNotFoundException(id));
+	}
+
+	private void validateMaterialOrder(OrderInputDTO dto) {
+		if (dto.getType() == OrderTypeEnum.MATERIAL) {
+			if (dto.getProductId() == null) {
+				throw new IllegalArgumentException("Pedido do tipo MATERIAL deve conter um produto.");
+			}
+			if (dto.getQuantity() == null || dto.getQuantity() <= 0) {
+				throw new IllegalArgumentException("Pedido do tipo MATERIAL deve conter uma quantidade válida.");
+			}
+		}
 	}
 }
