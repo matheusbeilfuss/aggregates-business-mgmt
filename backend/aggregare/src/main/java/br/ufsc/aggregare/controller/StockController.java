@@ -17,6 +17,8 @@ import br.ufsc.aggregare.model.dto.StockReplenishDTO;
 import br.ufsc.aggregare.model.dto.StockUpdateDTO;
 import br.ufsc.aggregare.service.StockService;
 
+import jakarta.validation.Valid;
+
 @RestController
 @RequestMapping(value = "/stocks")
 public class StockController {
@@ -29,13 +31,13 @@ public class StockController {
 	}
 
 	@PostMapping(value = "/{id}/replenish")
-	public ResponseEntity<Stock> replenishStock(@PathVariable Long id, @RequestBody StockReplenishDTO dto) {
+	public ResponseEntity<Stock> replenishStock(@PathVariable Long id, @RequestBody @Valid StockReplenishDTO dto) {
 		Stock stock = service.replenishStock(id, dto);
 		return ResponseEntity.ok().body(stock);
 	}
 
 	@PutMapping(value = "/{id}")
-	public ResponseEntity<Stock> update(@PathVariable Long id, @RequestBody StockUpdateDTO dto) {
+	public ResponseEntity<Stock> update(@PathVariable Long id, @RequestBody @Valid StockUpdateDTO dto) {
 		Stock stock = service.fromDTO(dto);
 		stock = service.update(id, stock);
 		return ResponseEntity.ok().body(stock);

@@ -1,10 +1,20 @@
 package br.ufsc.aggregare.model.dto;
 
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.PositiveOrZero;
+
 public class StockUpdateDTO {
 
+	@PositiveOrZero(message = "A quantidade em toneladas não pode ser negativa.")
 	private Double tonQuantity;
+
+	@PositiveOrZero(message = "A quantidade em m³ não pode ser negativa.")
 	private Double m3Quantity;
+
+	@PositiveOrZero(message = "A densidade não pode ser negativa.")
 	private Double density;
+
+	@NotNull(message = "O produto é obrigatório.")
 	private Long productId;
 
 	public StockUpdateDTO() {
