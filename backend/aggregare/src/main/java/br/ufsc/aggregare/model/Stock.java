@@ -11,6 +11,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
+import jakarta.persistence.Version;
 
 @Entity
 @Table(name = "tb_stock")
@@ -20,6 +21,10 @@ public class Stock implements Serializable {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
+
+	@Version
+	private Long version;
+
 	private Double tonQuantity;
 	private Double m3Quantity;
 	private Double density;
@@ -45,6 +50,10 @@ public class Stock implements Serializable {
 
 	public void setId(Long id) {
 		this.id = id;
+	}
+
+	public Long getVersion() {
+		return version;
 	}
 
 	public Double getTonQuantity() {

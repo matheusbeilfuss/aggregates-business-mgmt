@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.stereotype.Service;
 
 import br.ufsc.aggregare.model.Client;
@@ -50,9 +51,15 @@ public class OrderService {
 		orderRepository.save(order);
 
 		if (hasValidStockData(order)) {
-			Double tonQuantity = stockService.deductStockForOrder(order.getProduct(), order.getM3Quantity());
-			order.setTonQuantity(tonQuantity);
-			orderRepository.save(order);
+			try {
+				Double tonQuantity = stockService.deductStockForOrder(
+						order.getProduct(), order.getM3Quantity());
+				order.setTonQuantity(tonQuantity);
+				orderRepository.save(order);
+			} catch (ObjectOptimisticLockingFailureException e) {
+				throw new IllegalStateException(
+						"O estoque foi modificado por outra operação simultânea. Tente novamente.");
+			}
 		}
 
 		return order;
@@ -106,11 +113,15 @@ public class OrderService {
 				.orElseThrow(() -> new ResourceNotFoundException(id));
 
 		if (hasValidStockData(existingOrder)) {
-			stockService.restoreStockForOrder(
-					existingOrder.getProduct(),
-					existingOrder.getM3Quantity(),
-					existingOrder.getTonQuantity() != null ? existingOrder.getTonQuantity() : 0.0
-			);
+			try {
+				stockService.restoreStockForOrder(
+						existingOrder.getProduct(),
+						existingOrder.getM3Quantity(),
+						existingOrder.getTonQuantity() != null ? existingOrder.getTonQuantity() : 0.0);
+			} catch (ObjectOptimisticLockingFailureException e) {
+				throw new IllegalStateException(
+						"O estoque foi modificado por outra operação simultânea. Tente novamente.");
+			}
 		}
 
 		OrderAddress existingOrderAddress = existingOrder.getOrderAddress();
@@ -125,35 +136,39 @@ public class OrderService {
 		Order existingOrder = orderRepository.findById(id)
 				.orElseThrow(() -> new ResourceNotFoundException(id));
 
-		if (hasValidStockData(existingOrder)) {
-			stockService.restoreStockForOrder(
-					existingOrder.getProduct(),
-					existingOrder.getM3Quantity(),
-					existingOrder.getTonQuantity() != null ? existingOrder.getTonQuantity() : 0.0
-			);
-		}
+		try {
+			if (hasValidStockData(existingOrder)) {
+				stockService.restoreStockForOrder(
+						existingOrder.getProduct(),
+						existingOrder.getM3Quantity(),
+						existingOrder.getTonQuantity() != null ? existingOrder.getTonQuantity() : 0.0);
+			}
 
-		if (dto.getType() == OrderTypeEnum.MATERIAL) {
-			Product existingProduct = productService.findById(dto.getProductId());
-			existingOrder.setProduct(existingProduct);
-			existingOrder.setM3Quantity(dto.getM3Quantity());
-		} else {
-			existingOrder.setProduct(null);
-			existingOrder.setM3Quantity(null);
-			existingOrder.setTonQuantity(null);
-		}
+			if (dto.getType() == OrderTypeEnum.MATERIAL) {
+				Product existingProduct = productService.findById(dto.getProductId());
+				existingOrder.setProduct(existingProduct);
+				existingOrder.setM3Quantity(dto.getM3Quantity());
+			} else {
+				existingOrder.setProduct(null);
+				existingOrder.setM3Quantity(null);
+				existingOrder.setTonQuantity(null);
+			}
 
-		Client existingClient = clientService.findById(dto.getClientId());
-		existingOrder.setClient(existingClient);
+			Client existingClient = clientService.findById(dto.getClientId());
+			existingOrder.setClient(existingClient);
 
-		OrderAddress existingOrderAddress = existingOrder.getOrderAddress();
-		updateOrderAddress(existingOrderAddress, dto);
-		updateOrder(existingOrder, dto);
+			OrderAddress existingOrderAddress = existingOrder.getOrderAddress();
+			updateOrderAddress(existingOrderAddress, dto);
+			updateOrder(existingOrder, dto);
 
-		if (hasValidStockData(existingOrder)) {
-			Double tonQuantity = stockService.deductStockForOrder(
-					existingOrder.getProduct(), existingOrder.getM3Quantity());
-			existingOrder.setTonQuantity(tonQuantity);
+			if (hasValidStockData(existingOrder)) {
+				Double tonQuantity = stockService.deductStockForOrder(
+						existingOrder.getProduct(), existingOrder.getM3Quantity());
+				existingOrder.setTonQuantity(tonQuantity);
+			}
+		} catch (ObjectOptimisticLockingFailureException e) {
+			throw new IllegalStateException(
+					"O estoque foi modificado por outra operação simultânea. Tente novamente.");
 		}
 
 		return existingOrder;

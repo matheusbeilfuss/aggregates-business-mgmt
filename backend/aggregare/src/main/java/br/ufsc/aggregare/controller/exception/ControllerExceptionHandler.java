@@ -79,6 +79,14 @@ public class ControllerExceptionHandler {
 		return ResponseEntity.status(status).body(err);
 	}
 
+	@ExceptionHandler(IllegalStateException.class)
+	public ResponseEntity<StandardError> illegalState(IllegalStateException e, HttpServletRequest request) {
+		String error = "Conflict";
+		HttpStatus status = HttpStatus.CONFLICT;
+		StandardError err = new StandardError(Instant.now(), status.value(), error, e.getMessage(), request.getRequestURI());
+		return ResponseEntity.status(status).body(err);
+	}
+
 	@ExceptionHandler(ForbiddenException.class)
 	public ResponseEntity<StandardError> forbidden(ForbiddenException e, HttpServletRequest request) {
 		String error = "Forbidden";
