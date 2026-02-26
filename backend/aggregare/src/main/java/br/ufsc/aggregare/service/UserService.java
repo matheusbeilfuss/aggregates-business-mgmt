@@ -16,13 +16,14 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import br.ufsc.aggregare.model.User;
-import br.ufsc.aggregare.model.dto.CreateUserDTO;
+import br.ufsc.aggregare.model.dto.UserInsertDTO;
 import br.ufsc.aggregare.model.dto.PasswordUpdateDTO;
-import br.ufsc.aggregare.model.dto.UpdateUserDTO;
+import br.ufsc.aggregare.model.dto.UserUpdateDTO;
 import br.ufsc.aggregare.repository.UserRepository;
 import br.ufsc.aggregare.service.exception.DatabaseException;
 import br.ufsc.aggregare.service.exception.ForbiddenException;
 import br.ufsc.aggregare.service.exception.ResourceNotFoundException;
+import br.ufsc.aggregare.validator.UserValidator;
 
 import jakarta.persistence.EntityNotFoundException;
 
@@ -30,24 +31,20 @@ import jakarta.persistence.EntityNotFoundException;
 public class UserService implements UserDetailsService {
 
 	private final UserRepository repository;
+	private final UserValidator userValidator;
 	private final FileService fileService;
 	private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
 	@Autowired
-	public UserService(UserRepository repository, FileService fileService, BCryptPasswordEncoder bCryptPasswordEncoder) {
+	public UserService(UserRepository repository, UserValidator userValidator, FileService fileService, BCryptPasswordEncoder bCryptPasswordEncoder) {
 		this.repository = repository;
+		this.userValidator = userValidator;
 		this.fileService = fileService;
 		this.bCryptPasswordEncoder = bCryptPasswordEncoder;
 	}
 
-	public User insert(CreateUserDTO dto, MultipartFile image) {
-		if (repository.existsByUsername(dto.getUsername())) {
-			throw new DatabaseException("Nome de usuário já existe.");
-		}
-
-		if (repository.existsByEmail(dto.getEmail())) {
-			throw new DatabaseException("Email já existe.");
-		}
+	public User insert(UserInsertDTO dto, MultipartFile image) {
+		userValidator.validateInsert(dto);
 
 		User user = fromCreateUserDTO(dto);
 
@@ -59,7 +56,7 @@ public class UserService implements UserDetailsService {
 		return repository.save(user);
 	}
 
-	private User fromCreateUserDTO(CreateUserDTO dto) {
+	private User fromCreateUserDTO(UserInsertDTO dto) {
 		User user = new User();
 		user.setFirstName(dto.getFirstName());
 		user.setLastName(dto.getLastName());
@@ -95,7 +92,7 @@ public class UserService implements UserDetailsService {
 		}
 	}
 
-	public User update(Long id, UpdateUserDTO dto, MultipartFile image, User loggedUser) {
+	public User update(Long id, UserUpdateDTO dto, MultipartFile image, User loggedUser) {
 		boolean isSelf = loggedUser.getId().equals(id);
 		boolean isAdmin = loggedUser.getAuthorities().stream()
 				.anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"));
@@ -107,15 +104,7 @@ public class UserService implements UserDetailsService {
 		try {
 			User existingUser = repository.getReferenceById(id);
 
-			if (!existingUser.getUsername().equals(dto.getUsername())
-					&& repository.existsByUsername(dto.getUsername())) {
-				throw new DatabaseException("Nome de usuário já existe.");
-			}
-
-			if (!existingUser.getEmail().equals(dto.getEmail())
-					&& repository.existsByEmail(dto.getEmail())) {
-				throw new DatabaseException("Email já existe.");
-			}
+			userValidator.validateUpdate(id, dto);
 
 			existingUser.setFirstName(dto.getFirstName());
 			existingUser.setLastName(dto.getLastName());

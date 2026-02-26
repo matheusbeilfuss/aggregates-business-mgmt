@@ -1,13 +1,22 @@
 package br.ufsc.aggregare.model.dto;
 
-public class CreateUserDTO {
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
 
+public class UserUpdateDTO {
+
+	@NotBlank(message = "O primeiro nome é obrigatório.")
 	private String firstName;
+
+	@NotBlank(message = "O sobrenome é obrigatório.")
 	private String lastName;
+
+	@NotBlank(message = "O nome de usuário é obrigatório.")
 	private String username;
+
+	@NotBlank(message = "O email é obrigatório.")
+	@Email(message = "O email informado é inválido.")
 	private String email;
-	private String password;
-	private Boolean admin;
 
 	public String getFirstName() {
 		return firstName;
@@ -39,21 +48,5 @@ public class CreateUserDTO {
 
 	public void setEmail(String email) {
 		this.email = email;
-	}
-
-	public String getPassword() {
-		return password;
-	}
-
-	public void setPassword(String password) {
-		this.password = password;
-	}
-
-	public Boolean getAdmin() {
-		return admin;
-	}
-
-	public void setAdmin(Boolean admin) {
-		this.admin = admin;
 	}
 }

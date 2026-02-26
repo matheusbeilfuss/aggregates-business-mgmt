@@ -12,6 +12,8 @@ import br.ufsc.aggregare.model.Settings;
 import br.ufsc.aggregare.model.dto.SettingsDTO;
 import br.ufsc.aggregare.service.SettingsService;
 
+import jakarta.validation.Valid;
+
 @RestController
 @RequestMapping("/settings")
 public class SettingsController {
@@ -30,7 +32,7 @@ public class SettingsController {
 	}
 
 	@PutMapping
-	public ResponseEntity<SettingsDTO> update(@RequestBody SettingsDTO dto) {
+	public ResponseEntity<SettingsDTO> update(@RequestBody @Valid SettingsDTO dto) {
 		Settings settings = service.update(dto);
 		return ResponseEntity.ok(new SettingsDTO(settings.getBusinessName()));
 	}
