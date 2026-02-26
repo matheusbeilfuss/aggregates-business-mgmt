@@ -3,10 +3,17 @@ package br.ufsc.aggregare.model.dto;
 import br.ufsc.aggregare.model.Phone;
 import br.ufsc.aggregare.model.enums.PhoneTypeEnum;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+
 public class PhoneDTO {
 
 	private Long id;
+
+	@NotBlank(message = "O número de telefone é obrigatório.")
 	private String number;
+
+	@NotNull(message = "O tipo de telefone é obrigatório.")
 	private PhoneTypeEnum type;
 
 	public PhoneDTO() {

@@ -16,22 +16,23 @@ import br.ufsc.aggregare.model.dto.PhoneDTO;
 import br.ufsc.aggregare.repository.ClientRepository;
 import br.ufsc.aggregare.service.exception.DatabaseException;
 import br.ufsc.aggregare.service.exception.ResourceNotFoundException;
+import br.ufsc.aggregare.validator.ClientValidator;
 
 @Service
 public class ClientService {
 
 	private final ClientRepository repository;
+	private final ClientValidator validator;
 
 	@Autowired
-	public ClientService(ClientRepository repository) {
+	public ClientService(ClientRepository repository, ClientValidator validator) {
 		this.repository = repository;
+		this.validator = validator;
 	}
 
 	@Transactional
 	public Client insert(ClientInputDTO dto) {
-		if (dto.getCpfCnpj() != null && repository.existsByCpfCnpj(dto.getCpfCnpj())) {
-			throw new DatabaseException("Cliente já cadastrado com esse CPF/CNPJ");
-		}
+		validator.validateInsert(dto);
 
 		Client client = clientFromDTO(dto);
 
@@ -60,6 +61,8 @@ public class ClientService {
 
 	@Transactional
 	public Client update(Long id, ClientInputDTO dto) {
+		validator.validateUpdate(id, dto);
+
 		Client existingClient = repository.findById(id)
 				.orElseThrow(() -> new ResourceNotFoundException(id));
 
