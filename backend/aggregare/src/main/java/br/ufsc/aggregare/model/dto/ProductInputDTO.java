@@ -1,8 +1,12 @@
 package br.ufsc.aggregare.model.dto;
 
+import jakarta.validation.constraints.NotBlank;
+
 public class ProductInputDTO {
 
+	@NotBlank(message = "O nome do produto é obrigatório.")
 	private String name;
+
 	private Long categoryId;
 	private String categoryName;
 

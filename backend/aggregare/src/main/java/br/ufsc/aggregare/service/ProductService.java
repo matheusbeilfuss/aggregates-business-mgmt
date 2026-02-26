@@ -15,6 +15,7 @@ import br.ufsc.aggregare.model.dto.ProductInputDTO;
 import br.ufsc.aggregare.repository.ProductRepository;
 import br.ufsc.aggregare.service.exception.DatabaseException;
 import br.ufsc.aggregare.service.exception.ResourceNotFoundException;
+import br.ufsc.aggregare.validator.ProductValidator;
 
 import jakarta.persistence.EntityNotFoundException;
 
@@ -25,16 +26,20 @@ public class ProductService {
 	private final ProductSupplierService productSupplierService;
 	private final StockService stockService;
 	private final CategoryService categoryService;
+	private final ProductValidator productValidator;
 
 	@Autowired
-	public ProductService(ProductRepository repository, ProductSupplierService productSupplierService, StockService stockService, CategoryService categoryService) {
+	public ProductService(ProductRepository repository, ProductSupplierService productSupplierService, StockService stockService, CategoryService categoryService,
+			ProductValidator productValidator) {
 		this.repository = repository;
 		this.productSupplierService = productSupplierService;
 		this.stockService = stockService;
 		this.categoryService = categoryService;
+		this.productValidator = productValidator;
 	}
 
 	public Product insert(ProductInputDTO dto) {
+		productValidator.validate(dto);
 		try {
 			Product product = fromDTO(dto);
 			Product savedProduct = repository.save(product);
@@ -62,6 +67,7 @@ public class ProductService {
 	}
 
 	public Product update(Long id, ProductInputDTO dto) {
+		productValidator.validate(dto);
 		try {
 			Product newProduct = fromDTO(dto);
 			Product existingProduct = repository.getReferenceById(id);
@@ -87,14 +93,7 @@ public class ProductService {
 	}
 
 	public Product fromDTO(ProductInputDTO dto) {
-		boolean hasId = dto.getCategoryId() != null;
 		boolean hasName = dto.getCategoryName() != null && !dto.getCategoryName().trim().isEmpty();
-
-		if (hasId == hasName) {
-			throw new ResourceNotFoundException(
-					String.format("%s, %s", String.valueOf(dto.getCategoryId()), String.valueOf(dto.getCategoryName()))
-			);
-		}
 
 		Category category;
 		if (hasName) {
