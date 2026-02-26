@@ -34,6 +34,7 @@ export function StockTable({ stocks, onDeleteProduct }: StockTableProps) {
           <TableHead>Material</TableHead>
           <TableHead>Toneladas</TableHead>
           <TableHead>M³</TableHead>
+          <TableHead>Densidade</TableHead>
           <TableHead />
         </TableRow>
       </TableHeader>
@@ -47,6 +48,9 @@ export function StockTable({ stocks, onDeleteProduct }: StockTableProps) {
               {stock.m3Quantity != null
                 ? `${stock.m3Quantity.toFixed(2)} m³`
                 : "-"}
+            </TableCell>
+            <TableCell>
+              {stock.density != null ? `${stock.density.toFixed(2)}` : "-"}
             </TableCell>
 
             <TableCell>

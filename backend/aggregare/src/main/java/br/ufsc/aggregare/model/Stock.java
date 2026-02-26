@@ -22,6 +22,7 @@ public class Stock implements Serializable {
 	private Long id;
 	private Double tonQuantity;
 	private Double m3Quantity;
+	private Double density;
 
 	@OneToOne
 	@JoinColumn(name = "product_id")
@@ -30,10 +31,11 @@ public class Stock implements Serializable {
 	public Stock() {
 	}
 
-	public Stock(Long id, Double tonQuantity, Double m3Quantity, Product product) {
+	public Stock(Long id, Double tonQuantity, Double m3Quantity, Double density, Product product) {
 		this.id = id;
 		this.tonQuantity = tonQuantity;
 		this.m3Quantity = m3Quantity;
+		this.density = density;
 		this.product = product;
 	}
 
@@ -59,6 +61,14 @@ public class Stock implements Serializable {
 
 	public void setM3Quantity(Double m3Quantity) {
 		this.m3Quantity = m3Quantity;
+	}
+
+	public Double getDensity() {
+		return density;
+	}
+
+	public void setDensity(Double density) {
+		this.density = density;
 	}
 
 	public Product getProduct() {

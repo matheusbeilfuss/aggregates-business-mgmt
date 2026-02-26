@@ -27,6 +27,7 @@ export const editStockSchema = z.object({
     .min(1, "Categoria obrigatória"),
   tonQuantity: z.coerce.number().nonnegative("Quantidade inválida"),
   m3Quantity: z.coerce.number().nonnegative("Quantidade inválida"),
+  density: z.coerce.number().min(0.001, "Densidade inválida"),
 });
 
 export type EditStockFormData = z.infer<typeof editStockSchema>;

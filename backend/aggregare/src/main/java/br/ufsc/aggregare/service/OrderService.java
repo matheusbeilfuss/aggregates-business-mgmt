@@ -29,21 +29,28 @@ public class OrderService {
 	private final ProductService productService;
 	private final ClientService clientService;
 	private final PaymentService paymentService;
+	private final StockService stockService;
 
 	@Autowired
 	public OrderService(OrderRepository orderRepository, OrderAddressRepository orderAddressRepository,
-			ProductService productService, ClientService clientService, PaymentService paymentService) {
+			ProductService productService, ClientService clientService, PaymentService paymentService, StockService stockService) {
 		this.orderRepository = orderRepository;
 		this.orderAddressRepository = orderAddressRepository;
 		this.productService = productService;
 		this.clientService = clientService;
 		this.paymentService = paymentService;
+		this.stockService = stockService;
 	}
 
 	@Transactional
 	public Order insert(OrderInputDTO dto) {
 		Order order = orderFromInputDTO(dto);
 		orderRepository.save(order);
+
+		if (order.getType() == OrderTypeEnum.MATERIAL && order.getProduct() != null) {
+			stockService.deductStockForOrder(order.getProduct(), order.getQuantity());
+		}
+
 		return order;
 	}
 
@@ -92,6 +99,11 @@ public class OrderService {
 	public void delete(Long id) {
 		Order existingOrder = orderRepository.findById(id)
 				.orElseThrow(() -> new ResourceNotFoundException(id));
+
+		if (existingOrder.getType() == OrderTypeEnum.MATERIAL && existingOrder.getProduct() != null) {
+			stockService.restoreStockForOrder(existingOrder.getProduct(), existingOrder.getQuantity());
+		}
+
 		OrderAddress existingOrderAddress = existingOrder.getOrderAddress();
 		orderAddressRepository.delete(existingOrderAddress);
 		orderRepository.delete(existingOrder);

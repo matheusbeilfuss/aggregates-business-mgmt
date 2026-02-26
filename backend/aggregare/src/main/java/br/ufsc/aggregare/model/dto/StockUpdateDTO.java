@@ -4,14 +4,17 @@ public class StockUpdateDTO {
 
 	private Double tonQuantity;
 	private Double m3Quantity;
+	private Double density;
 	private Long productId;
 
 	public StockUpdateDTO() {
 	}
 
-	public StockUpdateDTO(Double tonQuantity, Double m3Quantity) {
+	public StockUpdateDTO(Double tonQuantity, Double m3Quantity, Double density, Long productId) {
 		this.tonQuantity = tonQuantity;
 		this.m3Quantity = m3Quantity;
+		this.density = density;
+		this.productId = productId;
 	}
 
 	public Double getTonQuantity() {
@@ -28,6 +31,14 @@ public class StockUpdateDTO {
 
 	public void setM3Quantity(Double m3Quantity) {
 		this.m3Quantity = m3Quantity;
+	}
+
+	public Double getDensity() {
+		return density;
+	}
+
+	public void setDensity(Double density) {
+		this.density = density;
 	}
 
 	public Long getProductId() {

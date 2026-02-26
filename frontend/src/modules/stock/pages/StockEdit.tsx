@@ -49,6 +49,7 @@ export function StockEdit() {
       categoryId: undefined,
       tonQuantity: 0,
       m3Quantity: 0,
+      density: 0,
     } as DefaultValues<EditStockFormData>,
   });
 
@@ -61,6 +62,7 @@ export function StockEdit() {
         categoryId: stock.product.category.id,
         tonQuantity: stock.tonQuantity,
         m3Quantity: stock.m3Quantity,
+        density: stock.density,
       });
       setProductId(stock.product.id);
       setIsFormReady(true);
@@ -86,6 +88,7 @@ export function StockEdit() {
       await stockService.update(id, {
         tonQuantity: data.tonQuantity,
         m3Quantity: data.m3Quantity,
+        density: data.density,
         productId,
       });
 
@@ -169,11 +172,33 @@ export function StockEdit() {
             )}
           />
 
+          <FormField
+            name="density"
+            control={form.control}
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Densidade</FormLabel>
+                <FormControl>
+                  <Input type="number" {...field} value={field.value ?? 0} />
+                </FormControl>
+              </FormItem>
+            )}
+          />
+
           <Alert variant="destructive" className="md:col-span-2">
             <TriangleAlert />
             <AlertTitle>Atenção</AlertTitle>
-            <AlertDescription>
-              Ao realizar esta edição, lembre-se de checar as últimas saídas
+            <AlertDescription className="space-y-1 mt-1">
+              <p>
+                - A edição altera diretamente os dados do estoque e{" "}
+                <strong>não gera lançamentos financeiros</strong>. Para
+                registrar uma entrada com custo, use a opção <em>Adicionar</em>.
+              </p>
+              <p>
+                - Ao alterar a densidade, ela será usada nas próximas deduções e
+                reposições de estoque por pedidos. Verifique se o valor está
+                correto antes de salvar.
+              </p>
             </AlertDescription>
           </Alert>
         </form>
