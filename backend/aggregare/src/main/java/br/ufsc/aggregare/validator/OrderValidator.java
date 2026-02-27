@@ -13,6 +13,8 @@ public class OrderValidator {
 			validateMaterialOrder(dto);
 		} else if (dto.getType() == OrderTypeEnum.SERVICE) {
 			validateServiceOrder(dto);
+		} else {
+			throw new ValidationException("Tipo de pedido inválido ou não informado.");
 		}
 	}
 
