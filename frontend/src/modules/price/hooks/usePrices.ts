@@ -1,17 +1,12 @@
 import { useCallback } from "react";
 import { priceService } from "../services/price.service";
+import { PriceCategory } from "../types";
 import { useApi } from "@/hooks/useApi";
-import { Price } from "../types";
 
-export function usePrices(categoryId: number | null) {
-  const fetcher = useCallback(
-    () => priceService.getByCategory(categoryId!),
-    [categoryId],
-  );
+export function usePrices() {
+  const fetcher = useCallback(() => priceService.getAll(), []);
 
-  const { data, loading, error } = useApi<Price[]>(fetcher, {
-    enabled: !!categoryId,
-  });
+  const { data, loading, error } = useApi<PriceCategory[]>(fetcher);
 
   return { data: data ?? [], loading, error };
 }

@@ -45,7 +45,7 @@ export const items = [
   },
   {
     title: "Preços",
-    url: "#",
+    url: "/prices",
     icon: Tags,
   },
   {

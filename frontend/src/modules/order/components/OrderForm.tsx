@@ -22,9 +22,9 @@ import { useEffect, useMemo } from "react";
 import { selectPreferredPhone } from "../utils/selectPreferredPhone";
 import { PhoneTypeSelect } from "./PhoneTypeSelect";
 import { Product } from "@/modules/product/types";
-import { usePrices } from "@/modules/price/hooks";
-import { useClient } from "@/modules/client/hooks";
 import { Client } from "@/modules/client/types";
+import { useClient } from "@/modules/client/hooks";
+import { useCategoryPrices } from "@/modules/price/hooks";
 
 interface OrderFormProps {
   title: string;
@@ -56,7 +56,7 @@ export function OrderForm({
   );
 
   const categoryId = selectedProduct?.category?.id ?? null;
-  const { data: categoryPrices = [] } = usePrices(categoryId);
+  const { data: categoryPrices = [] } = useCategoryPrices(categoryId);
 
   const { data: client } = useClient(clientId ? String(clientId) : null);
 
