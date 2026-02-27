@@ -2,7 +2,7 @@ package br.ufsc.aggregare.validator;
 
 import br.ufsc.aggregare.model.dto.ClientInputDTO;
 import br.ufsc.aggregare.repository.ClientRepository;
-import br.ufsc.aggregare.validator.exception.ValidationException;
+import br.ufsc.aggregare.service.exception.DatabaseException;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -30,7 +30,7 @@ public class ClientValidator {
 				: clientRepository.existsByCpfCnpjAndIdNot(cpfCnpj, excludeId);
 
 		if (exists) {
-			throw new ValidationException("Já existe um cliente cadastrado com esse CPF/CNPJ.");
+			throw new DatabaseException("Já existe um cliente cadastrado com esse CPF/CNPJ.");
 		}
 	}
 }
