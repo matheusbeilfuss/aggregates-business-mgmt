@@ -6,16 +6,33 @@ import java.time.LocalDate;
 import br.ufsc.aggregare.model.enums.ExpenseTypeEnum;
 import br.ufsc.aggregare.model.enums.PaymentStatusEnum;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
+
 public class ExpenseInputDTO {
 
+	@NotBlank(message = "O nome da despesa é obrigatório.")
 	private String name;
+
+	@NotNull(message = "O valor da despesa é obrigatório.")
+	@Positive(message = "O valor da despesa deve ser maior que zero.")
 	private BigDecimal expenseValue;
+
+	@NotNull(message = "A data da despesa é obrigatória.")
 	private LocalDate date;
+
 	private LocalDate dueDate;
 	private LocalDate paymentDate;
+
+	@NotNull(message = "O tipo da despesa é obrigatório.")
 	private ExpenseTypeEnum type;
+
+	@NotNull(message = "O status do pagamento é obrigatório.")
 	private PaymentStatusEnum paymentStatus;
+
 	private String category;
+
 	private String vehicle;
 	private Integer kmDriven;
 	private Double liters;

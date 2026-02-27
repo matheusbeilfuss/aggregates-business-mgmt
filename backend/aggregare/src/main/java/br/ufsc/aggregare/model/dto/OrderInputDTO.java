@@ -6,23 +6,50 @@ import java.time.LocalTime;
 
 import br.ufsc.aggregare.model.enums.OrderTypeEnum;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.Size;
+
 public class OrderInputDTO {
 
 	private Long productId;
+
+	@NotNull(message = "O cliente é obrigatório.")
 	private Long clientId;
 
+	@NotBlank(message = "A rua é obrigatória.")
 	private String street;
+
+	@NotBlank(message = "O número é obrigatório.")
 	private String number;
+
+	@NotBlank(message = "O bairro é obrigatório.")
 	private String neighborhood;
+
+	@NotBlank(message = "A cidade é obrigatória.")
 	private String city;
+
+	@NotBlank(message = "O estado é obrigatório.")
+	@Size(min = 2, message = "O estado deve ter pelo menos 2 caracteres.")
 	private String state;
 
 	private Double m3Quantity;
 	private String service;
+
+	@NotNull(message = "O tipo do pedido é obrigatório.")
 	private OrderTypeEnum type;
+
+	@NotNull(message = "A data agendada é obrigatória.")
 	private LocalDate scheduledDate;
+
+	@NotNull(message = "O horário agendado é obrigatório.")
 	private LocalTime scheduledTime;
+
 	private String observations;
+
+	@NotNull(message = "O valor do pedido é obrigatório.")
+	@Positive(message = "O valor do pedido deve ser maior que zero.")
 	private BigDecimal orderValue;
 
 	public OrderInputDTO() {

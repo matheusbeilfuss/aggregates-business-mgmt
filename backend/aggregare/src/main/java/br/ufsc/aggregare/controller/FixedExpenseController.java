@@ -18,6 +18,8 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import br.ufsc.aggregare.model.FixedExpense;
 import br.ufsc.aggregare.service.FixedExpenseService;
 
+import jakarta.validation.Valid;
+
 @RestController
 @RequestMapping(value = "/fixed-expenses")
 public class FixedExpenseController {
@@ -30,7 +32,7 @@ public class FixedExpenseController {
 	}
 
 	@PostMapping
-	public ResponseEntity<FixedExpense> insert(@RequestBody FixedExpense fixedExpense) {
+	public ResponseEntity<FixedExpense> insert(@RequestBody @Valid FixedExpense fixedExpense) {
 		FixedExpense savedFixedExpense = service.insert(fixedExpense);
 		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(savedFixedExpense.getId()).toUri();
 		return ResponseEntity.created(uri).body(savedFixedExpense);
@@ -43,7 +45,7 @@ public class FixedExpenseController {
 	}
 
 	@PutMapping(value = "/{id}")
-	public ResponseEntity<FixedExpense> update(@PathVariable Long id, @RequestBody FixedExpense fixedExpense) {
+	public ResponseEntity<FixedExpense> update(@PathVariable Long id, @RequestBody @Valid FixedExpense fixedExpense) {
 		FixedExpense updatedFixedExpense = service.update(id, fixedExpense);
 		return ResponseEntity.ok().body(updatedFixedExpense);
 	}

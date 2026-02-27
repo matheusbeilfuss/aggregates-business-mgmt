@@ -19,6 +19,7 @@ import br.ufsc.aggregare.model.enums.PaymentStatusEnum;
 import br.ufsc.aggregare.repository.OrderAddressRepository;
 import br.ufsc.aggregare.repository.OrderRepository;
 import br.ufsc.aggregare.service.exception.ResourceNotFoundException;
+import br.ufsc.aggregare.validator.OrderValidator;
 
 import jakarta.transaction.Transactional;
 
@@ -31,21 +32,23 @@ public class OrderService {
 	private final ClientService clientService;
 	private final PaymentService paymentService;
 	private final StockService stockService;
+	private final OrderValidator orderValidator;
 
 	@Autowired
 	public OrderService(OrderRepository orderRepository, OrderAddressRepository orderAddressRepository,
-			ProductService productService, ClientService clientService, PaymentService paymentService, StockService stockService) {
+			ProductService productService, ClientService clientService, PaymentService paymentService, StockService stockService, OrderValidator orderValidator) {
 		this.orderRepository = orderRepository;
 		this.orderAddressRepository = orderAddressRepository;
 		this.productService = productService;
 		this.clientService = clientService;
 		this.paymentService = paymentService;
 		this.stockService = stockService;
+		this.orderValidator = orderValidator;
 	}
 
 	@Transactional
 	public Order insert(OrderInputDTO dto) {
-		validateMaterialOrder(dto);
+		orderValidator.validate(dto);
 
 		Order order = orderFromInputDTO(dto);
 		orderRepository.save(order);
@@ -131,7 +134,7 @@ public class OrderService {
 
 	@Transactional
 	public Order update(Long id, OrderInputDTO dto) {
-		validateMaterialOrder(dto);
+		orderValidator.validate(dto);
 
 		Order existingOrder = orderRepository.findById(id)
 				.orElseThrow(() -> new ResourceNotFoundException(id));
@@ -223,17 +226,6 @@ public class OrderService {
 
 		return orderRepository.findById(id)
 				.orElseThrow(() -> new ResourceNotFoundException(id));
-	}
-
-	private void validateMaterialOrder(OrderInputDTO dto) {
-		if (dto.getType() == OrderTypeEnum.MATERIAL) {
-			if (dto.getProductId() == null) {
-				throw new IllegalArgumentException("Pedido do tipo MATERIAL deve conter um produto.");
-			}
-			if (dto.getM3Quantity() == null || dto.getM3Quantity() <= 0) {
-				throw new IllegalArgumentException("Pedido do tipo MATERIAL deve conter uma quantidade válida.");
-			}
-		}
 	}
 
 	private boolean hasValidStockData(Order order) {

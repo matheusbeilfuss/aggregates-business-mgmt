@@ -15,21 +15,26 @@ import br.ufsc.aggregare.model.enums.ExpenseTypeEnum;
 import br.ufsc.aggregare.model.enums.PaymentStatusEnum;
 import br.ufsc.aggregare.repository.ExpenseRepository;
 import br.ufsc.aggregare.service.exception.ResourceNotFoundException;
+import br.ufsc.aggregare.validator.ExpenseValidator;
 
 @Service
 public class ExpenseService {
 
 	private final ExpenseRepository expenseRepository;
 	private final FuelService fuelService;
+	private final ExpenseValidator expenseValidator;
 
 	@Autowired
-	public ExpenseService(ExpenseRepository expenseRepository, FuelService fuelService) {
+	public ExpenseService(ExpenseRepository expenseRepository, FuelService fuelService, ExpenseValidator expenseValidator) {
 		this.expenseRepository = expenseRepository;
 		this.fuelService = fuelService;
+		this.expenseValidator = expenseValidator;
 	}
 
 	@Transactional
 	public Expense insert(ExpenseInputDTO dto) {
+		expenseValidator.validate(dto);
+
 		Expense expense = expenseFromInputDTO(dto);
 		Expense savedExpense = expenseRepository.save(expense);
 
@@ -47,7 +52,7 @@ public class ExpenseService {
 	}
 
 	@Transactional
-	public Expense createExpenseForStockReplenishment(Stock stock, StockReplenishDTO dto) {
+	public void createExpenseForStockReplenishment(Stock stock, StockReplenishDTO dto) {
 		Expense expense = new Expense();
 		expense.setName(stock.getProduct().getName());
 		expense.setExpenseValue(dto.getExpenseValue());
@@ -65,7 +70,7 @@ public class ExpenseService {
 		expense.setType(ExpenseTypeEnum.VARIABLE);
 		expense.setCategory("Estoque");
 
-		return expenseRepository.save(expense);
+		expenseRepository.save(expense);
 	}
 
 	@Transactional
@@ -82,6 +87,7 @@ public class ExpenseService {
 
 	@Transactional
 	public Expense update(Long id, ExpenseInputDTO dto) {
+		expenseValidator.validate(dto);
 
 		Expense existingExpense = expenseRepository.findById(id)
 				.orElseThrow(() -> new ResourceNotFoundException(id));

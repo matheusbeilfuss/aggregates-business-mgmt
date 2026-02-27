@@ -19,6 +19,8 @@ import br.ufsc.aggregare.model.Product;
 import br.ufsc.aggregare.model.dto.ProductInputDTO;
 import br.ufsc.aggregare.service.ProductService;
 
+import jakarta.validation.Valid;
+
 @RestController
 @RequestMapping(value = "/products")
 public class ProductController {
@@ -31,7 +33,7 @@ public class ProductController {
 	}
 
 	@PostMapping
-	public ResponseEntity<Product> insert(@RequestBody ProductInputDTO dto) {
+	public ResponseEntity<Product> insert(@RequestBody @Valid ProductInputDTO dto) {
 		Product product = service.insert(dto);
 		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(product.getId()).toUri();
 		return ResponseEntity.created(uri).body(product);
@@ -44,7 +46,7 @@ public class ProductController {
 	}
 
 	@PutMapping(value = "/{id}")
-	public ResponseEntity<Product> update(@PathVariable Long id, @RequestBody ProductInputDTO dto) {
+	public ResponseEntity<Product> update(@PathVariable Long id, @RequestBody @Valid ProductInputDTO dto) {
 		Product product = service.update(id, dto);
 		return ResponseEntity.ok().body(product);
 	}

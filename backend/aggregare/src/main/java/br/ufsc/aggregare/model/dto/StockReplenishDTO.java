@@ -4,12 +4,27 @@ import java.math.BigDecimal;
 
 import br.ufsc.aggregare.model.enums.PaymentStatusEnum;
 
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.PositiveOrZero;
+
 public class StockReplenishDTO {
 
+	@NotNull(message = "A quantidade em toneladas é obrigatória.")
+	@Positive(message = "A quantidade em toneladas deve ser maior que zero.")
 	private Double tonQuantity;
+
+	@NotNull(message = "A quantidade em m³ é obrigatória.")
+	@Positive(message = "A quantidade em m³ deve ser maior que zero.")
 	private Double m3Quantity;
+
+	@Positive(message = "A densidade deve ser maior que zero.")
 	private Double density;
+
+	@PositiveOrZero(message = "O valor da despesa não pode ser negativo.")
 	private BigDecimal expenseValue;
+
+	@NotNull(message = "O status do pagamento é obrigatório.")
 	private PaymentStatusEnum paymentStatus;
 
 	public StockReplenishDTO() {

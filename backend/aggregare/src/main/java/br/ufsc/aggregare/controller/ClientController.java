@@ -20,6 +20,8 @@ import br.ufsc.aggregare.model.Client;
 import br.ufsc.aggregare.model.dto.ClientInputDTO;
 import br.ufsc.aggregare.service.ClientService;
 
+import jakarta.validation.Valid;
+
 @RestController
 @RequestMapping(value = "/clients")
 public class ClientController {
@@ -32,7 +34,7 @@ public class ClientController {
 	}
 
 	@PostMapping
-	public ResponseEntity<Client> insert(@RequestBody ClientInputDTO dto) {
+	public ResponseEntity<Client> insert(@RequestBody @Valid ClientInputDTO dto) {
 		Client client = service.insert(dto);
 		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(client.getId()).toUri();
 		return ResponseEntity.created(uri).body(client);
@@ -45,7 +47,7 @@ public class ClientController {
 	}
 
 	@PutMapping(value = "/{id}")
-	public ResponseEntity<Client> update(@PathVariable Long id, @RequestBody ClientInputDTO dto) {
+	public ResponseEntity<Client> update(@PathVariable Long id, @RequestBody @Valid ClientInputDTO dto) {
 		Client client = service.update(id, dto);
 		return ResponseEntity.ok().body(client);
 	}
