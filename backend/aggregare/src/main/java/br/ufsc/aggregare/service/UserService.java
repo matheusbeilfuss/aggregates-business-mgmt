@@ -20,7 +20,6 @@ import br.ufsc.aggregare.model.dto.UserInsertDTO;
 import br.ufsc.aggregare.model.dto.PasswordUpdateDTO;
 import br.ufsc.aggregare.model.dto.UserUpdateDTO;
 import br.ufsc.aggregare.repository.UserRepository;
-import br.ufsc.aggregare.service.exception.DatabaseException;
 import br.ufsc.aggregare.service.exception.ForbiddenException;
 import br.ufsc.aggregare.service.exception.ResourceNotFoundException;
 import br.ufsc.aggregare.validator.UserValidator;
