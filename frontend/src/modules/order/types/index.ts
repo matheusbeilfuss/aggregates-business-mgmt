@@ -1,39 +1,9 @@
-import { Product } from "@/modules/stock/types";
+import { Client } from "@/modules/client/types";
+import { Product } from "@/modules/product/types";
 
 export type OrderType = "MATERIAL" | "SERVICE";
 export type OrderStatus = "PENDING" | "DELIVERED";
 export type PaymentStatus = "PENDING" | "PARTIAL" | "PAID";
-export type PhoneType = "WHATSAPP" | "CELULAR" | "FIXO" | "OUTRO";
-
-export interface Client {
-  id: number;
-  name: string;
-  cpfCnpj: string;
-  email: string;
-  address?: Address;
-  phones: Phone[];
-}
-
-export interface Phone {
-  id: number;
-  number: string;
-  type: PhoneType;
-}
-
-export interface Address {
-  id: number;
-  street: string;
-  number: string;
-  neighborhood: string;
-  city: string;
-  state: string;
-}
-
-export interface Price {
-  id: number;
-  m3Volume: number;
-  price: number;
-}
 
 export interface OrderAddress {
   id: number;
@@ -97,20 +67,4 @@ export interface CreateOrderPayload {
 
   observations: string | null;
   orderValue: number;
-}
-
-export interface CreatePhonePayload {
-  number: string;
-  type: PhoneType;
-}
-
-export interface CreateClientPayload {
-  name: string;
-  cpfCnpj?: string;
-  phones: CreatePhonePayload[];
-  street: string;
-  number: string;
-  neighborhood: string;
-  city: string;
-  state: string;
 }

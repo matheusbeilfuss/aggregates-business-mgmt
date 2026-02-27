@@ -8,11 +8,12 @@ import {
 } from "@/components/shared";
 import { StockTable } from "../components/StockTable";
 import { AddProductDialog } from "../components/AddProductDialog";
-import { useStocks, useCategories } from "../hooks";
-import { productService } from "../services/stock.service";
-import type { Product } from "../types";
+import { useStocks } from "../hooks";
 import { ApiError } from "@/lib/api";
 import { usePageTitle } from "@/hooks/usePageTitle";
+import { useCategories } from "@/modules/category/hooks";
+import { Product } from "@/modules/product/types";
+import { productService } from "@/modules/product/services/product.service";
 
 export function Stock() {
   usePageTitle("Estoque");

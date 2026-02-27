@@ -17,14 +17,16 @@ import {
 
 import { PageContainer, LoadingState, FormActions } from "@/components/shared";
 import { CategorySelect } from "../components/CategorySelect";
-import { useStock, useCategories } from "../hooks";
-import { stockService, productService } from "../services/stock.service";
+import { useStock } from "../hooks";
+import { stockService } from "../services/stock.service";
 import {
   editStockSchema,
   type EditStockFormData,
 } from "../schemas/stock.schemas";
 import { ApiError } from "@/lib/api";
 import { usePageTitle } from "@/hooks/usePageTitle";
+import { useCategories } from "@/modules/category/hooks";
+import { productService } from "@/modules/product/services/product.service";
 
 export function StockEdit() {
   usePageTitle("Editar estoque");

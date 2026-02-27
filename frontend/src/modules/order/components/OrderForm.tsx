@@ -17,14 +17,14 @@ import { ProductSelect } from "./ProductSelect";
 import { QuantityCombobox } from "./QuantityCombobox";
 import { ClientCombobox } from "./ClientCombobox";
 import { toIsoDate } from "../utils/toIsoDate";
-import { Product } from "@/modules/stock/types";
-import { Client } from "../types";
 import { useEffect, useMemo } from "react";
 
-import { usePrices } from "../hooks/useOrders";
-import { useClient } from "../hooks/useClients";
 import { selectPreferredPhone } from "../utils/selectPreferredPhone";
 import { PhoneTypeSelect } from "./PhoneTypeSelect";
+import { Product } from "@/modules/product/types";
+import { usePrices } from "@/modules/price/hooks";
+import { useClient } from "@/modules/client/hooks";
+import { Client } from "@/modules/client/types";
 
 interface OrderFormProps {
   title: string;

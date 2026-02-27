@@ -6,7 +6,7 @@ import {
   ComboboxItem,
   ComboboxList,
 } from "@/components/ui/combobox";
-import { Client } from "../types";
+import { Client } from "@/modules/client/types";
 import { useMemo } from "react";
 
 interface ClientComboboxProps {

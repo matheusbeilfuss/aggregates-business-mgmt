@@ -6,7 +6,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { FormControl } from "@/components/ui/form";
-import type { Category } from "../types";
+import { Category } from "@/modules/category/types";
 
 interface CategorySelectProps {
   value?: number;

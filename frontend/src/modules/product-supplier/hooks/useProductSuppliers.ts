@@ -1,7 +1,7 @@
 import { useCallback } from "react";
-import { productSupplierService } from "../services/stock.service";
 import { useApi } from "@/hooks/useApi";
 import { ProductSupplier } from "../types";
+import { productSupplierService } from "../services/productSupplier.service";
 
 export function useProductSuppliers(productId: number | null) {
   const fetcher = useCallback(() => {

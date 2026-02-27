@@ -17,7 +17,8 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
-import type { StockItem, Product } from "../types";
+import type { StockItem } from "../types";
+import { Product } from "@/modules/product/types";
 
 interface StockTableProps {
   stocks: StockItem[];

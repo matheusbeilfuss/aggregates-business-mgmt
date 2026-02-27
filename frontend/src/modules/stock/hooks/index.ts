@@ -1,2 +1,2 @@
-export { useStocks, useStock, useCategories } from "./useStocks";
-export { useProductSuppliers } from "./useProductSuppliers";
+export { useStocks } from "./useStocks";
+export { useStock } from "./useStock";

@@ -5,7 +5,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Product } from "@/modules/stock/types";
+import { Product } from "@/modules/product/types";
 
 interface ProductSelectProps {
   value?: number;

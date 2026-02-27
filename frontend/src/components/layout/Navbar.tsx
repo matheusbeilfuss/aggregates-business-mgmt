@@ -10,8 +10,8 @@ import {
 } from "../ui/dropdown-menu";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/modules/auth/hooks/useAuth";
-import { useUserAvatar } from "@/modules/user/hooks/useUsers";
 import { useSettings } from "@/modules/settings/hooks/useSettings";
+import { useUserAvatar } from "@/modules/user/hooks";
 
 export function Navbar() {
   const navigate = useNavigate();

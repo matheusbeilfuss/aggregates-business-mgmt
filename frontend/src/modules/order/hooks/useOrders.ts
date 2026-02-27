@@ -1,6 +1,6 @@
 import { useCallback } from "react";
-import { categoryService, orderService } from "../services/order.service";
-import { OrderItem, Price } from "../types";
+import { orderService } from "../services/order.service";
+import { OrderItem } from "../types";
 import { useApi } from "@/hooks/useApi";
 
 export function useOrders(scheduledDate: string | null) {
@@ -10,23 +10,4 @@ export function useOrders(scheduledDate: string | null) {
   );
 
   return useApi<OrderItem[]>(fetcher, { enabled: !!scheduledDate });
-}
-
-export function useOrder(id: number | null) {
-  const fetcher = useCallback(() => orderService.getById(id!), [id]);
-
-  return useApi<OrderItem>(fetcher, { enabled: !!id });
-}
-
-export function usePrices(categoryId: number | null) {
-  const fetcher = useCallback(
-    () => categoryService.getPricesById(categoryId!),
-    [categoryId],
-  );
-
-  const { data, loading, error } = useApi<Price[]>(fetcher, {
-    enabled: !!categoryId,
-  });
-
-  return { data: data ?? [], loading, error };
 }

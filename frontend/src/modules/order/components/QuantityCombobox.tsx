@@ -3,7 +3,6 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { Price } from "../types";
 import {
   Combobox,
   ComboboxContent,
@@ -11,6 +10,7 @@ import {
   ComboboxItem,
   ComboboxList,
 } from "@/components/ui/combobox";
+import { Price } from "@/modules/price/types";
 
 interface QuantityComboboxProps {
   value?: number;

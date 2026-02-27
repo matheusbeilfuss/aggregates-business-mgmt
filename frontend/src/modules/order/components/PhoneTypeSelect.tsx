@@ -5,7 +5,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { PhoneType } from "../types";
+import { PhoneType } from "@/modules/client/types";
 
 interface PhoneTypeSelectProps {
   value?: PhoneType;

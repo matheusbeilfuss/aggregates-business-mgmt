@@ -1,7 +1,6 @@
 import { PageContainer, LoadingState } from "@/components/shared";
 import { Button } from "@/components/ui/button";
 import { Users } from "lucide-react";
-import { useUserAvatar } from "../hooks/useUsers";
 import { useState } from "react";
 import { userService } from "../services/user.service";
 import { toast } from "sonner";
@@ -13,6 +12,7 @@ import { ApiError } from "@/lib/api";
 import { useAuth } from "@/modules/auth/hooks/useAuth";
 import { UpdateBusinessNameDialog } from "@/modules/settings/components/UpdateBusinessNameDialog";
 import { usePageTitle } from "@/hooks/usePageTitle";
+import { useUserAvatar } from "../hooks";
 
 export function User() {
   usePageTitle("Meu perfil");

@@ -3,11 +3,12 @@ import {
   AccordionTrigger,
   AccordionContent,
 } from "@/components/ui/accordion";
-import { OrderItem, Phone } from "../types";
+import { OrderItem } from "../types";
 import { OrderActions } from "./OrderActions";
 import { Separator } from "@/components/ui/separator";
 import { formatTime } from "../utils/formatTime";
 import { selectPreferredPhone } from "../utils/selectPreferredPhone";
+import { Phone } from "@/modules/client/types";
 
 interface OrderAccordionItemProps {
   order: OrderItem;

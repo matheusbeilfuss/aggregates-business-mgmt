@@ -1,13 +1,5 @@
-export interface Category {
-  id: number;
-  name: string;
-}
-
-export interface Product {
-  id: number;
-  name: string;
-  category?: Category;
-}
+import { Category } from "@/modules/category/types";
+import { Product } from "@/modules/product/types";
 
 export interface StockItem {
   id: number;
@@ -23,27 +15,7 @@ export interface StockDetail extends StockItem {
   };
 }
 
-export interface ProductSupplier {
-  id: number;
-  supplierId: number;
-  supplierName: string;
-  tonCost: number;
-  costPerCubicMeter: number;
-  costFor5CubicMeters?: number;
-  density: number;
-}
-
 // Payloads para API
-export interface CreateProductPayload {
-  name: string;
-  categoryId?: number;
-  categoryName?: string;
-}
-
-export interface UpdateProductPayload {
-  name: string;
-  categoryId: number;
-}
 
 export interface UpdateStockPayload {
   tonQuantity: number;
