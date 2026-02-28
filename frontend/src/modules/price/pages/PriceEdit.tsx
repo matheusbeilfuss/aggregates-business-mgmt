@@ -12,7 +12,6 @@ import {
   PageContainer,
   LoadingState,
   ConfirmDialog,
-  FormActions,
 } from "@/components/shared";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -49,8 +48,7 @@ import {
   priceUpdateSchema,
   type PriceUpdateFormData,
 } from "../schemas/price.schema";
-
-// ─── mapeamento volume → campo do schema ────────────────────────────────────
+import { Separator } from "@/components/ui/separator";
 
 const VOLUME_FIELDS = [
   { name: "deposito" as const, label: "Depósito", volume: 0 },
@@ -65,8 +63,6 @@ const VOLUME_FIELDS = [
   volume: number;
 }[];
 
-// ─── componente ──────────────────────────────────────────────────────────────
-
 export function PriceEdit() {
   usePageTitle("Editar Preços");
 
@@ -74,7 +70,6 @@ export function PriceEdit() {
   const id = Number(categoryId);
   const navigate = useNavigate();
 
-  // ── dados ──
   const {
     data: prices,
     loading: pricesLoading,
@@ -95,7 +90,6 @@ export function PriceEdit() {
     error: categoryError,
   } = useCategory(id);
 
-  // ── form ──
   const form = useForm<PriceUpdateFormData>({
     resolver: zodResolver(priceUpdateSchema),
     defaultValues: {
@@ -108,7 +102,6 @@ export function PriceEdit() {
     },
   });
 
-  // popula o form quando os preços chegam da API
   useEffect(() => {
     if (prices.length === 0) return;
 
@@ -126,7 +119,6 @@ export function PriceEdit() {
     });
   }, [prices, form]);
 
-  // ── submit de preços ──
   async function onSubmitPrices(data: PriceUpdateFormData) {
     const updated = prices.map((p) => {
       const field = VOLUME_FIELDS.find((f) => f.volume === p.m3Volume);
@@ -149,7 +141,6 @@ export function PriceEdit() {
     }
   }
 
-  // ── exclusão de fornecedor ──
   const [supplierToDelete, setSupplierToDelete] = useState<number | null>(null);
 
   async function handleDeleteSupplier() {
@@ -169,11 +160,8 @@ export function PriceEdit() {
     }
   }
 
-  // ── derivados ──
   const loading = pricesLoading || suppliersLoading || categoryLoading;
   const error = pricesError || suppliersError || categoryError;
-
-  // ─── render ───────────────────────────────────────────────────────────────
 
   return (
     <PageContainer title="Editar preços">
@@ -183,12 +171,10 @@ export function PriceEdit() {
         <LoadingState rows={5} />
       ) : (
         <div className="space-y-10">
-          {/* cabeçalho */}
           <h2 className="text-xl font-semibold text-center">
             {category?.name}
           </h2>
 
-          {/* ══ seção de preços ══════════════════════════════════════════ */}
           <section className="space-y-4">
             <h3 className="text-lg font-medium">Valores</h3>
 
@@ -263,9 +249,8 @@ export function PriceEdit() {
             </Form>
           </section>
 
-          <hr />
+          <Separator />
 
-          {/* ══ seção de fornecedores ════════════════════════════════════ */}
           <section className="space-y-4">
             <div className="flex items-center justify-between">
               <h3 className="text-lg font-medium">Fornecedores</h3>
@@ -408,7 +393,6 @@ export function PriceEdit() {
         </div>
       )}
 
-      {/* dialog de confirmação */}
       <ConfirmDialog
         open={supplierToDelete !== null}
         onOpenChange={(open) => {
