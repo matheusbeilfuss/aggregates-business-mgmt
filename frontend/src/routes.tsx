@@ -15,6 +15,7 @@ import { Providers } from "./components/layout/Providers";
 import { Price } from "./modules/price/pages/Price";
 import { PriceEdit } from "./modules/price/pages/PriceEdit";
 import { SupplierAdd } from "./modules/product-supplier/pages/SupplierAdd";
+import { SupplierEdit } from "./modules/product-supplier/pages/SupplierEdit";
 
 export const router = createBrowserRouter([
   {
@@ -36,6 +37,10 @@ export const router = createBrowserRouter([
           {
             path: "prices/categories/:categoryId/suppliers/add",
             element: <SupplierAdd />,
+          },
+          {
+            path: "prices/categories/:categoryId/suppliers/:supplierId/edit",
+            element: <SupplierEdit />,
           },
 
           { path: "user", element: <User /> },

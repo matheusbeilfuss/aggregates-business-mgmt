@@ -5,6 +5,7 @@ export interface Supplier {
 
 export interface ProductSupplier {
   id: number;
+  productId: number;
   supplierId: number;
   supplierName: string;
   productName: string;
@@ -28,6 +29,7 @@ export interface ProductSupplierInput {
 }
 
 export interface ProductSupplierUpdate {
+  productId: number;
   density: number;
   tonCost: number;
   costPerCubicMeter: number;

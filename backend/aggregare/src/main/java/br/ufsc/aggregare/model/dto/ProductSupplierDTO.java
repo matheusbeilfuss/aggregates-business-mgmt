@@ -2,6 +2,7 @@ package br.ufsc.aggregare.model.dto;
 
 public class ProductSupplierDTO {
 	private Long id;
+	private Long productId;
 	private Long supplierId;
 	private String supplierName;
 	private String productName;
@@ -17,6 +18,14 @@ public class ProductSupplierDTO {
 
 	public void setId(Long id) {
 		this.id = id;
+	}
+
+	public Long getProductId() {
+		return productId;
+	}
+
+	public void setProductId(Long productId) {
+		this.productId = productId;
 	}
 
 	public Long getSupplierId() {

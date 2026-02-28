@@ -1,8 +1,12 @@
 package br.ufsc.aggregare.model.dto;
 
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 
 public class ProductSupplierUpdateDTO {
+
+	@NotNull(message = "O produto é obrigatório.")
+	private Long productId;
 
 	@Positive(message = "O custo por tonelada deve ser maior que zero.")
 	private Double tonCost;
@@ -17,6 +21,14 @@ public class ProductSupplierUpdateDTO {
 	private Double density;
 
 	private String observations;
+
+	public Long getProductId() {
+		return productId;
+	}
+
+	public void setProductId(Long productId) {
+		this.productId = productId;
+	}
 
 	public Double getTonCost() {
 		return tonCost;

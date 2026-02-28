@@ -34,7 +34,10 @@ export const supplierAddSchema = baseSchema
     }
   });
 
-export const supplierEditSchema = baseSchema;
+export const supplierEditSchema = baseSchema.extend({
+  supplierName: z.string().min(1, "Nome do fornecedor obrigatório."),
+  productId: z.number({ required_error: "Selecione um produto." }).min(1),
+});
 
 export type SupplierAddFormData = z.infer<typeof supplierAddSchema>;
 export type SupplierEditFormData = z.infer<typeof supplierEditSchema>;

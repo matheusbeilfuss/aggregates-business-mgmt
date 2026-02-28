@@ -40,6 +40,7 @@ interface AddProps extends BaseProps {
 interface EditProps extends BaseProps {
   mode: "edit";
   control: EditControl;
+  products: Product[];
 }
 
 type SupplierFormProps = AddProps | EditProps;
@@ -94,6 +95,51 @@ export function SupplierForm(props: SupplierFormProps) {
                 >
                   <FormControl>
                     <SelectTrigger className="w-full cursor-pointer">
+                      <SelectValue placeholder="Selecione um material" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    {props.products.map((p) => (
+                      <SelectItem key={p.id} value={String(p.id)}>
+                        {p.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </>
+      )}
+
+      {mode === "edit" && (
+        <>
+          <FormField
+            control={control as EditControl}
+            name="supplierName"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Fornecedor</FormLabel>
+                <FormControl>
+                  <Input type="text" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={control as EditControl}
+            name="productId"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Material</FormLabel>
+                <Select
+                  onValueChange={(value) => field.onChange(Number(value))}
+                  value={field.value ? String(field.value) : ""}
+                >
+                  <FormControl>
+                    <SelectTrigger className="w-full">
                       <SelectValue placeholder="Selecione um material" />
                     </SelectTrigger>
                   </FormControl>

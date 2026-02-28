@@ -397,10 +397,10 @@ export function PriceEdit() {
           if (!open) setSupplierToDelete(null);
         }}
         title="Você tem certeza que deseja excluir este fornecedor?"
-        description={
-          productSuppliers.find((ps) => ps.id === supplierToDelete)
-            ?.supplierName ?? ""
-        }
+        description={(() => {
+          const ps = productSuppliers.find((ps) => ps.id === supplierToDelete);
+          return ps ? `${ps.supplierName} - ${ps.productName}` : "";
+        })()}
         onConfirm={handleDeleteSupplier}
         confirmLabel="Excluir"
         variant="destructive"

@@ -46,6 +46,7 @@ public class ProductSupplierService {
 	private ProductSupplierDTO toDTO(ProductSupplier productSupplier) {
 		ProductSupplierDTO dto = new ProductSupplierDTO();
 		dto.setId(productSupplier.getId());
+		dto.setProductId(productSupplier.getProduct().getId());
 		dto.setSupplierId(productSupplier.getSupplier().getId());
 		dto.setSupplierName(productSupplier.getSupplier().getName());
 		dto.setProductName(productSupplier.getProduct().getName());
@@ -79,6 +80,10 @@ public class ProductSupplierService {
 	}
 
 	private void updateData(ProductSupplier productSupplier, ProductSupplierUpdateDTO dto) {
+		Product product = productRepository.findById(dto.getProductId())
+				.orElseThrow(() -> new ResourceNotFoundException(dto.getProductId()));
+		productSupplier.setProduct(product);
+
 		productSupplier.setTonCost(dto.getTonCost());
 		productSupplier.setCostPerCubicMeter(dto.getCostPerCubicMeter());
 		productSupplier.setCostFor5CubicMeters(dto.getCostFor5CubicMeters());
