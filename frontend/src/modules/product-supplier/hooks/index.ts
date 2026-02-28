@@ -1,2 +1,2 @@
-export { useProductSuppliers } from "./useProductSuppliers";
+export { useProductSuppliersByProductId } from "./useProductSupplierByProductId";
 export { useCategoryProductSuppliers } from "./useCategoryProductSuppliers";

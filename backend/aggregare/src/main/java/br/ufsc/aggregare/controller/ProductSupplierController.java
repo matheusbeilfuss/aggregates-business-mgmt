@@ -33,7 +33,13 @@ public class ProductSupplierController {
 		this.service = service;
 	}
 
-	@GetMapping("/{productId}")
+	@GetMapping(value = "/{id}")
+	public ResponseEntity<ProductSupplierDTO> findById(@PathVariable Long id) {
+		ProductSupplierDTO dto = service.findById(id);
+		return ResponseEntity.ok().body(dto);
+	}
+
+	@GetMapping(value = "/product/{productId}")
 	public ResponseEntity<List<ProductSupplierDTO>> findSupplierByProductId(@PathVariable Long productId) {
 		List<ProductSupplierDTO> suppliers = service.findSupplierByProductId(productId);
 		return ResponseEntity.ok().body(suppliers);

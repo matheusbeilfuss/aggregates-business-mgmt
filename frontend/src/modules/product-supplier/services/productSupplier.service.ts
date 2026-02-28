@@ -3,11 +3,14 @@ import {
   ProductSupplier,
   ProductSupplierInput,
   ProductSupplierUpdate,
+  Supplier,
 } from "../types";
 
 export const productSupplierService = {
+  getById: (id: number) => api.get<ProductSupplier>(`/product-suppliers/${id}`),
+
   getByProductId: (productId: number) =>
-    api.get<ProductSupplier[]>(`/product-suppliers/${productId}`),
+    api.get<ProductSupplier[]>(`/product-suppliers/product/${productId}`),
 
   getByCategoryId: (categoryId: number) =>
     api.get<ProductSupplier[]>(`/categories/${categoryId}/product-suppliers`),
@@ -19,4 +22,10 @@ export const productSupplierService = {
     api.put<ProductSupplier>(`/product-suppliers/${id}`, data),
 
   delete: (id: number) => api.delete(`/product-suppliers/${id}`),
+};
+
+export const supplierService = {
+  getAll: () => api.get<Supplier[]>("/suppliers"),
+
+  insert: (data: { name: string }) => api.post<Supplier>("/suppliers", data),
 };

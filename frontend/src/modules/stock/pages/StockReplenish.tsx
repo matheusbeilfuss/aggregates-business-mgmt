@@ -33,7 +33,7 @@ import { ApiError } from "@/lib/api";
 import { usePageTitle } from "@/hooks/usePageTitle";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { TriangleAlert } from "lucide-react";
-import { useProductSuppliers } from "@/modules/product-supplier/hooks";
+import { useProductSuppliersByProductId } from "@/modules/product-supplier/hooks";
 import { ProductSupplier } from "@/modules/product-supplier/types";
 
 export function StockReplenish() {
@@ -48,7 +48,7 @@ export function StockReplenish() {
     error: stockError,
   } = useStock(id!);
   const { data: productSuppliers, loading: suppliersLoading } =
-    useProductSuppliers(stock?.product.id ?? null);
+    useProductSuppliersByProductId(stock?.product.id ?? null);
 
   const [userEditedM3, setUserEditedM3] = useState(false);
   const [userEditedTon, setUserEditedTon] = useState(false);

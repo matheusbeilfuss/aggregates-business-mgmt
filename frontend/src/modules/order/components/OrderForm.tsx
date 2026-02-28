@@ -7,6 +7,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { PageContainer, FormActions, LoadingState } from "@/components/shared";
 import { DatePicker } from "@/components/shared/DatePicker";
@@ -460,11 +461,7 @@ export function OrderForm({
                 <FormItem>
                   <FormLabel>Informações adicionais</FormLabel>
                   <FormControl>
-                    <Input
-                      type="text"
-                      {...field}
-                      onFocus={(e) => e.target.select()}
-                    />
+                    <Textarea {...field} onFocus={(e) => e.target.select()} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

@@ -118,4 +118,11 @@ public class ProductSupplierService {
 		List<ProductSupplier> productSuppliers = repository.findByProductCategoryId(categoryId);
 		return productSuppliers.stream().map(this::toDTO).toList();
 	}
+
+	@Transactional(readOnly = true)
+	public ProductSupplierDTO findById(Long id) {
+		ProductSupplier productSupplier = repository.findById(id)
+				.orElseThrow(() -> new ResourceNotFoundException(id));
+		return toDTO(productSupplier);
+	}
 }

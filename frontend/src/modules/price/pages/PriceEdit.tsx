@@ -1,5 +1,3 @@
-// src/modules/price/pages/PriceEdit.tsx
-
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useForm } from "react-hook-form";
@@ -264,7 +262,7 @@ export function PriceEdit() {
               </Button>
             </div>
 
-            <Table>
+            <Table className="mb-10">
               <TableHeader>
                 <TableRow>
                   <TableHead>Fornecedor</TableHead>
