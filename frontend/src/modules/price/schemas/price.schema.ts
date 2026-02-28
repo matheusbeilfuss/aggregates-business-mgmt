@@ -1,15 +1,14 @@
 import { z } from "zod";
 
+const priceErrorMessage = "Preço deve ser maior que zero.";
+
 export const priceUpdateSchema = z.object({
-  prices: z.array(
-    z.object({
-      id: z.number(),
-      m3Volume: z.number(),
-      price: z
-        .number({ invalid_type_error: "Informe um valor válido." })
-        .positive({ message: "O preço deve ser maior que zero." }),
-    }),
-  ),
+  deposito: z.coerce.number().positive(priceErrorMessage),
+  m3_1: z.coerce.number().positive(priceErrorMessage),
+  m3_2: z.coerce.number().positive(priceErrorMessage),
+  m3_3: z.coerce.number().positive(priceErrorMessage),
+  m3_4: z.coerce.number().positive(priceErrorMessage),
+  m3_5: z.coerce.number().positive(priceErrorMessage),
 });
 
-export type PriceUpdateSchema = z.infer<typeof priceUpdateSchema>;
+export type PriceUpdateFormData = z.infer<typeof priceUpdateSchema>;

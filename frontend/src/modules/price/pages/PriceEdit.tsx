@@ -1,14 +1,28 @@
-import { useState } from "react";
+// src/modules/price/pages/PriceEdit.tsx
+
+import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
 import { Pencil, X, MoreHorizontal } from "lucide-react";
 
 import { usePageTitle } from "@/hooks/usePageTitle";
-import { PageContainer } from "@/components/shared";
-import { LoadingState } from "@/components/shared";
-import { ConfirmDialog } from "@/components/shared";
+import {
+  PageContainer,
+  LoadingState,
+  ConfirmDialog,
+  FormActions,
+} from "@/components/shared";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormMessage,
+} from "@/components/ui/form";
 import {
   Table,
   TableBody,
@@ -26,12 +40,32 @@ import {
 
 import { useCategoryPrices } from "../hooks/useCategoryPrices";
 import { useCategoryProductSuppliers } from "@/modules/product-supplier/hooks/useCategoryProductSuppliers";
+import { useCategory } from "@/modules/category/hooks/useCategory";
 import { priceService } from "../services/price.service";
 import { productSupplierService } from "@/modules/product-supplier/services/productSupplier.service";
-import { Price } from "../types";
-import { formatCurrency, parseCurrency } from "@/utils/money";
+import { formatCurrency } from "@/utils/money";
 import { ApiError } from "@/lib/api";
-import { useCategory } from "@/modules/category/hooks/useCategory";
+import {
+  priceUpdateSchema,
+  type PriceUpdateFormData,
+} from "../schemas/price.schema";
+
+// ─── mapeamento volume → campo do schema ────────────────────────────────────
+
+const VOLUME_FIELDS = [
+  { name: "deposito" as const, label: "Depósito", volume: 0 },
+  { name: "m3_1" as const, label: "1 m³", volume: 1 },
+  { name: "m3_2" as const, label: "2 m³", volume: 2 },
+  { name: "m3_3" as const, label: "3 m³", volume: 3 },
+  { name: "m3_4" as const, label: "4 m³", volume: 4 },
+  { name: "m3_5" as const, label: "5 m³", volume: 5 },
+] satisfies {
+  name: keyof PriceUpdateFormData;
+  label: string;
+  volume: number;
+}[];
+
+// ─── componente ──────────────────────────────────────────────────────────────
 
 export function PriceEdit() {
   usePageTitle("Editar Preços");
@@ -40,6 +74,7 @@ export function PriceEdit() {
   const id = Number(categoryId);
   const navigate = useNavigate();
 
+  // ── dados ──
   const {
     data: prices,
     loading: pricesLoading,
@@ -60,37 +95,50 @@ export function PriceEdit() {
     error: categoryError,
   } = useCategory(id);
 
-  const [priceInputs, setPriceInputs] = useState<Record<number, string>>({});
-  const [savingPrices, setSavingPrices] = useState(false);
+  // ── form ──
+  const form = useForm<PriceUpdateFormData>({
+    resolver: zodResolver(priceUpdateSchema),
+    defaultValues: {
+      deposito: 0,
+      m3_1: 0,
+      m3_2: 0,
+      m3_3: 0,
+      m3_4: 0,
+      m3_5: 0,
+    },
+  });
 
-  const [supplierToDelete, setSupplierToDelete] = useState<number | null>(null);
+  // popula o form quando os preços chegam da API
+  useEffect(() => {
+    if (prices.length === 0) return;
 
-  function getPriceValue(price: Price): string {
-    if (priceInputs[price.id] !== undefined) return priceInputs[price.id];
-    return price.price.toFixed(2).replace(".", ",");
-  }
+    const byVolume = Object.fromEntries(
+      prices.map((p) => [p.m3Volume, p.price]),
+    );
 
-  function handlePriceChange(priceId: number, value: string) {
-    const cleaned = value.replace(/[^0-9.,]/g, "");
-    setPriceInputs((prev) => ({ ...prev, [priceId]: cleaned }));
-  }
+    form.reset({
+      deposito: byVolume[0] ?? 0,
+      m3_1: byVolume[1] ?? 0,
+      m3_2: byVolume[2] ?? 0,
+      m3_3: byVolume[3] ?? 0,
+      m3_4: byVolume[4] ?? 0,
+      m3_5: byVolume[5] ?? 0,
+    });
+  }, [prices, form]);
 
-  async function handleSavePrices() {
-    setSavingPrices(true);
+  // ── submit de preços ──
+  async function onSubmitPrices(data: PriceUpdateFormData) {
+    const updated = prices.map((p) => {
+      const field = VOLUME_FIELDS.find((f) => f.volume === p.m3Volume);
+      return {
+        ...p,
+        price: field ? data[field.name] : p.price,
+      };
+    });
+
     try {
-      const updated: Price[] = prices.map((p) => {
-        const inputValue = priceInputs[p.id];
-        return {
-          ...p,
-          price:
-            inputValue !== undefined
-              ? (parseCurrency(inputValue) ?? p.price)
-              : p.price,
-        };
-      });
       await priceService.updateByCategory(id, updated);
       await refetchPrices();
-      setPriceInputs({});
       toast.success("Preços atualizados com sucesso.");
     } catch (error) {
       if (error instanceof ApiError) {
@@ -98,15 +146,11 @@ export function PriceEdit() {
       } else {
         toast.error("Não foi possível salvar os preços.");
       }
-    } finally {
-      setSavingPrices(false);
     }
   }
 
-  function handleCancelPrices() {
-    setPriceInputs({});
-    navigate("/prices");
-  }
+  // ── exclusão de fornecedor ──
+  const [supplierToDelete, setSupplierToDelete] = useState<number | null>(null);
 
   async function handleDeleteSupplier() {
     if (supplierToDelete === null) return;
@@ -125,14 +169,11 @@ export function PriceEdit() {
     }
   }
 
-  const categoryName = category?.name;
-
-  const volumes = [...new Set(prices.map((p) => p.m3Volume))].sort(
-    (a, b) => a - b,
-  );
-
+  // ── derivados ──
   const loading = pricesLoading || suppliersLoading || categoryLoading;
   const error = pricesError || suppliersError || categoryError;
+
+  // ─── render ───────────────────────────────────────────────────────────────
 
   return (
     <PageContainer title="Editar preços">
@@ -142,75 +183,89 @@ export function PriceEdit() {
         <LoadingState rows={5} />
       ) : (
         <div className="space-y-10">
-          <h2 className="text-xl font-semibold text-center">{categoryName}</h2>
+          {/* cabeçalho */}
+          <h2 className="text-xl font-semibold text-center">
+            {category?.name}
+          </h2>
 
+          {/* ══ seção de preços ══════════════════════════════════════════ */}
           <section className="space-y-4">
             <h3 className="text-lg font-medium">Valores</h3>
 
-            <div className="overflow-x-auto">
-              <table className="text-sm">
-                <thead>
-                  <tr>
-                    {volumes.map((v) => (
-                      <th
-                        key={v}
-                        className="px-3 pb-2 text-center font-medium text-muted-foreground"
-                      >
-                        {v === 0 ? "Depósito" : `${v} m³`}
-                      </th>
-                    ))}
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    {volumes.map((v, idx) => {
-                      const price = prices.find((p) => p.m3Volume === v);
-                      return (
-                        <td key={v} className="px-3 pb-2">
-                          <div className="flex items-center gap-1">
-                            {idx === 0 && (
-                              <span className="text-muted-foreground text-sm">
-                                R$
-                              </span>
-                            )}
-                            <Input
-                              className="text-right"
-                              value={price ? getPriceValue(price) : ""}
-                              onChange={(e) =>
-                                price &&
-                                handlePriceChange(price.id, e.target.value)
-                              }
-                              disabled={!price}
+            <Form {...form}>
+              <form
+                onSubmit={form.handleSubmit(onSubmitPrices)}
+                className="space-y-4"
+              >
+                <div className="overflow-x-auto">
+                  <table className="text-sm">
+                    <thead>
+                      <tr>
+                        {VOLUME_FIELDS.map((f) => (
+                          <th
+                            key={f.name}
+                            className="px-3 pb-2 text-center font-medium text-muted-foreground"
+                          >
+                            {f.label}
+                          </th>
+                        ))}
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        {VOLUME_FIELDS.map((f, idx) => (
+                          <td key={f.name} className="px-3 pb-2 align-top">
+                            <FormField
+                              control={form.control}
+                              name={f.name}
+                              render={({ field }) => (
+                                <FormItem>
+                                  <FormControl>
+                                    <div className="flex items-center gap-1">
+                                      {idx === 0 && (
+                                        <span className="text-muted-foreground text-sm">
+                                          R$
+                                        </span>
+                                      )}
+                                      <Input
+                                        className="text-right"
+                                        {...field}
+                                      />
+                                    </div>
+                                  </FormControl>
+                                  <FormMessage />
+                                </FormItem>
+                              )}
                             />
-                          </div>
-                        </td>
-                      );
-                    })}
-                  </tr>
-                </tbody>
-              </table>
-            </div>
+                          </td>
+                        ))}
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
 
-            <div className="flex justify-end gap-2">
-              <Button
-                variant="outline"
-                onClick={handleCancelPrices}
-                disabled={savingPrices}
-              >
-                Cancelar
-              </Button>
-              <Button
-                onClick={handleSavePrices}
-                disabled={savingPrices}
-                className="bg-slate-500 hover:bg-slate-600 text-white"
-              >
-                {savingPrices ? "Salvando..." : "Salvar"}
-              </Button>
-            </div>
+                <div className="flex justify-end gap-2">
+                  <Button
+                    variant="outline"
+                    type="button"
+                    onClick={() => navigate("/prices")}
+                  >
+                    Cancelar
+                  </Button>
+                  <Button
+                    onClick={() => form.handleSubmit(onSubmitPrices)}
+                    className="bg-slate-500 hover:bg-slate-600 text-white"
+                  >
+                    Salvar
+                  </Button>
+                </div>
+              </form>
+            </Form>
           </section>
 
           <hr />
 
+          {/* ══ seção de fornecedores ════════════════════════════════════ */}
           <section className="space-y-4">
             <div className="flex items-center justify-between">
               <h3 className="text-lg font-medium">Fornecedores</h3>
@@ -251,7 +306,7 @@ export function PriceEdit() {
                 {productSuppliers.length === 0 ? (
                   <TableRow>
                     <TableCell
-                      colSpan={8}
+                      colSpan={9}
                       className="text-center text-muted-foreground py-8"
                     >
                       Nenhum fornecedor cadastrado para essa categoria.
@@ -271,9 +326,8 @@ export function PriceEdit() {
                     return (
                       <TableRow key={ps.id}>
                         <TableCell>
-                          <span className="font-medium order-1 sm:order-1 sm:col-span-1 flex items-center gap-2">
+                          <span className="font-medium flex items-center gap-2">
                             {ps.supplierName}
-
                             {ps.observations && (
                               <span className="text-xs rounded bg-muted px-2 py-0.5 text-muted-foreground">
                                 {ps.observations}
@@ -354,6 +408,7 @@ export function PriceEdit() {
         </div>
       )}
 
+      {/* dialog de confirmação */}
       <ConfirmDialog
         open={supplierToDelete !== null}
         onOpenChange={(open) => {
