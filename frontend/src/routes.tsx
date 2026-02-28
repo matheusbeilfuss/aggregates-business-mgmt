@@ -13,6 +13,7 @@ import { AdminRoute } from "./modules/auth/components/AdminRoute";
 import { UserAdd } from "./modules/user/pages/UserAdd";
 import { Providers } from "./components/layout/Providers";
 import { Price } from "./modules/price/pages/Price";
+import { PriceEdit } from "./modules/price/pages/PriceEdit";
 
 export const router = createBrowserRouter([
   {
@@ -30,6 +31,7 @@ export const router = createBrowserRouter([
           { path: "stocks/:id", element: <StockEdit /> },
           { path: "stocks/:id/replenish", element: <StockReplenish /> },
           { path: "prices", element: <Price /> },
+          { path: "prices/categories/:categoryId", element: <PriceEdit /> },
           { path: "user", element: <User /> },
           {
             element: <AdminRoute />,

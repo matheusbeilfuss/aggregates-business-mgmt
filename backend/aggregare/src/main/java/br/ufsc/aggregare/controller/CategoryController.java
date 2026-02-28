@@ -18,8 +18,10 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import br.ufsc.aggregare.model.Category;
 import br.ufsc.aggregare.model.dto.PriceDTO;
+import br.ufsc.aggregare.model.dto.ProductSupplierDTO;
 import br.ufsc.aggregare.service.CategoryService;
 import br.ufsc.aggregare.service.PriceService;
+import br.ufsc.aggregare.service.ProductSupplierService;
 
 import jakarta.validation.Valid;
 
@@ -30,11 +32,13 @@ public class CategoryController {
 
 	private final CategoryService service;
 	private final PriceService priceService;
+	private final ProductSupplierService productSupplierService;
 
 	@Autowired
-	public CategoryController(CategoryService service, PriceService priceService) {
+	public CategoryController(CategoryService service, PriceService priceService, ProductSupplierService productSupplierService) {
 		this.service = service;
 		this.priceService = priceService;
+		this.productSupplierService = productSupplierService;
 	}
 
 	@PostMapping
@@ -78,5 +82,11 @@ public class CategoryController {
 	public ResponseEntity<List<PriceDTO>> updatePricesForCategory(@PathVariable Long id, @RequestBody @Valid List<@Valid PriceDTO> prices) {
 		List<PriceDTO> updatedPrices = priceService.updatePricesForCategory(id, prices);
 		return ResponseEntity.ok().body(updatedPrices);
+	}
+
+	@GetMapping(value = "/{id}/product-suppliers")
+	public ResponseEntity<List<ProductSupplierDTO>> findProductSuppliersByCategoryId(@PathVariable Long id) {
+		List<ProductSupplierDTO> productSuppliers = productSupplierService.findByProductCategoryId(id);
+		return ResponseEntity.ok().body(productSuppliers);
 	}
 }

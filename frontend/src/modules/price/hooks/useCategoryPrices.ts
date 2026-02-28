@@ -9,9 +9,9 @@ export function useCategoryPrices(categoryId: number | null) {
     [categoryId],
   );
 
-  const { data, loading, error } = useApi<Price[]>(fetcher, {
+  const { data, loading, error, refetch } = useApi<Price[]>(fetcher, {
     enabled: !!categoryId,
   });
 
-  return { data: data ?? [], loading, error };
+  return { data: data ?? [], loading, error, refetch };
 }

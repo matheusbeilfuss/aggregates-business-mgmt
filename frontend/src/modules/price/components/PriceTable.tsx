@@ -51,47 +51,49 @@ export function PriceTable({ prices }: PriceTableProps) {
       </TableHeader>
 
       <TableBody>
-        {Object.values(grouped).map(({ name, prices: categoryPrices }) => (
-          <TableRow key={name}>
-            <TableCell>{name}</TableCell>
-            <TableCell>
-              {formatCurrency(categoryPrices[0]?.price ?? 0)}
-            </TableCell>
-            {volumes.map((v) => (
-              <TableCell key={v}>
-                {categoryPrices[v]
-                  ? formatCurrency(categoryPrices[v].price)
-                  : "-"}
+        {Object.entries(grouped).map(
+          ([categoryId, { name, prices: categoryPrices }]) => (
+            <TableRow key={categoryId}>
+              <TableCell>{name}</TableCell>
+              <TableCell>
+                {formatCurrency(categoryPrices[0]?.price ?? 0)}
               </TableCell>
-            ))}
-            <TableCell>
-              <div className="flex justify-end">
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <Button
-                      variant="ghost"
-                      className="h-8 w-8 p-0 cursor-pointer"
-                    >
-                      <MoreHorizontal className="h-4 w-4" />
-                    </Button>
-                  </DropdownMenuTrigger>
+              {volumes.map((v) => (
+                <TableCell key={v}>
+                  {categoryPrices[v]
+                    ? formatCurrency(categoryPrices[v].price)
+                    : "-"}
+                </TableCell>
+              ))}
+              <TableCell>
+                <div className="flex justify-end">
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button
+                        variant="ghost"
+                        className="h-8 w-8 p-0 cursor-pointer"
+                      >
+                        <MoreHorizontal className="h-4 w-4" />
+                      </Button>
+                    </DropdownMenuTrigger>
 
-                  <DropdownMenuContent align="end">
-                    <DropdownMenuItem
-                      className="cursor-pointer"
-                      onClick={() =>
-                        navigate(`/categories/${prices[0]?.category.id}/prices`)
-                      }
-                    >
-                      <Pencil className="mr-2 h-4 w-4" />
-                      Editar
-                    </DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
-              </div>
-            </TableCell>
-          </TableRow>
-        ))}
+                    <DropdownMenuContent align="end">
+                      <DropdownMenuItem
+                        className="cursor-pointer"
+                        onClick={() =>
+                          navigate(`/prices/categories/${categoryId}`)
+                        }
+                      >
+                        <Pencil className="mr-2 h-4 w-4" />
+                        Editar
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                </div>
+              </TableCell>
+            </TableRow>
+          ),
+        )}
       </TableBody>
     </Table>
   );

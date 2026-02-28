@@ -48,6 +48,7 @@ public class ProductSupplierService {
 		dto.setId(productSupplier.getId());
 		dto.setSupplierId(productSupplier.getSupplier().getId());
 		dto.setSupplierName(productSupplier.getSupplier().getName());
+		dto.setProductName(productSupplier.getProduct().getName());
 		dto.setDensity(productSupplier.getDensity());
 		dto.setTonCost(productSupplier.getTonCost());
 		dto.setCostPerCubicMeter(productSupplier.getCostPerCubicMeter());
@@ -107,6 +108,12 @@ public class ProductSupplierService {
 			throw new ResourceNotFoundException(productId);
 		}
 		List<ProductSupplier> productSuppliers = repository.findByProductId(productId);
+		return productSuppliers.stream().map(this::toDTO).toList();
+	}
+
+	@Transactional(readOnly = true)
+	public List<ProductSupplierDTO> findByProductCategoryId(Long categoryId) {
+		List<ProductSupplier> productSuppliers = repository.findByProductCategoryId(categoryId);
 		return productSuppliers.stream().map(this::toDTO).toList();
 	}
 }

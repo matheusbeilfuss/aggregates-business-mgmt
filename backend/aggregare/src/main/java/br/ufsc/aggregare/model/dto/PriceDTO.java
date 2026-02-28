@@ -2,13 +2,14 @@ package br.ufsc.aggregare.model.dto;
 
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.PositiveOrZero;
 
 public class PriceDTO {
 
 	private Long id;
 
 	@NotNull(message = "O volume em m³ é obrigatório.")
-	@Positive(message = "O volume em m³ deve ser maior que zero.")
+	@PositiveOrZero(message = "O volume em m³ deve ser maior ou igual a zero.")
 	private Integer m3Volume;
 
 	@NotNull(message = "O preço é obrigatório.")

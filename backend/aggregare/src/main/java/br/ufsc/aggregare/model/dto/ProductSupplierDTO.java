@@ -4,6 +4,7 @@ public class ProductSupplierDTO {
 	private Long id;
 	private Long supplierId;
 	private String supplierName;
+	private String productName;
 	private Double tonCost;
 	private Double costPerCubicMeter;
 	private Double costFor5CubicMeters;
@@ -31,6 +32,14 @@ public class ProductSupplierDTO {
 
 	public void setSupplierName(String supplierName) {
 		this.supplierName = supplierName;
+	}
+
+	public String getProductName() {
+		return productName;
+	}
+
+	public void setProductName(String productName) {
+		this.productName = productName;
 	}
 
 	public Double getTonCost() {

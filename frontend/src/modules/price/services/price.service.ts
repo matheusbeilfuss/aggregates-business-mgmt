@@ -6,4 +6,7 @@ export const priceService = {
 
   getByCategory: (categoryId: number) =>
     api.get<Price[]>(`/categories/${categoryId}/prices`),
+
+  updateByCategory: (categoryId: number, data: Price[]) =>
+    api.put(`/categories/${categoryId}/prices`, data),
 };

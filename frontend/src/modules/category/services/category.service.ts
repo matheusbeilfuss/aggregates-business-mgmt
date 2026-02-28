@@ -5,6 +5,8 @@ import { Category } from "../types";
 export const categoryService = {
   getAll: () => api.get<Category[]>("/categories"),
 
+  getById: (id: number) => api.get<Category>(`/categories/${id}`),
+
   getPricesById: (categoryId: number) =>
     api.get<Price[]>(`/categories/${categoryId}/prices`),
 };

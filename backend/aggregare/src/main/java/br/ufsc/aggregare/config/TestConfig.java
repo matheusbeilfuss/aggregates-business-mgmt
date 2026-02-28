@@ -137,7 +137,11 @@ public class TestConfig implements CommandLineRunner {
 
 		Price price1 = new Price(null, 0, 83.00, category1);
 		Price price2 = new Price(null, 1, 140.00, category1);
-		priceRepository.saveAll(Arrays.asList(price1, price2));
+		Price price3 = new Price(null, 2, 155.00, category1);
+		Price price4 = new Price(null, 3, 250.00, category1);
+		Price price5 = new Price(null, 4, 275.00, category1);
+		Price price6 = new Price(null, 5, 300.00, category1);
+		priceRepository.saveAll(Arrays.asList(price1, price2, price3, price4, price5, price6));
 
 		Client client1 = new Client(null, "Ana Paula", "12345678900", "ana@gmail.com");
 		Client client2 = new Client(null, "Bruno Costa", "98765432100", "bruno@gmail.com");
