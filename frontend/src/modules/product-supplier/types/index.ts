@@ -7,6 +7,7 @@ export interface ProductSupplier {
   costPerCubicMeter: number;
   costFor5CubicMeters?: number;
   density: number;
+  observations?: string;
 }
 
 // Payloads para API
@@ -18,6 +19,7 @@ export interface ProductSupplierInput {
   tonCost: number;
   costPerCubicMeter: number;
   costFor5CubicMeters: number;
+  observations?: string;
 }
 
 export interface ProductSupplierUpdate {
@@ -25,4 +27,5 @@ export interface ProductSupplierUpdate {
   tonCost: number;
   costPerCubicMeter: number;
   costFor5CubicMeters: number;
+  observations?: string;
 }

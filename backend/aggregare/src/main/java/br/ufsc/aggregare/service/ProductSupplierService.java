@@ -53,6 +53,7 @@ public class ProductSupplierService {
 		dto.setTonCost(productSupplier.getTonCost());
 		dto.setCostPerCubicMeter(productSupplier.getCostPerCubicMeter());
 		dto.setCostFor5CubicMeters(productSupplier.getCostFor5CubicMeters());
+		dto.setObservations(productSupplier.getObservations());
 		return dto;
 	}
 
@@ -62,7 +63,7 @@ public class ProductSupplierService {
 		Supplier supplier = supplierRepository.findById(dto.getSupplierId())
 				.orElseThrow(() -> new ResourceNotFoundException(dto.getSupplierId()));
 
-		return new ProductSupplier(null, product, supplier, dto.getTonCost(), dto.getCostPerCubicMeter(), dto.getCostFor5CubicMeters(), dto.getDensity());
+		return new ProductSupplier(null, product, supplier, dto.getTonCost(), dto.getCostPerCubicMeter(), dto.getCostFor5CubicMeters(), dto.getDensity(), dto.getObservations());
 	}
 
 	@Transactional
@@ -82,6 +83,7 @@ public class ProductSupplierService {
 		productSupplier.setCostPerCubicMeter(dto.getCostPerCubicMeter());
 		productSupplier.setCostFor5CubicMeters(dto.getCostFor5CubicMeters());
 		productSupplier.setDensity(dto.getDensity());
+		productSupplier.setObservations(dto.getObservations());
 	}
 
 	public void delete(Long id) {

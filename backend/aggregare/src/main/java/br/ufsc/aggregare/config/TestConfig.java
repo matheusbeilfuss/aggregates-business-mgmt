@@ -127,9 +127,9 @@ public class TestConfig implements CommandLineRunner {
 		Supplier supplier2 = new Supplier(null, "Areias Rio Claro");
 		supplierRepository.saveAll(Arrays.asList(supplier1, supplier2));
 
-		ProductSupplier productSupplier1 = new ProductSupplier(null, product1, supplier1, 53.00, 70.00, 350.00, 1.45);
-		ProductSupplier productSupplier2 = new ProductSupplier(null, product2, supplier2, 55.00, 73.00, 365.00, 1.5);
-		ProductSupplier productSupplier3 = new ProductSupplier(null, product2, supplier1, 54.00, 71.00, 355.00, 1.48);
+		ProductSupplier productSupplier1 = new ProductSupplier(null, product1, supplier1, 53.00, 70.00, 350.00, 1.45, null);
+		ProductSupplier productSupplier2 = new ProductSupplier(null, product2, supplier2, 55.00, 73.00, 365.00, 1.5, "Pegar lá");
+		ProductSupplier productSupplier3 = new ProductSupplier(null, product2, supplier1, 54.00, 71.00, 355.00, 1.48, "Depósito");
 		productSupplierRepository.saveAll(Arrays.asList(productSupplier1, productSupplier2, productSupplier3));
 
 		Stock stock1 = new Stock(null, 10000.0, 15.0, 1.5, product1);

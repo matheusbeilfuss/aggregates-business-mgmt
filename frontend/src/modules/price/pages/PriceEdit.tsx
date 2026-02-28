@@ -105,6 +105,7 @@ export function PriceEdit() {
 
   function handleCancelPrices() {
     setPriceInputs({});
+    navigate("/prices");
   }
 
   async function handleDeleteSupplier() {
@@ -198,7 +199,11 @@ export function PriceEdit() {
               >
                 Cancelar
               </Button>
-              <Button onClick={handleSavePrices} disabled={savingPrices}>
+              <Button
+                onClick={handleSavePrices}
+                disabled={savingPrices}
+                className="bg-slate-500 hover:bg-slate-600 text-white"
+              >
                 {savingPrices ? "Salvando..." : "Salvar"}
               </Button>
             </div>
@@ -210,6 +215,7 @@ export function PriceEdit() {
             <div className="flex items-center justify-between">
               <h3 className="text-lg font-medium">Fornecedores</h3>
               <Button
+                className="bg-slate-500 hover:bg-slate-600 text-white"
                 onClick={() =>
                   navigate(`/prices/categories/${id}/suppliers/add`)
                 }
@@ -264,7 +270,17 @@ export function PriceEdit() {
 
                     return (
                       <TableRow key={ps.id}>
-                        <TableCell>{ps.supplierName}</TableCell>
+                        <TableCell>
+                          <span className="font-medium order-1 sm:order-1 sm:col-span-1 flex items-center gap-2">
+                            {ps.supplierName}
+
+                            {ps.observations && (
+                              <span className="text-xs rounded bg-muted px-2 py-0.5 text-muted-foreground">
+                                {ps.observations}
+                              </span>
+                            )}
+                          </span>
+                        </TableCell>
                         <TableCell>{ps.productName}</TableCell>
                         <TableCell>
                           {ps.density.toLocaleString("pt-BR")}
@@ -298,13 +314,17 @@ export function PriceEdit() {
                         </TableCell>
                         <TableCell>
                           <DropdownMenu>
-                            <DropdownMenuTrigger asChild>
+                            <DropdownMenuTrigger
+                              asChild
+                              className="cursor-pointer"
+                            >
                               <Button variant="ghost" size="icon">
                                 <MoreHorizontal className="h-4 w-4" />
                               </Button>
                             </DropdownMenuTrigger>
                             <DropdownMenuContent align="end">
                               <DropdownMenuItem
+                                className="cursor-pointer"
                                 onClick={() =>
                                   navigate(
                                     `/prices/categories/${id}/suppliers/${ps.id}/edit`,
@@ -315,10 +335,10 @@ export function PriceEdit() {
                                 Editar
                               </DropdownMenuItem>
                               <DropdownMenuItem
-                                className="text-red-500 focus:text-red-500"
+                                className="text-red-500 focus:text-red-500 cursor-pointer"
                                 onClick={() => setSupplierToDelete(ps.id)}
                               >
-                                <X className="mr-2 h-4 w-4" />
+                                <X className="mr-2 h-4 w-4 text-red-500" />
                                 Excluir
                               </DropdownMenuItem>
                             </DropdownMenuContent>

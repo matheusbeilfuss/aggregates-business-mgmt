@@ -9,6 +9,7 @@ public class ProductSupplierDTO {
 	private Double costPerCubicMeter;
 	private Double costFor5CubicMeters;
 	private Double density;
+	private String observations;
 
 	public Long getId() {
 		return id;
@@ -72,5 +73,13 @@ public class ProductSupplierDTO {
 
 	public void setDensity(Double density) {
 		this.density = density;
+	}
+
+	public String getObservations() {
+		return observations;
+	}
+
+	public void setObservations(String observations) {
+		this.observations = observations;
 	}
 }

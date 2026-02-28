@@ -16,6 +16,8 @@ public class ProductSupplierUpdateDTO {
 	@Positive(message = "A densidade deve ser maior que zero.")
 	private Double density;
 
+	private String observations;
+
 	public Double getTonCost() {
 		return tonCost;
 	}
@@ -46,5 +48,13 @@ public class ProductSupplierUpdateDTO {
 
 	public void setDensity(Double density) {
 		this.density = density;
+	}
+
+	public String getObservations() {
+		return observations;
+	}
+
+	public void setObservations(String observations) {
+		this.observations = observations;
 	}
 }
