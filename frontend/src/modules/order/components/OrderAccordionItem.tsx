@@ -29,9 +29,18 @@ export function OrderAccordionItem({
 
   const isMaterial = order.type === "MATERIAL";
 
-  const materialLabel = isMaterial
-    ? `${order.m3Quantity ?? 0} m³ de ${order.product.name}`
-    : order.service;
+  const materialLabel = isMaterial ? (
+    <span className="flex items-center gap-2">
+      {`${order.m3Quantity ?? 0} m³ de ${order.product.name}`}
+      {order.product.category?.name && (
+        <span className="text-xs rounded bg-muted px-2 py-0.5 text-muted-foreground">
+          {order.product.category.name}
+        </span>
+      )}
+    </span>
+  ) : (
+    order.service
+  );
 
   return (
     <AccordionItem value={String(order.id)}>

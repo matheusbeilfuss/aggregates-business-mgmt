@@ -128,20 +128,32 @@ public class TestConfig implements CommandLineRunner {
 		supplierRepository.saveAll(Arrays.asList(supplier1, supplier2));
 
 		ProductSupplier productSupplier1 = new ProductSupplier(null, product1, supplier1, 53.00, 70.00, 350.00, 1.45, null);
-		ProductSupplier productSupplier2 = new ProductSupplier(null, product2, supplier2, 55.00, 73.00, 365.00, 1.5, "Pegar lá");
+		ProductSupplier productSupplier2 = new ProductSupplier(null, product2, supplier2, 55.00, 73.00, 365.00, 1.50, "Pegar lá");
 		ProductSupplier productSupplier3 = new ProductSupplier(null, product2, supplier1, 54.00, 71.00, 355.00, 1.48, "Depósito");
 		productSupplierRepository.saveAll(Arrays.asList(productSupplier1, productSupplier2, productSupplier3));
 
-		Stock stock1 = new Stock(null, 10000.0, 15.0, 1.5, product1);
-		stockRepository.save(stock1);
+		Stock stock1 = new Stock(null, 43.5, 30.0, 1.45, product1);
+		Stock stock2 = new Stock(null, 30.0, 20.0, 1.50, product2);
+		Stock stock3 = new Stock(null, 72.5, 50.0, 1.45, product3);
+		stockRepository.saveAll(Arrays.asList(stock1, stock2, stock3));
 
-		Price price1 = new Price(null, 0, 83.00, category1);
-		Price price2 = new Price(null, 1, 140.00, category1);
-		Price price3 = new Price(null, 2, 155.00, category1);
-		Price price4 = new Price(null, 3, 250.00, category1);
-		Price price5 = new Price(null, 4, 275.00, category1);
-		Price price6 = new Price(null, 5, 300.00, category1);
-		priceRepository.saveAll(Arrays.asList(price1, price2, price3, price4, price5, price6));
+		Price price1  = new Price(null, 0, 83.00,  category1);
+		Price price2  = new Price(null, 1, 140.00, category1);
+		Price price3  = new Price(null, 2, 155.00, category1);
+		Price price4  = new Price(null, 3, 250.00, category1);
+		Price price5  = new Price(null, 4, 275.00, category1);
+		Price price6  = new Price(null, 5, 300.00, category1);
+
+		Price price7  = new Price(null, 0, 80.00,  category2);
+		Price price8  = new Price(null, 1, 135.00, category2);
+		Price price9  = new Price(null, 2, 150.00, category2);
+		Price price10 = new Price(null, 3, 240.00, category2);
+		Price price11 = new Price(null, 4, 265.00, category2);
+		Price price12 = new Price(null, 5, 290.00, category2);
+
+		priceRepository.saveAll(Arrays.asList(
+				price1, price2, price3, price4, price5, price6,
+				price7, price8, price9, price10, price11, price12));
 
 		Client client1 = new Client(null, "Ana Paula", "12345678900", "ana@gmail.com");
 		Client client2 = new Client(null, "Bruno Costa", "98765432100", "bruno@gmail.com");
@@ -177,7 +189,6 @@ public class TestConfig implements CommandLineRunner {
 
 		LocalDate expenseDate1 = LocalDate.of(2025, 12, 19);
 		LocalDate expenseDueDate1 = LocalDate.of(2026, 1, 19);
-
 		LocalDate expenseDate2 = LocalDate.of(2025, 11, 28);
 		LocalDate expenseDueDate2 = LocalDate.of(2025, 12, 28);
 
