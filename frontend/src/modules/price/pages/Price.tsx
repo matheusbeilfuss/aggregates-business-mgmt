@@ -11,6 +11,8 @@ import { PriceTable } from "../components/PriceTable";
 import { ApiError } from "@/lib/api";
 import { categoryService } from "@/modules/category/services/category.service";
 import { RenameCategoryDialog } from "../components/RenameCategoryDialog";
+import { Button } from "@/components/ui/button";
+import { Printer } from "lucide-react";
 
 export function Price() {
   usePageTitle("Preços");
@@ -87,6 +89,16 @@ export function Price() {
           onDeleteCategory={openDeleteDialog}
         />
       )}
+
+      <div className="mt-auto flex justify-end py-12">
+        <Button
+          variant="outline"
+          onClick={() => window.open("/prices/print", "_blank")}
+        >
+          <Printer className="mr-2 h-4 w-4" />
+          Imprimir
+        </Button>
+      </div>
 
       <RenameCategoryDialog
         open={!!categoryToRename}

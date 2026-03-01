@@ -16,12 +16,14 @@ import { Price } from "./modules/price/pages/Price";
 import { PriceEdit } from "./modules/price/pages/PriceEdit";
 import { SupplierAdd } from "./modules/product-supplier/pages/SupplierAdd";
 import { SupplierEdit } from "./modules/product-supplier/pages/SupplierEdit";
+import { PricePrint } from "./modules/price/pages/PricePrint";
 
 export const router = createBrowserRouter([
   {
     element: <Providers />,
     children: [
       { path: "/login", element: <Login /> },
+      { path: "/prices/print", element: <PricePrint /> },
       {
         element: <PrivateRoute />,
         children: [
