@@ -6,7 +6,7 @@ import { useApi } from "@/hooks/useApi";
 export function usePrices() {
   const fetcher = useCallback(() => priceService.getAll(), []);
 
-  const { data, loading, error } = useApi<PriceCategory[]>(fetcher);
+  const { data, loading, error, refetch } = useApi<PriceCategory[]>(fetcher);
 
-  return { data: data ?? [], loading, error };
+  return { data: data ?? [], loading, error, refetch };
 }

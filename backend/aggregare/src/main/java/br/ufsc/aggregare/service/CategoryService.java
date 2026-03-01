@@ -4,12 +4,13 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import br.ufsc.aggregare.model.Category;
 import br.ufsc.aggregare.repository.CategoryRepository;
+import br.ufsc.aggregare.repository.OrderRepository;
+import br.ufsc.aggregare.repository.ProductSupplierRepository;
 import br.ufsc.aggregare.service.exception.DatabaseException;
 import br.ufsc.aggregare.service.exception.ResourceNotFoundException;
 
@@ -20,11 +21,16 @@ public class CategoryService {
 
 	private final CategoryRepository repository;
 	private final PriceService priceService;
+	private final ProductSupplierRepository productSupplierRepository;
+	private final OrderRepository orderRepository;
 
 	@Autowired
-	public CategoryService(CategoryRepository repository, PriceService priceService) {
+	public CategoryService(CategoryRepository repository, PriceService priceService, ProductSupplierRepository productSupplierRepository, OrderRepository orderRepository) {
 		this.repository = repository;
 		this.priceService = priceService;
+
+		this.productSupplierRepository = productSupplierRepository;
+		this.orderRepository = orderRepository;
 	}
 
 	public Category insert(Category category) {
@@ -33,17 +39,22 @@ public class CategoryService {
 		return category;
 	}
 
+	@Transactional
 	public void delete(Long id) {
-		try {
-			if (!repository.existsById(id)){
-				throw new ResourceNotFoundException(id);
-			}
-			repository.deleteById(id);
-		} catch (EmptyResultDataAccessException e) {
+		if (!repository.existsById(id)) {
 			throw new ResourceNotFoundException(id);
-		} catch (DataIntegrityViolationException e) {
-			throw new DatabaseException(e.getMessage());
 		}
+
+		if (productSupplierRepository.existsByProductCategoryId(id)) {
+			throw new DatabaseException("Não é possível excluir uma categoria que possui fornecedores cadastrados.");
+		}
+
+		if (orderRepository.existsByProductCategoryId(id)) {
+			throw new DatabaseException("Não é possível excluir uma categoria que possui pedidos associados.");
+		}
+
+		priceService.deleteAllByCategoryId(id);
+		repository.deleteById(id);
 	}
 
 	public Category update(Long id, Category newCategory) {

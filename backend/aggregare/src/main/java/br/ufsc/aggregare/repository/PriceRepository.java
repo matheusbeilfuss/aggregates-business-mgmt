@@ -10,4 +10,6 @@ public interface PriceRepository extends JpaRepository<Price, Long> {
 
 	List<Price> findByCategoryId(Long categoryId);
 	void deleteByCategoryId(Long categoryId);
+
+	void deleteAllByCategoryId(Long categoryId);
 }

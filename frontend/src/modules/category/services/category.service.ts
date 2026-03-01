@@ -9,4 +9,9 @@ export const categoryService = {
 
   getPricesById: (categoryId: number) =>
     api.get<Price[]>(`/categories/${categoryId}/prices`),
+
+  update: (id: number, data: { name: string }) =>
+    api.put<Category>(`/categories/${id}`, data),
+
+  delete: (id: number) => api.delete(`/categories/${id}`),
 };

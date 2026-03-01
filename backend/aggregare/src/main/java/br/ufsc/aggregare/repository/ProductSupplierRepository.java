@@ -13,4 +13,6 @@ public interface ProductSupplierRepository extends JpaRepository<ProductSupplier
 	List<ProductSupplier> findByProductId(Long productId);
 
 	List<ProductSupplier> findByProductCategoryId(Long supplierId);
+
+	boolean existsByProductCategoryId(Long categoryId);
 }
