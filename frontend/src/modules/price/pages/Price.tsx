@@ -92,7 +92,7 @@ export function Price() {
 
       <div className="mt-auto flex justify-end py-12">
         <Button
-          variant="outline"
+          className="bg-slate-500 hover:bg-slate-600 text-white px-6 py-6 text-base cursor-pointer"
           onClick={() => window.open("/prices/print", "_blank")}
         >
           <Printer className="mr-2 h-4 w-4" />
