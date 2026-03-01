@@ -10,15 +10,7 @@ import {
 import { PriceTable } from "../components/PriceTable";
 import { ApiError } from "@/lib/api";
 import { categoryService } from "@/modules/category/services/category.service";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
+import { RenameCategoryDialog } from "../components/RenameCategoryDialog";
 
 export function Price() {
   usePageTitle("Preços");
@@ -96,48 +88,17 @@ export function Price() {
         />
       )}
 
-      <Dialog
+      <RenameCategoryDialog
         open={!!categoryToRename}
-        onOpenChange={(open) => {
-          if (!open) {
-            setCategoryToRename(null);
-            setNewName("");
-          }
+        currentName={categoryToRename?.name ?? ""}
+        newName={newName}
+        onNewNameChange={setNewName}
+        onConfirm={handleRenameCategory}
+        onCancel={() => {
+          setCategoryToRename(null);
+          setNewName("");
         }}
-      >
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Renomear categoria</DialogTitle>
-            <DialogDescription>
-              O novo nome será refletido em todos os preços e fornecedores
-              vinculados a <strong>{categoryToRename?.name}</strong>.
-            </DialogDescription>
-          </DialogHeader>
-          <Input
-            value={newName}
-            onChange={(e) => setNewName(e.target.value)}
-            onKeyDown={(e) => e.key === "Enter" && handleRenameCategory()}
-          />
-          <div className="flex justify-end gap-2 mt-4">
-            <Button
-              variant="outline"
-              onClick={() => {
-                setCategoryToRename(null);
-                setNewName("");
-              }}
-            >
-              Cancelar
-            </Button>
-            <Button
-              className="bg-slate-500 hover:bg-slate-600 text-white"
-              onClick={handleRenameCategory}
-              disabled={!newName.trim()}
-            >
-              Salvar
-            </Button>
-          </div>
-        </DialogContent>
-      </Dialog>
+      />
 
       <ConfirmDialog
         open={!!categoryToDelete}

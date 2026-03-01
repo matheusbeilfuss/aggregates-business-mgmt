@@ -31,11 +31,6 @@ export function SupplierEdit() {
 
   const products = (allProducts ?? []).filter((p) => p.category?.id === catId);
 
-  console.log("catId:", catId);
-  console.log("allProducts:", allProducts);
-  console.log("products filtrados:", products);
-  console.log("productSupplier.productId:", productSupplier?.productId);
-
   useEffect(() => {
     if (error) {
       toast.error("Não foi possível carregar o fornecedor.");

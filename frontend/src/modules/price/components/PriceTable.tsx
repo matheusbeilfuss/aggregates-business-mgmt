@@ -8,15 +8,7 @@ import {
 } from "@/components/ui/table";
 import { PriceCategory } from "../types";
 import { formatCurrency } from "@/utils/money";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { Button } from "@/components/ui/button";
-import { MoreHorizontal, Pencil, Tag, X } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { CategoryActions } from "./CategoryActions";
 
 interface PriceTableProps {
   prices: PriceCategory[];
@@ -29,8 +21,6 @@ export function PriceTable({
   onRenameCategory,
   onDeleteCategory,
 }: PriceTableProps) {
-  const navigate = useNavigate();
-
   const grouped = prices.reduce<
     Record<number, { name: string; prices: Record<number, PriceCategory> }>
   >((acc, price) => {
@@ -74,48 +64,11 @@ export function PriceTable({
               ))}
               <TableCell>
                 <div className="flex justify-end">
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <Button
-                        variant="ghost"
-                        className="h-8 w-8 p-0 cursor-pointer"
-                      >
-                        <MoreHorizontal className="h-4 w-4" />
-                      </Button>
-                    </DropdownMenuTrigger>
-
-                    <DropdownMenuContent align="end">
-                      <DropdownMenuItem
-                        className="cursor-pointer"
-                        onClick={() =>
-                          navigate(`/prices/categories/${categoryId}`)
-                        }
-                      >
-                        <Pencil className="mr-2 h-4 w-4" />
-                        Editar preços
-                      </DropdownMenuItem>
-
-                      <DropdownMenuItem
-                        className="cursor-pointer"
-                        onClick={() =>
-                          onRenameCategory(Number(categoryId), name)
-                        }
-                      >
-                        <Tag className="mr-2 h-4 w-4" />
-                        Renomear
-                      </DropdownMenuItem>
-
-                      <DropdownMenuItem
-                        className="text-red-500 focus:text-red-500 cursor-pointer"
-                        onClick={() =>
-                          onDeleteCategory(Number(categoryId), name)
-                        }
-                      >
-                        <X className="mr-2 h-4 w-4 text-red-500" />
-                        Excluir
-                      </DropdownMenuItem>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
+                  <CategoryActions
+                    categoryId={categoryId}
+                    onRename={() => onRenameCategory(Number(categoryId), name)}
+                    onDelete={() => onDeleteCategory(Number(categoryId), name)}
+                  />
                 </div>
               </TableCell>
             </TableRow>
