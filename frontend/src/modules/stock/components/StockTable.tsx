@@ -29,18 +29,18 @@ interface StockTableProps {
 export function StockTable({ stocks, onDeleteProduct }: StockTableProps) {
   const navigate = useNavigate();
 
-  const grouped = stocks.reduce<{ categoryName: string; items: StockItem[] }[]>(
-    (acc, stock) => {
-      const categoryName = stock.product.category?.name ?? "Sem categoria";
-      const existing = acc.find((g) => g.categoryName === categoryName);
-      if (existing) {
-        existing.items.push(stock);
-      } else {
-        acc.push({ categoryName, items: [stock] });
-      }
-      return acc;
-    },
-    [],
+  const grouped = Object.values(
+    stocks.reduce<Record<string, { categoryName: string; items: StockItem[] }>>(
+      (acc, stock) => {
+        const categoryName = stock.product.category?.name ?? "Sem categoria";
+        if (!acc[categoryName]) {
+          acc[categoryName] = { categoryName, items: [] };
+        }
+        acc[categoryName].items.push(stock);
+        return acc;
+      },
+      {},
+    ),
   );
 
   if (stocks.length === 0) {
