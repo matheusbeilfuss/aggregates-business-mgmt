@@ -60,7 +60,7 @@ export function SupplierAdd() {
 
       if (!supplierId && data.supplierName) {
         const newSupplier = await supplierService.insert({
-          name: data.supplierName,
+          name: data.supplierName.trim(),
         });
         supplierId = newSupplier.id;
         toast.success(
