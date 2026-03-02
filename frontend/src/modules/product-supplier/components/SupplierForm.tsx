@@ -33,6 +33,7 @@ interface AddProps extends BaseProps {
   mode: "add";
   control: AddControl;
   setValue: UseFormSetValue<SupplierAddFormData>;
+  supplierId: number | undefined;
   suppliers: Supplier[];
   products: Product[];
 }
@@ -61,9 +62,7 @@ export function SupplierForm(props: SupplierFormProps) {
                 <FormControl>
                   <SupplierCombobox
                     value={field.value ?? ""}
-                    supplierId={
-                      (props.control as AddControl)._formValues?.supplierId
-                    }
+                    supplierId={props.supplierId}
                     suppliers={props.suppliers}
                     onChange={(value) => {
                       field.onChange(value);

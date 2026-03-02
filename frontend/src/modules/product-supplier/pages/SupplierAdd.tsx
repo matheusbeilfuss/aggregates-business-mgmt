@@ -113,6 +113,7 @@ export function SupplierAdd() {
             mode="add"
             control={form.control}
             setValue={form.setValue}
+            supplierId={form.watch("supplierId")}
             suppliers={suppliers}
             products={products}
           />
