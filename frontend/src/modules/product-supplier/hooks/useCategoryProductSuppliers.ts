@@ -3,13 +3,15 @@ import { productSupplierService } from "../services/productSupplier.service";
 import { ProductSupplier } from "../types";
 import { useApi } from "@/hooks/useApi";
 
-export function useCategoryProductSuppliers(categoryId: number) {
+export function useCategoryProductSuppliers(categoryId: number | null) {
   const fetcher = useCallback(
-    () => productSupplierService.getByCategoryId(categoryId),
+    () => productSupplierService.getByCategoryId(categoryId!),
     [categoryId],
   );
 
-  const { data, loading, error, refetch } = useApi<ProductSupplier[]>(fetcher);
+  const { data, loading, error, refetch } = useApi<ProductSupplier[]>(fetcher, {
+    enabled: !!categoryId,
+  });
 
   return { data: data ?? [], loading, error, refetch };
 }
