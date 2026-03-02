@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { usePrices } from "../hooks/usePrices";
 import { formatCurrency } from "@/utils/money";
 import { PriceCategory } from "../types";
@@ -9,18 +9,23 @@ import { Navigate } from "react-router-dom";
 export function PricePrint() {
   usePageTitle("Tabela de Preços - Impressão");
 
-  const { isAuthenticated, isLoading } = useAuth();
-  const { data: prices } = usePrices();
+  const { isAuthenticated, isLoading: authLoading } = useAuth();
+  const { data: prices, loading: pricesLoading } = usePrices({
+    enabled: isAuthenticated,
+  });
+
+  const hasPrinted = useRef(false);
 
   useEffect(() => {
-    if (prices && prices.length > 0) {
+    if (prices && prices.length > 0 && !hasPrinted.current) {
+      hasPrinted.current = true;
       window.print();
     }
   }, [prices]);
 
-  if (isLoading) return null;
+  if (authLoading || pricesLoading) return null;
   if (!isAuthenticated) return <Navigate to="/login" replace />;
-  if (!prices) return null;
+  if (!prices || prices.length === 0) return <p>Nenhum preço cadastrado.</p>;
 
   type GroupedPrices = Record<
     number,
@@ -40,6 +45,13 @@ export function PricePrint() {
 
   return (
     <div className="p-8 font-sans">
+      <style>{`
+      @media print {
+        body { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+        th { background-color: #f3f4f6 !important; }
+      }
+    `}</style>
+
       <h1 className="text-xl font-semibold mb-1">Tabela de Preços</h1>
       <p className="text-sm text-gray-500 mb-6">
         Gerado em {new Date().toLocaleDateString("pt-BR")}
@@ -65,21 +77,23 @@ export function PricePrint() {
           </tr>
         </thead>
         <tbody>
-          {Object.values(grouped).map(({ name, prices: categoryPrices }) => (
-            <tr key={name}>
-              <td className="border border-gray-300 px-4 py-2">{name}</td>
-              <td className="border border-gray-300 px-4 py-2">
-                {formatCurrency(categoryPrices[0]?.price ?? 0)}
-              </td>
-              {volumes.map((v) => (
-                <td key={v} className="border border-gray-300 px-4 py-2">
-                  {categoryPrices[v]
-                    ? formatCurrency(categoryPrices[v].price)
-                    : "-"}
+          {Object.entries(grouped).map(
+            ([categoryId, { name, prices: categoryPrices }]) => (
+              <tr key={categoryId}>
+                <td className="border border-gray-300 px-4 py-2">{name}</td>
+                <td className="border border-gray-300 px-4 py-2">
+                  {formatCurrency(categoryPrices[0]?.price ?? 0)}
                 </td>
-              ))}
-            </tr>
-          ))}
+                {volumes.map((v) => (
+                  <td key={v} className="border border-gray-300 px-4 py-2">
+                    {categoryPrices[v]
+                      ? formatCurrency(categoryPrices[v].price)
+                      : "-"}
+                  </td>
+                ))}
+              </tr>
+            ),
+          )}
         </tbody>
       </table>
     </div>
