@@ -24,17 +24,18 @@ import { useCategory } from "@/modules/category/hooks/useCategory";
 export function SupplierAdd() {
   usePageTitle("Adicionar Fornecedor");
 
-  const { categoryId } = useParams<{ categoryId: string }>();
-  const id = Number(categoryId);
-
-  const { data: category, loading: categoryLoading } = useCategory(id);
-
   const navigate = useNavigate();
 
+  const { categoryId: rawCategoryId } = useParams<{ categoryId: string }>();
+  const categoryId = Number(rawCategoryId);
+
+  const { data: category, loading: categoryLoading } = useCategory(categoryId);
   const { data: suppliers, loading: suppliersLoading } = useSuppliers();
   const { data: allProducts, loading: productsLoading } = useProducts();
 
-  const products = (allProducts ?? []).filter((p) => p.category?.id === id);
+  const products = (allProducts ?? []).filter(
+    (p) => p.category?.id === categoryId,
+  );
 
   const form = useForm<SupplierAddFormData>({
     resolver: zodResolver(supplierAddSchema),
@@ -48,6 +49,11 @@ export function SupplierAdd() {
       observations: "",
     },
   });
+
+  if (!rawCategoryId || Number.isNaN(categoryId)) {
+    navigate("/prices");
+    return null;
+  }
 
   async function onSubmit(data: SupplierAddFormData) {
     try {
@@ -74,7 +80,7 @@ export function SupplierAdd() {
       });
 
       toast.success("Fornecedor adicionado com sucesso.");
-      navigate(`/prices/categories/${id}`);
+      navigate(`/prices/categories/${categoryId}`);
     } catch (error) {
       if (error instanceof ApiError) {
         toast.error(error.message);
@@ -114,7 +120,7 @@ export function SupplierAdd() {
       </Form>
 
       <FormActions
-        cancelPath={`/prices/categories/${id}`}
+        cancelPath={`/prices/categories/${categoryId}`}
         submitLabel="Adicionar"
         onSubmit={form.handleSubmit(onSubmit)}
       />

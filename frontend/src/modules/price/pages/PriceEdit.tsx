@@ -47,29 +47,30 @@ const VOLUME_FIELDS = [
 export function PriceEdit() {
   usePageTitle("Editar Preços");
 
-  const { categoryId } = useParams<{ categoryId: string }>();
-  const id = Number(categoryId);
   const navigate = useNavigate();
+
+  const { categoryId: rawCategoryId } = useParams<{ categoryId: string }>();
+  const categoryId = Number(rawCategoryId);
 
   const {
     data: prices,
     loading: pricesLoading,
     error: pricesError,
     refetch: refetchPrices,
-  } = useCategoryPrices(id);
+  } = useCategoryPrices(categoryId);
 
   const {
     data: productSuppliers,
     loading: suppliersLoading,
     error: suppliersError,
     refetch: refetchSuppliers,
-  } = useCategoryProductSuppliers(id);
+  } = useCategoryProductSuppliers(categoryId);
 
   const {
     data: category,
     loading: categoryLoading,
     error: categoryError,
-  } = useCategory(id);
+  } = useCategory(categoryId);
 
   const form = useForm<PriceUpdateFormData>({
     resolver: zodResolver(priceUpdateSchema),
@@ -107,7 +108,7 @@ export function PriceEdit() {
     });
 
     try {
-      await priceService.updateByCategory(id, updated);
+      await priceService.updateByCategory(categoryId, updated);
       await refetchPrices();
       toast.success("Preços atualizados com sucesso.");
     } catch (error) {
@@ -136,6 +137,11 @@ export function PriceEdit() {
     } finally {
       setSupplierToDelete(null);
     }
+  }
+
+  if (!rawCategoryId || Number.isNaN(categoryId)) {
+    navigate("/prices");
+    return null;
   }
 
   const loading = pricesLoading || suppliersLoading || categoryLoading;
@@ -217,7 +223,7 @@ export function PriceEdit() {
                     Cancelar
                   </Button>
                   <Button
-                    onClick={() => form.handleSubmit(onSubmitPrices)}
+                    type="submit"
                     className="bg-slate-500 hover:bg-slate-600 text-white"
                   >
                     Salvar
@@ -230,7 +236,7 @@ export function PriceEdit() {
           <Separator />
 
           <SuppliersSection
-            categoryId={id}
+            categoryId={categoryId}
             productSuppliers={productSuppliers}
             prices={prices}
             onDeleteSupplier={setSupplierToDelete}

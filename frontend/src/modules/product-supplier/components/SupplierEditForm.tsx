@@ -22,16 +22,16 @@ interface SupplierEditFormProps {
   productSupplier: ProductSupplier;
   products: Product[];
   category: Category | null | undefined;
-  catId: number;
-  supId: number;
+  categoryId: number;
+  productSupplierId: number;
 }
 
 export function SupplierEditForm({
   productSupplier,
   products,
   category,
-  catId,
-  supId,
+  categoryId,
+  productSupplierId,
 }: SupplierEditFormProps) {
   const navigate = useNavigate();
 
@@ -54,7 +54,7 @@ export function SupplierEditForm({
         supplierService.update(productSupplier.supplierId, {
           name: data.supplierName,
         }),
-        productSupplierService.update(supId, {
+        productSupplierService.update(productSupplierId, {
           productId: data.productId,
           density: data.density,
           tonCost: data.tonCost,
@@ -64,7 +64,7 @@ export function SupplierEditForm({
         }),
       ]);
       toast.success("Fornecedor atualizado com sucesso.");
-      navigate(`/prices/categories/${catId}`);
+      navigate(`/prices/categories/${categoryId}`);
     } catch (error) {
       if (error instanceof ApiError) {
         toast.error(error.message);
@@ -91,7 +91,7 @@ export function SupplierEditForm({
         </form>
       </Form>
       <FormActions
-        cancelPath={`/prices/categories/${catId}`}
+        cancelPath={`/prices/categories/${categoryId}`}
         submitLabel="Salvar"
         onSubmit={form.handleSubmit(onSubmit)}
       />

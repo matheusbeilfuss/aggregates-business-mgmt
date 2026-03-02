@@ -13,30 +13,43 @@ import { SupplierEditForm } from "../components/SupplierEditForm";
 export function SupplierEdit() {
   usePageTitle("Editar Fornecedor");
 
-  const { categoryId, supplierId } = useParams<{
+  const navigate = useNavigate();
+
+  const { categoryId: rawCategoryId, supplierId: rawSupplierId } = useParams<{
     categoryId: string;
     supplierId: string;
   }>();
-  const catId = Number(categoryId);
-  const supId = Number(supplierId);
-  const navigate = useNavigate();
+  const categoryId = Number(rawCategoryId);
+  const productSupplierId = Number(rawSupplierId);
 
   const {
     data: productSupplier,
     loading: productSupplierLoading,
     error,
-  } = useProductSupplier(supId);
-  const { data: category } = useCategory(catId);
+  } = useProductSupplier(productSupplierId);
+  const { data: category } = useCategory(categoryId);
   const { data: allProducts, loading: productsLoading } = useProducts();
 
-  const products = (allProducts ?? []).filter((p) => p.category?.id === catId);
+  const products = (allProducts ?? []).filter(
+    (p) => p.category?.id === categoryId,
+  );
 
   useEffect(() => {
     if (error) {
       toast.error("Não foi possível carregar o fornecedor.");
-      navigate(`/prices/categories/${catId}`);
+      navigate(`/prices/categories/${categoryId}`);
     }
-  }, [error, navigate, catId]);
+  }, [error, navigate, categoryId]);
+
+  if (
+    !rawCategoryId ||
+    !rawSupplierId ||
+    Number.isNaN(categoryId) ||
+    Number.isNaN(productSupplierId)
+  ) {
+    navigate("/prices");
+    return null;
+  }
 
   if (productSupplierLoading || productsLoading || !productSupplier) {
     return (
@@ -51,8 +64,8 @@ export function SupplierEdit() {
       productSupplier={productSupplier}
       products={products}
       category={category}
-      catId={catId}
-      supId={supId}
+      categoryId={categoryId}
+      productSupplierId={productSupplierId}
     />
   );
 }
