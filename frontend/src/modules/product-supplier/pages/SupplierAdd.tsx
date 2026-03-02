@@ -1,4 +1,4 @@
-import { useNavigate, useParams } from "react-router-dom";
+import { Navigate, useNavigate, useParams } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
@@ -51,8 +51,7 @@ export function SupplierAdd() {
   });
 
   if (!rawCategoryId || Number.isNaN(categoryId)) {
-    navigate("/prices");
-    return null;
+    return <Navigate to="/prices" replace />;
   }
 
   async function onSubmit(data: SupplierAddFormData) {

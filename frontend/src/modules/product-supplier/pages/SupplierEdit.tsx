@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { Navigate, useNavigate, useParams } from "react-router-dom";
 import { toast } from "sonner";
 
 import { usePageTitle } from "@/hooks/usePageTitle";
@@ -47,8 +47,7 @@ export function SupplierEdit() {
     Number.isNaN(categoryId) ||
     Number.isNaN(productSupplierId)
   ) {
-    navigate("/prices");
-    return null;
+    return <Navigate to="/prices" replace />;
   }
 
   if (productSupplierLoading || productsLoading || !productSupplier) {
