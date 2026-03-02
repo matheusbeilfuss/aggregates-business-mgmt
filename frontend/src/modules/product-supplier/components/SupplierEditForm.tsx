@@ -10,10 +10,7 @@ import {
   SupplierEditFormData,
   supplierEditSchema,
 } from "../schemas/productSupplier.schema";
-import {
-  supplierService,
-  productSupplierService,
-} from "../services/productSupplier.service";
+import { productSupplierService } from "../services/productSupplier.service";
 import { ProductSupplier } from "../types";
 import { SupplierForm } from "./SupplierForm";
 import { Form } from "@/components/ui/form";
@@ -50,19 +47,15 @@ export function SupplierEditForm({
 
   async function onSubmit(data: SupplierEditFormData) {
     try {
-      await Promise.all([
-        supplierService.update(productSupplier.supplierId, {
-          name: data.supplierName,
-        }),
-        productSupplierService.update(productSupplierId, {
-          productId: data.productId,
-          density: data.density,
-          tonCost: data.tonCost,
-          costPerCubicMeter: data.costPerCubicMeter,
-          costFor5CubicMeters: data.costFor5CubicMeters,
-          observations: data.observations,
-        }),
-      ]);
+      await productSupplierService.update(productSupplierId, {
+        supplierName: data.supplierName,
+        productId: data.productId,
+        density: data.density,
+        tonCost: data.tonCost,
+        costPerCubicMeter: data.costPerCubicMeter,
+        costFor5CubicMeters: data.costFor5CubicMeters,
+        observations: data.observations,
+      });
       toast.success("Fornecedor atualizado com sucesso.");
       navigate(`/prices/categories/${categoryId}`);
     } catch (error) {

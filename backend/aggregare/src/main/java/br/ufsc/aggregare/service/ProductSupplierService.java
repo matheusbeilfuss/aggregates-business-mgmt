@@ -71,8 +71,14 @@ public class ProductSupplierService {
 	public ProductSupplierDTO update(Long id, ProductSupplierUpdateDTO dto) {
 		try {
 			ProductSupplier productSupplier = repository.getReferenceById(id);
+
+			Supplier supplier = supplierRepository.findById(productSupplier.getSupplier().getId())
+					.orElseThrow(() -> new ResourceNotFoundException(productSupplier.getSupplier().getId()));
+			supplier.setName(dto.getSupplierName());
+			supplierRepository.save(supplier);
+
 			updateData(productSupplier, dto);
-			productSupplier = repository.save(productSupplier);
+
 			return toDTO(productSupplier);
 		} catch (EntityNotFoundException e) {
 			throw new ResourceNotFoundException(id);
@@ -83,7 +89,6 @@ public class ProductSupplierService {
 		Product product = productRepository.findById(dto.getProductId())
 				.orElseThrow(() -> new ResourceNotFoundException(dto.getProductId()));
 		productSupplier.setProduct(product);
-
 		productSupplier.setTonCost(dto.getTonCost());
 		productSupplier.setCostPerCubicMeter(dto.getCostPerCubicMeter());
 		productSupplier.setCostFor5CubicMeters(dto.getCostFor5CubicMeters());

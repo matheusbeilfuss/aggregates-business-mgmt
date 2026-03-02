@@ -15,12 +15,13 @@ export function SupplierEdit() {
 
   const navigate = useNavigate();
 
-  const { categoryId: rawCategoryId, supplierId: rawSupplierId } = useParams<{
-    categoryId: string;
-    supplierId: string;
-  }>();
+  const { categoryId: rawCategoryId, productSupplierId: rawProductSupplierId } =
+    useParams<{
+      categoryId: string;
+      productSupplierId: string;
+    }>();
   const categoryId = Number(rawCategoryId);
-  const productSupplierId = Number(rawSupplierId);
+  const productSupplierId = Number(rawProductSupplierId);
 
   const {
     data: productSupplier,
@@ -43,7 +44,7 @@ export function SupplierEdit() {
 
   if (
     !rawCategoryId ||
-    !rawSupplierId ||
+    !rawProductSupplierId ||
     Number.isNaN(categoryId) ||
     Number.isNaN(productSupplierId)
   ) {

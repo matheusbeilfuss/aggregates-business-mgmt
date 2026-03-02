@@ -44,12 +44,6 @@ public class SupplierController {
 		return ResponseEntity.noContent().build();
 	}
 
-	@PutMapping(value = "/{id}")
-	public ResponseEntity<Supplier> update(@PathVariable Long id, @RequestBody @Valid Supplier supplier) {
-		supplier = service.update(id, supplier);
-		return ResponseEntity.ok().body(supplier);
-	}
-
 	@GetMapping(value = "/{id}")
 	public ResponseEntity<Supplier> findById(@PathVariable Long id) {
 		Supplier supplier = service.findById(id);

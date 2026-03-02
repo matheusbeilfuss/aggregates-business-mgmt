@@ -1,9 +1,13 @@
 package br.ufsc.aggregare.model.dto;
 
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 
 public class ProductSupplierUpdateDTO {
+
+	@NotBlank(message = "O nome do fornecedor é obrigatório.")
+	private String supplierName;
 
 	@NotNull(message = "O produto é obrigatório.")
 	private Long productId;
@@ -21,6 +25,14 @@ public class ProductSupplierUpdateDTO {
 	private Double density;
 
 	private String observations;
+
+	public String getSupplierName() {
+		return supplierName;
+	}
+
+	public void setSupplierName(String supplierName) {
+		this.supplierName = supplierName;
+	}
 
 	public Long getProductId() {
 		return productId;

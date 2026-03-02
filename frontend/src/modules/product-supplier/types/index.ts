@@ -29,6 +29,7 @@ export interface ProductSupplierInput {
 }
 
 export interface ProductSupplierUpdate {
+  supplierName: string;
   productId: number;
   density: number;
   tonCost: number;
