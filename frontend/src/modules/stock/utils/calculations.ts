@@ -1,4 +1,4 @@
-import { ProductSupplier } from "@/modules/product-supplier/types";
+import type { ProductSupplier } from "@/modules/product-supplier/types";
 
 export function tonToM3(tons: number, density: number): number {
   if (density <= 0) return 0;

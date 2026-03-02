@@ -19,7 +19,7 @@ import {
 
 import type { StockItem } from "../types";
 import { Product } from "@/modules/product/types";
-import { Fragment } from "react/jsx-runtime";
+import { Fragment } from "react";
 
 interface StockTableProps {
   stocks: StockItem[];

@@ -34,7 +34,7 @@ import { usePageTitle } from "@/hooks/usePageTitle";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { TriangleAlert } from "lucide-react";
 import { useProductSuppliersByProductId } from "@/modules/product-supplier/hooks";
-import { ProductSupplier } from "@/modules/product-supplier/types";
+import type { ProductSupplier } from "@/modules/product-supplier/types";
 
 export function StockReplenish() {
   usePageTitle("Reabastecer estoque");
