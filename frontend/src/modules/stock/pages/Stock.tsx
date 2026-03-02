@@ -12,7 +12,7 @@ import { useStocks } from "../hooks";
 import { ApiError } from "@/lib/api";
 import { usePageTitle } from "@/hooks/usePageTitle";
 import { useCategories } from "@/modules/category/hooks";
-import { Product } from "@/modules/product/types";
+import type { Product } from "@/modules/product/types";
 import { productService } from "@/modules/product/services/product.service";
 
 export function Stock() {

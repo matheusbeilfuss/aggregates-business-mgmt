@@ -96,7 +96,7 @@ export function Price() {
           onClick={() => window.open("/prices/print", "_blank")}
         >
           <Printer className="mr-2 h-4 w-4" />
-          Imprimir
+          Imprimir Tabela
         </Button>
       </div>
 

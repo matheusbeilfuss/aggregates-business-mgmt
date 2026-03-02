@@ -11,7 +11,5 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
 
 	List<Order> findByScheduledDate(LocalDate scheduledDate);
 
-	boolean existsByProductCategoryId(Long categoryId);
-
 	boolean existsByProductId(Long productId);
 }

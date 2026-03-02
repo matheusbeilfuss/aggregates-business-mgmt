@@ -41,7 +41,7 @@ export const router = createBrowserRouter([
             element: <SupplierAdd />,
           },
           {
-            path: "prices/categories/:categoryId/suppliers/:supplierId/edit",
+            path: "prices/categories/:categoryId/suppliers/:productSupplierId/edit",
             element: <SupplierEdit />,
           },
 
