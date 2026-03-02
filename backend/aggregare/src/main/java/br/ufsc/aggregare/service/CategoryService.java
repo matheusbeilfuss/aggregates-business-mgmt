@@ -12,6 +12,7 @@ import br.ufsc.aggregare.repository.CategoryRepository;
 import br.ufsc.aggregare.repository.ProductRepository;
 import br.ufsc.aggregare.service.exception.DatabaseException;
 import br.ufsc.aggregare.service.exception.ResourceNotFoundException;
+import br.ufsc.aggregare.validator.CategoryValidator;
 
 import jakarta.persistence.EntityNotFoundException;
 
@@ -19,17 +20,20 @@ import jakarta.persistence.EntityNotFoundException;
 public class CategoryService {
 
 	private final CategoryRepository repository;
+	private final CategoryValidator validator;
 	private final PriceService priceService;
 	private final ProductRepository productRepository;
 
 	@Autowired
-	public CategoryService(CategoryRepository repository, PriceService priceService, ProductRepository productRepository) {
+	public CategoryService(CategoryRepository repository, CategoryValidator validator, PriceService priceService, ProductRepository productRepository) {
 		this.repository = repository;
+		this.validator = validator;
 		this.priceService = priceService;
 		this.productRepository = productRepository;
 	}
 
 	public Category insert(Category category) {
+		validator.validateInsert(category);
 		repository.save(category);
 		priceService.createInitialPricesForCategory(category);
 		return category;
@@ -51,6 +55,7 @@ public class CategoryService {
 
 	public Category update(Long id, Category newCategory) {
 		try {
+			validator.validateUpdate(id, newCategory);
 			Category existingCategory = repository.getReferenceById(id);
 			updateData(existingCategory, newCategory);
 			return repository.save(existingCategory);

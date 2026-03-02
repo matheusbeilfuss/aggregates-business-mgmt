@@ -30,13 +30,14 @@ export function StockTable({ stocks, onDeleteProduct }: StockTableProps) {
   const navigate = useNavigate();
 
   const grouped = Object.values(
-    stocks.reduce<Record<string, { categoryName: string; items: StockItem[] }>>(
+    stocks.reduce<Record<number, { categoryName: string; items: StockItem[] }>>(
       (acc, stock) => {
+        const categoryId = stock.product.category?.id ?? -1;
         const categoryName = stock.product.category?.name ?? "Sem categoria";
-        if (!acc[categoryName]) {
-          acc[categoryName] = { categoryName, items: [] };
+        if (!acc[categoryId]) {
+          acc[categoryId] = { categoryName, items: [] };
         }
-        acc[categoryName].items.push(stock);
+        acc[categoryId].items.push(stock);
         return acc;
       },
       {},
