@@ -33,6 +33,7 @@ public class CategoryService {
 	}
 
 	public Category insert(Category category) {
+		category.setName(category.getName().trim().replaceAll("\\s+", " "));
 		validator.validateInsert(category);
 		repository.save(category);
 		priceService.createInitialPricesForCategory(category);
@@ -55,6 +56,7 @@ public class CategoryService {
 
 	public Category update(Long id, Category newCategory) {
 		try {
+			newCategory.setName(newCategory.getName().trim().replaceAll("\\s+", " "));
 			validator.validateUpdate(id, newCategory);
 			Category existingCategory = repository.getReferenceById(id);
 			updateData(existingCategory, newCategory);

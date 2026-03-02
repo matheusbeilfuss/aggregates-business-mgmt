@@ -17,18 +17,18 @@ public class CategoryValidator {
 	}
 
 	public void validateInsert(Category category) {
-		if (repository.existsByNameIgnoreCase(category.getName().trim())) {
+		if (repository.existsByNameIgnoreCase(category.getName())) {
 			throw new ValidationException(
-					"Já existe uma categoria com o nome \"" + category.getName().trim() + "\".");
+					"Já existe uma categoria com o nome \"" + category.getName() + "\".");
 		}
 	}
 
 	public void validateUpdate(Long id, Category category) {
-		repository.findByNameIgnoreCase(category.getName().trim())
+		repository.findByNameIgnoreCase(category.getName())
 				.filter(existing -> !existing.getId().equals(id))
 				.ifPresent(existing -> {
 					throw new ValidationException(
-							"Já existe uma categoria com o nome \"" + category.getName().trim() + "\".");
+							"Já existe uma categoria com o nome \"" + category.getName() + "\".");
 				});
 	}
 }
