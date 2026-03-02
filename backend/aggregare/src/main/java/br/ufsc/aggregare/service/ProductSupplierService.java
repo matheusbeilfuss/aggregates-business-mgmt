@@ -104,11 +104,6 @@ public class ProductSupplierService {
 		}
 	}
 
-	@Transactional
-	public void deleteAllByProductId(Long productId) {
-		repository.deleteAllByProductId(productId);
-	}
-
 	@Transactional(readOnly = true)
 	public List<ProductSupplierDTO> findSupplierByProductId(Long productId) {
 		if (!productRepository.existsById(productId)) {
@@ -129,5 +124,9 @@ public class ProductSupplierService {
 		ProductSupplier productSupplier = repository.findById(id)
 				.orElseThrow(() -> new ResourceNotFoundException(id));
 		return toDTO(productSupplier);
+	}
+
+	public boolean existsByProductId(Long productId) {
+		return repository.existsByProductId(productId);
 	}
 }

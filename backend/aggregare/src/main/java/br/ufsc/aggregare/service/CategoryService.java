@@ -9,8 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import br.ufsc.aggregare.model.Category;
 import br.ufsc.aggregare.repository.CategoryRepository;
-import br.ufsc.aggregare.repository.OrderRepository;
-import br.ufsc.aggregare.repository.ProductSupplierRepository;
+import br.ufsc.aggregare.repository.ProductRepository;
 import br.ufsc.aggregare.service.exception.DatabaseException;
 import br.ufsc.aggregare.service.exception.ResourceNotFoundException;
 
@@ -21,16 +20,13 @@ public class CategoryService {
 
 	private final CategoryRepository repository;
 	private final PriceService priceService;
-	private final ProductSupplierRepository productSupplierRepository;
-	private final OrderRepository orderRepository;
+	private final ProductRepository productRepository;
 
 	@Autowired
-	public CategoryService(CategoryRepository repository, PriceService priceService, ProductSupplierRepository productSupplierRepository, OrderRepository orderRepository) {
+	public CategoryService(CategoryRepository repository, PriceService priceService, ProductRepository productRepository) {
 		this.repository = repository;
 		this.priceService = priceService;
-
-		this.productSupplierRepository = productSupplierRepository;
-		this.orderRepository = orderRepository;
+		this.productRepository = productRepository;
 	}
 
 	public Category insert(Category category) {
@@ -45,12 +41,8 @@ public class CategoryService {
 			throw new ResourceNotFoundException(id);
 		}
 
-		if (productSupplierRepository.existsByProductCategoryId(id)) {
-			throw new DatabaseException("Não é possível excluir uma categoria que possui fornecedores cadastrados.");
-		}
-
-		if (orderRepository.existsByProductCategoryId(id)) {
-			throw new DatabaseException("Não é possível excluir uma categoria que possui pedidos associados.");
+		if (productRepository.existsByCategoryId(id)) {
+			throw new DatabaseException("Não é possível excluir uma categoria que possui produtos cadastrados.");
 		}
 
 		priceService.deleteAllByCategoryId(id);

@@ -8,11 +8,9 @@ import br.ufsc.aggregare.model.ProductSupplier;
 
 public interface ProductSupplierRepository extends JpaRepository<ProductSupplier, Long> {
 
-	void deleteAllByProductId(Long productId);
-
 	List<ProductSupplier> findByProductId(Long productId);
 
-	List<ProductSupplier> findByProductCategoryId(Long categoryId);
+	boolean existsByProductId(Long productId);
 
-	boolean existsByProductCategoryId(Long categoryId);
+	List<ProductSupplier> findByProductCategoryId(Long categoryId);
 }

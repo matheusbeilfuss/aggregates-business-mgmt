@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 import br.ufsc.aggregare.model.Category;
 import br.ufsc.aggregare.model.Product;
 import br.ufsc.aggregare.model.dto.ProductInputDTO;
+import br.ufsc.aggregare.repository.OrderRepository;
 import br.ufsc.aggregare.repository.ProductRepository;
 import br.ufsc.aggregare.service.exception.DatabaseException;
 import br.ufsc.aggregare.service.exception.ResourceNotFoundException;
@@ -27,15 +28,17 @@ public class ProductService {
 	private final StockService stockService;
 	private final CategoryService categoryService;
 	private final ProductValidator productValidator;
+	private final OrderRepository orderRepository;
 
 	@Autowired
 	public ProductService(ProductRepository repository, ProductSupplierService productSupplierService, StockService stockService, CategoryService categoryService,
-			ProductValidator productValidator) {
+			ProductValidator productValidator, OrderRepository orderRepository) {
 		this.repository = repository;
 		this.productSupplierService = productSupplierService;
 		this.stockService = stockService;
 		this.categoryService = categoryService;
 		this.productValidator = productValidator;
+		this.orderRepository = orderRepository;
 	}
 
 	public Product insert(ProductInputDTO dto) {
@@ -53,10 +56,18 @@ public class ProductService {
 	@Transactional
 	public void delete(Long id) {
 		try {
-			if (!repository.existsById(id)){
+			if (!repository.existsById(id)) {
 				throw new ResourceNotFoundException(id);
 			}
-			productSupplierService.deleteAllByProductId(id);
+
+			if (productSupplierService.existsByProductId(id)) {
+				throw new DatabaseException("Não é possível excluir um produto que possui fornecedores cadastrados.");
+			}
+
+			if (orderRepository.existsByProductId(id)) {
+				throw new DatabaseException("Não é possível excluir um produto que possui pedidos associados.");
+			}
+
 			stockService.deleteByProductId(id);
 			repository.deleteById(id);
 		} catch (EmptyResultDataAccessException e) {
