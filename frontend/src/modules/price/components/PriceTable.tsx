@@ -1,3 +1,4 @@
+import { useNavigate } from "react-router-dom";
 import {
   Table,
   TableBody,
@@ -21,6 +22,8 @@ export function PriceTable({
   onRenameCategory,
   onDeleteCategory,
 }: PriceTableProps) {
+  const navigate = useNavigate();
+
   const grouped = prices.reduce<
     Record<number, { name: string; prices: Record<number, PriceCategory> }>
   >((acc, price) => {
@@ -35,46 +38,65 @@ export function PriceTable({
     .sort((a, b) => a - b);
 
   return (
-    <Table>
-      <TableHeader>
-        <TableRow>
-          <TableHead>Categoria / M³</TableHead>
-          <TableHead>Depósito</TableHead>
-          {volumes.map((v) => (
-            <TableHead key={v}>{v}</TableHead>
-          ))}
-          <TableHead />
-        </TableRow>
-      </TableHeader>
+    <div className="w-full overflow-x-auto">
+      <Table>
+        <TableHeader>
+          <TableRow>
+            <TableHead className="sticky left-0 z-20 bg-background w-[140px] min-w-[140px]">
+              Categoria
+            </TableHead>
+            <TableHead className="w-[100px] min-w-[100px]">Depósito</TableHead>
+            {volumes.map((v) => (
+              <TableHead key={v} className="w-[90px] min-w-[90px]">
+                {v} m³
+              </TableHead>
+            ))}
+            <TableHead className="sticky right-0 z-20 bg-background w-10" />
+          </TableRow>
+        </TableHeader>
 
-      <TableBody>
-        {Object.entries(grouped).map(
-          ([categoryId, { name, prices: categoryPrices }]) => (
-            <TableRow key={categoryId}>
-              <TableCell>{name}</TableCell>
-              <TableCell>
-                {formatCurrency(categoryPrices[0]?.price ?? 0)}
-              </TableCell>
-              {volumes.map((v) => (
-                <TableCell key={v}>
-                  {categoryPrices[v]
-                    ? formatCurrency(categoryPrices[v].price)
-                    : "-"}
+        <TableBody>
+          {Object.entries(grouped).map(
+            ([categoryId, { name, prices: categoryPrices }]) => (
+              <TableRow
+                key={categoryId}
+                className="cursor-pointer hover:bg-muted/50"
+                onClick={() => navigate(`/prices/categories/${categoryId}`)}
+              >
+                <TableCell className="sticky left-0 z-10 bg-background font-medium">
+                  {name}
                 </TableCell>
-              ))}
-              <TableCell>
-                <div className="flex justify-end">
-                  <CategoryActions
-                    categoryId={categoryId}
-                    onRename={() => onRenameCategory(Number(categoryId), name)}
-                    onDelete={() => onDeleteCategory(Number(categoryId), name)}
-                  />
-                </div>
-              </TableCell>
-            </TableRow>
-          ),
-        )}
-      </TableBody>
-    </Table>
+                <TableCell>
+                  {formatCurrency(categoryPrices[0]?.price ?? 0)}
+                </TableCell>
+                {volumes.map((v) => (
+                  <TableCell key={v}>
+                    {categoryPrices[v]
+                      ? formatCurrency(categoryPrices[v].price)
+                      : "-"}
+                  </TableCell>
+                ))}
+                <TableCell
+                  className="sticky right-0 z-10 bg-background"
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  <div className="flex justify-end">
+                    <CategoryActions
+                      categoryId={categoryId}
+                      onRename={() =>
+                        onRenameCategory(Number(categoryId), name)
+                      }
+                      onDelete={() =>
+                        onDeleteCategory(Number(categoryId), name)
+                      }
+                    />
+                  </div>
+                </TableCell>
+              </TableRow>
+            ),
+          )}
+        </TableBody>
+      </Table>
+    </div>
   );
 }

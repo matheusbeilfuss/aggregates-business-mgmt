@@ -8,9 +8,11 @@ export function Layout({ children }: { children: ReactNode }) {
     <SidebarProvider>
       <div className="flex h-screen w-screen">
         <AppSidebar />
-        <div className="flex flex-col flex-1">
+        <div className="flex flex-col flex-1 min-w-0">
           <Navbar />
-          <main className="flex-1 overflow-auto">{children}</main>
+          <main className="flex-1 overflow-y-auto overflow-x-hidden">
+            {children}
+          </main>
         </div>
       </div>
     </SidebarProvider>
