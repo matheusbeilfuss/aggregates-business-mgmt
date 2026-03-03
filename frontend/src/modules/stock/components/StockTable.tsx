@@ -83,75 +83,79 @@ export function StockTable({ stocks, onDeleteProduct }: StockTableProps) {
       </TableHeader>
 
       <TableBody>
-        {grouped.map(({ categoryName, items }) => (
-          <Fragment key={categoryName}>
-            <TableRow className="bg-muted/50 hover:bg-muted/50">
-              <TableCell
-                colSpan={5}
-                className="py-2 px-4 text-sm font-medium text-muted-foreground"
-              >
-                {categoryName}
-              </TableCell>
-            </TableRow>
-
-            {items.map((stock) => (
-              <TableRow key={stock.id}>
-                <TableCell>{stock.product.name}</TableCell>
-                <TableCell>{stock.tonQuantity?.toFixed(2) ?? "-"}</TableCell>
-                <TableCell>
-                  {stock.m3Quantity != null
-                    ? `${stock.m3Quantity.toFixed(2)} m³`
-                    : "-"}
-                </TableCell>
-                <TableCell>
-                  {stock.density != null ? `${stock.density.toFixed(2)}` : "-"}
-                </TableCell>
-                <TableCell>
-                  <div className="flex justify-end">
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <Button
-                          variant="ghost"
-                          className="h-8 w-8 p-0 cursor-pointer"
-                        >
-                          <MoreHorizontal className="h-4 w-4" />
-                        </Button>
-                      </DropdownMenuTrigger>
-
-                      <DropdownMenuContent align="end">
-                        <DropdownMenuItem
-                          className="cursor-pointer"
-                          onClick={() => navigate(`/stocks/${stock.id}`)}
-                        >
-                          <Pencil className="mr-2 h-4 w-4" />
-                          Editar
-                        </DropdownMenuItem>
-
-                        <DropdownMenuItem
-                          className="cursor-pointer"
-                          onSelect={() => onDeleteProduct(stock.product)}
-                        >
-                          <X className="mr-2 h-4 w-4" />
-                          Excluir
-                        </DropdownMenuItem>
-
-                        <DropdownMenuItem
-                          className="cursor-pointer"
-                          onClick={() =>
-                            navigate(`/stocks/${stock.id}/replenish`)
-                          }
-                        >
-                          <Plus className="mr-2 h-4 w-4" />
-                          Adicionar
-                        </DropdownMenuItem>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
-                  </div>
+        {Object.entries(grouped).map(
+          ([categoryId, { categoryName, items }]) => (
+            <Fragment key={categoryId}>
+              <TableRow className="bg-muted/50 hover:bg-muted/50">
+                <TableCell
+                  colSpan={5}
+                  className="py-2 px-4 text-sm font-medium text-muted-foreground"
+                >
+                  {categoryName}
                 </TableCell>
               </TableRow>
-            ))}
-          </Fragment>
-        ))}
+
+              {items.map((stock) => (
+                <TableRow key={stock.id}>
+                  <TableCell>{stock.product.name}</TableCell>
+                  <TableCell>{stock.tonQuantity?.toFixed(2) ?? "-"}</TableCell>
+                  <TableCell>
+                    {stock.m3Quantity != null
+                      ? `${stock.m3Quantity.toFixed(2)} m³`
+                      : "-"}
+                  </TableCell>
+                  <TableCell>
+                    {stock.density != null
+                      ? `${stock.density.toFixed(2)}`
+                      : "-"}
+                  </TableCell>
+                  <TableCell>
+                    <div className="flex justify-end">
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <Button
+                            variant="ghost"
+                            className="h-8 w-8 p-0 cursor-pointer"
+                          >
+                            <MoreHorizontal className="h-4 w-4" />
+                          </Button>
+                        </DropdownMenuTrigger>
+
+                        <DropdownMenuContent align="end">
+                          <DropdownMenuItem
+                            className="cursor-pointer"
+                            onClick={() => navigate(`/stocks/${stock.id}`)}
+                          >
+                            <Pencil className="mr-2 h-4 w-4" />
+                            Editar
+                          </DropdownMenuItem>
+
+                          <DropdownMenuItem
+                            className="cursor-pointer"
+                            onSelect={() => onDeleteProduct(stock.product)}
+                          >
+                            <X className="mr-2 h-4 w-4" />
+                            Excluir
+                          </DropdownMenuItem>
+
+                          <DropdownMenuItem
+                            className="cursor-pointer"
+                            onClick={() =>
+                              navigate(`/stocks/${stock.id}/replenish`)
+                            }
+                          >
+                            <Plus className="mr-2 h-4 w-4" />
+                            Adicionar
+                          </DropdownMenuItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                    </div>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </Fragment>
+          ),
+        )}
       </TableBody>
     </Table>
   );
