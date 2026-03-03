@@ -1,4 +1,3 @@
-import { useNavigate } from "react-router-dom";
 import {
   Table,
   TableBody,
@@ -22,8 +21,6 @@ export function PriceTable({
   onRenameCategory,
   onDeleteCategory,
 }: PriceTableProps) {
-  const navigate = useNavigate();
-
   const grouped = prices.reduce<
     Record<number, { name: string; prices: Record<number, PriceCategory> }>
   >((acc, price) => {
@@ -61,11 +58,7 @@ export function PriceTable({
         <TableBody>
           {Object.entries(grouped).map(
             ([categoryId, { name, prices: categoryPrices }]) => (
-              <TableRow
-                key={categoryId}
-                className="cursor-pointer hover:bg-muted/50"
-                onClick={() => navigate(`/prices/categories/${categoryId}`)}
-              >
+              <TableRow key={categoryId}>
                 <TableCell className="sticky left-0 z-10 bg-background font-medium w-[140px] max-w-0 whitespace-normal break-words">
                   {name}
                 </TableCell>
