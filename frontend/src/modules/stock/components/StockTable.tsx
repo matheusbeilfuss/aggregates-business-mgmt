@@ -121,7 +121,10 @@ export function StockTable({ stocks, onDeleteProduct }: StockTableProps) {
                         <DropdownMenuContent align="end">
                           <DropdownMenuItem
                             className="cursor-pointer"
-                            onClick={() => navigate(`/stocks/${stock.id}`)}
+                            onSelect={(e) => {
+                              e.preventDefault();
+                              navigate(`/stocks/${stock.id}`);
+                            }}
                           >
                             <Pencil className="mr-2 h-4 w-4" />
                             Editar
@@ -137,9 +140,10 @@ export function StockTable({ stocks, onDeleteProduct }: StockTableProps) {
 
                           <DropdownMenuItem
                             className="cursor-pointer"
-                            onClick={() =>
-                              navigate(`/stocks/${stock.id}/replenish`)
-                            }
+                            onSelect={(e) => {
+                              e.preventDefault();
+                              navigate(`/stocks/${stock.id}/replenish`);
+                            }}
                           >
                             <Plus className="mr-2 h-4 w-4" />
                             Adicionar

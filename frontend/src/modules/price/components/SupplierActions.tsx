@@ -38,23 +38,26 @@ export function SupplierActions({
       <DropdownMenuContent align="end">
         <DropdownMenuItem
           className="cursor-pointer"
-          onClick={() => onRename(ps.supplierId, ps.supplierName)}
+          onSelect={() => onRename(ps.supplierId, ps.supplierName)}
         >
           <Tag className="mr-2 h-4 w-4" />
           Renomear
         </DropdownMenuItem>
         <DropdownMenuItem
           className="cursor-pointer"
-          onClick={() =>
-            navigate(`/prices/categories/${categoryId}/suppliers/${ps.id}/edit`)
-          }
+          onSelect={(e) => {
+            e.preventDefault();
+            navigate(
+              `/prices/categories/${categoryId}/suppliers/${ps.id}/edit`,
+            );
+          }}
         >
           <Pencil className="mr-2 h-4 w-4" />
           Editar
         </DropdownMenuItem>
         <DropdownMenuItem
           className="text-red-500 focus:text-red-500 cursor-pointer"
-          onClick={() => onDelete(ps.id)}
+          onSelect={() => onDelete(ps.id)}
         >
           <X className="mr-2 h-4 w-4 text-red-500" />
           Excluir

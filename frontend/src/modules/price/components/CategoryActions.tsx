@@ -32,20 +32,23 @@ export function CategoryActions({
       <DropdownMenuContent align="end">
         <DropdownMenuItem
           className="cursor-pointer"
-          onClick={() => navigate(`/prices/categories/${categoryId}`)}
+          onSelect={(e) => {
+            e.preventDefault();
+            navigate(`/prices/categories/${categoryId}`);
+          }}
         >
           <Pencil className="mr-2 h-4 w-4" />
           Editar preços
         </DropdownMenuItem>
 
-        <DropdownMenuItem className="cursor-pointer" onClick={onRename}>
+        <DropdownMenuItem className="cursor-pointer" onSelect={onRename}>
           <Tag className="mr-2 h-4 w-4" />
           Renomear
         </DropdownMenuItem>
 
         <DropdownMenuItem
           className="text-red-500 focus:text-red-500 cursor-pointer"
-          onClick={onDelete}
+          onSelect={onDelete}
         >
           <X className="mr-2 h-4 w-4 text-red-500" />
           Excluir
