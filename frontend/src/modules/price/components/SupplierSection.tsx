@@ -1,5 +1,6 @@
 import { useNavigate } from "react-router-dom";
-import { Pencil, X, MoreHorizontal, Tag } from "lucide-react";
+import { useState, useRef } from "react";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import {
   Table,
@@ -9,20 +10,16 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+import { Badge } from "@/components/ui/badge";
 import { formatCurrency } from "@/utils/money";
 import { ProductSupplier } from "@/modules/product-supplier/types";
 import { Price } from "../types";
 import { ApiError } from "@/lib/api";
 import { supplierService } from "@/modules/supplier/services/supplier.service";
-import { useState, useRef } from "react";
-import { toast } from "sonner";
 import { RenameSupplierDialog } from "@/modules/product-supplier/components/RenameSupplierDialog";
+import { SupplierActions } from "./SupplierActions";
+import { SupplierSectionMobile } from "./SupplierSectionMobile";
+import { useIsMobile } from "@/hooks/useMobile";
 
 interface ProductSuppliersSectionProps {
   categoryId: number;
@@ -40,6 +37,7 @@ export function SupplierSection({
   onRefetch,
 }: ProductSuppliersSectionProps) {
   const navigate = useNavigate();
+  const isMobile = useIsMobile();
 
   const [supplierToRename, setSupplierToRename] = useState<{
     id: number;
@@ -76,6 +74,7 @@ export function SupplierSection({
 
   const oneM3Price = prices.find((p) => p.m3Volume === 1)?.price ?? 0;
   const fiveM3Price = prices.find((p) => p.m3Volume === 5)?.price ?? 0;
+  const empty = productSuppliers.length === 0;
 
   return (
     <section className="space-y-4">
@@ -91,127 +90,98 @@ export function SupplierSection({
         </Button>
       </div>
 
-      <Table className="mb-10">
-        <TableHeader>
-          <TableRow>
-            <TableHead>Fornecedor</TableHead>
-            <TableHead>Material</TableHead>
-            <TableHead>Densidade</TableHead>
-            <TableHead>Custo Tonelada</TableHead>
-            <TableHead>
-              Custo m<sup>3</sup>
-            </TableHead>
-            <TableHead>
-              Lucro m<sup>3</sup>
-            </TableHead>
-            <TableHead>
-              Custo 5m<sup>3</sup>
-            </TableHead>
-            <TableHead>
-              Lucro 5m<sup>3</sup>
-            </TableHead>
-            <TableHead />
-          </TableRow>
-        </TableHeader>
-
-        <TableBody>
-          {productSuppliers.length === 0 ? (
-            <TableRow>
-              <TableCell
-                colSpan={9}
-                className="text-center text-muted-foreground py-8"
-              >
-                Nenhum fornecedor cadastrado para essa categoria.
-              </TableCell>
-            </TableRow>
-          ) : (
-            productSuppliers.map((ps) => {
-              const oneM3Profit = oneM3Price - ps.costPerCubicMeter;
-              const fiveM3Profit = fiveM3Price - (ps.costFor5CubicMeters ?? 0);
-
-              return (
-                <TableRow key={ps.id}>
-                  <TableCell>
-                    <span className="font-medium flex items-center gap-2">
-                      {ps.supplierName}
-                      {ps.observations && (
-                        <span className="text-xs rounded bg-muted px-2 py-0.5 text-muted-foreground">
-                          {ps.observations}
-                        </span>
-                      )}
-                    </span>
-                  </TableCell>
-                  <TableCell>{ps.productName}</TableCell>
-                  <TableCell>{ps.density.toLocaleString("pt-BR")}</TableCell>
-                  <TableCell>{formatCurrency(ps.tonCost)}</TableCell>
-                  <TableCell>{formatCurrency(ps.costPerCubicMeter)}</TableCell>
-                  <TableCell
-                    className={
-                      oneM3Profit >= 0 ? "text-green-600" : "text-red-500"
-                    }
-                  >
-                    {formatCurrency(oneM3Profit)}
-                  </TableCell>
-                  <TableCell>
-                    {formatCurrency(ps.costFor5CubicMeters ?? 0)}
-                  </TableCell>
-                  <TableCell
-                    className={
-                      ps.costFor5CubicMeters
-                        ? fiveM3Profit >= 0
-                          ? "text-green-600"
-                          : "text-red-500"
-                        : ""
-                    }
-                  >
-                    {ps.costFor5CubicMeters
-                      ? formatCurrency(fiveM3Profit)
-                      : "-"}
-                  </TableCell>
-                  <TableCell>
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild className="cursor-pointer">
-                        <Button variant="ghost" size="icon">
-                          <MoreHorizontal className="h-4 w-4" />
-                        </Button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end">
-                        <DropdownMenuItem
-                          className="cursor-pointer"
-                          onClick={() =>
-                            openRenameDialog(ps.supplierId, ps.supplierName)
-                          }
-                        >
-                          <Tag className="mr-2 h-4 w-4" />
-                          Renomear
-                        </DropdownMenuItem>
-                        <DropdownMenuItem
-                          className="cursor-pointer"
-                          onClick={() =>
-                            navigate(
-                              `/prices/categories/${categoryId}/suppliers/${ps.id}/edit`,
-                            )
-                          }
-                        >
-                          <Pencil className="mr-2 h-4 w-4" />
-                          Editar
-                        </DropdownMenuItem>
-                        <DropdownMenuItem
-                          className="text-red-500 focus:text-red-500 cursor-pointer"
-                          onClick={() => onDeleteSupplier(ps.id)}
-                        >
-                          <X className="mr-2 h-4 w-4 text-red-500" />
-                          Excluir
-                        </DropdownMenuItem>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
-                  </TableCell>
-                </TableRow>
-              );
-            })
-          )}
-        </TableBody>
-      </Table>
+      {empty ? (
+        <p className="text-center text-muted-foreground py-8">
+          Nenhum fornecedor cadastrado para essa categoria.
+        </p>
+      ) : isMobile ? (
+        <SupplierSectionMobile
+          productSuppliers={productSuppliers}
+          categoryId={categoryId}
+          oneM3Price={oneM3Price}
+          fiveM3Price={fiveM3Price}
+          onRename={openRenameDialog}
+          onDelete={onDeleteSupplier}
+        />
+      ) : (
+        <div className="mb-10">
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Fornecedor</TableHead>
+                <TableHead>Material</TableHead>
+                <TableHead>Densidade</TableHead>
+                <TableHead>Custo Tonelada</TableHead>
+                <TableHead>
+                  Custo m<sup>3</sup>
+                </TableHead>
+                <TableHead>
+                  Lucro m<sup>3</sup>
+                </TableHead>
+                <TableHead>
+                  Custo 5m<sup>3</sup>
+                </TableHead>
+                <TableHead>
+                  Lucro 5m<sup>3</sup>
+                </TableHead>
+                <TableHead />
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {productSuppliers.map((ps) => {
+                const oneM3Profit = oneM3Price - ps.costPerCubicMeter;
+                const fiveM3Profit =
+                  fiveM3Price - (ps.costFor5CubicMeters ?? 0);
+                return (
+                  <TableRow key={ps.id}>
+                    <TableCell>
+                      <span className="font-medium flex items-center gap-2">
+                        {ps.supplierName}
+                        {ps.observations && (
+                          <Badge variant="secondary" className="font-normal">
+                            {ps.observations}
+                          </Badge>
+                        )}
+                      </span>
+                    </TableCell>
+                    <TableCell>{ps.productName}</TableCell>
+                    <TableCell>{ps.density.toLocaleString("pt-BR")}</TableCell>
+                    <TableCell>{formatCurrency(ps.tonCost)}</TableCell>
+                    <TableCell>
+                      {formatCurrency(ps.costPerCubicMeter)}
+                    </TableCell>
+                    <TableCell
+                      className={
+                        oneM3Profit >= 0 ? "text-green-600" : "text-red-500"
+                      }
+                    >
+                      {formatCurrency(oneM3Profit)}
+                    </TableCell>
+                    <TableCell>
+                      {formatCurrency(ps.costFor5CubicMeters ?? 0)}
+                    </TableCell>
+                    <TableCell
+                      className={
+                        fiveM3Profit >= 0 ? "text-green-600" : "text-red-500"
+                      }
+                    >
+                      {formatCurrency(fiveM3Profit)}
+                    </TableCell>
+                    <TableCell>
+                      <SupplierActions
+                        ps={ps}
+                        categoryId={categoryId}
+                        onRename={openRenameDialog}
+                        onDelete={onDeleteSupplier}
+                      />
+                    </TableCell>
+                  </TableRow>
+                );
+              })}
+            </TableBody>
+          </Table>
+        </div>
+      )}
 
       <RenameSupplierDialog
         open={!!supplierToRename}

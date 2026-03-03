@@ -35,15 +35,22 @@ export function PriceTable({
     .sort((a, b) => a - b);
 
   return (
-    <Table>
+    <Table
+      className="table-fixed"
+      style={{ minWidth: `${140 + 100 + volumes.length * 90 + 40}px` }}
+    >
       <TableHeader>
         <TableRow>
-          <TableHead>Categoria / M³</TableHead>
-          <TableHead>Depósito</TableHead>
+          <TableHead className="sticky left-0 z-20 bg-background w-[140px] whitespace-normal">
+            <div className="w-[140px]">Categoria</div>
+          </TableHead>
+          <TableHead className="w-[100px] min-w-[100px]">Depósito</TableHead>
           {volumes.map((v) => (
-            <TableHead key={v}>{v}</TableHead>
+            <TableHead key={v} className="w-[90px] min-w-[90px]">
+              {v} m³
+            </TableHead>
           ))}
-          <TableHead />
+          <TableHead className="w-10" />
         </TableRow>
       </TableHeader>
 
@@ -51,7 +58,9 @@ export function PriceTable({
         {Object.entries(grouped).map(
           ([categoryId, { name, prices: categoryPrices }]) => (
             <TableRow key={categoryId}>
-              <TableCell>{name}</TableCell>
+              <TableCell className="sticky left-0 z-10 bg-background font-medium w-[140px] max-w-0 whitespace-normal break-words">
+                {name}
+              </TableCell>
               <TableCell>
                 {formatCurrency(categoryPrices[0]?.price ?? 0)}
               </TableCell>
@@ -62,7 +71,7 @@ export function PriceTable({
                     : "-"}
                 </TableCell>
               ))}
-              <TableCell>
+              <TableCell onClick={(e) => e.stopPropagation()}>
                 <div className="flex justify-end">
                   <CategoryActions
                     categoryId={categoryId}

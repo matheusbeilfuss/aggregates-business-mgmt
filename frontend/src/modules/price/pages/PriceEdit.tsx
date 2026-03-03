@@ -16,6 +16,7 @@ import {
   FormControl,
   FormField,
   FormItem,
+  FormLabel,
   FormMessage,
 } from "@/components/ui/form";
 import { Separator } from "@/components/ui/separator";
@@ -167,51 +168,36 @@ export function PriceEdit() {
                 onSubmit={form.handleSubmit(onSubmitPrices)}
                 className="space-y-4"
               >
-                <div className="overflow-x-auto">
-                  <table className="text-sm">
-                    <thead>
-                      <tr>
-                        {VOLUME_FIELDS.map((f) => (
-                          <th
-                            key={f.name}
-                            className="px-3 pb-2 text-center font-medium text-muted-foreground"
-                          >
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
+                  {VOLUME_FIELDS.map((f) => (
+                    <FormField
+                      key={f.name}
+                      control={form.control}
+                      name={f.name}
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="text-muted-foreground">
                             {f.label}
-                          </th>
-                        ))}
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr>
-                        {VOLUME_FIELDS.map((f, idx) => (
-                          <td key={f.name} className="px-3 pb-2 align-top">
-                            <FormField
-                              control={form.control}
-                              name={f.name}
-                              render={({ field }) => (
-                                <FormItem>
-                                  <FormControl>
-                                    <div className="flex items-center gap-1">
-                                      {idx === 0 && (
-                                        <span className="text-muted-foreground text-sm">
-                                          R$
-                                        </span>
-                                      )}
-                                      <Input
-                                        className="text-right"
-                                        {...field}
-                                      />
-                                    </div>
-                                  </FormControl>
-                                  <FormMessage />
-                                </FormItem>
-                              )}
-                            />
-                          </td>
-                        ))}
-                      </tr>
-                    </tbody>
-                  </table>
+                          </FormLabel>
+                          <div className="flex items-center rounded-md border bg-background ring-offset-background focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2">
+                            <span className="pl-3 text-sm text-muted-foreground select-none">
+                              R$
+                            </span>
+                            <FormControl>
+                              <Input
+                                type="number"
+                                step="0.01"
+                                inputMode="decimal"
+                                className="text-right border-0 shadow-none focus-visible:ring-0 focus-visible:ring-offset-0"
+                                {...field}
+                              />
+                            </FormControl>
+                          </div>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  ))}
                 </div>
 
                 <div className="flex justify-end gap-2">
