@@ -39,11 +39,14 @@ export function PriceTable({
 
   return (
     <div className="w-full overflow-x-auto">
-      <Table>
+      <Table
+        className="table-fixed"
+        style={{ minWidth: `${140 + 100 + volumes.length * 90 + 40}px` }}
+      >
         <TableHeader>
           <TableRow>
-            <TableHead className="sticky left-0 z-20 bg-background w-[140px] min-w-[140px]">
-              Categoria
+            <TableHead className="sticky left-0 z-20 bg-background w-[140px] whitespace-normal">
+              <div className="w-[140px]">Categoria</div>
             </TableHead>
             <TableHead className="w-[100px] min-w-[100px]">Depósito</TableHead>
             {volumes.map((v) => (
@@ -51,7 +54,7 @@ export function PriceTable({
                 {v} m³
               </TableHead>
             ))}
-            <TableHead className="sticky right-0 z-20 bg-background w-10" />
+            <TableHead className="w-10" />
           </TableRow>
         </TableHeader>
 
@@ -63,7 +66,7 @@ export function PriceTable({
                 className="cursor-pointer hover:bg-muted/50"
                 onClick={() => navigate(`/prices/categories/${categoryId}`)}
               >
-                <TableCell className="sticky left-0 z-10 bg-background font-medium">
+                <TableCell className="sticky left-0 z-10 bg-background font-medium w-[140px] max-w-0 whitespace-normal break-words">
                   {name}
                 </TableCell>
                 <TableCell>
@@ -76,10 +79,7 @@ export function PriceTable({
                       : "-"}
                   </TableCell>
                 ))}
-                <TableCell
-                  className="sticky right-0 z-10 bg-background"
-                  onClick={(e) => e.stopPropagation()}
-                >
+                <TableCell onClick={(e) => e.stopPropagation()}>
                   <div className="flex justify-end">
                     <CategoryActions
                       categoryId={categoryId}
