@@ -42,7 +42,9 @@ export function StockEdit() {
     loading: stockLoading,
     error: stockError,
   } = useStock(stockId);
-  const { data: categories, loading: categoriesLoading } = useCategories();
+  const { data: categories, loading: categoriesLoading } = useCategories({
+    enabled: validId,
+  });
 
   const [productId, setProductId] = useState<number | null>(null);
   const [isFormReady, setIsFormReady] = useState(false);

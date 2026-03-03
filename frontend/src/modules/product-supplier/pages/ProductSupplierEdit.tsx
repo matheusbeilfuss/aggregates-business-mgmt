@@ -35,8 +35,12 @@ export function ProductSupplierEdit() {
     error,
   } = useProductSupplier(productSupplierId, { enabled: validIds });
   const { data: category } = useCategory(categoryId, { enabled: validIds });
-  const { data: allProducts, loading: productsLoading } = useProducts();
-  const { data: suppliers, loading: suppliersLoading } = useSuppliers();
+  const { data: allProducts, loading: productsLoading } = useProducts({
+    enabled: validIds,
+  });
+  const { data: suppliers, loading: suppliersLoading } = useSuppliers({
+    enabled: validIds,
+  });
 
   const products = (allProducts ?? []).filter(
     (p) => p.category?.id === categoryId,

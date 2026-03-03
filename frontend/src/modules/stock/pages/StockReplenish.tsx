@@ -49,9 +49,11 @@ export function StockReplenish() {
     data: stock,
     loading: stockLoading,
     error: stockError,
-  } = useStock(stockId);
+  } = useStock(stockId, { enabled: validId });
   const { data: productSuppliers, loading: suppliersLoading } =
-    useProductSuppliersByProductId(stock?.product.id);
+    useProductSuppliersByProductId(stock?.product.id, {
+      enabled: !!stock?.product.id,
+    });
 
   const [userEditedM3, setUserEditedM3] = useState(false);
   const [userEditedTon, setUserEditedTon] = useState(false);
