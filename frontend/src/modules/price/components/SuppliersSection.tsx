@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import { Pencil, X, MoreHorizontal } from "lucide-react";
+import { Pencil, X, MoreHorizontal, Tag } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Table,
@@ -18,12 +18,18 @@ import {
 import { formatCurrency } from "@/utils/money";
 import { ProductSupplier } from "@/modules/product-supplier/types";
 import { Price } from "../types";
+import { ApiError } from "@/lib/api";
+import { supplierService } from "@/modules/product-supplier/services/productSupplier.service";
+import { useState, useRef } from "react";
+import { toast } from "sonner";
+import { RenameSupplierDialog } from "@/modules/product-supplier/components/RenameSupplierDialog";
 
 interface SuppliersSectionProps {
   categoryId: number;
   productSuppliers: ProductSupplier[];
   prices: Price[];
   onDeleteSupplier: (id: number) => void;
+  onRefetch: () => void;
 }
 
 export function SuppliersSection({
@@ -31,8 +37,42 @@ export function SuppliersSection({
   productSuppliers,
   prices,
   onDeleteSupplier,
+  onRefetch,
 }: SuppliersSectionProps) {
   const navigate = useNavigate();
+
+  const [supplierToRename, setSupplierToRename] = useState<{
+    id: number;
+    name: string;
+  } | null>(null);
+  const [newSupplierName, setNewSupplierName] = useState("");
+  const lastSupplierName = useRef<string>("");
+
+  function openRenameDialog(id: number, name: string) {
+    lastSupplierName.current = name;
+    setSupplierToRename({ id, name });
+    setNewSupplierName(name);
+  }
+
+  async function handleRenameSupplier() {
+    if (!supplierToRename || !newSupplierName.trim()) return;
+    try {
+      await supplierService.update(supplierToRename.id, {
+        name: newSupplierName.trim(),
+      });
+      toast.success("Fornecedor renomeado com sucesso.");
+      onRefetch();
+    } catch (error) {
+      if (error instanceof ApiError) {
+        toast.error(error.message);
+      } else {
+        toast.error("Não foi possível renomear o fornecedor.");
+      }
+    } finally {
+      setSupplierToRename(null);
+      setNewSupplierName("");
+    }
+  }
 
   const oneM3Price = prices.find((p) => p.m3Volume === 1)?.price ?? 0;
   const fiveM3Price = prices.find((p) => p.m3Volume === 5)?.price ?? 0;
@@ -139,6 +179,15 @@ export function SuppliersSection({
                         <DropdownMenuItem
                           className="cursor-pointer"
                           onClick={() =>
+                            openRenameDialog(ps.supplierId, ps.supplierName)
+                          }
+                        >
+                          <Tag className="mr-2 h-4 w-4" />
+                          Renomear
+                        </DropdownMenuItem>
+                        <DropdownMenuItem
+                          className="cursor-pointer"
+                          onClick={() =>
                             navigate(
                               `/prices/categories/${categoryId}/suppliers/${ps.id}/edit`,
                             )
@@ -163,6 +212,18 @@ export function SuppliersSection({
           )}
         </TableBody>
       </Table>
+
+      <RenameSupplierDialog
+        open={!!supplierToRename}
+        currentName={lastSupplierName.current}
+        newName={newSupplierName}
+        onNewNameChange={setNewSupplierName}
+        onConfirm={handleRenameSupplier}
+        onCancel={() => {
+          setSupplierToRename(null);
+          setNewSupplierName("");
+        }}
+      />
     </section>
   );
 }

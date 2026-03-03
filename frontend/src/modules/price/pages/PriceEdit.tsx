@@ -239,6 +239,7 @@ export function PriceEdit() {
             productSuppliers={productSuppliers}
             prices={prices}
             onDeleteSupplier={setSupplierToDelete}
+            onRefetch={refetchSuppliers}
           />
         </div>
       )}

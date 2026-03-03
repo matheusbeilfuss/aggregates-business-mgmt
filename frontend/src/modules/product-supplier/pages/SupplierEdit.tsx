@@ -9,6 +9,7 @@ import { useProductSupplier } from "../hooks/useProductSupplier";
 import { useCategory } from "@/modules/category/hooks/useCategory";
 import { useProducts } from "@/modules/product/hooks/useProducts";
 import { SupplierEditForm } from "../components/SupplierEditForm";
+import { useSuppliers } from "../hooks/useSuppliers";
 
 export function SupplierEdit() {
   usePageTitle("Editar Fornecedor");
@@ -30,6 +31,7 @@ export function SupplierEdit() {
   } = useProductSupplier(productSupplierId);
   const { data: category } = useCategory(categoryId);
   const { data: allProducts, loading: productsLoading } = useProducts();
+  const { data: suppliers, loading: suppliersLoading } = useSuppliers();
 
   const products = (allProducts ?? []).filter(
     (p) => p.category?.id === categoryId,
@@ -51,7 +53,12 @@ export function SupplierEdit() {
     return <Navigate to="/prices" replace />;
   }
 
-  if (productSupplierLoading || productsLoading || !productSupplier) {
+  if (
+    productSupplierLoading ||
+    productsLoading ||
+    suppliersLoading ||
+    !productSupplier
+  ) {
     return (
       <PageContainer title="Editar Fornecedor">
         <LoadingState rows={4} variant="form" />
@@ -63,6 +70,7 @@ export function SupplierEdit() {
     <SupplierEditForm
       productSupplier={productSupplier}
       products={products}
+      suppliers={suppliers ?? []}
       category={category}
       categoryId={categoryId}
       productSupplierId={productSupplierId}

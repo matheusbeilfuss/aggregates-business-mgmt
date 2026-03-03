@@ -11,21 +11,22 @@ import {
   supplierEditSchema,
 } from "../schemas/productSupplier.schema";
 import { productSupplierService } from "../services/productSupplier.service";
-import { ProductSupplier } from "../types";
+import { ProductSupplier, Supplier } from "../types";
 import { SupplierForm } from "./SupplierForm";
 import { Form } from "@/components/ui/form";
 
 interface SupplierEditFormProps {
   productSupplier: ProductSupplier;
   products: Product[];
+  suppliers: Supplier[];
   category: Category | null | undefined;
   categoryId: number;
   productSupplierId: number;
 }
-
 export function SupplierEditForm({
   productSupplier,
   products,
+  suppliers,
   category,
   categoryId,
   productSupplierId,
@@ -35,7 +36,7 @@ export function SupplierEditForm({
   const form = useForm<SupplierEditFormData>({
     resolver: zodResolver(supplierEditSchema),
     defaultValues: {
-      supplierName: productSupplier.supplierName,
+      supplierId: productSupplier.supplierId,
       productId: productSupplier.productId,
       density: productSupplier.density,
       tonCost: productSupplier.tonCost,
@@ -48,7 +49,7 @@ export function SupplierEditForm({
   async function onSubmit(data: SupplierEditFormData) {
     try {
       await productSupplierService.update(productSupplierId, {
-        supplierName: data.supplierName,
+        supplierId: data.supplierId,
         productId: data.productId,
         density: data.density,
         tonCost: data.tonCost,
@@ -80,6 +81,7 @@ export function SupplierEditForm({
             mode="edit"
             control={form.control}
             products={products}
+            suppliers={suppliers}
           />
         </form>
       </Form>

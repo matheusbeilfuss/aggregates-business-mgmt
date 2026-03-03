@@ -35,7 +35,7 @@ export const supplierAddSchema = baseSchema
   });
 
 export const supplierEditSchema = baseSchema.extend({
-  supplierName: z.string().min(1, "Nome do fornecedor obrigatório."),
+  supplierId: z.number({ required_error: "Selecione um fornecedor." }).min(1),
   productId: z.number({ required_error: "Selecione um produto." }).min(1),
 });
 

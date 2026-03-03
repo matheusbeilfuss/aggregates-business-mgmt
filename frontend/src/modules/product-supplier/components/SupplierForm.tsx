@@ -42,6 +42,7 @@ interface EditProps extends BaseProps {
   mode: "edit";
   control: EditControl;
   products: Product[];
+  suppliers: Supplier[];
 }
 
 type SupplierFormProps = AddProps | EditProps;
@@ -116,13 +117,27 @@ export function SupplierForm(props: SupplierFormProps) {
         <>
           <FormField
             control={control as EditControl}
-            name="supplierName"
+            name="supplierId"
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Fornecedor</FormLabel>
-                <FormControl>
-                  <Input type="text" {...field} />
-                </FormControl>
+                <Select
+                  onValueChange={(value) => field.onChange(Number(value))}
+                  value={field.value ? String(field.value) : ""}
+                >
+                  <FormControl>
+                    <SelectTrigger className="w-full">
+                      <SelectValue placeholder="Selecione um fornecedor" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    {props.suppliers.map((s) => (
+                      <SelectItem key={s.id} value={String(s.id)}>
+                        {s.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
                 <FormMessage />
               </FormItem>
             )}

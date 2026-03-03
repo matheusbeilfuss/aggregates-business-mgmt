@@ -42,6 +42,16 @@ public class SupplierService {
 		}
 	}
 
+	public Supplier update(Long id, Supplier newSupplier) {
+		try {
+			Supplier existingSupplier = repository.getReferenceById(id);
+			existingSupplier.setName(newSupplier.getName().trim());
+			return repository.save(existingSupplier);
+		} catch (EntityNotFoundException e) {
+			throw new ResourceNotFoundException(id);
+		}
+	}
+
 	public Supplier findById(Long id) {
 		Optional<Supplier> supplier = repository.findById(id);
 		return supplier.orElseThrow(() -> new ResourceNotFoundException(id));
