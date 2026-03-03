@@ -11,15 +11,19 @@ public class ProductSupplierInputDTO {
 	@NotNull(message = "O fornecedor é obrigatório.")
 	private Long supplierId;
 
+	@NotNull(message = "O custo por tonelada é obrigatório.")
 	@Positive(message = "O custo por tonelada deve ser maior que zero.")
 	private Double tonCost;
 
+	@NotNull(message = "O custo por m³ é obrigatório.")
 	@Positive(message = "O custo por m³ deve ser maior que zero.")
 	private Double costPerCubicMeter;
 
+	@NotNull(message = "O custo por 5m³ é obrigatório.")
 	@Positive(message = "O custo por 5m³ deve ser maior que zero.")
 	private Double costFor5CubicMeters;
 
+	@NotNull(message = "A densidade é obrigatória.")
 	@Positive(message = "A densidade deve ser maior que zero.")
 	private Double density;
 
