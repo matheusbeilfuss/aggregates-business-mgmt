@@ -140,7 +140,7 @@ export function PriceEdit() {
     }
   }
 
-  if (!rawCategoryId || Number.isNaN(categoryId)) {
+  if (!validId) {
     return <Navigate to="/prices" replace />;
   }
 
