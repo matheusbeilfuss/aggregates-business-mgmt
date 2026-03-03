@@ -179,7 +179,7 @@ export function ProductSupplierForm(props: ProductSupplierFormProps) {
           <FormItem>
             <FormLabel>Densidade</FormLabel>
             <FormControl>
-              <Input type="number" step="0.01" {...field} />
+              <Input type="number" step="0.01" inputMode="decimal" {...field} />
             </FormControl>
             <FormMessage />
           </FormItem>
@@ -193,7 +193,7 @@ export function ProductSupplierForm(props: ProductSupplierFormProps) {
           <FormItem>
             <FormLabel>Custo por Tonelada (R$)</FormLabel>
             <FormControl>
-              <Input type="number" step="0.01" {...field} />
+              <Input type="number" step="0.01" inputMode="decimal" {...field} />
             </FormControl>
             <FormMessage />
           </FormItem>
@@ -207,7 +207,7 @@ export function ProductSupplierForm(props: ProductSupplierFormProps) {
           <FormItem>
             <FormLabel>Custo por m³ (R$)</FormLabel>
             <FormControl>
-              <Input type="number" step="0.01" {...field} />
+              <Input type="number" step="0.01" inputMode="decimal" {...field} />
             </FormControl>
             <FormMessage />
           </FormItem>
@@ -219,9 +219,9 @@ export function ProductSupplierForm(props: ProductSupplierFormProps) {
         name="costFor5CubicMeters"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>Custo por 5m³ (R$) </FormLabel>
+            <FormLabel>Custo por 5m³ (R$)</FormLabel>
             <FormControl>
-              <Input type="number" step="0.01" {...field} />
+              <Input type="number" step="0.01" inputMode="decimal" {...field} />
             </FormControl>
             <FormMessage />
           </FormItem>
@@ -235,7 +235,7 @@ export function ProductSupplierForm(props: ProductSupplierFormProps) {
           <FormItem className="md:col-span-2">
             <FormLabel>Observações</FormLabel>
             <FormControl>
-              <Input {...field} type="text" />
+              <Input type="text" {...field} />
             </FormControl>
             <FormMessage />
           </FormItem>

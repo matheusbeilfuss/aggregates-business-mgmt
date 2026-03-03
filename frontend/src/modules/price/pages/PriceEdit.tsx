@@ -179,17 +179,20 @@ export function PriceEdit() {
                           <FormLabel className="text-muted-foreground">
                             {f.label}
                           </FormLabel>
-                          <FormControl>
-                            <div className="flex items-center rounded-md border bg-background ring-offset-background focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2">
-                              <span className="pl-3 text-sm text-muted-foreground select-none">
-                                R$
-                              </span>
+                          <div className="flex items-center rounded-md border bg-background ring-offset-background focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2">
+                            <span className="pl-3 text-sm text-muted-foreground select-none">
+                              R$
+                            </span>
+                            <FormControl>
                               <Input
+                                type="number"
+                                step="0.01"
+                                inputMode="decimal"
                                 className="text-right border-0 shadow-none focus-visible:ring-0 focus-visible:ring-offset-0"
                                 {...field}
                               />
-                            </div>
-                          </FormControl>
+                            </FormControl>
+                          </div>
                           <FormMessage />
                         </FormItem>
                       )}
