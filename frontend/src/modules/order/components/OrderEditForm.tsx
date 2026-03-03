@@ -1,7 +1,4 @@
 import { useNavigate } from "react-router-dom";
-import { useOrder } from "../hooks/useOrders";
-import { useProducts } from "@/modules/stock/hooks/useStocks";
-import { useClient, useClients } from "../hooks/useClients";
 import { OrderFormData, orderSchema } from "../schemas/order.schemas";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -13,6 +10,9 @@ import { selectPreferredPhone } from "../utils/selectPreferredPhone";
 import { orderFormDefaults } from "../utils/orderFormDefaults";
 import { toast } from "sonner";
 import { ApiError } from "@/lib/api";
+import { useOrder } from "../hooks";
+import { useProducts } from "@/modules/product/hooks";
+import { useClient, useClients } from "@/modules/client/hooks";
 
 interface OrderEditFormProps {
   orderId: number;
@@ -24,9 +24,7 @@ export function OrderEditForm({ orderId }: OrderEditFormProps) {
   const { data: order, loading: orderLoading } = useOrder(orderId);
   const { data: products } = useProducts();
   const { data: clients } = useClients();
-  const { data: client } = useClient(
-    order?.client ? String(order.client.id) : null,
-  );
+  const { data: client } = useClient(order?.client?.id);
 
   const form = useForm<OrderFormData>({
     resolver: zodResolver(orderSchema),

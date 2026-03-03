@@ -12,12 +12,18 @@ import { UsersManage } from "./modules/user/pages/UsersManage";
 import { AdminRoute } from "./modules/auth/components/AdminRoute";
 import { UserAdd } from "./modules/user/pages/UserAdd";
 import { Providers } from "./components/layout/Providers";
+import { Price } from "./modules/price/pages/Price";
+import { PriceEdit } from "./modules/price/pages/PriceEdit";
+import { ProductSupplierAdd } from "./modules/product-supplier/pages/ProductSupplierAdd";
+import { ProductSupplierEdit } from "./modules/product-supplier/pages/ProductSupplierEdit";
+import { PricePrint } from "./modules/price/pages/PricePrint";
 
 export const router = createBrowserRouter([
   {
     element: <Providers />,
     children: [
       { path: "/login", element: <Login /> },
+      { path: "/prices/print", element: <PricePrint /> },
       {
         element: <PrivateRoute />,
         children: [
@@ -28,6 +34,17 @@ export const router = createBrowserRouter([
           { path: "stocks", element: <Stock /> },
           { path: "stocks/:id", element: <StockEdit /> },
           { path: "stocks/:id/replenish", element: <StockReplenish /> },
+          { path: "prices", element: <Price /> },
+          { path: "prices/categories/:categoryId", element: <PriceEdit /> },
+          {
+            path: "prices/categories/:categoryId/suppliers/add",
+            element: <ProductSupplierAdd />,
+          },
+          {
+            path: "prices/categories/:categoryId/suppliers/:productSupplierId/edit",
+            element: <ProductSupplierEdit />,
+          },
+
           { path: "user", element: <User /> },
           {
             element: <AdminRoute />,

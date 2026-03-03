@@ -1,16 +1,18 @@
 import { useForm } from "react-hook-form";
 import { OrderFormData, orderSchema } from "../schemas/order.schemas";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useProducts } from "@/modules/stock/hooks/useStocks";
-import { useClients } from "../hooks/useClients";
-import { CreateClientPayload, CreateOrderPayload } from "../types";
-import { clientService, orderService } from "../services/order.service";
+import { CreateOrderPayload } from "../types";
+import { orderService } from "../services/order.service";
 import { toast } from "sonner";
 import { useNavigate } from "react-router";
 import { OrderForm } from "../components/OrderForm";
 import { orderFormDefaults } from "../utils/orderFormDefaults";
 import { ApiError } from "@/lib/api";
 import { usePageTitle } from "@/hooks/usePageTitle";
+import { useProducts } from "@/modules/product/hooks";
+import { useClients } from "@/modules/client/hooks";
+import { clientService } from "@/modules/client/services/client.service";
+import { CreateClientPayload } from "@/modules/client/types";
 
 export function OrderAdd() {
   usePageTitle("Adicionar pedido");

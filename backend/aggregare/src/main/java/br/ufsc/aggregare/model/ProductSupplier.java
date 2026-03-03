@@ -33,11 +33,12 @@ public class ProductSupplier implements Serializable {
 	private Double costPerCubicMeter;
 	private Double costFor5CubicMeters;
 	private Double density;
+	private String observations;
 
 	public ProductSupplier() {
 	}
 
-	public ProductSupplier(Long id, Product product, Supplier supplier, Double tonCost, Double costPerCubicMeter, Double costFor5CubicMeters, Double density) {
+	public ProductSupplier(Long id, Product product, Supplier supplier, Double tonCost, Double costPerCubicMeter, Double costFor5CubicMeters, Double density, String observations) {
 		this.id = id;
 		this.product = product;
 		this.supplier = supplier;
@@ -45,6 +46,7 @@ public class ProductSupplier implements Serializable {
 		this.costPerCubicMeter = costPerCubicMeter;
 		this.costFor5CubicMeters = costFor5CubicMeters;
 		this.density = density;
+		this.observations = observations;
 	}
 
 	public Long getId() {
@@ -101,6 +103,14 @@ public class ProductSupplier implements Serializable {
 
 	public void setDensity(Double density) {
 		this.density = density;
+	}
+
+	public String getObservations() {
+		return observations;
+	}
+
+	public void setObservations(String observations) {
+		this.observations = observations;
 	}
 
 	@Override public boolean equals(Object o) {

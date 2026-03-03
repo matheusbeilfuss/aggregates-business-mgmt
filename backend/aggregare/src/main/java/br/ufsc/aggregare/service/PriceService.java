@@ -57,6 +57,10 @@ public class PriceService {
 		}
 	}
 
+	public void deleteAllByCategoryId(Long categoryId) {
+		repository.deleteAllByCategoryId(categoryId);
+	}
+
 	public Price update(Long id, Price newPrice) {
 		try {
 			Price existingPrice = repository.getReferenceById(id);

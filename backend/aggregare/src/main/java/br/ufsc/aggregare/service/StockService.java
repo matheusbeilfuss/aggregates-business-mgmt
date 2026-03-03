@@ -15,6 +15,7 @@ import br.ufsc.aggregare.model.dto.StockUpdateDTO;
 import br.ufsc.aggregare.repository.ProductRepository;
 import br.ufsc.aggregare.repository.StockRepository;
 import br.ufsc.aggregare.service.exception.ResourceNotFoundException;
+import br.ufsc.aggregare.validator.exception.ValidationException;
 
 import jakarta.persistence.EntityNotFoundException;
 
@@ -93,11 +94,25 @@ public class StockService {
 		Stock stock = repository.findByProductId(product.getId())
 				.orElseThrow(() -> new ResourceNotFoundException(product.getId()));
 
-		Double density = stock.getDensity() != null ? stock.getDensity() : 0.0;
+		double availableM3 = stock.getM3Quantity() != null ? stock.getM3Quantity() : 0.0;
+		double availableTon = stock.getTonQuantity() != null ? stock.getTonQuantity() : 0.0;
+		double density = stock.getDensity() != null ? stock.getDensity() : 0.0;
 		double tonToDeduct = m3Quantity * density;
 
-		stock.setM3Quantity((stock.getM3Quantity() != null ? stock.getM3Quantity() : 0.0) - m3Quantity);
-		stock.setTonQuantity((stock.getTonQuantity() != null ? stock.getTonQuantity() : 0.0) - tonToDeduct);
+		if (availableM3 < m3Quantity) {
+			throw new ValidationException(
+					String.format("Estoque insuficiente. Disponível: %.2f m³, solicitado: %.2f m³.",
+							availableM3, m3Quantity));
+		}
+
+		if (availableTon < tonToDeduct) {
+			throw new ValidationException(
+					String.format("Estoque insuficiente em toneladas. Disponível: %.2f ton, necessário: %.2f ton.",
+							availableTon, tonToDeduct));
+		}
+
+		stock.setM3Quantity(availableM3 - m3Quantity);
+		stock.setTonQuantity(availableTon - tonToDeduct);
 
 		repository.save(stock);
 		return tonToDeduct;

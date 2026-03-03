@@ -2,12 +2,15 @@ package br.ufsc.aggregare.model.dto;
 
 public class ProductSupplierDTO {
 	private Long id;
+	private Long productId;
 	private Long supplierId;
 	private String supplierName;
+	private String productName;
 	private Double tonCost;
 	private Double costPerCubicMeter;
 	private Double costFor5CubicMeters;
 	private Double density;
+	private String observations;
 
 	public Long getId() {
 		return id;
@@ -15,6 +18,14 @@ public class ProductSupplierDTO {
 
 	public void setId(Long id) {
 		this.id = id;
+	}
+
+	public Long getProductId() {
+		return productId;
+	}
+
+	public void setProductId(Long productId) {
+		this.productId = productId;
 	}
 
 	public Long getSupplierId() {
@@ -31,6 +42,14 @@ public class ProductSupplierDTO {
 
 	public void setSupplierName(String supplierName) {
 		this.supplierName = supplierName;
+	}
+
+	public String getProductName() {
+		return productName;
+	}
+
+	public void setProductName(String productName) {
+		this.productName = productName;
 	}
 
 	public Double getTonCost() {
@@ -63,5 +82,13 @@ public class ProductSupplierDTO {
 
 	public void setDensity(Double density) {
 		this.density = density;
+	}
+
+	public String getObservations() {
+		return observations;
+	}
+
+	public void setObservations(String observations) {
+		this.observations = observations;
 	}
 }

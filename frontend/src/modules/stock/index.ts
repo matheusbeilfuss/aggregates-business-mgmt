@@ -2,6 +2,6 @@ export { Stock } from "./pages/Stock";
 export { StockEdit } from "./pages/StockEdit";
 export { StockReplenish } from "./pages/StockReplenish";
 
-export { useStocks, useStock, useCategories } from "./hooks";
+export { useStocks, useStock } from "./hooks";
 
-export type { Category, Product, StockItem } from "./types";
+export type { StockItem } from "./types";

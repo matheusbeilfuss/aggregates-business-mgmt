@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { Navigate, useNavigate, useParams } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
@@ -23,32 +23,37 @@ import {
 
 import { PageContainer, LoadingState, FormActions } from "@/components/shared";
 import { useStock } from "../hooks";
-import { useProductSuppliers } from "../hooks/useProductSuppliers";
 import { stockService } from "../services/stock.service";
 import {
   replenishSchema,
   type ReplenishFormData,
 } from "../schemas/stock.schemas";
 import { tonToM3, m3ToTon, calculateExpenseValue } from "../utils/calculations";
-import type { ProductSupplier } from "../types";
 import { ApiError } from "@/lib/api";
 import { usePageTitle } from "@/hooks/usePageTitle";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { TriangleAlert } from "lucide-react";
+import { useProductSuppliersByProductId } from "@/modules/product-supplier/hooks";
+import type { ProductSupplier } from "@/modules/product-supplier/types";
 
 export function StockReplenish() {
   usePageTitle("Reabastecer estoque");
 
-  const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+
+  const { id: rawStockId } = useParams<{ id: string }>();
+  const stockId = Number(rawStockId);
+  const validId = Number.isFinite(stockId) && stockId > 0;
 
   const {
     data: stock,
     loading: stockLoading,
     error: stockError,
-  } = useStock(id!);
+  } = useStock(stockId, { enabled: validId });
   const { data: productSuppliers, loading: suppliersLoading } =
-    useProductSuppliers(stock?.product.id ?? null);
+    useProductSuppliersByProductId(stock?.product.id, {
+      enabled: !!stock?.product.id,
+    });
 
   const [userEditedM3, setUserEditedM3] = useState(false);
   const [userEditedTon, setUserEditedTon] = useState(false);
@@ -66,7 +71,7 @@ export function StockReplenish() {
     },
   });
 
-  const loading = stockLoading || suppliersLoading;
+  const loading = stockLoading || (!!stock && suppliersLoading);
 
   useEffect(() => {
     if (stockError) {
@@ -74,6 +79,10 @@ export function StockReplenish() {
       navigate("/stocks");
     }
   }, [stockError, navigate]);
+
+  if (!validId) {
+    return <Navigate to="/stocks" replace />;
+  }
 
   const getSelectedSupplier = (): ProductSupplier | undefined => {
     const supplierId = form.getValues("supplierId");
@@ -157,10 +166,10 @@ export function StockReplenish() {
   };
 
   const onSubmit = async (data: ReplenishFormData) => {
-    if (!stock || !id) return;
+    if (!stock || !stockId) return;
 
     try {
-      await stockService.replenish(id, {
+      await stockService.replenish(stockId, {
         tonQuantity: data.tonQuantity,
         m3Quantity: data.m3Quantity,
         density: data.density,

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { Navigate, useNavigate, useParams } from "react-router-dom";
 import { DefaultValues, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
@@ -17,27 +17,34 @@ import {
 
 import { PageContainer, LoadingState, FormActions } from "@/components/shared";
 import { CategorySelect } from "../components/CategorySelect";
-import { useStock, useCategories } from "../hooks";
-import { stockService, productService } from "../services/stock.service";
+import { useStock } from "../hooks";
+import { stockService } from "../services/stock.service";
 import {
   editStockSchema,
   type EditStockFormData,
 } from "../schemas/stock.schemas";
 import { ApiError } from "@/lib/api";
 import { usePageTitle } from "@/hooks/usePageTitle";
+import { useCategories } from "@/modules/category/hooks";
+import { productService } from "@/modules/product/services/product.service";
 
 export function StockEdit() {
   usePageTitle("Editar estoque");
 
-  const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+
+  const { id: rawStockId } = useParams<{ id: string }>();
+  const stockId = Number(rawStockId);
+  const validId = Number.isFinite(stockId) && stockId > 0;
 
   const {
     data: stock,
     loading: stockLoading,
     error: stockError,
-  } = useStock(id!);
-  const { data: categories, loading: categoriesLoading } = useCategories();
+  } = useStock(stockId);
+  const { data: categories, loading: categoriesLoading } = useCategories({
+    enabled: validId,
+  });
 
   const [productId, setProductId] = useState<number | null>(null);
   const [isFormReady, setIsFormReady] = useState(false);
@@ -76,8 +83,12 @@ export function StockEdit() {
     }
   }, [stockError, navigate]);
 
+  if (!validId) {
+    return <Navigate to="/stocks" replace />;
+  }
+
   async function onSubmit(data: EditStockFormData) {
-    if (!productId || !id) return;
+    if (!productId || !stockId) return;
 
     try {
       await productService.update(productId, {
@@ -85,7 +96,7 @@ export function StockEdit() {
         categoryId: data.categoryId,
       });
 
-      await stockService.update(id, {
+      await stockService.update(stockId, {
         tonQuantity: data.tonQuantity,
         m3Quantity: data.m3Quantity,
         density: data.density,

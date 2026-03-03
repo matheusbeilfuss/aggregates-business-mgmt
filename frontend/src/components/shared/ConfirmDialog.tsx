@@ -14,6 +14,7 @@ interface ConfirmDialogProps {
   onOpenChange: (open: boolean) => void;
   title?: string;
   description: string;
+  descriptionAlign?: "center" | "justify" | "left";
   onConfirm: () => void;
   confirmLabel?: string;
   cancelLabel?: string;
@@ -25,6 +26,7 @@ export function ConfirmDialog({
   onOpenChange,
   title = "Você tem certeza?",
   description,
+  descriptionAlign = "center",
   onConfirm,
   confirmLabel = "Confirmar",
   cancelLabel = "Cancelar",
@@ -32,11 +34,17 @@ export function ConfirmDialog({
 }: ConfirmDialogProps) {
   const isDestructive = variant === "destructive";
 
+  const alignClass = {
+    center: "text-center",
+    justify: "text-justify",
+    left: "text-left",
+  }[descriptionAlign];
+
   return (
     <AlertDialog open={open} onOpenChange={onOpenChange}>
       <AlertDialogContent className="sm:max-w-[420px]">
         <AlertDialogHeader>
-          <div className="flex items-start gap-4">
+          <div className="flex items-center gap-4">
             {isDestructive && (
               <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-red-100">
                 <TriangleAlert className="h-5 w-5 text-red-600" />
@@ -50,7 +58,9 @@ export function ConfirmDialog({
           </div>
         </AlertDialogHeader>
 
-        <AlertDialogDescription className="mt-4 text-base text-foreground text-center">
+        <AlertDialogDescription
+          className={`mt-4 text-base text-foreground ${alignClass}`}
+        >
           {description}
         </AlertDialogDescription>
 

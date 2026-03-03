@@ -1,4 +1,4 @@
-import { Phone } from "../types";
+import { Phone } from "@/modules/client/types";
 
 export function selectPreferredPhone(phones: Phone[]): Phone | null {
   if (phones.length === 0) {

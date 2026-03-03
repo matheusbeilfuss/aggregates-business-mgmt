@@ -1,5 +1,7 @@
 package br.ufsc.aggregare.controller.exception;
 
+import static java.util.stream.Collectors.joining;
+
 import java.time.Instant;
 
 import org.springframework.dao.DataIntegrityViolationException;
@@ -19,6 +21,8 @@ import br.ufsc.aggregare.service.exception.ResourceNotFoundException;
 import br.ufsc.aggregare.validator.exception.ValidationException;
 
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.ConstraintViolationException;
 
 @ControllerAdvice
 public class ControllerExceptionHandler {
@@ -111,7 +115,7 @@ public class ControllerExceptionHandler {
 		HttpStatus status = HttpStatus.BAD_REQUEST;
 		String message = e.getBindingResult().getFieldErrors().stream()
 				.map(fieldError -> fieldError.getField() + ": " + fieldError.getDefaultMessage())
-				.collect(java.util.stream.Collectors.joining(", "));
+				.collect(joining(", "));
 		StandardError err = new StandardError(Instant.now(), status.value(), error, message, request.getRequestURI());
 		return ResponseEntity.status(status).body(err);
 	}
@@ -121,6 +125,17 @@ public class ControllerExceptionHandler {
 		String error = "Validation error";
 		HttpStatus status = HttpStatus.BAD_REQUEST;
 		StandardError err = new StandardError(Instant.now(), status.value(), error, e.getMessage(), request.getRequestURI());
+		return ResponseEntity.status(status).body(err);
+	}
+
+	@ExceptionHandler(ConstraintViolationException.class)
+	public ResponseEntity<StandardError> constraintViolation(ConstraintViolationException e, HttpServletRequest request) {
+		String error = "Validation error";
+		HttpStatus status = HttpStatus.BAD_REQUEST;
+		String message = e.getConstraintViolations().stream()
+				.map(ConstraintViolation::getMessage)
+				.collect(joining(", "));
+		StandardError err = new StandardError(Instant.now(), status.value(), error, message, request.getRequestURI());
 		return ResponseEntity.status(status).body(err);
 	}
 }

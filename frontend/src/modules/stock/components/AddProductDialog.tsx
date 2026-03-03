@@ -23,10 +23,10 @@ import {
 } from "@/components/ui/form";
 
 import { CategorySelect } from "./CategorySelect";
-import { productService } from "../services/stock.service";
 import { productSchema, type ProductFormData } from "../schemas/stock.schemas";
-import type { Category } from "../types";
 import { ApiError } from "@/lib/api";
+import { Category } from "@/modules/category/types";
+import { productService } from "@/modules/product/services/product.service";
 
 interface AddProductDialogProps {
   open: boolean;

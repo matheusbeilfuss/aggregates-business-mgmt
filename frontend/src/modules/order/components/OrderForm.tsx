@@ -7,6 +7,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { PageContainer, FormActions, LoadingState } from "@/components/shared";
 import { DatePicker } from "@/components/shared/DatePicker";
@@ -17,14 +18,14 @@ import { ProductSelect } from "./ProductSelect";
 import { QuantityCombobox } from "./QuantityCombobox";
 import { ClientCombobox } from "./ClientCombobox";
 import { toIsoDate } from "../utils/toIsoDate";
-import { Product } from "@/modules/stock/types";
-import { Client } from "../types";
 import { useEffect, useMemo } from "react";
 
-import { usePrices } from "../hooks/useOrders";
-import { useClient } from "../hooks/useClients";
 import { selectPreferredPhone } from "../utils/selectPreferredPhone";
 import { PhoneTypeSelect } from "./PhoneTypeSelect";
+import { Product } from "@/modules/product/types";
+import { Client } from "@/modules/client/types";
+import { useClient } from "@/modules/client/hooks";
+import { useCategoryPrices } from "@/modules/price/hooks";
 
 interface OrderFormProps {
   title: string;
@@ -55,10 +56,10 @@ export function OrderForm({
     [products, productId],
   );
 
-  const categoryId = selectedProduct?.category?.id ?? null;
-  const { data: categoryPrices = [] } = usePrices(categoryId);
+  const categoryId = selectedProduct?.category?.id;
+  const { data: categoryPrices } = useCategoryPrices(categoryId);
 
-  const { data: client } = useClient(clientId ? String(clientId) : null);
+  const { data: client } = useClient(clientId);
 
   useEffect(() => {
     if (!client) return;
@@ -103,7 +104,9 @@ export function OrderForm({
       return;
     }
 
-    const price = categoryPrices.find((p) => p.m3Volume === m3Quantity)?.price;
+    const price = (categoryPrices ?? []).find(
+      (p) => p.m3Volume === m3Quantity,
+    )?.price;
 
     form.setValue("orderValue", price);
   }, [orderType, m3Quantity, categoryPrices, form]);
@@ -395,7 +398,7 @@ export function OrderForm({
                     <FormControl>
                       <QuantityCombobox
                         value={field.value}
-                        prices={categoryPrices}
+                        prices={categoryPrices ?? []}
                         onChange={field.onChange}
                         disabled={!productId}
                         className={
@@ -460,11 +463,7 @@ export function OrderForm({
                 <FormItem>
                   <FormLabel>Informações adicionais</FormLabel>
                   <FormControl>
-                    <Input
-                      type="text"
-                      {...field}
-                      onFocus={(e) => e.target.select()}
-                    />
+                    <Textarea {...field} onFocus={(e) => e.target.select()} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

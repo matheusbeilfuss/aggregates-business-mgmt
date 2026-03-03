@@ -4,14 +4,15 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import br.ufsc.aggregare.model.Category;
 import br.ufsc.aggregare.repository.CategoryRepository;
+import br.ufsc.aggregare.repository.ProductRepository;
 import br.ufsc.aggregare.service.exception.DatabaseException;
 import br.ufsc.aggregare.service.exception.ResourceNotFoundException;
+import br.ufsc.aggregare.validator.CategoryValidator;
 
 import jakarta.persistence.EntityNotFoundException;
 
@@ -19,35 +20,45 @@ import jakarta.persistence.EntityNotFoundException;
 public class CategoryService {
 
 	private final CategoryRepository repository;
+	private final CategoryValidator validator;
 	private final PriceService priceService;
+	private final ProductRepository productRepository;
 
 	@Autowired
-	public CategoryService(CategoryRepository repository, PriceService priceService) {
+	public CategoryService(CategoryRepository repository, CategoryValidator validator, PriceService priceService, ProductRepository productRepository) {
 		this.repository = repository;
+		this.validator = validator;
 		this.priceService = priceService;
+		this.productRepository = productRepository;
 	}
 
+	@Transactional
 	public Category insert(Category category) {
-		repository.save(category);
-		priceService.createInitialPricesForCategory(category);
-		return category;
+		category.setName(category.getName().trim().replaceAll("\\s+", " "));
+		validator.validateInsert(category);
+		Category savedCategory = repository.save(category);
+		priceService.createInitialPricesForCategory(savedCategory);
+		return savedCategory;
 	}
 
+	@Transactional
 	public void delete(Long id) {
-		try {
-			if (!repository.existsById(id)){
-				throw new ResourceNotFoundException(id);
-			}
-			repository.deleteById(id);
-		} catch (EmptyResultDataAccessException e) {
+		if (!repository.existsById(id)) {
 			throw new ResourceNotFoundException(id);
-		} catch (DataIntegrityViolationException e) {
-			throw new DatabaseException(e.getMessage());
 		}
+
+		if (productRepository.existsByCategoryId(id)) {
+			throw new DatabaseException("Não é possível excluir uma categoria que possui produtos cadastrados.");
+		}
+
+		priceService.deleteAllByCategoryId(id);
+		repository.deleteById(id);
 	}
 
 	public Category update(Long id, Category newCategory) {
 		try {
+			newCategory.setName(newCategory.getName().trim().replaceAll("\\s+", " "));
+			validator.validateUpdate(id, newCategory);
 			Category existingCategory = repository.getReferenceById(id);
 			updateData(existingCategory, newCategory);
 			return repository.save(existingCategory);

@@ -10,4 +10,6 @@ import br.ufsc.aggregare.model.Order;
 public interface OrderRepository extends JpaRepository<Order, Long> {
 
 	List<Order> findByScheduledDate(LocalDate scheduledDate);
+
+	boolean existsByProductId(Long productId);
 }

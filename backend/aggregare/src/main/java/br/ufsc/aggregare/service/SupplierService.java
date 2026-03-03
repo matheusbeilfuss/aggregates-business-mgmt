@@ -45,15 +45,11 @@ public class SupplierService {
 	public Supplier update(Long id, Supplier newSupplier) {
 		try {
 			Supplier existingSupplier = repository.getReferenceById(id);
-			updateData(existingSupplier, newSupplier);
+			existingSupplier.setName(newSupplier.getName().trim());
 			return repository.save(existingSupplier);
 		} catch (EntityNotFoundException e) {
 			throw new ResourceNotFoundException(id);
 		}
-	}
-
-	public void updateData(Supplier existingSupplier, Supplier newSupplier) {
-		existingSupplier.setName(newSupplier.getName());
 	}
 
 	public Supplier findById(Long id) {

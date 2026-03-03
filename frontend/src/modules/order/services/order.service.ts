@@ -1,11 +1,5 @@
 import { api } from "@/lib/api";
-import {
-  Client,
-  CreateClientPayload,
-  CreateOrderPayload,
-  OrderItem,
-  Price,
-} from "../types";
+import { CreateOrderPayload, OrderItem } from "../types";
 
 export const orderService = {
   getByScheduledDate: (scheduledDate: string) =>
@@ -29,17 +23,4 @@ export const orderService = {
     }),
 
   delete: (id: number) => api.delete(`/orders/${id}`),
-};
-
-export const clientService = {
-  getAll: () => api.get<Client[]>(`/clients`),
-
-  getById: (clientId: number) => api.get<Client>(`/clients/${clientId}`),
-
-  create: (data: CreateClientPayload) => api.post<Client>(`/clients`, data),
-};
-
-export const categoryService = {
-  getPricesById: (categoryId: number) =>
-    api.get<Price[]>(`/categories/${categoryId}/prices`),
 };

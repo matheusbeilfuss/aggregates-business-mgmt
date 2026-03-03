@@ -1,20 +1,49 @@
 package br.ufsc.aggregare.model.dto;
 
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 
 public class ProductSupplierUpdateDTO {
 
+	@NotNull(message = "O fornecedor é obrigatório.")
+	private Long supplierId;
+
+	@NotNull(message = "O produto é obrigatório.")
+	private Long productId;
+
+	@NotNull(message = "O custo por tonelada é obrigatório.")
 	@Positive(message = "O custo por tonelada deve ser maior que zero.")
 	private Double tonCost;
 
+	@NotNull(message = "O custo por m³ é obrigatório.")
 	@Positive(message = "O custo por m³ deve ser maior que zero.")
 	private Double costPerCubicMeter;
 
+	@NotNull(message = "O custo por 5m³ é obrigatório.")
 	@Positive(message = "O custo por 5m³ deve ser maior que zero.")
 	private Double costFor5CubicMeters;
 
+	@NotNull(message = "A densidade é obrigatória.")
 	@Positive(message = "A densidade deve ser maior que zero.")
 	private Double density;
+
+	private String observations;
+
+	public Long getSupplierId() {
+		return supplierId;
+	}
+
+	public void setSupplierId(Long supplierId) {
+		this.supplierId = supplierId;
+	}
+
+	public Long getProductId() {
+		return productId;
+	}
+
+	public void setProductId(Long productId) {
+		this.productId = productId;
+	}
 
 	public Double getTonCost() {
 		return tonCost;
@@ -46,5 +75,13 @@ public class ProductSupplierUpdateDTO {
 
 	public void setDensity(Double density) {
 		this.density = density;
+	}
+
+	public String getObservations() {
+		return observations;
+	}
+
+	public void setObservations(String observations) {
+		this.observations = observations;
 	}
 }

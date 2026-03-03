@@ -5,7 +5,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Product } from "@/modules/stock/types";
+import { Product } from "@/modules/product/types";
 
 interface ProductSelectProps {
   value?: number;
@@ -40,7 +40,14 @@ export function ProductSelect({
             value={String(product.id)}
             className="cursor-pointer"
           >
-            {product.name}
+            <div className="flex w-full justify-between items-center gap-4">
+              <span>{product.name}</span>
+              {product.category?.name && (
+                <span className="text-xs text-muted-foreground">
+                  {product.category.name}
+                </span>
+              )}
+            </div>
           </SelectItem>
         ))}
       </SelectContent>

@@ -6,4 +6,5 @@ import br.ufsc.aggregare.model.Product;
 
 public interface ProductRepository extends JpaRepository<Product, Long> {
 
+	boolean existsByCategoryId(Long categoryId);
 }
