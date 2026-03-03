@@ -3,15 +3,15 @@ import { priceService } from "../services/price.service";
 import { useApi } from "@/hooks/useApi";
 import { Price } from "../types";
 
-export function useCategoryPrices(categoryId: number | null) {
+export function useCategoryPrices(categoryId: number, { enabled = true } = {}) {
   const fetcher = useCallback(
-    () => priceService.getByCategory(categoryId!),
+    () => priceService.getByCategory(categoryId),
     [categoryId],
   );
 
   const { data, loading, error, refetch } = useApi<Price[]>(fetcher, {
-    enabled: !!categoryId,
+    enabled,
   });
 
-  return { data: data ?? [], loading, error, refetch };
+  return { data: (data ?? []) as Price[], loading, error, refetch };
 }

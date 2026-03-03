@@ -26,8 +26,11 @@ export function ProductSupplierAdd() {
 
   const { categoryId: rawCategoryId } = useParams<{ categoryId: string }>();
   const categoryId = Number(rawCategoryId);
+  const validId = Number.isFinite(categoryId) && categoryId > 0;
 
-  const { data: category, loading: categoryLoading } = useCategory(categoryId);
+  const { data: category, loading: categoryLoading } = useCategory(categoryId, {
+    enabled: validId,
+  });
   const { data: suppliers, loading: suppliersLoading } = useSuppliers();
   const { data: allProducts, loading: productsLoading } = useProducts();
 

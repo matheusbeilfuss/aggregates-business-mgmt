@@ -15,6 +15,7 @@ export function useApi<T>(
   const fetchData = useCallback(async () => {
     if (!enabled) {
       setLoading(false);
+      setError(null);
       return;
     }
 

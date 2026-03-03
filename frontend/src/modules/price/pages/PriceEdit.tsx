@@ -51,26 +51,27 @@ export function PriceEdit() {
 
   const { categoryId: rawCategoryId } = useParams<{ categoryId: string }>();
   const categoryId = Number(rawCategoryId);
+  const validId = Number.isFinite(categoryId) && categoryId > 0;
 
   const {
     data: prices,
     loading: pricesLoading,
     error: pricesError,
     refetch: refetchPrices,
-  } = useCategoryPrices(categoryId);
+  } = useCategoryPrices(categoryId, { enabled: validId });
 
   const {
     data: productSuppliers,
     loading: suppliersLoading,
     error: suppliersError,
     refetch: refetchSuppliers,
-  } = useCategoryProductSuppliers(categoryId);
+  } = useCategoryProductSuppliers(categoryId, { enabled: validId });
 
   const {
     data: category,
     loading: categoryLoading,
     error: categoryError,
-  } = useCategory(categoryId);
+  } = useCategory(categoryId, { enabled: validId });
 
   const form = useForm<PriceUpdateFormData>({
     resolver: zodResolver(priceUpdateSchema),

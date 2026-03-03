@@ -56,10 +56,14 @@ export function OrderForm({
     [products, productId],
   );
 
-  const categoryId = selectedProduct?.category?.id ?? null;
-  const { data: categoryPrices = [] } = useCategoryPrices(categoryId);
+  const categoryId = selectedProduct?.category?.id;
+  const { data: categoryPrices = [] } = useCategoryPrices(categoryId ?? 0, {
+    enabled: !!categoryId,
+  });
 
-  const { data: client } = useClient(clientId ? String(clientId) : null);
+  const { data: client } = useClient(clientId ?? 0, {
+    enabled: !!clientId,
+  });
 
   useEffect(() => {
     if (!client) return;

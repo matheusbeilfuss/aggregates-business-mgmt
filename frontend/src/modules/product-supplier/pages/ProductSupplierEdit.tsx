@@ -23,13 +23,18 @@ export function ProductSupplierEdit() {
     }>();
   const categoryId = Number(rawCategoryId);
   const productSupplierId = Number(rawProductSupplierId);
+  const validIds =
+    Number.isFinite(categoryId) &&
+    Number.isFinite(productSupplierId) &&
+    categoryId > 0 &&
+    productSupplierId > 0;
 
   const {
     data: productSupplier,
     loading: productSupplierLoading,
     error,
-  } = useProductSupplier(productSupplierId);
-  const { data: category } = useCategory(categoryId);
+  } = useProductSupplier(productSupplierId, { enabled: validIds });
+  const { data: category } = useCategory(categoryId, { enabled: validIds });
   const { data: allProducts, loading: productsLoading } = useProducts();
   const { data: suppliers, loading: suppliersLoading } = useSuppliers();
 
