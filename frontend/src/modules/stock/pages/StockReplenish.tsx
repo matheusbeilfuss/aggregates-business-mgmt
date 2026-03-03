@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { Navigate, useNavigate, useParams } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
@@ -43,6 +43,7 @@ export function StockReplenish() {
 
   const { id: rawStockId } = useParams<{ id: string }>();
   const stockId = Number(rawStockId);
+  const validId = Number.isFinite(stockId) && stockId > 0;
 
   const {
     data: stock,
@@ -68,7 +69,7 @@ export function StockReplenish() {
     },
   });
 
-  const loading = stockLoading || suppliersLoading;
+  const loading = stockLoading || (!!stock && suppliersLoading);
 
   useEffect(() => {
     if (stockError) {
@@ -76,6 +77,10 @@ export function StockReplenish() {
       navigate("/stocks");
     }
   }, [stockError, navigate]);
+
+  if (!validId) {
+    return <Navigate to="/stocks" replace />;
+  }
 
   const getSelectedSupplier = (): ProductSupplier | undefined => {
     const supplierId = form.getValues("supplierId");

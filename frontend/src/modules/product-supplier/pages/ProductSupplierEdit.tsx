@@ -49,12 +49,7 @@ export function ProductSupplierEdit() {
     }
   }, [error, navigate, categoryId]);
 
-  if (
-    !rawCategoryId ||
-    !rawProductSupplierId ||
-    Number.isNaN(categoryId) ||
-    Number.isNaN(productSupplierId)
-  ) {
+  if (!validIds) {
     return <Navigate to="/prices" replace />;
   }
 

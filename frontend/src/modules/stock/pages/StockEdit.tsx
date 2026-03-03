@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { Navigate, useNavigate, useParams } from "react-router-dom";
 import { DefaultValues, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
@@ -35,6 +35,7 @@ export function StockEdit() {
 
   const { id: rawStockId } = useParams<{ id: string }>();
   const stockId = Number(rawStockId);
+  const validId = Number.isFinite(stockId) && stockId > 0;
 
   const {
     data: stock,
@@ -79,6 +80,10 @@ export function StockEdit() {
       navigate("/stocks");
     }
   }, [stockError, navigate]);
+
+  if (!validId) {
+    return <Navigate to="/stocks" replace />;
+  }
 
   async function onSubmit(data: EditStockFormData) {
     if (!productId || !stockId) return;

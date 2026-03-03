@@ -55,7 +55,7 @@ export function ProductSupplierAdd() {
     },
   });
 
-  if (!rawCategoryId || Number.isNaN(categoryId)) {
+  if (!validId) {
     return <Navigate to="/prices" replace />;
   }
 
