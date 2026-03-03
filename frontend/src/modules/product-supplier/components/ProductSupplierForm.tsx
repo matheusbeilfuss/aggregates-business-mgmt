@@ -15,15 +15,15 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import {
-  SupplierAddFormData,
-  SupplierEditFormData,
+  ProductSupplierAddFormData,
+  ProductSupplierEditFormData,
 } from "../schemas/productSupplier.schema";
 import { Product } from "@/modules/product/types";
-import { Supplier } from "../types";
-import { SupplierCombobox } from "./SupplierCombobox";
+import { Supplier } from "@/modules/supplier/types";
+import { ProductSupplierCombobox } from "./ProductSupplierCombobox";
 
-type AddControl = Control<SupplierAddFormData>;
-type EditControl = Control<SupplierEditFormData>;
+type AddControl = Control<ProductSupplierAddFormData>;
+type EditControl = Control<ProductSupplierEditFormData>;
 
 interface BaseProps {
   control: AddControl | EditControl;
@@ -32,7 +32,7 @@ interface BaseProps {
 interface AddProps extends BaseProps {
   mode: "add";
   control: AddControl;
-  setValue: UseFormSetValue<SupplierAddFormData>;
+  setValue: UseFormSetValue<ProductSupplierAddFormData>;
   supplierId: number | undefined;
   suppliers: Supplier[];
   products: Product[];
@@ -45,9 +45,9 @@ interface EditProps extends BaseProps {
   suppliers: Supplier[];
 }
 
-type SupplierFormProps = AddProps | EditProps;
+type ProductSupplierFormProps = AddProps | EditProps;
 
-export function SupplierForm(props: SupplierFormProps) {
+export function ProductSupplierForm(props: ProductSupplierFormProps) {
   const { control, mode } = props;
 
   return (
@@ -61,7 +61,7 @@ export function SupplierForm(props: SupplierFormProps) {
               <FormItem>
                 <FormLabel>Fornecedor</FormLabel>
                 <FormControl>
-                  <SupplierCombobox
+                  <ProductSupplierCombobox
                     value={field.value ?? ""}
                     supplierId={props.supplierId}
                     suppliers={props.suppliers}

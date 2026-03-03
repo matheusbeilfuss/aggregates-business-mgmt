@@ -21,7 +21,7 @@ import {
 import { Separator } from "@/components/ui/separator";
 import { useCategoryPrices } from "../hooks/useCategoryPrices";
 import { useCategoryProductSuppliers } from "@/modules/product-supplier/hooks/useCategoryProductSuppliers";
-import { useCategory } from "@/modules/category/hooks/useCategory";
+import { useCategory } from "@/modules/category/hooks";
 import { priceService } from "../services/price.service";
 import { productSupplierService } from "@/modules/product-supplier/services/productSupplier.service";
 import { ApiError } from "@/lib/api";
@@ -29,7 +29,7 @@ import {
   priceUpdateSchema,
   type PriceUpdateFormData,
 } from "../schemas/price.schema";
-import { SuppliersSection } from "../components/SuppliersSection";
+import { SupplierSection } from "../components/SupplierSection";
 
 const VOLUME_FIELDS = [
   { name: "deposito" as const, label: "Depósito", volume: 0 },
@@ -234,7 +234,7 @@ export function PriceEdit() {
 
           <Separator />
 
-          <SuppliersSection
+          <SupplierSection
             categoryId={categoryId}
             productSuppliers={productSuppliers}
             prices={prices}

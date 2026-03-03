@@ -7,12 +7,13 @@ import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import {
-  SupplierEditFormData,
-  supplierEditSchema,
+  ProductSupplierEditFormData,
+  productSupplierEditSchema,
 } from "../schemas/productSupplier.schema";
 import { productSupplierService } from "../services/productSupplier.service";
-import { ProductSupplier, Supplier } from "../types";
-import { SupplierForm } from "./SupplierForm";
+import { ProductSupplier } from "../types";
+import { Supplier } from "@/modules/supplier/types";
+import { ProductSupplierForm } from "./ProductSupplierForm";
 import { Form } from "@/components/ui/form";
 
 interface SupplierEditFormProps {
@@ -33,8 +34,8 @@ export function SupplierEditForm({
 }: SupplierEditFormProps) {
   const navigate = useNavigate();
 
-  const form = useForm<SupplierEditFormData>({
-    resolver: zodResolver(supplierEditSchema),
+  const form = useForm<ProductSupplierEditFormData>({
+    resolver: zodResolver(productSupplierEditSchema),
     defaultValues: {
       supplierId: productSupplier.supplierId,
       productId: productSupplier.productId,
@@ -46,7 +47,7 @@ export function SupplierEditForm({
     },
   });
 
-  async function onSubmit(data: SupplierEditFormData) {
+  async function onSubmit(data: ProductSupplierEditFormData) {
     try {
       await productSupplierService.update(productSupplierId, {
         supplierId: data.supplierId,
@@ -77,7 +78,7 @@ export function SupplierEditForm({
       )}
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-          <SupplierForm
+          <ProductSupplierForm
             mode="edit"
             control={form.control}
             products={products}

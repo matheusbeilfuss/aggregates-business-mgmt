@@ -19,12 +19,12 @@ import { formatCurrency } from "@/utils/money";
 import { ProductSupplier } from "@/modules/product-supplier/types";
 import { Price } from "../types";
 import { ApiError } from "@/lib/api";
-import { supplierService } from "@/modules/product-supplier/services/productSupplier.service";
+import { supplierService } from "@/modules/supplier/services/supplier.service";
 import { useState, useRef } from "react";
 import { toast } from "sonner";
 import { RenameSupplierDialog } from "@/modules/product-supplier/components/RenameSupplierDialog";
 
-interface SuppliersSectionProps {
+interface ProductSuppliersSectionProps {
   categoryId: number;
   productSuppliers: ProductSupplier[];
   prices: Price[];
@@ -32,13 +32,13 @@ interface SuppliersSectionProps {
   onRefetch: () => void;
 }
 
-export function SuppliersSection({
+export function SupplierSection({
   categoryId,
   productSuppliers,
   prices,
   onDeleteSupplier,
   onRefetch,
-}: SuppliersSectionProps) {
+}: ProductSuppliersSectionProps) {
   const navigate = useNavigate();
 
   const [supplierToRename, setSupplierToRename] = useState<{

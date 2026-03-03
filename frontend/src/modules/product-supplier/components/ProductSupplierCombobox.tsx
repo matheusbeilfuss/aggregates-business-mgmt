@@ -6,10 +6,10 @@ import {
   ComboboxItem,
   ComboboxList,
 } from "@/components/ui/combobox";
-import { Supplier } from "../types";
+import { Supplier } from "@/modules/supplier/types";
 import { useMemo } from "react";
 
-interface SupplierComboboxProps {
+interface ProductSupplierComboboxProps {
   value: string;
   supplierId?: number;
   suppliers: Supplier[];
@@ -18,14 +18,14 @@ interface SupplierComboboxProps {
   onSupplierSelect: (supplier: Supplier) => void;
 }
 
-export function SupplierCombobox({
+export function ProductSupplierCombobox({
   value,
   supplierId,
   suppliers,
   className,
   onChange,
   onSupplierSelect,
-}: SupplierComboboxProps) {
+}: ProductSupplierComboboxProps) {
   const filteredSuppliers = useMemo(
     () =>
       suppliers.filter((s) =>

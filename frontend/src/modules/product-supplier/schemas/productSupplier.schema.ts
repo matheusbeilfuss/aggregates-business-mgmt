@@ -16,7 +16,7 @@ const baseSchema = z.object({
   observations: z.string().optional(),
 });
 
-export const supplierAddSchema = baseSchema
+export const productSupplierAddSchema = baseSchema
   .extend({
     productId: z
       .number({ required_error: "Selecione um produto." })
@@ -34,10 +34,14 @@ export const supplierAddSchema = baseSchema
     }
   });
 
-export const supplierEditSchema = baseSchema.extend({
+export const productSupplierEditSchema = baseSchema.extend({
   supplierId: z.number({ required_error: "Selecione um fornecedor." }).min(1),
   productId: z.number({ required_error: "Selecione um produto." }).min(1),
 });
 
-export type SupplierAddFormData = z.infer<typeof supplierAddSchema>;
-export type SupplierEditFormData = z.infer<typeof supplierEditSchema>;
+export type ProductSupplierAddFormData = z.infer<
+  typeof productSupplierAddSchema
+>;
+export type ProductSupplierEditFormData = z.infer<
+  typeof productSupplierEditSchema
+>;

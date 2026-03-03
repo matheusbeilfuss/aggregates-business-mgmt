@@ -1,8 +1,3 @@
-export interface Supplier {
-  id: number;
-  name: string;
-}
-
 export interface ProductSupplier {
   id: number;
   productId: number;

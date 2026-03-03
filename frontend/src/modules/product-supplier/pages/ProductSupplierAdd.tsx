@@ -8,20 +8,18 @@ import { PageContainer, LoadingState, FormActions } from "@/components/shared";
 import { Form } from "@/components/ui/form";
 
 import {
-  supplierAddSchema,
-  type SupplierAddFormData,
+  productSupplierAddSchema,
+  type ProductSupplierAddFormData,
 } from "../schemas/productSupplier.schema";
-import {
-  productSupplierService,
-  supplierService,
-} from "../services/productSupplier.service";
+import { productSupplierService } from "../services/productSupplier.service";
+import { supplierService } from "@/modules/supplier/services/supplier.service";
 import { useProducts } from "@/modules/product/hooks";
-import { SupplierForm } from "../components/SupplierForm";
+import { ProductSupplierForm } from "../components/ProductSupplierForm";
 import { ApiError } from "@/lib/api";
-import { useSuppliers } from "../hooks/useSuppliers";
-import { useCategory } from "@/modules/category/hooks/useCategory";
+import { useSuppliers } from "@/modules/supplier/hooks";
+import { useCategory } from "@/modules/category/hooks";
 
-export function SupplierAdd() {
+export function ProductSupplierAdd() {
   usePageTitle("Adicionar Fornecedor");
 
   const navigate = useNavigate();
@@ -37,8 +35,8 @@ export function SupplierAdd() {
     (p) => p.category?.id === categoryId,
   );
 
-  const form = useForm<SupplierAddFormData>({
-    resolver: zodResolver(supplierAddSchema),
+  const form = useForm<ProductSupplierAddFormData>({
+    resolver: zodResolver(productSupplierAddSchema),
     defaultValues: {
       supplierId: undefined,
       productId: undefined,
@@ -54,7 +52,7 @@ export function SupplierAdd() {
     return <Navigate to="/prices" replace />;
   }
 
-  async function onSubmit(data: SupplierAddFormData) {
+  async function onSubmit(data: ProductSupplierAddFormData) {
     try {
       let supplierId = data.supplierId;
 
@@ -108,7 +106,7 @@ export function SupplierAdd() {
       )}
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-          <SupplierForm
+          <ProductSupplierForm
             mode="add"
             control={form.control}
             setValue={form.setValue}

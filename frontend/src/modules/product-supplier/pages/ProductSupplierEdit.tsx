@@ -6,12 +6,12 @@ import { usePageTitle } from "@/hooks/usePageTitle";
 import { PageContainer, LoadingState } from "@/components/shared";
 
 import { useProductSupplier } from "../hooks/useProductSupplier";
-import { useCategory } from "@/modules/category/hooks/useCategory";
+import { useCategory } from "@/modules/category/hooks";
 import { useProducts } from "@/modules/product/hooks/useProducts";
-import { SupplierEditForm } from "../components/SupplierEditForm";
-import { useSuppliers } from "../hooks/useSuppliers";
+import { SupplierEditForm } from "../components/ProductSupplierEditForm";
+import { useSuppliers } from "@/modules/supplier/hooks";
 
-export function SupplierEdit() {
+export function ProductSupplierEdit() {
   usePageTitle("Editar Fornecedor");
 
   const navigate = useNavigate();

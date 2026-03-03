@@ -3,7 +3,6 @@ import {
   ProductSupplier,
   ProductSupplierInput,
   ProductSupplierUpdate,
-  Supplier,
 } from "../types";
 
 export const productSupplierService = {
@@ -22,13 +21,4 @@ export const productSupplierService = {
     api.put<ProductSupplier>(`/product-suppliers/${id}`, data),
 
   delete: (id: number) => api.delete(`/product-suppliers/${id}`),
-};
-
-export const supplierService = {
-  getAll: () => api.get<Supplier[]>("/suppliers"),
-
-  insert: (data: { name: string }) => api.post<Supplier>("/suppliers", data),
-
-  update: (id: number, data: { name: string }) =>
-    api.put<Supplier>(`/suppliers/${id}`, data),
 };
