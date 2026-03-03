@@ -162,16 +162,10 @@ export function SupplierSection({
                     </TableCell>
                     <TableCell
                       className={
-                        ps.costFor5CubicMeters
-                          ? fiveM3Profit >= 0
-                            ? "text-green-600"
-                            : "text-red-500"
-                          : ""
+                        fiveM3Profit >= 0 ? "text-green-600" : "text-red-500"
                       }
                     >
-                      {ps.costFor5CubicMeters
-                        ? formatCurrency(fiveM3Profit)
-                        : "-"}
+                      {formatCurrency(fiveM3Profit)}
                     </TableCell>
                     <TableCell>
                       <SupplierActions

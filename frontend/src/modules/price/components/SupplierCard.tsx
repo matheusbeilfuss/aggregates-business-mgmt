@@ -60,21 +60,13 @@ export function SupplierCard({
             {formatCurrency(oneM3Profit)}
           </dd>
 
-          {ps.costFor5CubicMeters && (
-            <>
-              <dt className="text-muted-foreground">Custo 5m³</dt>
-              <dd>{formatCurrency(ps.costFor5CubicMeters)}</dd>
+          <dt className="text-muted-foreground">Custo 5m³</dt>
+          <dd>{formatCurrency(ps.costFor5CubicMeters ?? 0)}</dd>
 
-              <dt className="text-muted-foreground">Lucro 5m³</dt>
-              <dd
-                className={
-                  fiveM3Profit >= 0 ? "text-green-600" : "text-red-500"
-                }
-              >
-                {formatCurrency(fiveM3Profit)}
-              </dd>
-            </>
-          )}
+          <dt className="text-muted-foreground">Lucro 5m³</dt>
+          <dd className={fiveM3Profit >= 0 ? "text-green-600" : "text-red-500"}>
+            {formatCurrency(fiveM3Profit)}
+          </dd>
         </dl>
       </CardContent>
     </Card>
