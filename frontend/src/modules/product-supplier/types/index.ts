@@ -6,7 +6,7 @@ export interface ProductSupplier {
   productName: string;
   tonCost: number;
   costPerCubicMeter: number;
-  costFor5CubicMeters?: number;
+  costFor5CubicMeters: number;
   density: number;
   observations?: string;
 }

@@ -8,7 +8,7 @@ import { PageContainer, LoadingState } from "@/components/shared";
 import { useProductSupplier } from "../hooks/useProductSupplier";
 import { useCategory } from "@/modules/category/hooks";
 import { useProducts } from "@/modules/product/hooks/useProducts";
-import { SupplierEditForm } from "../components/ProductSupplierEditForm";
+import { ProductSupplierEditForm } from "../components/ProductSupplierEditForm";
 import { useSuppliers } from "@/modules/supplier/hooks";
 
 export function ProductSupplierEdit() {
@@ -67,7 +67,7 @@ export function ProductSupplierEdit() {
   }
 
   return (
-    <SupplierEditForm
+    <ProductSupplierEditForm
       productSupplier={productSupplier}
       products={products}
       suppliers={suppliers ?? []}

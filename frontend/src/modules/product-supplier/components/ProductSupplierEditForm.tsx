@@ -16,7 +16,7 @@ import { Supplier } from "@/modules/supplier/types";
 import { ProductSupplierForm } from "./ProductSupplierForm";
 import { Form } from "@/components/ui/form";
 
-interface SupplierEditFormProps {
+interface ProductSupplierEditFormProps {
   productSupplier: ProductSupplier;
   products: Product[];
   suppliers: Supplier[];
@@ -24,14 +24,15 @@ interface SupplierEditFormProps {
   categoryId: number;
   productSupplierId: number;
 }
-export function SupplierEditForm({
+
+export function ProductSupplierEditForm({
   productSupplier,
   products,
   suppliers,
   category,
   categoryId,
   productSupplierId,
-}: SupplierEditFormProps) {
+}: ProductSupplierEditFormProps) {
   const navigate = useNavigate();
 
   const form = useForm<ProductSupplierEditFormData>({
@@ -42,7 +43,7 @@ export function SupplierEditForm({
       density: productSupplier.density,
       tonCost: productSupplier.tonCost,
       costPerCubicMeter: productSupplier.costPerCubicMeter,
-      costFor5CubicMeters: productSupplier.costFor5CubicMeters ?? 0,
+      costFor5CubicMeters: productSupplier.costFor5CubicMeters,
       observations: productSupplier.observations ?? "",
     },
   });

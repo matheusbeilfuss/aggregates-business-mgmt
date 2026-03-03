@@ -221,12 +221,7 @@ export function ProductSupplierForm(props: ProductSupplierFormProps) {
           <FormItem>
             <FormLabel>Custo por 5m³ (R$) </FormLabel>
             <FormControl>
-              <Input
-                type="number"
-                step="0.01"
-                {...field}
-                value={field.value ?? ""}
-              />
+              <Input type="number" step="0.01" {...field} />
             </FormControl>
             <FormMessage />
           </FormItem>
