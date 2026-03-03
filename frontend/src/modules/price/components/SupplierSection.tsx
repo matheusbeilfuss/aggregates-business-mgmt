@@ -19,6 +19,7 @@ import { supplierService } from "@/modules/supplier/services/supplier.service";
 import { RenameSupplierDialog } from "@/modules/product-supplier/components/RenameSupplierDialog";
 import { SupplierActions } from "./SupplierActions";
 import { SupplierSectionMobile } from "./SupplierSectionMobile";
+import { useIsMobile } from "@/hooks/useMobile";
 
 interface ProductSuppliersSectionProps {
   categoryId: number;
@@ -36,6 +37,7 @@ export function SupplierSection({
   onRefetch,
 }: ProductSuppliersSectionProps) {
   const navigate = useNavigate();
+  const isMobile = useIsMobile();
 
   const [supplierToRename, setSupplierToRename] = useState<{
     id: number;
@@ -72,7 +74,6 @@ export function SupplierSection({
 
   const oneM3Price = prices.find((p) => p.m3Volume === 1)?.price ?? 0;
   const fiveM3Price = prices.find((p) => p.m3Volume === 5)?.price ?? 0;
-
   const empty = productSuppliers.length === 0;
 
   return (
@@ -93,102 +94,99 @@ export function SupplierSection({
         <p className="text-center text-muted-foreground py-8">
           Nenhum fornecedor cadastrado para essa categoria.
         </p>
+      ) : isMobile ? (
+        <SupplierSectionMobile
+          productSuppliers={productSuppliers}
+          categoryId={categoryId}
+          oneM3Price={oneM3Price}
+          fiveM3Price={fiveM3Price}
+          onRename={openRenameDialog}
+          onDelete={onDeleteSupplier}
+        />
       ) : (
-        <>
-          <div className="hidden md:block mb-10">
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Fornecedor</TableHead>
-                  <TableHead>Material</TableHead>
-                  <TableHead>Densidade</TableHead>
-                  <TableHead>Custo Tonelada</TableHead>
-                  <TableHead>
-                    Custo m<sup>3</sup>
-                  </TableHead>
-                  <TableHead>
-                    Lucro m<sup>3</sup>
-                  </TableHead>
-                  <TableHead>
-                    Custo 5m<sup>3</sup>
-                  </TableHead>
-                  <TableHead>
-                    Lucro 5m<sup>3</sup>
-                  </TableHead>
-                  <TableHead />
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {productSuppliers.map((ps) => {
-                  const oneM3Profit = oneM3Price - ps.costPerCubicMeter;
-                  const fiveM3Profit =
-                    fiveM3Price - (ps.costFor5CubicMeters ?? 0);
-                  return (
-                    <TableRow key={ps.id}>
-                      <TableCell>
-                        <span className="font-medium flex items-center gap-2">
-                          {ps.supplierName}
-                          {ps.observations && (
-                            <Badge variant="secondary" className="font-normal">
-                              {ps.observations}
-                            </Badge>
-                          )}
-                        </span>
-                      </TableCell>
-                      <TableCell>{ps.productName}</TableCell>
-                      <TableCell>
-                        {ps.density.toLocaleString("pt-BR")}
-                      </TableCell>
-                      <TableCell>{formatCurrency(ps.tonCost)}</TableCell>
-                      <TableCell>
-                        {formatCurrency(ps.costPerCubicMeter)}
-                      </TableCell>
-                      <TableCell
-                        className={
-                          oneM3Profit >= 0 ? "text-green-600" : "text-red-500"
-                        }
-                      >
-                        {formatCurrency(oneM3Profit)}
-                      </TableCell>
-                      <TableCell>
-                        {formatCurrency(ps.costFor5CubicMeters ?? 0)}
-                      </TableCell>
-                      <TableCell
-                        className={
-                          ps.costFor5CubicMeters
-                            ? fiveM3Profit >= 0
-                              ? "text-green-600"
-                              : "text-red-500"
-                            : ""
-                        }
-                      >
-                        {ps.costFor5CubicMeters
-                          ? formatCurrency(fiveM3Profit)
-                          : "-"}
-                      </TableCell>
-                      <TableCell>
-                        <SupplierActions
-                          ps={ps}
-                          categoryId={categoryId}
-                          onRename={openRenameDialog}
-                          onDelete={onDeleteSupplier}
-                        />
-                      </TableCell>
-                    </TableRow>
-                  );
-                })}
-              </TableBody>
-            </Table>
-          </div>
-
-          <SupplierSectionMobile
-            productSuppliers={productSuppliers}
-            prices={prices}
-            categoryId={categoryId}
-            onRename={openRenameDialog}
-            onDelete={onDeleteSupplier}
-          />
-        </>
+        <div className="mb-10">
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Fornecedor</TableHead>
+                <TableHead>Material</TableHead>
+                <TableHead>Densidade</TableHead>
+                <TableHead>Custo Tonelada</TableHead>
+                <TableHead>
+                  Custo m<sup>3</sup>
+                </TableHead>
+                <TableHead>
+                  Lucro m<sup>3</sup>
+                </TableHead>
+                <TableHead>
+                  Custo 5m<sup>3</sup>
+                </TableHead>
+                <TableHead>
+                  Lucro 5m<sup>3</sup>
+                </TableHead>
+                <TableHead />
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {productSuppliers.map((ps) => {
+                const oneM3Profit = oneM3Price - ps.costPerCubicMeter;
+                const fiveM3Profit =
+                  fiveM3Price - (ps.costFor5CubicMeters ?? 0);
+                return (
+                  <TableRow key={ps.id}>
+                    <TableCell>
+                      <span className="font-medium flex items-center gap-2">
+                        {ps.supplierName}
+                        {ps.observations && (
+                          <Badge variant="secondary" className="font-normal">
+                            {ps.observations}
+                          </Badge>
+                        )}
+                      </span>
+                    </TableCell>
+                    <TableCell>{ps.productName}</TableCell>
+                    <TableCell>{ps.density.toLocaleString("pt-BR")}</TableCell>
+                    <TableCell>{formatCurrency(ps.tonCost)}</TableCell>
+                    <TableCell>
+                      {formatCurrency(ps.costPerCubicMeter)}
+                    </TableCell>
+                    <TableCell
+                      className={
+                        oneM3Profit >= 0 ? "text-green-600" : "text-red-500"
+                      }
+                    >
+                      {formatCurrency(oneM3Profit)}
+                    </TableCell>
+                    <TableCell>
+                      {formatCurrency(ps.costFor5CubicMeters ?? 0)}
+                    </TableCell>
+                    <TableCell
+                      className={
+                        ps.costFor5CubicMeters
+                          ? fiveM3Profit >= 0
+                            ? "text-green-600"
+                            : "text-red-500"
+                          : ""
+                      }
+                    >
+                      {ps.costFor5CubicMeters
+                        ? formatCurrency(fiveM3Profit)
+                        : "-"}
+                    </TableCell>
+                    <TableCell>
+                      <SupplierActions
+                        ps={ps}
+                        categoryId={categoryId}
+                        onRename={openRenameDialog}
+                        onDelete={onDeleteSupplier}
+                      />
+                    </TableCell>
+                  </TableRow>
+                );
+              })}
+            </TableBody>
+          </Table>
+        </div>
       )}
 
       <RenameSupplierDialog
