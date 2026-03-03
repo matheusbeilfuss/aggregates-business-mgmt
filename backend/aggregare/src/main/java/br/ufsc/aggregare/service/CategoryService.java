@@ -32,12 +32,13 @@ public class CategoryService {
 		this.productRepository = productRepository;
 	}
 
+	@Transactional
 	public Category insert(Category category) {
 		category.setName(category.getName().trim().replaceAll("\\s+", " "));
 		validator.validateInsert(category);
-		repository.save(category);
-		priceService.createInitialPricesForCategory(category);
-		return category;
+		Category savedCategory = repository.save(category);
+		priceService.createInitialPricesForCategory(savedCategory);
+		return savedCategory;
 	}
 
 	@Transactional
