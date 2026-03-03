@@ -57,13 +57,9 @@ export function OrderForm({
   );
 
   const categoryId = selectedProduct?.category?.id;
-  const { data: categoryPrices = [] } = useCategoryPrices(categoryId ?? 0, {
-    enabled: !!categoryId,
-  });
+  const { data: categoryPrices } = useCategoryPrices(categoryId);
 
-  const { data: client } = useClient(clientId ?? 0, {
-    enabled: !!clientId,
-  });
+  const { data: client } = useClient(clientId);
 
   useEffect(() => {
     if (!client) return;
@@ -108,7 +104,9 @@ export function OrderForm({
       return;
     }
 
-    const price = categoryPrices.find((p) => p.m3Volume === m3Quantity)?.price;
+    const price = (categoryPrices ?? []).find(
+      (p) => p.m3Volume === m3Quantity,
+    )?.price;
 
     form.setValue("orderValue", price);
   }, [orderType, m3Quantity, categoryPrices, form]);
@@ -400,7 +398,7 @@ export function OrderForm({
                     <FormControl>
                       <QuantityCombobox
                         value={field.value}
-                        prices={categoryPrices}
+                        prices={categoryPrices ?? []}
                         onChange={field.onChange}
                         disabled={!productId}
                         className={

@@ -86,10 +86,10 @@ export function PriceEdit() {
   });
 
   useEffect(() => {
-    if (prices.length === 0) return;
+    if ((prices ?? []).length === 0) return;
 
     const byVolume = Object.fromEntries(
-      prices.map((p) => [p.m3Volume, p.price]),
+      (prices ?? []).map((p) => [p.m3Volume, p.price]),
     );
 
     form.reset({
@@ -103,7 +103,7 @@ export function PriceEdit() {
   }, [prices, form]);
 
   async function onSubmitPrices(data: PriceUpdateFormData) {
-    const updated = prices.map((p) => {
+    const updated = (prices ?? []).map((p) => {
       const field = VOLUME_FIELDS.find((f) => f.volume === p.m3Volume);
       return { ...p, price: field ? data[field.name] : p.price };
     });
@@ -237,8 +237,8 @@ export function PriceEdit() {
 
           <SupplierSection
             categoryId={categoryId}
-            productSuppliers={productSuppliers}
-            prices={prices}
+            productSuppliers={productSuppliers ?? []}
+            prices={prices ?? []}
             onDeleteSupplier={setSupplierToDelete}
             onRefetch={refetchSuppliers}
           />
@@ -252,7 +252,9 @@ export function PriceEdit() {
         }}
         title="Você tem certeza que deseja excluir este fornecedor?"
         description={(() => {
-          const ps = productSuppliers.find((ps) => ps.id === supplierToDelete);
+          const ps = (productSuppliers ?? []).find(
+            (ps) => ps.id === supplierToDelete,
+          );
           return ps ? `${ps.supplierName} - ${ps.productName}` : "";
         })()}
         onConfirm={handleDeleteSupplier}

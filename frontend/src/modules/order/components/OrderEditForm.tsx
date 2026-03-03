@@ -24,9 +24,7 @@ export function OrderEditForm({ orderId }: OrderEditFormProps) {
   const { data: order, loading: orderLoading } = useOrder(orderId);
   const { data: products } = useProducts();
   const { data: clients } = useClients();
-  const { data: client } = useClient(
-    order?.client ? String(order.client.id) : null,
-  );
+  const { data: client } = useClient(order?.client?.id);
 
   const form = useForm<OrderFormData>({
     resolver: zodResolver(orderSchema),

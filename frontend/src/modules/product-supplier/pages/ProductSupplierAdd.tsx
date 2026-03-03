@@ -31,8 +31,12 @@ export function ProductSupplierAdd() {
   const { data: category, loading: categoryLoading } = useCategory(categoryId, {
     enabled: validId,
   });
-  const { data: suppliers, loading: suppliersLoading } = useSuppliers();
-  const { data: allProducts, loading: productsLoading } = useProducts();
+  const { data: suppliers, loading: suppliersLoading } = useSuppliers({
+    enabled: validId,
+  });
+  const { data: allProducts, loading: productsLoading } = useProducts({
+    enabled: validId,
+  });
 
   const products = (allProducts ?? []).filter(
     (p) => p.category?.id === categoryId,
@@ -114,7 +118,7 @@ export function ProductSupplierAdd() {
             control={form.control}
             setValue={form.setValue}
             supplierId={form.watch("supplierId")}
-            suppliers={suppliers}
+            suppliers={suppliers ?? []}
             products={products}
           />
         </form>

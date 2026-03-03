@@ -39,16 +39,18 @@ import type { ProductSupplier } from "@/modules/product-supplier/types";
 export function StockReplenish() {
   usePageTitle("Reabastecer estoque");
 
-  const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+
+  const { id: rawStockId } = useParams<{ id: string }>();
+  const stockId = Number(rawStockId);
 
   const {
     data: stock,
     loading: stockLoading,
     error: stockError,
-  } = useStock(id!);
+  } = useStock(stockId);
   const { data: productSuppliers, loading: suppliersLoading } =
-    useProductSuppliersByProductId(stock?.product.id ?? null);
+    useProductSuppliersByProductId(stock?.product.id);
 
   const [userEditedM3, setUserEditedM3] = useState(false);
   const [userEditedTon, setUserEditedTon] = useState(false);
@@ -157,10 +159,10 @@ export function StockReplenish() {
   };
 
   const onSubmit = async (data: ReplenishFormData) => {
-    if (!stock || !id) return;
+    if (!stock || !stockId) return;
 
     try {
-      await stockService.replenish(id, {
+      await stockService.replenish(stockId, {
         tonQuantity: data.tonQuantity,
         m3Quantity: data.m3Quantity,
         density: data.density,

@@ -9,11 +9,11 @@ import type {
 export const stockService = {
   getAll: () => api.get<StockItem[]>("/stocks"),
 
-  getById: (id: string) => api.get<StockDetail>(`/stocks/${id}`),
+  getById: (id: number) => api.get<StockDetail>(`/stocks/${id}`),
 
-  update: (id: string, data: UpdateStockPayload) =>
+  update: (id: number, data: UpdateStockPayload) =>
     api.put<StockItem>(`/stocks/${id}`, data),
 
-  replenish: (id: string, data: ReplenishStockPayload) =>
+  replenish: (id: number, data: ReplenishStockPayload) =>
     api.post<StockItem>(`/stocks/${id}/replenish`, data),
 };

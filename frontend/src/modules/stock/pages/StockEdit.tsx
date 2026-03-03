@@ -31,14 +31,16 @@ import { productService } from "@/modules/product/services/product.service";
 export function StockEdit() {
   usePageTitle("Editar estoque");
 
-  const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+
+  const { id: rawStockId } = useParams<{ id: string }>();
+  const stockId = Number(rawStockId);
 
   const {
     data: stock,
     loading: stockLoading,
     error: stockError,
-  } = useStock(id!);
+  } = useStock(stockId);
   const { data: categories, loading: categoriesLoading } = useCategories();
 
   const [productId, setProductId] = useState<number | null>(null);
@@ -79,7 +81,7 @@ export function StockEdit() {
   }, [stockError, navigate]);
 
   async function onSubmit(data: EditStockFormData) {
-    if (!productId || !id) return;
+    if (!productId || !stockId) return;
 
     try {
       await productService.update(productId, {
@@ -87,7 +89,7 @@ export function StockEdit() {
         categoryId: data.categoryId,
       });
 
-      await stockService.update(id, {
+      await stockService.update(stockId, {
         tonQuantity: data.tonQuantity,
         m3Quantity: data.m3Quantity,
         density: data.density,

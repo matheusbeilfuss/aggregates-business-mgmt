@@ -3,10 +3,8 @@ import { useApi } from "@/hooks/useApi";
 import { Supplier } from "../types";
 import { supplierService } from "../services/supplier.service";
 
-export function useSuppliers() {
+export function useSuppliers({ enabled = true } = {}) {
   const fetcher = useCallback(() => supplierService.getAll(), []);
 
-  const { data, loading, error } = useApi<Supplier[]>(fetcher);
-
-  return { data: data ?? [], loading, error };
+  return useApi<Supplier[]>(fetcher, { enabled });
 }

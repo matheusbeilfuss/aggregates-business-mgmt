@@ -3,12 +3,13 @@ import { useApi } from "@/hooks/useApi";
 import { ProductSupplier } from "../types";
 import { productSupplierService } from "../services/productSupplier.service";
 
-export function useProductSupplier(id: number, { enabled = true } = {}) {
-  const fetcher = useCallback(() => productSupplierService.getById(id), [id]);
+export function useProductSupplier(
+  id: number | null | undefined,
+  { enabled = true } = {},
+) {
+  const fetcher = useCallback(() => productSupplierService.getById(id!), [id]);
 
-  const { data, loading, error, refetch } = useApi<ProductSupplier>(fetcher, {
-    enabled,
+  return useApi<ProductSupplier>(fetcher, {
+    enabled: enabled && id != null && id > 0,
   });
-
-  return { data, loading, error, refetch };
 }
