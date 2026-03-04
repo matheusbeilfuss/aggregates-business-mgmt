@@ -114,4 +114,8 @@ public class PaymentService {
 	public List<Payment> findByOrderId(Long orderId) {
 		return paymentRepository.findByOrderId(orderId);
 	}
+
+	public List<Payment> findByPeriod(LocalDate startDate, LocalDate endDate) {
+		return paymentRepository.findByDateBetween(startDate, endDate);
+	}
 }
