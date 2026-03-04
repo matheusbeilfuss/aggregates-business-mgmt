@@ -7,7 +7,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { PriceCategory } from "../types";
-import { formatCurrency } from "@/utils/money";
+import { formatLocalCurrency } from "@/utils";
 import { CategoryActions } from "./CategoryActions";
 
 interface PriceTableProps {
@@ -62,12 +62,12 @@ export function PriceTable({
                 {name}
               </TableCell>
               <TableCell>
-                {formatCurrency(categoryPrices[0]?.price ?? 0)}
+                {formatLocalCurrency(categoryPrices[0]?.price ?? 0)}
               </TableCell>
               {volumes.map((v) => (
                 <TableCell key={v}>
                   {categoryPrices[v]
-                    ? formatCurrency(categoryPrices[v].price)
+                    ? formatLocalCurrency(categoryPrices[v].price)
                     : "-"}
                 </TableCell>
               ))}

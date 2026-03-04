@@ -2,11 +2,12 @@ import { useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { Expense } from "../types";
 import { ExpenseTypeEnum, PaymentStatusEnum } from "@/types";
-import { formatCurrency } from "@/utils/money";
 import { Button } from "@/components/ui/button";
 import { FinanceAccordionGroup, AccordionGroup } from "./FinanceAccordionGroup";
 import { ExpenseRowActions } from "./ExpenseRowActions";
 import { expenseTypeLabel } from "../utils/labels";
+import { ExpenseRowLabel } from "./ExpenseRowLabel";
+import { FinanceTotalBar } from "./FinanceTotalBar";
 
 type Props = {
   expenses: Expense[];
@@ -14,36 +15,6 @@ type Props = {
 };
 
 const PAID_TYPE_ORDER = [ExpenseTypeEnum.VARIABLE, ExpenseTypeEnum.FIXED];
-
-function ExpenseRowLabel({ expense }: { expense: Expense }) {
-  const isPending = expense.paymentStatus === PaymentStatusEnum.PENDING;
-
-  return (
-    <div className="flex flex-wrap items-center justify-between gap-x-6 gap-y-1 w-full text-sm">
-      <span className="font-medium flex items-center gap-2">
-        {expense.name}
-      </span>
-
-      {expense.category && (
-        <span className="text-muted-foreground">{expense.category}</span>
-      )}
-
-      <span className="text-muted-foreground">Criada em {expense.date}</span>
-
-      {expense.paymentDate && (
-        <span className="text-muted-foreground">
-          Paga em {expense.paymentDate}
-        </span>
-      )}
-
-      {isPending && expense.dueDate && (
-        <span className="text-xs font-medium text-orange-500">
-          Vence em {expense.dueDate}
-        </span>
-      )}
-    </div>
-  );
-}
 
 export function ExpensesTab({ expenses, onRefetch }: Props) {
   const navigate = useNavigate();
@@ -137,10 +108,7 @@ export function ExpensesTab({ expenses, onRefetch }: Props) {
       />
 
       {paidGroups.length > 0 && (
-        <div className="flex justify-between items-center px-4 py-3 mt-2 rounded-md bg-orange-50">
-          <span className="font-medium">Total</span>
-          <span className="font-semibold">{formatCurrency(total)}</span>
-        </div>
+        <FinanceTotalBar label="Total" value={total} variant="expense" />
       )}
 
       {pendingGroups.length > 0 && (

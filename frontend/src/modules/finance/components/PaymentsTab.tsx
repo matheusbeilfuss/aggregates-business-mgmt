@@ -1,12 +1,13 @@
 import { useMemo } from "react";
 import { Payment } from "../types";
-import { PaymentMethodEnum, OrderTypeEnum, PaymentStatusEnum } from "@/types";
-import { formatCurrency } from "@/utils/money";
+import { PaymentMethodEnum } from "@/types";
 import { FinanceAccordionGroup, AccordionGroup } from "./FinanceAccordionGroup";
 import { PaymentRowActions } from "./PaymentRowActions";
 import { paymentMethodLabel } from "../utils/labels";
+import { PaymentRowLabel } from "./PaymentRowLabel";
+import { FinanceTotalBar } from "./FinanceTotalBar";
 
-type Props = {
+type PaymentsTabProps = {
   payments: Payment[];
   onRefetch: () => void;
 };
@@ -21,56 +22,7 @@ const PAYMENT_GROUP_ORDER: PaymentMethodEnum[] = [
   PaymentMethodEnum.BANK_SLIP,
 ];
 
-function PaymentRowLabel({ payment }: { payment: Payment }) {
-  const isService = payment.order.type === OrderTypeEnum.SERVICE;
-
-  const description = isService
-    ? (payment.order.service ?? `Pedido #${payment.order.id}`)
-    : (payment.order.product?.name ?? `Pedido #${payment.order.id}`);
-
-  const quantity =
-    !isService && payment.order.m3Quantity != null
-      ? `${payment.order.m3Quantity} m³`
-      : null;
-
-  const isPaid = payment.order.paymentStatus === PaymentStatusEnum.PAID;
-  const isPartial = payment.order.paymentStatus === PaymentStatusEnum.PARTIAL;
-
-  return (
-    <div className="flex flex-wrap items-center justify-between gap-x-6 gap-y-1 w-full text-sm">
-      <span className="font-medium">{payment.order.client.name}</span>
-
-      <span className="text-muted-foreground flex items-center gap-2">
-        {description}
-        {quantity && (
-          <span className="text-xs rounded bg-muted px-2 py-0.5">
-            {quantity}
-          </span>
-        )}
-      </span>
-
-      <span className="text-muted-foreground">Recebido em {payment.date}</span>
-
-      <span className="text-muted-foreground">
-        Agendado para {payment.order.scheduledDate}
-      </span>
-
-      {isPartial && (
-        <span className="text-xs font-medium text-orange-500">
-          Parcial · Total {formatCurrency(payment.order.orderValue)}
-        </span>
-      )}
-
-      {isPaid && (
-        <span className="text-xs font-medium text-green-500">
-          Pedido quitado
-        </span>
-      )}
-    </div>
-  );
-}
-
-export function PaymentsTab({ payments, onRefetch }: Props) {
+export function PaymentsTab({ payments, onRefetch }: PaymentsTabProps) {
   const groups = useMemo<AccordionGroup[]>(() => {
     const map = new Map<PaymentMethodEnum, Payment[]>();
 
@@ -108,10 +60,7 @@ export function PaymentsTab({ payments, onRefetch }: Props) {
         groups={groups}
         defaultOpen={groups.map((g) => g.key)}
       />
-      <div className="flex justify-between items-center px-4 py-3 mt-2 rounded-md bg-blue-50">
-        <span className="font-medium">Total</span>
-        <span className="font-semibold">{formatCurrency(total)}</span>
-      </div>
+      <FinanceTotalBar label="Total" value={total} variant="income" />
     </div>
   );
 }

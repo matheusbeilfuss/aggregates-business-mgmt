@@ -31,8 +31,8 @@ import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { orderService } from "@/modules/order/services/order.service";
 import { Loader2 } from "lucide-react";
-import { formatTime } from "@/modules/order/utils/formatTime";
-import { formatDate } from "@/modules/order/utils/formatDate";
+import { formatTime } from "@/utils/";
+import { formatLocalDate } from "@/utils";
 import { Input } from "../ui/input";
 import { ApiError } from "@/lib/api";
 
@@ -106,7 +106,7 @@ export function AddPaymentDialog({
               {order.client.name} - {orderLabel}
             </p>
             <p className="text-sm text-muted-foreground">
-              {formatDate(order.scheduledDate)} às{" "}
+              {formatLocalDate(order.scheduledDate)} às{" "}
               {formatTime(order.scheduledTime)}
             </p>
           </div>

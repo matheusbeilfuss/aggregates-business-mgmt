@@ -3,6 +3,11 @@ export interface ApiErrorResponse {
   status: number;
 }
 
+export type DatePeriod = {
+  startDate: Date;
+  endDate: Date;
+};
+
 export enum OrderTypeEnum {
   MATERIAL = "MATERIAL",
   SERVICE = "SERVICE",

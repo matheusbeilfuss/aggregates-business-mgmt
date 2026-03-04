@@ -5,3 +5,4 @@ export { ConfirmDialog } from "./ConfirmDialog";
 export { DatePicker } from "./DatePicker";
 export { AddPaymentDialog } from "./AddPaymentDialog";
 export { NotFound } from "./NotFound";
+export { PeriodPicker } from "./PeriodPicker";

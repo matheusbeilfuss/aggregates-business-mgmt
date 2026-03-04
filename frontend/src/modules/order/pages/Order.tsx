@@ -8,7 +8,7 @@ import { useOrders } from "../hooks/useOrders";
 import { OrderSection } from "../components/OrderSection";
 import { OrderItem } from "../types";
 import { useState } from "react";
-import { toIsoDate } from "../utils/toIsoDate";
+import { toIsoDate } from "../../../utils/toIsoDate";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router";
 import { orderService } from "../services/order.service";

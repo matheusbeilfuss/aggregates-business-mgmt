@@ -4,19 +4,19 @@ import { startOfMonth, endOfMonth } from "date-fns";
 import { PageContainer } from "@/components/shared/PageContainer";
 import { LoadingState } from "@/components/shared/LoadingState";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { formatCurrency } from "@/utils/money";
+import { formatLocalCurrency } from "@/utils/";
 import { usePageTitle } from "@/hooks/usePageTitle";
 
-import { FinancePeriodPicker } from "../components/FinancePeriodPicker";
+import { PeriodPicker } from "@/components/shared/PeriodPicker";
 import { PaymentsTab } from "../components/PaymentsTab";
 import { ExpensesTab } from "../components/ExpensesTab";
 import { useFinanceExpenses, useFinancePayments } from "../hooks";
-import { FinancePeriod } from "../types";
+import { DatePeriod } from "@/types";
 
 export default function Finance() {
   usePageTitle("Financeiro");
 
-  const [period, setPeriod] = useState<FinancePeriod>({
+  const [period, setPeriod] = useState<DatePeriod>({
     startDate: startOfMonth(new Date()),
     endDate: endOfMonth(new Date()),
   });
@@ -54,12 +54,12 @@ export default function Finance() {
   return (
     <PageContainer title="Financeiro">
       <div className="flex flex-col items-center gap-2 pb-7 px-4 mb-4">
-        <FinancePeriodPicker period={period} onChange={setPeriod} />
+        <PeriodPicker period={period} onChange={setPeriod} />
         {!loading && (
           <span
             className={`text-3xl font-bold pt-7 ${balance >= 0 ? "text-blue-500" : "text-orange-500"}`}
           >
-            {formatCurrency(balance)}
+            {formatLocalCurrency(balance)}
           </span>
         )}
       </div>

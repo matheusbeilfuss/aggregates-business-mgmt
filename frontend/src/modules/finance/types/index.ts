@@ -49,8 +49,8 @@ export type Payment = {
     service: string | null;
     orderValue: number;
     paymentStatus: PaymentStatusEnum;
-    scheduledDate: string; // adicionar
-    m3Quantity: number | null; // adicionar
+    scheduledDate: string;
+    m3Quantity: number | null;
     client: { id: number; name: string };
     product: { id: number; name: string } | null;
   };
@@ -66,11 +66,6 @@ export type PaymentInputDTO = {
 
 export type PaymentInsertDTO = PaymentInputDTO & {
   orderId: number;
-};
-
-export type FinancePeriod = {
-  startDate: Date;
-  endDate: Date;
 };
 
 export type GroupedPayments = Record<string, Payment[]>;

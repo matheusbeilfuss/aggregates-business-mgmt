@@ -11,7 +11,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
-import { formatCurrency } from "@/utils/money";
+import { formatLocalCurrency } from "@/utils/";
 import { ProductSupplier } from "@/modules/product-supplier/types";
 import { Price } from "../types";
 import { ApiError } from "@/lib/api";
@@ -146,26 +146,26 @@ export function SupplierSection({
                     </TableCell>
                     <TableCell>{ps.productName}</TableCell>
                     <TableCell>{ps.density.toLocaleString("pt-BR")}</TableCell>
-                    <TableCell>{formatCurrency(ps.tonCost)}</TableCell>
+                    <TableCell>{formatLocalCurrency(ps.tonCost)}</TableCell>
                     <TableCell>
-                      {formatCurrency(ps.costPerCubicMeter)}
+                      {formatLocalCurrency(ps.costPerCubicMeter)}
                     </TableCell>
                     <TableCell
                       className={
                         oneM3Profit >= 0 ? "text-green-600" : "text-red-500"
                       }
                     >
-                      {formatCurrency(oneM3Profit)}
+                      {formatLocalCurrency(oneM3Profit)}
                     </TableCell>
                     <TableCell>
-                      {formatCurrency(ps.costFor5CubicMeters ?? 0)}
+                      {formatLocalCurrency(ps.costFor5CubicMeters ?? 0)}
                     </TableCell>
                     <TableCell
                       className={
                         fiveM3Profit >= 0 ? "text-green-600" : "text-red-500"
                       }
                     >
-                      {formatCurrency(fiveM3Profit)}
+                      {formatLocalCurrency(fiveM3Profit)}
                     </TableCell>
                     <TableCell>
                       <SupplierActions

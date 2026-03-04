@@ -4,7 +4,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import { formatCurrency } from "@/utils/money";
+import { formatLocalCurrency } from "@/utils";
 
 export type AccordionRow = {
   id: number;
@@ -42,7 +42,7 @@ export function FinanceAccordionGroup({ groups, defaultOpen }: Props) {
             <span className="flex justify-between w-full pr-2">
               <span className="font-medium">{group.label}</span>
               <span className="text-muted-foreground font-normal text-sm">
-                {formatCurrency(group.total)}
+                {formatLocalCurrency(group.total)}
               </span>
             </span>
           </AccordionTrigger>
@@ -58,7 +58,7 @@ export function FinanceAccordionGroup({ groups, defaultOpen }: Props) {
                   <div className="flex items-center gap-2 shrink-0">
                     {" "}
                     <span className="text-sm font-medium tabular-nums">
-                      {formatCurrency(row.value)}
+                      {formatLocalCurrency(row.value)}
                     </span>
                     {row.extra}
                   </div>

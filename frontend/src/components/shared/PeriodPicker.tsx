@@ -1,12 +1,16 @@
-import { DatePicker } from "@/components/shared/DatePicker";
-import { FinancePeriod } from "../types";
+import { DatePicker } from "./DatePicker";
 
-type Props = {
-  period: FinancePeriod;
-  onChange: (period: FinancePeriod) => void;
+export type Period = {
+  startDate: Date;
+  endDate: Date;
 };
 
-export function FinancePeriodPicker({ period, onChange }: Props) {
+type Props = {
+  period: Period;
+  onChange: (period: Period) => void;
+};
+
+export function PeriodPicker({ period, onChange }: Props) {
   return (
     <div className="flex items-center gap-2 justify-center">
       <DatePicker

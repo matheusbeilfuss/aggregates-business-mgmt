@@ -1,6 +1,6 @@
 import { useEffect, useRef } from "react";
 import { usePrices } from "../hooks/usePrices";
-import { formatCurrency } from "@/utils/money";
+import { formatLocalCurrency } from "@/utils/";
 import { PriceCategory } from "../types";
 import { usePageTitle } from "@/hooks/usePageTitle";
 import { useAuth } from "@/modules/auth/hooks/useAuth";
@@ -82,12 +82,12 @@ export function PricePrint() {
               <tr key={categoryId}>
                 <td className="border border-gray-300 px-4 py-2">{name}</td>
                 <td className="border border-gray-300 px-4 py-2">
-                  {formatCurrency(categoryPrices[0]?.price ?? 0)}
+                  {formatLocalCurrency(categoryPrices[0]?.price ?? 0)}
                 </td>
                 {volumes.map((v) => (
                   <td key={v} className="border border-gray-300 px-4 py-2">
                     {categoryPrices[v]
-                      ? formatCurrency(categoryPrices[v].price)
+                      ? formatLocalCurrency(categoryPrices[v].price)
                       : "-"}
                   </td>
                 ))}

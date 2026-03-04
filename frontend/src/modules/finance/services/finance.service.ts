@@ -1,6 +1,5 @@
 import { api } from "@/lib/api";
-import { Expense } from "@/modules/expense/types";
-import { Payment } from "@/modules/payment/types";
+import { Expense, Payment } from "../types";
 import { format } from "date-fns";
 
 const formatDate = (date: Date) => format(date, "yyyy-MM-dd");

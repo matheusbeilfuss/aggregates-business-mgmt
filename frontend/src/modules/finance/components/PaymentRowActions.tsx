@@ -12,8 +12,8 @@ import { Button } from "@/components/ui/button";
 import { ConfirmDialog } from "@/components/shared/ConfirmDialog";
 import { Payment } from "../types";
 import { api } from "@/lib/api";
-import { formatCurrency } from "@/utils/money";
-import { formatDate } from "@/modules/order/utils/formatDate";
+import { formatLocalCurrency } from "@/utils/";
+import { formatLocalDate } from "@/utils/";
 
 type Props = {
   payment: Payment;
@@ -64,7 +64,7 @@ export function PaymentRowActions({ payment, onSuccess }: Props) {
         open={confirmOpen}
         onOpenChange={setConfirmOpen}
         title="Você tem certeza de que deseja excluir a entrada abaixo?"
-        description={`${payment.order.client.name} · ${formatCurrency(payment.paymentValue)} · ${formatDate(payment.date)}`}
+        description={`${payment.order.client.name} · ${formatLocalCurrency(payment.paymentValue)} · ${formatLocalDate(payment.date)}`}
         onConfirm={handleDelete}
       />
     </>
