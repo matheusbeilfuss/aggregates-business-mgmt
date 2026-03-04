@@ -17,6 +17,7 @@ import { PriceEdit } from "./modules/price/pages/PriceEdit";
 import { ProductSupplierAdd } from "./modules/product-supplier/pages/ProductSupplierAdd";
 import { ProductSupplierEdit } from "./modules/product-supplier/pages/ProductSupplierEdit";
 import { PricePrint } from "./modules/price/pages/PricePrint";
+import Finance from "./modules/finance/pages/Finance";
 
 export const router = createBrowserRouter([
   {
@@ -44,6 +45,7 @@ export const router = createBrowserRouter([
             path: "prices/categories/:categoryId/suppliers/:productSupplierId/edit",
             element: <ProductSupplierEdit />,
           },
+          { path: "finance", element: <Finance /> },
 
           { path: "user", element: <User /> },
           {
