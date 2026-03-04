@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { MoreHorizontal, Pencil, Trash2, CircleCheck } from "lucide-react";
+import { MoreHorizontal, Pencil, X, DollarSign } from "lucide-react";
 import { toast } from "sonner";
 
 import {
@@ -13,6 +13,7 @@ import { ConfirmDialog } from "@/components/shared/ConfirmDialog";
 import { Expense } from "../types";
 import { PaymentStatusEnum } from "@/types";
 import { api } from "@/lib/api";
+import { formatLocalCurrency } from "@/utils";
 
 type Props = {
   expense: Expense;
@@ -63,7 +64,7 @@ export function ExpenseRowActions({
         <DropdownMenuContent align="end">
           {showMarkAsPaid && (
             <DropdownMenuItem onClick={() => setConfirmPaidOpen(true)}>
-              <CircleCheck className="mr-2 h-4 w-4" />
+              <DollarSign className="mr-2 h-4 w-4" />
               Marcar como paga
             </DropdownMenuItem>
           )}
@@ -79,7 +80,7 @@ export function ExpenseRowActions({
             className="text-destructive"
             onClick={() => setConfirmDeleteOpen(true)}
           >
-            <Trash2 className="mr-2 h-4 w-4" />
+            <X className="mr-2 h-4 w-4" />
             Excluir
           </DropdownMenuItem>
         </DropdownMenuContent>
@@ -88,17 +89,18 @@ export function ExpenseRowActions({
       <ConfirmDialog
         open={confirmDeleteOpen}
         onOpenChange={setConfirmDeleteOpen}
-        title="Excluir saída"
-        description="Tem certeza que deseja excluir esta saída? Esta ação não pode ser desfeita."
+        title="Você tem certeza de que deseja excluir a saída abaixo?"
+        description={`${expense.name} · ${formatLocalCurrency(expense.expenseValue)}`}
         onConfirm={handleDelete}
       />
 
       <ConfirmDialog
         open={confirmPaidOpen}
         onOpenChange={setConfirmPaidOpen}
-        title="Marcar como paga"
-        description={`Confirma que a despesa "${expense.name}" foi paga?`}
+        title="Você tem certeza de que deseja marcar a saída abaixo como paga?"
+        description={`${expense.name} · ${formatLocalCurrency(expense.expenseValue)}`}
         onConfirm={handleMarkAsPaid}
+        variant="default"
       />
     </>
   );
