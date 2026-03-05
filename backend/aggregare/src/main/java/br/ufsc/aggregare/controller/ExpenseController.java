@@ -20,6 +20,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import br.ufsc.aggregare.model.Expense;
 import br.ufsc.aggregare.model.dto.ExpenseInputDTO;
 import br.ufsc.aggregare.service.ExpenseService;
+import br.ufsc.aggregare.service.FuelService;
 
 import jakarta.validation.Valid;
 
@@ -28,10 +29,12 @@ import jakarta.validation.Valid;
 public class ExpenseController {
 
 	private final ExpenseService service;
+	private final FuelService fuelService;
 
 	@Autowired
-	public ExpenseController(ExpenseService service) {
+	public ExpenseController(ExpenseService service, FuelService fuelService) {
 		this.service = service;
+		this.fuelService = fuelService;
 	}
 
 	@PostMapping
@@ -70,5 +73,20 @@ public class ExpenseController {
 		}
 
 		return ResponseEntity.ok().body(expenses);
+	}
+
+	@GetMapping("/categories")
+	public ResponseEntity<List<String>> getCategories() {
+		return ResponseEntity.ok(service.findDistinctCategories());
+	}
+
+	@GetMapping("/vehicles")
+	public ResponseEntity<List<String>> getVehicles() {
+		return ResponseEntity.ok(fuelService.findDistinctVehicles());
+	}
+
+	@GetMapping("/fuel-suppliers")
+	public ResponseEntity<List<String>> getFuelSuppliers() {
+		return ResponseEntity.ok(fuelService.findDistinctFuelSuppliers());
 	}
 }

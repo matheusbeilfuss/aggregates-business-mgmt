@@ -121,7 +121,10 @@ export function ExpensesTab({ expenses, onRefetch }: Props) {
       )}
 
       <div className="flex justify-end mt-4">
-        <Button onClick={() => navigate("/expenses/add")}>
+        <Button
+          onClick={() => navigate("expenses/new")}
+          className="bg-slate-500 hover:bg-slate-600 text-white px-6 py-6 text-base cursor-pointer"
+        >
           Adicionar saída
         </Button>
       </div>

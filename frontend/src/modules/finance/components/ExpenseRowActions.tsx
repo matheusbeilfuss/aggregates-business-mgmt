@@ -14,6 +14,7 @@ import { Expense } from "../types";
 import { PaymentStatusEnum } from "@/types";
 import { api } from "@/lib/api";
 import { formatLocalCurrency } from "@/utils";
+import { useNavigate } from "react-router-dom";
 
 type Props = {
   expense: Expense;
@@ -26,16 +27,18 @@ export function ExpenseRowActions({
   onSuccess,
   showMarkAsPaid,
 }: Props) {
+  const navigate = useNavigate();
+
   const [confirmDeleteOpen, setConfirmDeleteOpen] = useState(false);
   const [confirmPaidOpen, setConfirmPaidOpen] = useState(false);
 
   const handleDelete = async () => {
     try {
       await api.delete(`/expenses/${expense.id}`);
-      toast.success("Saída removida.");
+      toast.success("A saída foi excluída com sucesso.");
       onSuccess();
     } catch {
-      toast.error("Erro ao remover saída.");
+      toast.error("Não foi possível excluir a saída.");
     }
   };
 
@@ -46,10 +49,10 @@ export function ExpenseRowActions({
         paymentStatus: PaymentStatusEnum.PAID,
         paymentDate: new Date().toISOString().split("T")[0],
       });
-      toast.success("Despesa marcada como paga.");
+      toast.success("A despesa foi marcada como paga.");
       onSuccess();
     } catch {
-      toast.error("Erro ao atualizar despesa.");
+      toast.error("Não foi possível atualizar a despesa.");
     }
   };
 
@@ -70,7 +73,7 @@ export function ExpenseRowActions({
           )}
           <DropdownMenuItem
             onClick={() => {
-              // navegar para edição — rota a definir
+              navigate(`/finance/expenses/${expense.id}/edit`);
             }}
           >
             <Pencil className="mr-2 h-4 w-4" />

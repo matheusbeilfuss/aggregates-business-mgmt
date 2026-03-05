@@ -15,6 +15,8 @@ export type Expense = {
   type: ExpenseTypeEnum;
   paymentStatus: PaymentStatusEnum;
   category: string | null;
+  vehicle?: string | null;
+  fuelSupplier?: string | null;
 };
 
 export type ExpenseInputDTO = {
@@ -42,7 +44,6 @@ export type FixedExpense = {
 
 export type Payment = {
   id: number;
-  // em src/modules/payment/types/index.ts
   order: {
     id: number;
     type: OrderTypeEnum;

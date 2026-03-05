@@ -18,6 +18,8 @@ import { ProductSupplierAdd } from "./modules/product-supplier/pages/ProductSupp
 import { ProductSupplierEdit } from "./modules/product-supplier/pages/ProductSupplierEdit";
 import { PricePrint } from "./modules/price/pages/PricePrint";
 import Finance from "./modules/finance/pages/Finance";
+import ExpenseAdd from "./modules/finance/pages/ExpenseAdd";
+import ExpenseEdit from "./modules/finance/pages/ExpenseEdit";
 
 export const router = createBrowserRouter([
   {
@@ -46,6 +48,8 @@ export const router = createBrowserRouter([
             element: <ProductSupplierEdit />,
           },
           { path: "finance", element: <Finance /> },
+          { path: "finance/expenses/new", element: <ExpenseAdd /> },
+          { path: "finance/expenses/:id/edit", element: <ExpenseEdit /> },
 
           { path: "user", element: <User /> },
           {

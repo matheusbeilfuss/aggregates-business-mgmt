@@ -137,4 +137,8 @@ public class ExpenseService {
 	public List<Expense> findByPeriod(LocalDate startDate, LocalDate endDate) {
 		return expenseRepository.findByDateBetween(startDate, endDate);
 	}
+
+	public List<String> findDistinctCategories() {
+		return expenseRepository.findDistinctCategories();
+	}
 }

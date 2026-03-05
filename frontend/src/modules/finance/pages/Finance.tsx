@@ -12,15 +12,21 @@ import { PaymentsTab } from "../components/PaymentsTab";
 import { ExpensesTab } from "../components/ExpensesTab";
 import { useFinanceExpenses, useFinancePayments } from "../hooks";
 import { DatePeriod } from "@/types";
+import { useSearchParams } from "react-router-dom";
 
 export default function Finance() {
   usePageTitle("Financeiro");
+
+  const [searchParams] = useSearchParams();
 
   const [period, setPeriod] = useState<DatePeriod>({
     startDate: startOfMonth(new Date()),
     endDate: endOfMonth(new Date()),
   });
-  const [activeTab, setActiveTab] = useState<"incomes" | "expenses">("incomes");
+
+  const [activeTab, setActiveTab] = useState<"incomes" | "expenses">(
+    (searchParams.get("tab") as "incomes" | "expenses") ?? "incomes",
+  );
 
   const {
     data: payments,

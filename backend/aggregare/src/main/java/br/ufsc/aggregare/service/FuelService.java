@@ -1,5 +1,7 @@
 package br.ufsc.aggregare.service;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -52,5 +54,13 @@ public class FuelService {
 		existingFuel.setLiters(dto.getLiters());
 		existingFuel.setPricePerLiter(dto.getPricePerLiter());
 		existingFuel.setFuelSupplier(dto.getFuelSupplier());
+	}
+
+	public List<String> findDistinctVehicles() {
+		return fuelRepository.findDistinctVehicles();
+	}
+
+	public List<String> findDistinctFuelSuppliers() {
+		return fuelRepository.findDistinctFuelSuppliers();
 	}
 }
