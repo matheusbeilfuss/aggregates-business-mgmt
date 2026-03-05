@@ -6,32 +6,15 @@ import java.time.LocalDate;
 import br.ufsc.aggregare.model.enums.ExpenseTypeEnum;
 import br.ufsc.aggregare.model.enums.PaymentStatusEnum;
 
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Positive;
-
-public class ExpenseInputDTO {
-
-	@NotBlank(message = "O nome da despesa é obrigatório.")
+public class ExpenseDTO {
+	private Long id;
 	private String name;
-
-	@NotNull(message = "O valor da despesa é obrigatório.")
-	@Positive(message = "O valor da despesa deve ser maior que zero.")
 	private BigDecimal expenseValue;
-
-	@NotNull(message = "A data da despesa é obrigatória.")
 	private LocalDate date;
-
 	private LocalDate dueDate;
 	private LocalDate paymentDate;
-
-	@NotNull(message = "O tipo da despesa é obrigatório.")
 	private ExpenseTypeEnum type;
-
-	@NotNull(message = "O status do pagamento é obrigatório.")
 	private PaymentStatusEnum paymentStatus;
-
-	@NotNull(message = "A categoria do pagamento é obrigatória.")
 	private String category;
 
 	private String vehicle;
@@ -40,24 +23,12 @@ public class ExpenseInputDTO {
 	private Double pricePerLiter;
 	private String fuelSupplier;
 
-	public ExpenseInputDTO() {
+	public Long getId() {
+		return id;
 	}
 
-	public ExpenseInputDTO(String name, BigDecimal expenseValue, LocalDate date, LocalDate dueDate, LocalDate paymentDate, ExpenseTypeEnum type, PaymentStatusEnum paymentStatus,
-			String category, String vehicle, Double kmDriven, Double liters, Double pricePerLiter, String fuelSupplier) {
-		this.name = name;
-		this.expenseValue = expenseValue;
-		this.date = date;
-		this.dueDate = dueDate;
-		this.paymentDate = paymentDate;
-		this.type = type;
-		this.paymentStatus = paymentStatus;
-		this.category = category;
-		this.vehicle = vehicle;
-		this.kmDriven = kmDriven;
-		this.liters = liters;
-		this.pricePerLiter = pricePerLiter;
-		this.fuelSupplier = fuelSupplier;
+	public void setId(Long id) {
+		this.id = id;
 	}
 
 	public String getName() {

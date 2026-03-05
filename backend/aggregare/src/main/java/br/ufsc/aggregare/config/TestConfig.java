@@ -195,7 +195,7 @@ public class TestConfig implements CommandLineRunner {
 		Expense expense4 = new Expense(null, "Combustível máquina", BigDecimal.valueOf(250.00), dataTeste1, dataTeste2, dataTeste1, ExpenseTypeEnum.FUEL, PaymentStatusEnum.PAID, "Combustível");
 		expenseRepository.saveAll(Arrays.asList(expense1, expense2, expense3, expense4));
 
-		Fuel fuel1 = new Fuel(null, expense4, "Mercedes 1313", 100, 85.30, 6.03, "Posto Dom Bosco");
+		Fuel fuel1 = new Fuel(null, expense4, "Mercedes 1313", 100.00, 85.30, 6.03, "Posto Dom Bosco");
 		fuelRepository.save(fuel1);
 	}
 }

@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import br.ufsc.aggregare.model.Expense;
+import br.ufsc.aggregare.model.dto.ExpenseDTO;
 import br.ufsc.aggregare.model.dto.ExpenseInputDTO;
 import br.ufsc.aggregare.service.ExpenseService;
 import br.ufsc.aggregare.service.FuelService;
@@ -29,12 +30,10 @@ import jakarta.validation.Valid;
 public class ExpenseController {
 
 	private final ExpenseService service;
-	private final FuelService fuelService;
 
 	@Autowired
-	public ExpenseController(ExpenseService service, FuelService fuelService) {
+	public ExpenseController(ExpenseService service) {
 		this.service = service;
-		this.fuelService = fuelService;
 	}
 
 	@PostMapping
@@ -52,26 +51,20 @@ public class ExpenseController {
 
 	@PutMapping(value = "/{id}")
 	public ResponseEntity<Expense> update(@PathVariable Long id, @RequestBody @Valid ExpenseInputDTO dto) {
-		Expense expense = service.update(id, dto);
-		return ResponseEntity.ok().body(expense);
+		return ResponseEntity.ok(service.update(id, dto));
 	}
 
 	@GetMapping(value = "/{id}")
-	public ResponseEntity<Expense> findById(@PathVariable Long id) {
-		Expense expense = service.findById(id);
-		return ResponseEntity.ok().body(expense);
+	public ResponseEntity<ExpenseDTO> findById(@PathVariable Long id) {
+		ExpenseDTO dto = service.findByIdWithFuel(id);
+		return ResponseEntity.ok().body(dto);
 	}
 
 	@GetMapping
 	public ResponseEntity<List<Expense>> findAll(@RequestParam(required = false) LocalDate startDate, @RequestParam(required = false) LocalDate endDate) {
-		List<Expense> expenses;
-
-		if (startDate != null && endDate != null) {
-			expenses = service.findByPeriod(startDate, endDate);
-		} else {
-			expenses = service.findAll();
-		}
-
+		List<Expense> expenses = (startDate != null && endDate != null)
+				? service.findByPeriod(startDate, endDate)
+				: service.findAll();
 		return ResponseEntity.ok().body(expenses);
 	}
 
@@ -82,11 +75,11 @@ public class ExpenseController {
 
 	@GetMapping("/vehicles")
 	public ResponseEntity<List<String>> getVehicles() {
-		return ResponseEntity.ok(fuelService.findDistinctVehicles());
+		return ResponseEntity.ok(service.findDistinctVehicles());
 	}
 
 	@GetMapping("/fuel-suppliers")
 	public ResponseEntity<List<String>> getFuelSuppliers() {
-		return ResponseEntity.ok(fuelService.findDistinctFuelSuppliers());
+		return ResponseEntity.ok(service.findDistinctFuelSuppliers());
 	}
 }

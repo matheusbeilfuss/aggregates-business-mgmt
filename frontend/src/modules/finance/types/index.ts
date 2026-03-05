@@ -15,8 +15,12 @@ export type Expense = {
   type: ExpenseTypeEnum;
   paymentStatus: PaymentStatusEnum;
   category: string | null;
-  vehicle?: string | null;
-  fuelSupplier?: string | null;
+
+  vehicle: string | null;
+  kmDriven: number | null;
+  liters: number | null;
+  pricePerLiter: number | null;
+  fuelSupplier: string | null;
 };
 
 export type ExpenseInputDTO = {

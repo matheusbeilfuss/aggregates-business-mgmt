@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import br.ufsc.aggregare.model.Expense;
 import br.ufsc.aggregare.model.Stock;
+import br.ufsc.aggregare.model.dto.ExpenseDTO;
 import br.ufsc.aggregare.model.dto.ExpenseInputDTO;
 import br.ufsc.aggregare.model.dto.StockReplenishDTO;
 import br.ufsc.aggregare.model.enums.ExpenseTypeEnum;
@@ -130,6 +131,39 @@ public class ExpenseService {
 				.orElseThrow(() -> new ResourceNotFoundException(id));
 	}
 
+	public ExpenseDTO findByIdWithFuel(Long id) {
+		Expense expense = expenseRepository.findById(id)
+				.orElseThrow(() -> new ResourceNotFoundException(id));
+
+		ExpenseDTO dto = expenseToDTO(expense);
+
+		if (ExpenseTypeEnum.FUEL.equals(expense.getType())) {
+			fuelService.findByExpenseId(id).ifPresent(fuel -> {
+				dto.setVehicle(fuel.getVehicle());
+				dto.setKmDriven(fuel.getKmDriven());
+				dto.setLiters(fuel.getLiters());
+				dto.setPricePerLiter(fuel.getPricePerLiter());
+				dto.setFuelSupplier(fuel.getFuelSupplier());
+			});
+		}
+
+		return dto;
+	}
+
+	private ExpenseDTO expenseToDTO(Expense expense) {
+		ExpenseDTO dto = new ExpenseDTO();
+		dto.setId(expense.getId());
+		dto.setName(expense.getName());
+		dto.setExpenseValue(expense.getExpenseValue());
+		dto.setDate(expense.getDate());
+		dto.setDueDate(expense.getDueDate());
+		dto.setPaymentDate(expense.getPaymentDate());
+		dto.setType(expense.getType());
+		dto.setPaymentStatus(expense.getPaymentStatus());
+		dto.setCategory(expense.getCategory());
+		return dto;
+	}
+
 	public List<Expense> findAll() {
 		return expenseRepository.findAll();
 	}
@@ -140,5 +174,13 @@ public class ExpenseService {
 
 	public List<String> findDistinctCategories() {
 		return expenseRepository.findDistinctCategories();
+	}
+
+	public List<String> findDistinctVehicles() {
+		return fuelService.findDistinctVehicles();
+	}
+
+	public List<String> findDistinctFuelSuppliers() {
+		return fuelService.findDistinctFuelSuppliers();
 	}
 }
