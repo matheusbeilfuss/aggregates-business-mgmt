@@ -126,6 +126,18 @@ public class ExpenseService {
 		expense.setCategory(dto.getCategory());
 	}
 
+	@Transactional
+	public ExpenseDTO markAsPaid(Long id) {
+		Expense expense = expenseRepository.findById(id)
+				.orElseThrow(() -> new ResourceNotFoundException(id));
+
+		expense.setPaymentStatus(PaymentStatusEnum.PAID);
+		expense.setPaymentDate(LocalDate.now());
+
+		expenseRepository.save(expense);
+		return toFullDTO(expense);
+	}
+
 	public Expense findById(Long id) {
 		return expenseRepository.findById(id)
 				.orElseThrow(() -> new ResourceNotFoundException(id));
@@ -134,20 +146,7 @@ public class ExpenseService {
 	public ExpenseDTO findByIdWithFuel(Long id) {
 		Expense expense = expenseRepository.findById(id)
 				.orElseThrow(() -> new ResourceNotFoundException(id));
-
-		ExpenseDTO dto = expenseToDTO(expense);
-
-		if (ExpenseTypeEnum.FUEL.equals(expense.getType())) {
-			fuelService.findByExpenseId(id).ifPresent(fuel -> {
-				dto.setVehicle(fuel.getVehicle());
-				dto.setKmDriven(fuel.getKmDriven());
-				dto.setLiters(fuel.getLiters());
-				dto.setPricePerLiter(fuel.getPricePerLiter());
-				dto.setFuelSupplier(fuel.getFuelSupplier());
-			});
-		}
-
-		return dto;
+		return toFullDTO(expense);
 	}
 
 	private ExpenseDTO expenseToDTO(Expense expense) {
@@ -161,6 +160,20 @@ public class ExpenseService {
 		dto.setType(expense.getType());
 		dto.setPaymentStatus(expense.getPaymentStatus());
 		dto.setCategory(expense.getCategory());
+		return dto;
+	}
+
+	private ExpenseDTO toFullDTO(Expense expense) {
+		ExpenseDTO dto = expenseToDTO(expense);
+		if (ExpenseTypeEnum.FUEL.equals(expense.getType())) {
+			fuelService.findByExpenseId(expense.getId()).ifPresent(fuel -> {
+				dto.setVehicle(fuel.getVehicle());
+				dto.setKmDriven(fuel.getKmDriven());
+				dto.setLiters(fuel.getLiters());
+				dto.setPricePerLiter(fuel.getPricePerLiter());
+				dto.setFuelSupplier(fuel.getFuelSupplier());
+			});
+		}
 		return dto;
 	}
 

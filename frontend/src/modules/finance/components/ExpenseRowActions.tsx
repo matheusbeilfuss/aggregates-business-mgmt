@@ -11,10 +11,10 @@ import {
 import { Button } from "@/components/ui/button";
 import { ConfirmDialog } from "@/components/shared/ConfirmDialog";
 import { Expense } from "../types";
-import { PaymentStatusEnum } from "@/types";
 import { api } from "@/lib/api";
 import { formatLocalCurrency } from "@/utils";
 import { useNavigate } from "react-router-dom";
+import { expenseService } from "../services/expense.service";
 
 type Props = {
   expense: Expense;
@@ -44,15 +44,11 @@ export function ExpenseRowActions({
 
   const handleMarkAsPaid = async () => {
     try {
-      await api.put(`/expenses/${expense.id}`, {
-        ...expense,
-        paymentStatus: PaymentStatusEnum.PAID,
-        paymentDate: new Date().toISOString().split("T")[0],
-      });
-      toast.success("A despesa foi marcada como paga.");
+      await expenseService.markAsPaid(expense.id);
+      toast.success("Despesa marcada como paga.");
       onSuccess();
     } catch {
-      toast.error("Não foi possível atualizar a despesa.");
+      toast.error("Erro ao atualizar despesa.");
     }
   };
 
