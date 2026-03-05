@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { Plus, MoreHorizontal, Pencil, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
@@ -30,6 +30,8 @@ export function FixedExpenseTemplateList({
   const [addOpen, setAddOpen] = useState(false);
   const [toEdit, setToEdit] = useState<FixedExpense | null>(null);
   const [toDelete, setToDelete] = useState<FixedExpense | null>(null);
+  const lastToDelete = useRef<FixedExpense | null>(null);
+  const lastToEdit = useRef<FixedExpense | null>(null);
 
   const handleDelete = async () => {
     if (!toDelete) return;
@@ -102,6 +104,7 @@ export function FixedExpenseTemplateList({
                   <DropdownMenuItem
                     onClick={(e) => {
                       e.stopPropagation();
+                      lastToEdit.current = t;
                       setToEdit(t);
                     }}
                   >
@@ -112,6 +115,7 @@ export function FixedExpenseTemplateList({
                     className="text-destructive"
                     onClick={(e) => {
                       e.stopPropagation();
+                      lastToDelete.current = t;
                       setToDelete(t);
                     }}
                   >
@@ -135,14 +139,14 @@ export function FixedExpenseTemplateList({
         open={!!toEdit}
         onOpenChange={(open) => !open && setToEdit(null)}
         onSuccess={onRefetch}
-        initialValues={toEdit ?? undefined}
+        initialValues={lastToEdit.current ?? undefined}
       />
 
       <ConfirmDialog
         open={!!toDelete}
         onOpenChange={(open) => !open && setToDelete(null)}
         title="Tem certeza que deseja remover a despesa fixa abaixo?"
-        description={`${toDelete?.name} · ${formatLocalCurrency(toDelete?.defaultValue ?? 0)} ${toDelete?.category}`}
+        description={`${lastToDelete.current?.name} · ${formatLocalCurrency(lastToDelete.current?.defaultValue ?? 0)} · ${lastToDelete.current?.category}`}
         onConfirm={handleDelete}
         variant="destructive"
         confirmLabel="Remover"

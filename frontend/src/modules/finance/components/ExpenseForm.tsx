@@ -363,7 +363,7 @@ export function ExpenseForm({
           )}
         </div>
 
-        <div className="space-y-3">
+        <div className="flex items-end gap-4">
           <FormField
             control={form.control}
             name="paymentStatus"
@@ -399,7 +399,7 @@ export function ExpenseForm({
                     <Input
                       type="date"
                       {...field}
-                      value={field.value ? field.value : ""}
+                      value={field.value ?? ""}
                       onChange={(e) => field.onChange(e.target.value || null)}
                     />
                   </FormControl>

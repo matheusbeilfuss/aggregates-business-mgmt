@@ -52,6 +52,7 @@ export function AddFixedExpenseDialog({
 
   const form = useForm<Values>({
     resolver: zodResolver(schema),
+    defaultValues: { name: "", defaultValue: 0, category: "" },
     values: initialValues
       ? {
           name: initialValues.name,
