@@ -5,7 +5,7 @@ import { usePageTitle } from "@/hooks/usePageTitle";
 import { ExpenseForm } from "../components/ExpenseForm";
 import { useFixedExpenses } from "../hooks/useFixedExpenses";
 import { ExpenseFormValues } from "../schemas/expense.schema";
-import { api } from "@/lib/api";
+import { api, ApiError } from "@/lib/api";
 import { useExpense } from "../hooks/useExpense";
 import { LoadingState } from "@/components/shared";
 
@@ -22,8 +22,12 @@ export default function ExpenseEdit() {
       await api.put(`/expenses/${id}`, values);
       toast.success("Saída atualizada com sucesso.");
       navigate("/finance?tab=expenses");
-    } catch {
-      toast.error("Erro ao atualizar saída.");
+    } catch (error) {
+      if (error instanceof ApiError) {
+        toast.error(error.message);
+      } else {
+        toast.error("Não foi possível atualizar a saída.");
+      }
     }
   };
 

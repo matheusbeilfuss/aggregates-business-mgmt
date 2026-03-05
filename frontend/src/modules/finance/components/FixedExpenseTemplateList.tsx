@@ -10,7 +10,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { FixedExpense } from "../types";
-import { api } from "@/lib/api";
+import { api, ApiError } from "@/lib/api";
 import { formatLocalCurrency } from "@/utils/";
 import { AddFixedExpenseDialog } from "./AddFixedExpenseDialog";
 
@@ -39,8 +39,12 @@ export function FixedExpenseTemplateList({
       await api.delete(`/fixed-expenses/${toDelete.id}`);
       toast.success("A despesa fixa foi excluída com sucesso.");
       onRefetch();
-    } catch {
-      toast.error("Não foi possível excluir a despesa fixa.");
+    } catch (error) {
+      if (error instanceof ApiError) {
+        toast.error(error.message);
+      } else {
+        toast.error("Não foi possível excluir a despesa fixa.");
+      }
     } finally {
       setToDelete(null);
     }

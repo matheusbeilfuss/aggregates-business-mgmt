@@ -18,7 +18,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { api } from "@/lib/api";
+import { api, ApiError } from "@/lib/api";
 import { Button } from "@/components/ui/button";
 import { useExpenseOptions } from "../hooks/useExpenseOptions";
 import { FixedExpense } from "../types";
@@ -74,12 +74,16 @@ export function AddFixedExpenseDialog({
       form.reset();
       onSuccess();
       onOpenChange(false);
-    } catch {
-      toast.error(
-        isEditing
-          ? "Não foi possível atualizar a despesa fixa."
-          : "Não foi possível cadastrar a despesa fixa.",
-      );
+    } catch (error) {
+      if (error instanceof ApiError) {
+        toast.error(error.message);
+      } else {
+        toast.error(
+          isEditing
+            ? "Não foi possível atualizar a despesa fixa."
+            : "Não foi possível cadastrar a despesa fixa.",
+        );
+      }
     }
   };
 

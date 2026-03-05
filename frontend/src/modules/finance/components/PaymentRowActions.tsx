@@ -11,7 +11,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { ConfirmDialog } from "@/components/shared/ConfirmDialog";
 import { Payment } from "../types";
-import { api } from "@/lib/api";
+import { api, ApiError } from "@/lib/api";
 import { formatLocalCurrency } from "@/utils/";
 import { formatLocalDate } from "@/utils/";
 
@@ -28,8 +28,12 @@ export function PaymentRowActions({ payment, onSuccess }: Props) {
       await api.delete(`/payments/${payment.id}`);
       toast.success("A entrada foi excluída com sucesso.");
       onSuccess();
-    } catch {
-      toast.error("Não foi possível excluir a entrada.");
+    } catch (error) {
+      if (error instanceof ApiError) {
+        toast.error(error.message);
+      } else {
+        toast.error("Não foi possível excluir a entrada.");
+      }
     }
   };
 

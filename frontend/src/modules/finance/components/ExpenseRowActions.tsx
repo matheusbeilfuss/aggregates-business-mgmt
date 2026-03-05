@@ -11,7 +11,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { ConfirmDialog } from "@/components/shared/ConfirmDialog";
 import { Expense } from "../types";
-import { api } from "@/lib/api";
+import { api, ApiError } from "@/lib/api";
 import { formatLocalCurrency } from "@/utils";
 import { useNavigate } from "react-router-dom";
 import { expenseService } from "../services/expense.service";
@@ -37,8 +37,12 @@ export function ExpenseRowActions({
       await api.delete(`/expenses/${expense.id}`);
       toast.success("A saída foi excluída com sucesso.");
       onSuccess();
-    } catch {
-      toast.error("Não foi possível excluir a saída.");
+    } catch (error) {
+      if (error instanceof ApiError) {
+        toast.error(error.message);
+      } else {
+        toast.error("Não foi possível excluir a saída.");
+      }
     }
   };
 
@@ -47,8 +51,12 @@ export function ExpenseRowActions({
       await expenseService.markAsPaid(expense.id);
       toast.success("Despesa marcada como paga.");
       onSuccess();
-    } catch {
-      toast.error("Erro ao atualizar despesa.");
+    } catch (error) {
+      if (error instanceof ApiError) {
+        toast.error(error.message);
+      } else {
+        toast.error("Não foi possível marcar a despesa como paga.");
+      }
     }
   };
 

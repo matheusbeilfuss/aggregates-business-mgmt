@@ -5,7 +5,7 @@ import { usePageTitle } from "@/hooks/usePageTitle";
 import { ExpenseForm } from "../components/ExpenseForm";
 import { useFixedExpenses } from "../hooks/useFixedExpenses";
 import { ExpenseFormValues } from "../schemas/expense.schema";
-import { api } from "@/lib/api";
+import { api, ApiError } from "@/lib/api";
 
 export default function ExpenseAdd() {
   usePageTitle("Adicionar saída");
@@ -17,8 +17,12 @@ export default function ExpenseAdd() {
       await api.post("/expenses", values);
       toast.success("A saída foi criada com sucesso.");
       navigate("/finance?tab=expenses");
-    } catch {
-      toast.error("Não foi possível criar a saída.");
+    } catch (error) {
+      if (error instanceof ApiError) {
+        toast.error(error.message);
+      } else {
+        toast.error("Não foi possível criar a saída.");
+      }
     }
   };
 
