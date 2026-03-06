@@ -17,7 +17,7 @@ import { useSearchParams } from "react-router-dom";
 export default function Finance() {
   usePageTitle("Financeiro");
 
-  const [searchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
 
   const VALID_TABS = ["incomes", "expenses"] as const;
   type Tab = (typeof VALID_TABS)[number];
@@ -29,9 +29,7 @@ export default function Finance() {
     return "incomes";
   }
 
-  const [activeTab, setActiveTab] = useState<Tab>(
-    parseTab(searchParams.get("tab")),
-  );
+  const activeTab = parseTab(searchParams.get("tab"));
 
   const [period, setPeriod] = useState<DatePeriod>({
     startDate: startOfMonth(new Date()),
@@ -85,7 +83,7 @@ export default function Finance() {
       ) : (
         <Tabs
           value={activeTab}
-          onValueChange={(v) => setActiveTab(v as typeof activeTab)}
+          onValueChange={(v) => setSearchParams({ tab: v })}
         >
           <TabsList className="w-full">
             <TabsTrigger value="incomes" className="flex-1">
