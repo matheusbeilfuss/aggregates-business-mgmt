@@ -1,11 +1,12 @@
 export function parseLocalCurrency(value: string): number | undefined {
-  const parsed = Number(
-    value
-      .replace(/\s/g, "")
-      .replace("R$", "")
-      .replace(/\./g, "")
-      .replace(",", "."),
-  );
+  const cleaned = value
+    .replace(/\s/g, "")
+    .replace("R$", "")
+    .replace(/\./g, "")
+    .replace(",", ".");
 
+  if (!cleaned) return undefined;
+
+  const parsed = Number(cleaned);
   return Number.isNaN(parsed) ? undefined : parsed;
 }
