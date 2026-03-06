@@ -1,13 +1,9 @@
+import { DatePeriod } from "@/types";
 import { DatePicker } from "./DatePicker";
 
-export type Period = {
-  startDate: Date;
-  endDate: Date;
-};
-
 type Props = {
-  period: Period;
-  onChange: (period: Period) => void;
+  period: DatePeriod;
+  onChange: (period: DatePeriod) => void;
 };
 
 export function PeriodPicker({ period, onChange }: Props) {
