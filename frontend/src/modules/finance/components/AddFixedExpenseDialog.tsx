@@ -57,7 +57,7 @@ export function AddFixedExpenseDialog({
       ? {
           name: initialValues.name,
           defaultValue: initialValues.defaultValue,
-          category: initialValues.category ?? "",
+          category: initialValues.category,
         }
       : undefined,
   });

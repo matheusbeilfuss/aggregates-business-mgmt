@@ -119,7 +119,7 @@ export function ExpenseForm({
   function handleTemplateSelect(template: FixedExpense) {
     form.setValue("name", template.name);
     form.setValue("expenseValue", template.defaultValue);
-    form.setValue("category", template.category ?? "");
+    form.setValue("category", template.category);
     setSelectedTemplateId(template.id);
   }
 

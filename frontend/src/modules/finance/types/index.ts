@@ -1,23 +1,32 @@
 import { OrderItem } from "@/modules/order/types";
 import { ExpenseTypeEnum, PaymentMethodEnum, PaymentStatusEnum } from "@/types";
 
-export type Expense = {
-  id: number;
-  name: string;
-  expenseValue: number;
-  date: string;
-  dueDate: string | null;
-  paymentDate: string | null;
-  type: ExpenseTypeEnum;
-  paymentStatus: PaymentStatusEnum;
-  category: string;
-
+export type FuelData = {
   vehicle: string | null;
   kmDriven: number | null;
   liters: number | null;
   pricePerLiter: number | null;
   fuelSupplier: string | null;
 };
+
+type BaseExpense = {
+  id: number;
+  name: string;
+  expenseValue: number;
+  date: string;
+  dueDate: string | null;
+  paymentDate: string | null;
+  paymentStatus: PaymentStatusEnum;
+  category: string;
+};
+
+type FuelExpense = BaseExpense & { type: ExpenseTypeEnum.FUEL } & FuelData;
+
+type NonFuelExpense = BaseExpense & {
+  type: Exclude<ExpenseTypeEnum, ExpenseTypeEnum.FUEL>;
+};
+
+export type Expense = FuelExpense | NonFuelExpense;
 
 export type ExpenseInputDTO = {
   name: string;

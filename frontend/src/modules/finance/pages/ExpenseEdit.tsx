@@ -8,6 +8,7 @@ import { ExpenseFormValues } from "../schemas/expense.schemas";
 import { api, ApiError } from "@/lib/api";
 import { useExpense } from "../hooks/useExpense";
 import { LoadingState } from "@/components/shared";
+import { ExpenseTypeEnum } from "@/types";
 
 export default function ExpenseEdit() {
   usePageTitle("Editar saída");
@@ -37,14 +38,21 @@ export default function ExpenseEdit() {
         <LoadingState />
       ) : (
         <ExpenseForm
-          defaultValues={{
-            ...expense,
-            category: expense.category ?? "",
-            dueDate: expense.dueDate ?? undefined,
-            paymentDate: expense.paymentDate ?? undefined,
-            vehicle: expense.vehicle ?? undefined,
-            fuelSupplier: expense.fuelSupplier ?? undefined,
-          }}
+          defaultValues={
+            expense.type === ExpenseTypeEnum.FUEL
+              ? {
+                  ...expense,
+                  dueDate: expense.dueDate ?? undefined,
+                  paymentDate: expense.paymentDate ?? undefined,
+                  vehicle: expense.vehicle ?? undefined,
+                  fuelSupplier: expense.fuelSupplier ?? undefined,
+                }
+              : {
+                  ...expense,
+                  dueDate: expense.dueDate ?? undefined,
+                  paymentDate: expense.paymentDate ?? undefined,
+                }
+          }
           templates={templates ?? []}
           onTemplatesRefetch={refetchTemplates}
           onSubmit={handleSubmit}
