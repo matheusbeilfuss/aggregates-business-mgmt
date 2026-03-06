@@ -1,14 +1,15 @@
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 
-interface FormActionsProps {
-  cancelPath?: string;
-  onCancel?: () => void;
+type FormActionsProps = {
   submitLabel?: string;
   onSubmit?: () => void;
   isSubmitting?: boolean;
   formId?: string;
-}
+} & (
+  | { onCancel: () => void; cancelPath?: never }
+  | { cancelPath: string; onCancel?: never }
+);
 
 export function FormActions({
   cancelPath,

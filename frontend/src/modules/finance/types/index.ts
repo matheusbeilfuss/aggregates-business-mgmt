@@ -53,6 +53,7 @@ export type Payment = {
 export type PaymentInputDTO = {
   paymentValue: number;
   paymentMethod: PaymentMethodEnum;
+  date: string;
 };
 
 export type PaymentInsertDTO = PaymentInputDTO & {

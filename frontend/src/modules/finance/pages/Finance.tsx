@@ -11,7 +11,7 @@ import { PeriodPicker } from "@/components/shared/PeriodPicker";
 import { PaymentsTab } from "../components/PaymentsTab";
 import { ExpensesTab } from "../components/ExpensesTab";
 import { useFinanceExpenses, useFinancePayments } from "../hooks";
-import { DatePeriod } from "@/types";
+import { DatePeriod, PaymentStatusEnum } from "@/types";
 import { useSearchParams } from "react-router-dom";
 
 export default function Finance() {
@@ -58,7 +58,7 @@ export default function Finance() {
   const totalExpenses = useMemo(
     () =>
       expenses
-        ?.filter((e) => e.paymentStatus === "PAID")
+        ?.filter((e) => e.paymentStatus === PaymentStatusEnum.PAID)
         .reduce((acc, e) => acc + Number(e.expenseValue), 0) ?? 0,
     [expenses],
   );
