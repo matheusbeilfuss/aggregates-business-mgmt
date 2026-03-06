@@ -11,7 +11,6 @@ import br.ufsc.aggregare.model.Order;
 import br.ufsc.aggregare.model.Payment;
 import br.ufsc.aggregare.model.dto.PaymentInputDTO;
 import br.ufsc.aggregare.model.dto.PaymentInsertDTO;
-import br.ufsc.aggregare.model.enums.PaymentMethodEnum;
 import br.ufsc.aggregare.model.enums.PaymentStatusEnum;
 import br.ufsc.aggregare.repository.OrderRepository;
 import br.ufsc.aggregare.repository.PaymentRepository;
@@ -39,7 +38,7 @@ public class PaymentService {
 		Payment payment = buildPayment(dto, existingOrder);
 
 		Payment savedPayment = paymentRepository.save(payment);
-		recalculateOrderPaymentStatus(existingOrder);
+		updateOrderPaymentState(existingOrder);
 		return savedPayment;
 	}
 
@@ -51,7 +50,7 @@ public class PaymentService {
 		applyDTO(existingPayment, dto);
 
 		Payment savedPayment = paymentRepository.save(existingPayment);
-		recalculateOrderPaymentStatus(savedPayment.getOrder());
+		updateOrderPaymentState(savedPayment.getOrder());
 		return savedPayment;
 	}
 
@@ -64,7 +63,7 @@ public class PaymentService {
 		paymentRepository.delete(existingPayment);
 		paymentRepository.flush();
 
-		recalculateOrderPaymentStatus(order);
+		updateOrderPaymentState(order);
 	}
 
 	private Payment buildPayment(PaymentInputDTO dto, Order order) {
@@ -80,10 +79,12 @@ public class PaymentService {
 		payment.setDate(dto.getDate());
 	}
 
-	private void recalculateOrderPaymentStatus(Order order) {
+	public void updateOrderPaymentState(Order order) {
 		BigDecimal totalPaid = findByOrderId(order.getId()).stream()
 				.map(Payment::getPaymentValue)
 				.reduce(BigDecimal.ZERO, BigDecimal::add);
+
+		BigDecimal remaining = order.getOrderValue().subtract(totalPaid).max(BigDecimal.ZERO);
 
 		if (totalPaid.compareTo(order.getOrderValue()) >= 0) {
 			order.setPaymentStatus(PaymentStatusEnum.PAID);
@@ -93,6 +94,7 @@ public class PaymentService {
 			order.setPaymentStatus(PaymentStatusEnum.PENDING);
 		}
 
+		order.setRemainingValue(remaining);
 		orderRepository.save(order);
 	}
 

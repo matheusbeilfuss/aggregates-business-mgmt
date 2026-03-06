@@ -37,7 +37,8 @@ public class OrderService {
 
 	@Autowired
 	public OrderService(OrderRepository orderRepository, OrderAddressRepository orderAddressRepository,
-			ProductService productService, ClientService clientService, PaymentService paymentService, StockService stockService, OrderValidator orderValidator) {
+			ProductService productService, ClientService clientService, PaymentService paymentService,
+			StockService stockService, OrderValidator orderValidator) {
 		this.orderRepository = orderRepository;
 		this.orderAddressRepository = orderAddressRepository;
 		this.productService = productService;
@@ -56,57 +57,13 @@ public class OrderService {
 
 		if (hasValidStockData(order)) {
 			try {
-				Double tonQuantity = stockService.deductStockForOrder(
-						order.getProduct(), order.getM3Quantity());
+				Double tonQuantity = stockService.deductStockForOrder(order.getProduct(), order.getM3Quantity());
 				order.setTonQuantity(tonQuantity);
 				orderRepository.save(order);
 			} catch (ObjectOptimisticLockingFailureException e) {
-				throw new IllegalStateException(
-						"O estoque foi modificado por outra operação simultânea. Tente novamente.");
+				throw new IllegalStateException("O estoque foi modificado por outra operação simultânea. Tente novamente.");
 			}
 		}
-
-		return order;
-	}
-
-	private OrderAddress orderAddressFromDTO(OrderInputDTO dto) {
-		OrderAddress orderAddress = new OrderAddress();
-		orderAddress.setStreet(dto.getStreet());
-		orderAddress.setNumber(dto.getNumber());
-		orderAddress.setNeighborhood(dto.getNeighborhood());
-		orderAddress.setCity(dto.getCity());
-		orderAddress.setState(dto.getState());
-		return orderAddress;
-	}
-
-	private Order orderFromInputDTO(OrderInputDTO dto) {
-		Order order = new Order();
-
-		if (dto.getType() == OrderTypeEnum.MATERIAL) {
-			Product existingProduct = productService.findById(dto.getProductId());
-			order.setProduct(existingProduct);
-			order.setM3Quantity(dto.getM3Quantity());
-		} else {
-			order.setProduct(null);
-			order.setM3Quantity(null);
-			order.setTonQuantity(null);
-		}
-
-		Client existingClient = clientService.findById(dto.getClientId());
-		order.setClient(existingClient);
-
-		OrderAddress orderAddress = orderAddressFromDTO(dto);
-		orderAddressRepository.save(orderAddress);
-		order.setOrderAddress(orderAddress);
-
-		order.setService(dto.getService());
-		order.setType(dto.getType());
-		order.setScheduledDate(dto.getScheduledDate());
-		order.setScheduledTime(dto.getScheduledTime());
-		order.setObservations(dto.getObservations());
-		order.setStatus(OrderStatusEnum.PENDING);
-		order.setPaymentStatus(PaymentStatusEnum.PENDING);
-		order.setOrderValue(dto.getOrderValue());
 
 		return order;
 	}
@@ -123,13 +80,11 @@ public class OrderService {
 						existingOrder.getM3Quantity(),
 						existingOrder.getTonQuantity() != null ? existingOrder.getTonQuantity() : 0.0);
 			} catch (ObjectOptimisticLockingFailureException e) {
-				throw new IllegalStateException(
-						"O estoque foi modificado por outra operação simultânea. Tente novamente.");
+				throw new IllegalStateException("O estoque foi modificado por outra operação simultânea. Tente novamente.");
 			}
 		}
 
-		OrderAddress existingOrderAddress = existingOrder.getOrderAddress();
-		orderAddressRepository.delete(existingOrderAddress);
+		orderAddressRepository.delete(existingOrder.getOrderAddress());
 		orderRepository.delete(existingOrder);
 	}
 
@@ -161,29 +116,18 @@ public class OrderService {
 			Client existingClient = clientService.findById(dto.getClientId());
 			existingOrder.setClient(existingClient);
 
-			OrderAddress existingOrderAddress = existingOrder.getOrderAddress();
-			updateOrderAddress(existingOrderAddress, dto);
+			updateOrderAddress(existingOrder.getOrderAddress(), dto);
 			updateOrder(existingOrder, dto);
 
 			if (hasValidStockData(existingOrder)) {
-				Double tonQuantity = stockService.deductStockForOrder(
-						existingOrder.getProduct(), existingOrder.getM3Quantity());
+				Double tonQuantity = stockService.deductStockForOrder(existingOrder.getProduct(), existingOrder.getM3Quantity());
 				existingOrder.setTonQuantity(tonQuantity);
 			}
 		} catch (ObjectOptimisticLockingFailureException e) {
-			throw new IllegalStateException(
-					"O estoque foi modificado por outra operação simultânea. Tente novamente.");
+			throw new IllegalStateException("O estoque foi modificado por outra operação simultânea. Tente novamente.");
 		}
 
 		return existingOrder;
-	}
-
-	private void updateOrderAddress(OrderAddress existingOrderAddress, OrderInputDTO dto) {
-		existingOrderAddress.setStreet(dto.getStreet());
-		existingOrderAddress.setNumber(dto.getNumber());
-		existingOrderAddress.setNeighborhood(dto.getNeighborhood());
-		existingOrderAddress.setCity(dto.getCity());
-		existingOrderAddress.setState(dto.getState());
 	}
 
 	private void updateOrder(Order existingOrder, OrderInputDTO dto) {
@@ -193,19 +137,15 @@ public class OrderService {
 		existingOrder.setScheduledTime(dto.getScheduledTime());
 		existingOrder.setObservations(dto.getObservations());
 		existingOrder.setOrderValue(dto.getOrderValue());
+		paymentService.updateOrderPaymentState(existingOrder);
 	}
 
-	public Order findById(Long id) {
-		return orderRepository.findById(id)
-				.orElseThrow(() -> new ResourceNotFoundException(id));
-	}
-
-	public List<Order> findAll() {
-		return orderRepository.findAll();
-	}
-
-	public List<Order> findByScheduledDate(LocalDate scheduledDate) {
-		return orderRepository.findByScheduledDate(scheduledDate);
+	private void updateOrderAddress(OrderAddress existingOrderAddress, OrderInputDTO dto) {
+		existingOrderAddress.setStreet(dto.getStreet());
+		existingOrderAddress.setNumber(dto.getNumber());
+		existingOrderAddress.setNeighborhood(dto.getNeighborhood());
+		existingOrderAddress.setCity(dto.getCity());
+		existingOrderAddress.setState(dto.getState());
 	}
 
 	@Transactional
@@ -232,6 +172,62 @@ public class OrderService {
 		paymentService.insert(dto);
 
 		return existingOrder;
+	}
+
+	public Order findById(Long id) {
+		return orderRepository.findById(id)
+				.orElseThrow(() -> new ResourceNotFoundException(id));
+	}
+
+	public List<Order> findAll() {
+		return orderRepository.findAll();
+	}
+
+	public List<Order> findByScheduledDate(LocalDate scheduledDate) {
+		return orderRepository.findByScheduledDate(scheduledDate);
+	}
+
+	private Order orderFromInputDTO(OrderInputDTO dto) {
+		Order order = new Order();
+
+		if (dto.getType() == OrderTypeEnum.MATERIAL) {
+			Product existingProduct = productService.findById(dto.getProductId());
+			order.setProduct(existingProduct);
+			order.setM3Quantity(dto.getM3Quantity());
+		} else {
+			order.setProduct(null);
+			order.setM3Quantity(null);
+			order.setTonQuantity(null);
+		}
+
+		Client existingClient = clientService.findById(dto.getClientId());
+		order.setClient(existingClient);
+
+		OrderAddress orderAddress = orderAddressFromDTO(dto);
+		orderAddressRepository.save(orderAddress);
+		order.setOrderAddress(orderAddress);
+
+		order.setService(dto.getService());
+		order.setType(dto.getType());
+		order.setScheduledDate(dto.getScheduledDate());
+		order.setScheduledTime(dto.getScheduledTime());
+		order.setObservations(dto.getObservations());
+		order.setStatus(OrderStatusEnum.PENDING);
+		order.setPaymentStatus(PaymentStatusEnum.PENDING);
+		order.setOrderValue(dto.getOrderValue());
+		order.setRemainingValue(dto.getOrderValue());
+
+		return order;
+	}
+
+	private OrderAddress orderAddressFromDTO(OrderInputDTO dto) {
+		OrderAddress orderAddress = new OrderAddress();
+		orderAddress.setStreet(dto.getStreet());
+		orderAddress.setNumber(dto.getNumber());
+		orderAddress.setNeighborhood(dto.getNeighborhood());
+		orderAddress.setCity(dto.getCity());
+		orderAddress.setState(dto.getState());
+		return orderAddress;
 	}
 
 	private boolean hasValidStockData(Order order) {

@@ -68,16 +68,14 @@ public class Order implements Serializable {
 
 	private BigDecimal orderValue;
 
-	@OneToMany(mappedBy = "order", fetch = FetchType.LAZY)
-	@JsonIgnore
-	private List<Payment> payments = new ArrayList<>();
+	private BigDecimal remainingValue;
 
 	public Order() {
 	}
 
 	public Order(Long id, Product product, Client client, OrderAddress orderAddress, Double m3Quantity, Double tonQuantity,
 			String service, OrderTypeEnum type, LocalDate scheduledDate, LocalTime scheduledTime,
-			String observations, OrderStatusEnum status, PaymentStatusEnum paymentStatus, BigDecimal orderValue) {
+			String observations, OrderStatusEnum status, PaymentStatusEnum paymentStatus, BigDecimal orderValue, BigDecimal remainingValue) {
 		this.id = id;
 		this.product = product;
 		this.client = client;
@@ -92,6 +90,7 @@ public class Order implements Serializable {
 		this.status = status;
 		this.paymentStatus = paymentStatus;
 		this.orderValue = orderValue;
+		this.remainingValue = remainingValue;
 	}
 
 	public Long getId() {
@@ -206,22 +205,12 @@ public class Order implements Serializable {
 		this.orderValue = orderValue;
 	}
 
-	public List<Payment> getPayments() {
-		return payments;
-	}
-
-	public void setPayments(List<Payment> payments) {
-		this.payments = payments;
-	}
-
-	@Transient
 	public BigDecimal getRemainingValue() {
-		if (orderValue == null) return BigDecimal.ZERO;
-		BigDecimal totalPaid = payments == null ? BigDecimal.ZERO :
-				payments.stream()
-						.map(Payment::getPaymentValue)
-						.reduce(BigDecimal.ZERO, BigDecimal::add);
-		return orderValue.subtract(totalPaid).max(BigDecimal.ZERO);
+		return remainingValue;
+	}
+
+	public void setRemainingValue(BigDecimal remainingValue) {
+		this.remainingValue = remainingValue;
 	}
 
 	@Override public boolean equals(Object o) {
