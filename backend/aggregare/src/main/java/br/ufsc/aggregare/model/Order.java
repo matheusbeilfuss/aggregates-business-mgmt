@@ -14,7 +14,6 @@ import br.ufsc.aggregare.model.enums.OrderTypeEnum;
 import br.ufsc.aggregare.model.enums.PaymentStatusEnum;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;

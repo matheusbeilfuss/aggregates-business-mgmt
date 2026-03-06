@@ -5,12 +5,13 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { formatLocalCurrency } from "@/utils";
+import type { ReactNode } from "react";
 
 export type AccordionRow = {
   id: number;
-  label: React.ReactNode;
+  label: ReactNode;
   value: number;
-  extra?: React.ReactNode;
+  extra?: ReactNode;
 };
 
 export type AccordionGroup = {
