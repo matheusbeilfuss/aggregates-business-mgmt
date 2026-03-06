@@ -19,14 +19,24 @@ export default function Finance() {
 
   const [searchParams] = useSearchParams();
 
+  const VALID_TABS = ["incomes", "expenses"] as const;
+  type Tab = (typeof VALID_TABS)[number];
+
+  function parseTab(value: string | null): Tab {
+    if (value && (VALID_TABS as readonly string[]).includes(value)) {
+      return value as Tab;
+    }
+    return "incomes";
+  }
+
+  const [activeTab, setActiveTab] = useState<Tab>(
+    parseTab(searchParams.get("tab")),
+  );
+
   const [period, setPeriod] = useState<DatePeriod>({
     startDate: startOfMonth(new Date()),
     endDate: endOfMonth(new Date()),
   });
-
-  const [activeTab, setActiveTab] = useState<"incomes" | "expenses">(
-    (searchParams.get("tab") as "incomes" | "expenses") ?? "incomes",
-  );
 
   const {
     data: payments,
