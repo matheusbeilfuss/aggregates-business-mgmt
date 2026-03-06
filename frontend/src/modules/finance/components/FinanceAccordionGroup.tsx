@@ -51,12 +51,11 @@ export function FinanceAccordionGroup({ groups, defaultOpen }: Props) {
               {group.rows.map((row) => (
                 <div
                   key={row.id}
-                  className="flex items-center justify-between gap-4 py-3" // items-center, gap maior
+                  className="flex items-center justify-between gap-4 py-3"
                 >
                   <div className="flex-1 min-w-0">{row.label}</div>
 
                   <div className="flex items-center gap-2 shrink-0">
-                    {" "}
                     <span className="text-sm font-medium tabular-nums">
                       {formatLocalCurrency(row.value)}
                     </span>

@@ -22,7 +22,6 @@ import br.ufsc.aggregare.model.Expense;
 import br.ufsc.aggregare.model.dto.ExpenseDTO;
 import br.ufsc.aggregare.model.dto.ExpenseInputDTO;
 import br.ufsc.aggregare.service.ExpenseService;
-import br.ufsc.aggregare.service.FuelService;
 
 import jakarta.validation.Valid;
 

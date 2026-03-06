@@ -28,10 +28,10 @@ public class ExpenseInputDTO {
 	@NotNull(message = "O tipo da despesa é obrigatório.")
 	private ExpenseTypeEnum type;
 
-	@NotNull(message = "O status do pagamento é obrigatório.")
+	@NotNull(message = "O status da despesa é obrigatório.")
 	private PaymentStatusEnum paymentStatus;
 
-	@NotNull(message = "A categoria do pagamento é obrigatória.")
+	@NotNull(message = "A categoria da despesa é obrigatória.")
 	private String category;
 
 	private String vehicle;
