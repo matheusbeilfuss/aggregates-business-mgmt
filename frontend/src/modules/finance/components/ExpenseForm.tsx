@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
@@ -85,6 +85,26 @@ export function ExpenseForm({
     name: "paymentStatus",
   });
 
+  const prevPaymentStatus = useRef<string | null>(null);
+
+  useEffect(() => {
+    const isNewExpense = !defaultValues?.paymentDate;
+    const transitionedToPaid =
+      prevPaymentStatus.current === PaymentStatusEnum.PENDING &&
+      paymentStatus === PaymentStatusEnum.PAID;
+
+    if (
+      paymentStatus === PaymentStatusEnum.PAID &&
+      (isNewExpense || transitionedToPaid)
+    ) {
+      form.setValue("paymentDate", date);
+    } else if (paymentStatus === PaymentStatusEnum.PENDING) {
+      form.setValue("paymentDate", null);
+    }
+
+    prevPaymentStatus.current = paymentStatus;
+  }, [paymentStatus, date, form, defaultValues?.paymentDate]);
+
   useEffect(() => {
     if (type === ExpenseTypeEnum.FUEL && liters && pricePerLiter) {
       form.setValue(
@@ -105,14 +125,6 @@ export function ExpenseForm({
       form.setValue("name", vehicle ?? "Combustível");
     }
   }, [vehicle, type, form]);
-
-  useEffect(() => {
-    if (paymentStatus === PaymentStatusEnum.PAID) {
-      form.setValue("paymentDate", date);
-    } else {
-      form.setValue("paymentDate", null);
-    }
-  }, [paymentStatus, date, form]);
 
   function handleTemplateSelect(template: FixedExpense) {
     form.setValue("name", template.name);
