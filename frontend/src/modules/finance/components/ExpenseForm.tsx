@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
@@ -56,7 +56,7 @@ export function ExpenseForm({
       expenseValue: 0,
       category: "",
       dueDate: null,
-      paymentDate: null,
+      paymentDate: toIsoDate(new Date()),
       vehicle: "",
       kmDriven: null,
       liters: null,
@@ -79,31 +79,21 @@ export function ExpenseForm({
   const [selectedTemplateId, setSelectedTemplateId] = useState<number | null>(
     null,
   );
-  const date = useWatch({ control: form.control, name: "date" });
   const paymentStatus = useWatch({
     control: form.control,
     name: "paymentStatus",
   });
 
-  const prevPaymentStatus = useRef<string | null>(null);
-
   useEffect(() => {
-    const isNewExpense = !defaultValues?.paymentDate;
-    const transitionedToPaid =
-      prevPaymentStatus.current === PaymentStatusEnum.PENDING &&
-      paymentStatus === PaymentStatusEnum.PAID;
-
-    if (
-      paymentStatus === PaymentStatusEnum.PAID &&
-      (isNewExpense || transitionedToPaid)
-    ) {
-      form.setValue("paymentDate", date);
-    } else if (paymentStatus === PaymentStatusEnum.PENDING) {
+    if (paymentStatus === PaymentStatusEnum.PENDING) {
       form.setValue("paymentDate", null);
+    } else if (paymentStatus === PaymentStatusEnum.PAID) {
+      const current = form.getValues("paymentDate");
+      if (!current) {
+        form.setValue("paymentDate", toIsoDate(new Date()));
+      }
     }
-
-    prevPaymentStatus.current = paymentStatus;
-  }, [paymentStatus, date, form, defaultValues?.paymentDate]);
+  }, [paymentStatus, form]);
 
   useEffect(() => {
     if (type === ExpenseTypeEnum.FUEL && liters && pricePerLiter) {
@@ -399,6 +389,27 @@ export function ExpenseForm({
               </FormItem>
             )}
           />
+
+          {!isPending && (
+            <FormField
+              control={form.control}
+              name="paymentDate"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Data do pagamento</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="date"
+                      {...field}
+                      value={field.value ?? ""}
+                      onChange={(e) => field.onChange(e.target.value || null)}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          )}
 
           {isPending && (
             <FormField
