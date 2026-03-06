@@ -227,7 +227,7 @@ public class OrderService {
 		dto.setOrderId(id);
 		dto.setPaymentValue(paymentDTO.getPaymentValue());
 		dto.setPaymentMethod(paymentDTO.getPaymentMethod());
-		dto.setDate(LocalDate.now());
+		dto.setDate(paymentDTO.getDate());
 
 		paymentService.insert(dto);
 
