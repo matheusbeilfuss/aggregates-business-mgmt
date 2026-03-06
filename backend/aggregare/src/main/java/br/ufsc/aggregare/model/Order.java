@@ -13,6 +13,7 @@ import br.ufsc.aggregare.model.enums.OrderStatusEnum;
 import br.ufsc.aggregare.model.enums.OrderTypeEnum;
 import br.ufsc.aggregare.model.enums.PaymentStatusEnum;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import jakarta.persistence.Entity;
@@ -69,7 +70,7 @@ public class Order implements Serializable {
 	private BigDecimal orderValue;
 
 	@OneToMany(mappedBy = "order", fetch = FetchType.LAZY)
-	@JsonIgnoreProperties("order")
+	@JsonIgnore
 	private List<Payment> payments = new ArrayList<>();
 
 	public Order() {

@@ -76,9 +76,8 @@ export function AddPaymentDialog({
   const isSubmitting = form.formState.isSubmitting;
 
   const orderLabel = order.product ? order.product.name : order.service;
-  const totalPaid =
-    order.payments?.reduce((acc, p) => acc + Number(p.paymentValue), 0) ?? 0;
-  const remaining = Number(order.orderValue) - totalPaid;
+
+  const remaining = order.remainingValue;
 
   return (
     <Dialog
