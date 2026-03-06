@@ -27,7 +27,7 @@ export type ExpenseInputDTO = {
   paymentDate: string | null;
   type: ExpenseTypeEnum;
   paymentStatus: PaymentStatusEnum;
-  category: string | null;
+  category: string;
   vehicle: string | null;
   kmDriven: number | null;
   liters: number | null;
@@ -39,7 +39,7 @@ export type FixedExpense = {
   id: number;
   name: string;
   defaultValue: number;
-  category: string | null;
+  category: string;
 };
 
 export type Payment = {
