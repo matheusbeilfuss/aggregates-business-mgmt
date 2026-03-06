@@ -58,6 +58,7 @@ export function AddPaymentDialog({
         order.id,
         data.paymentValue,
         data.paymentMethod,
+        data.date,
       );
 
       toast.success("Pagamento adicionado com sucesso");
