@@ -15,7 +15,11 @@ type Props = {
 
 export function PaymentMethodSelect({ value, onChange }: Props) {
   return (
-    <Select onValueChange={onChange} value={value}>
+    <Select
+      onValueChange={(v) => onChange(v as PaymentMethodEnum)}
+      value={value}
+    >
+      {" "}
       <SelectTrigger className="w-full">
         <SelectValue placeholder="Selecione um método de pagamento" />
       </SelectTrigger>
