@@ -12,7 +12,7 @@ import { Button } from "@/components/ui/button";
 import { ConfirmDialog } from "@/components/shared/ConfirmDialog";
 import { Payment } from "../types";
 import { api, ApiError } from "@/lib/api";
-import { formatLocalCurrency, formatLocalDate } from "@/utils/";
+import { formatLocalCurrency, formatLocalDate } from "@/utils";
 import { PaymentDialog } from "./PaymentDialog";
 
 type Props = {

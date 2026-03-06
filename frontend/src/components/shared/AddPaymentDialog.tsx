@@ -24,8 +24,12 @@ import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { orderService } from "@/modules/order/services/order.service";
 import { Loader2 } from "lucide-react";
-import { formatLocalCurrency, formatTime, toIsoDate } from "@/utils/";
-import { formatLocalDate } from "@/utils";
+import {
+  formatLocalCurrency,
+  formatLocalDate,
+  formatTime,
+  toIsoDate,
+} from "@/utils";
 import { Input } from "../ui/input";
 import { ApiError } from "@/lib/api";
 import { PaymentMethodSelect } from "@/modules/finance/components/PaymentMethodSelect";
@@ -46,7 +50,7 @@ export function AddPaymentDialog({
   const form = useForm<OrderPaymentFormData>({
     resolver: zodResolver(orderPaymentSchema),
     defaultValues: {
-      paymentMethod: "",
+      paymentMethod: undefined,
       paymentValue: 0,
       date: toIsoDate(new Date()),
     },

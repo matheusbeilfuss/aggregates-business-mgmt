@@ -4,7 +4,7 @@ import { startOfMonth, endOfMonth } from "date-fns";
 import { PageContainer } from "@/components/shared/PageContainer";
 import { LoadingState } from "@/components/shared/LoadingState";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { formatLocalCurrency } from "@/utils/";
+import { formatLocalCurrency } from "@/utils";
 import { usePageTitle } from "@/hooks/usePageTitle";
 
 import { PeriodPicker } from "@/components/shared/PeriodPicker";

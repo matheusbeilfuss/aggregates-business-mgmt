@@ -1,4 +1,4 @@
-import { formatLocalCurrency } from "@/utils/";
+import { formatLocalCurrency } from "@/utils";
 
 type Props = {
   label?: string;

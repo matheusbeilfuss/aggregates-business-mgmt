@@ -1,6 +1,6 @@
 import { OrderTypeEnum, PaymentStatusEnum } from "@/types";
 import { Payment } from "../types";
-import { formatLocalCurrency, formatLocalDate } from "@/utils/";
+import { formatLocalCurrency, formatLocalDate } from "@/utils";
 
 type PaymentRowLabelProps = {
   payment: Payment;

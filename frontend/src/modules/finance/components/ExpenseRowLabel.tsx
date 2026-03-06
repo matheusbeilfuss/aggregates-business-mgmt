@@ -1,6 +1,6 @@
 import { PaymentStatusEnum } from "@/types";
 import { Expense } from "../types";
-import { formatLocalDate } from "@/utils/";
+import { formatLocalDate } from "@/utils";
 
 type ExpenseRowLabelProps = {
   expense: Expense;

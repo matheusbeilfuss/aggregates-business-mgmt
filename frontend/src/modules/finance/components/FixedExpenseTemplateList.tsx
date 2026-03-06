@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { FixedExpense } from "../types";
 import { api, ApiError } from "@/lib/api";
-import { formatLocalCurrency } from "@/utils/";
+import { formatLocalCurrency } from "@/utils";
 import { AddFixedExpenseDialog } from "./AddFixedExpenseDialog";
 
 type Props = {
