@@ -13,6 +13,7 @@ import br.ufsc.aggregare.model.OrderAddress;
 import br.ufsc.aggregare.model.Product;
 import br.ufsc.aggregare.model.dto.OrderInputDTO;
 import br.ufsc.aggregare.model.dto.PaymentInputDTO;
+import br.ufsc.aggregare.model.dto.PaymentInsertDTO;
 import br.ufsc.aggregare.model.enums.OrderStatusEnum;
 import br.ufsc.aggregare.model.enums.OrderTypeEnum;
 import br.ufsc.aggregare.model.enums.PaymentStatusEnum;
@@ -222,10 +223,15 @@ public class OrderService {
 		Order existingOrder = orderRepository.findById(id)
 				.orElseThrow(() -> new ResourceNotFoundException(id));
 
-		paymentService.insert(existingOrder, paymentDTO.getPaymentValue(), paymentDTO.getPaymentMethod());
+		PaymentInsertDTO dto = new PaymentInsertDTO();
+		dto.setOrderId(id);
+		dto.setPaymentValue(paymentDTO.getPaymentValue());
+		dto.setPaymentMethod(paymentDTO.getPaymentMethod());
+		dto.setDate(LocalDate.now());
 
-		return orderRepository.findById(id)
-				.orElseThrow(() -> new ResourceNotFoundException(id));
+		paymentService.insert(dto);
+
+		return existingOrder;
 	}
 
 	private boolean hasValidStockData(Order order) {

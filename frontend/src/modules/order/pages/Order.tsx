@@ -13,7 +13,7 @@ import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router";
 import { orderService } from "../services/order.service";
 import { toast } from "sonner";
-import { AddPaymentDialog } from "@/components/shared/AddPaymentDialog";
+import { PaymentDialog } from "@/modules/finance/components/PaymentDialog";
 import { ApiError } from "@/lib/api";
 import { usePageTitle } from "@/hooks/usePageTitle";
 
@@ -154,7 +154,8 @@ export function Order() {
       />
 
       {orderToAddPayment && (
-        <AddPaymentDialog
+        <PaymentDialog
+          mode="add"
           open={isAddPaymentDialogOpen}
           onOpenChange={(open) => {
             setIsAddPaymentDialogOpen(open);

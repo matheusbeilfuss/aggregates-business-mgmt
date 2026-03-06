@@ -1,6 +1,7 @@
 package br.ufsc.aggregare.model.dto;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 
 import br.ufsc.aggregare.model.enums.PaymentMethodEnum;
 
@@ -16,12 +17,16 @@ public class PaymentInputDTO {
 	@NotNull(message = "O método de pagamento é obrigatório.")
 	private PaymentMethodEnum paymentMethod;
 
+	@NotNull(message = "A data do pagamento é obrigatória.")
+	private LocalDate date;
+
 	public PaymentInputDTO() {
 	}
 
-	public PaymentInputDTO(BigDecimal paymentValue, PaymentMethodEnum paymentMethod) {
+	public PaymentInputDTO(BigDecimal paymentValue, PaymentMethodEnum paymentMethod, LocalDate date) {
 		this.paymentValue = paymentValue;
 		this.paymentMethod = paymentMethod;
+		this.date = date;
 	}
 
 	public BigDecimal getPaymentValue() {
@@ -38,5 +43,13 @@ public class PaymentInputDTO {
 
 	public void setPaymentMethod(PaymentMethodEnum paymentMethod) {
 		this.paymentMethod = paymentMethod;
+	}
+
+	public LocalDate getDate() {
+		return date;
+	}
+
+	public void setDate(LocalDate date) {
+		this.date = date;
 	}
 }

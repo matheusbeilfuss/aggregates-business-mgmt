@@ -5,21 +5,28 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 import br.ufsc.aggregare.model.enums.OrderStatusEnum;
 import br.ufsc.aggregare.model.enums.OrderTypeEnum;
 import br.ufsc.aggregare.model.enums.PaymentStatusEnum;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
 
 @Entity
 @Table(name = "tb_order")
@@ -60,6 +67,10 @@ public class Order implements Serializable {
 	private PaymentStatusEnum paymentStatus;
 
 	private BigDecimal orderValue;
+
+	@OneToMany(mappedBy = "order", fetch = FetchType.LAZY)
+	@JsonIgnoreProperties("order")
+	private List<Payment> payments = new ArrayList<>();
 
 	public Order() {
 	}
@@ -193,6 +204,24 @@ public class Order implements Serializable {
 
 	public void setOrderValue(BigDecimal orderValue) {
 		this.orderValue = orderValue;
+	}
+
+	public List<Payment> getPayments() {
+		return payments;
+	}
+
+	public void setPayments(List<Payment> payments) {
+		this.payments = payments;
+	}
+
+	@Transient
+	public BigDecimal getRemainingValue() {
+		if (orderValue == null) return BigDecimal.ZERO;
+		BigDecimal totalPaid = payments == null ? BigDecimal.ZERO :
+				payments.stream()
+						.map(Payment::getPaymentValue)
+						.reduce(BigDecimal.ZERO, BigDecimal::add);
+		return orderValue.subtract(totalPaid).max(BigDecimal.ZERO);
 	}
 
 	@Override public boolean equals(Object o) {

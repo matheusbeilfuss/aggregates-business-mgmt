@@ -26,6 +26,7 @@ interface BaseOrderItem {
   status: OrderStatus;
   paymentStatus: PaymentStatus;
   orderValue: number;
+  remainingValue: number;
 }
 
 interface MaterialOrderItem extends BaseOrderItem {
@@ -47,6 +48,7 @@ interface ServiceOrderItem extends BaseOrderItem {
 export type OrderItem = MaterialOrderItem | ServiceOrderItem;
 
 // Payloads para API
+
 export interface CreateOrderPayload {
   productId: number | null;
 

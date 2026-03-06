@@ -1,9 +1,5 @@
-import {
-  ExpenseTypeEnum,
-  PaymentMethodEnum,
-  PaymentStatusEnum,
-  OrderTypeEnum,
-} from "@/types";
+import { OrderItem } from "@/modules/order/types";
+import { ExpenseTypeEnum, PaymentMethodEnum, PaymentStatusEnum } from "@/types";
 
 export type Expense = {
   id: number;
@@ -48,17 +44,7 @@ export type FixedExpense = {
 
 export type Payment = {
   id: number;
-  order: {
-    id: number;
-    type: OrderTypeEnum;
-    service: string | null;
-    orderValue: number;
-    paymentStatus: PaymentStatusEnum;
-    scheduledDate: string;
-    m3Quantity: number | null;
-    client: { id: number; name: string };
-    product: { id: number; name: string } | null;
-  };
+  order: OrderItem;
   paymentValue: number;
   date: string;
   paymentMethod: PaymentMethodEnum;

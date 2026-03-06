@@ -32,47 +32,27 @@ public class PaymentService {
 	}
 
 	@Transactional
-	public Payment insert(Payment payment) {
-		Payment savedPayment = paymentRepository.save(payment);
-		recalculateOrderPaymentStatus(payment.getOrder());
-		return savedPayment;
-	}
-
-	@Transactional
-	public Payment insert(Order order, BigDecimal paymentValue, PaymentMethodEnum paymentMethod) {
-		Payment newPayment = new Payment();
-		newPayment.setOrder(order);
-		newPayment.setDate(LocalDate.now());
-		newPayment.setPaymentValue(paymentValue);
-		newPayment.setPaymentMethod(paymentMethod);
-
-		return insert(newPayment);
-	}
-
-	@Transactional
 	public Payment insert(PaymentInsertDTO dto) {
 		Order existingOrder = orderRepository.findById(dto.getOrderId())
 				.orElseThrow(() -> new ResourceNotFoundException(dto.getOrderId()));
 
-		return insert(existingOrder, dto.getPaymentValue(), dto.getPaymentMethod());
+		Payment payment = buildPayment(dto, existingOrder);
+
+		Payment savedPayment = paymentRepository.save(payment);
+		recalculateOrderPaymentStatus(existingOrder);
+		return savedPayment;
 	}
 
-	private void recalculateOrderPaymentStatus(Order order) {
-		List<Payment> payments = findByOrderId(order.getId());
+	@Transactional
+	public Payment update(Long id, PaymentInputDTO dto) {
+		Payment existingPayment = paymentRepository.findById(id)
+				.orElseThrow(() -> new ResourceNotFoundException(id));
 
-		BigDecimal totalPaid = payments.stream()
-				.map(Payment::getPaymentValue)
-				.reduce(BigDecimal.ZERO, BigDecimal::add);
+		applyDTO(existingPayment, dto);
 
-		if (totalPaid.compareTo(order.getOrderValue()) >= 0) {
-			order.setPaymentStatus(PaymentStatusEnum.PAID);
-		} else if (totalPaid.compareTo(BigDecimal.ZERO) > 0) {
-			order.setPaymentStatus(PaymentStatusEnum.PARTIAL);
-		} else {
-			order.setPaymentStatus(PaymentStatusEnum.PENDING);
-		}
-
-		orderRepository.save(order);
+		Payment savedPayment = paymentRepository.save(existingPayment);
+		recalculateOrderPaymentStatus(savedPayment.getOrder());
+		return savedPayment;
 	}
 
 	@Transactional
@@ -87,19 +67,33 @@ public class PaymentService {
 		recalculateOrderPaymentStatus(order);
 	}
 
-	@Transactional
-	public Payment update(Long id, PaymentInputDTO dto) {
-		Payment existingPayment = paymentRepository.findById(id)
-				.orElseThrow(() -> new ResourceNotFoundException(id));
+	private Payment buildPayment(PaymentInputDTO dto, Order order) {
+		Payment payment = new Payment();
+		payment.setOrder(order);
+		applyDTO(payment, dto);
+		return payment;
+	}
 
-		existingPayment.setPaymentValue(dto.getPaymentValue());
-		existingPayment.setPaymentMethod(dto.getPaymentMethod());
+	private void applyDTO(Payment payment, PaymentInputDTO dto) {
+		payment.setPaymentValue(dto.getPaymentValue());
+		payment.setPaymentMethod(dto.getPaymentMethod());
+		payment.setDate(dto.getDate());
+	}
 
-		Payment savedPayment = paymentRepository.save(existingPayment);
+	private void recalculateOrderPaymentStatus(Order order) {
+		BigDecimal totalPaid = findByOrderId(order.getId()).stream()
+				.map(Payment::getPaymentValue)
+				.reduce(BigDecimal.ZERO, BigDecimal::add);
 
-		recalculateOrderPaymentStatus(savedPayment.getOrder());
+		if (totalPaid.compareTo(order.getOrderValue()) >= 0) {
+			order.setPaymentStatus(PaymentStatusEnum.PAID);
+		} else if (totalPaid.compareTo(BigDecimal.ZERO) > 0) {
+			order.setPaymentStatus(PaymentStatusEnum.PARTIAL);
+		} else {
+			order.setPaymentStatus(PaymentStatusEnum.PENDING);
+		}
 
-		return savedPayment;
+		orderRepository.save(order);
 	}
 
 	public Payment findById(Long id) {

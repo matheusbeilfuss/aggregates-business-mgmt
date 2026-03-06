@@ -14,6 +14,7 @@ import { Payment } from "../types";
 import { api, ApiError } from "@/lib/api";
 import { formatLocalCurrency } from "@/utils/";
 import { formatLocalDate } from "@/utils/";
+import { PaymentDialog } from "./PaymentDialog";
 
 type Props = {
   payment: Payment;
@@ -22,6 +23,7 @@ type Props = {
 
 export function PaymentRowActions({ payment, onSuccess }: Props) {
   const [confirmOpen, setConfirmOpen] = useState(false);
+  const [editOpen, setEditOpen] = useState(false);
 
   const handleDelete = async () => {
     try {
@@ -46,11 +48,7 @@ export function PaymentRowActions({ payment, onSuccess }: Props) {
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
-          <DropdownMenuItem
-            onClick={() => {
-              // navegar para edição — rota a definir
-            }}
-          >
+          <DropdownMenuItem onClick={() => setEditOpen(true)}>
             <Pencil className="mr-2 h-4 w-4" />
             Editar
           </DropdownMenuItem>
@@ -63,6 +61,14 @@ export function PaymentRowActions({ payment, onSuccess }: Props) {
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
+
+      <PaymentDialog
+        mode="edit"
+        open={editOpen}
+        onOpenChange={setEditOpen}
+        payment={payment}
+        onSuccess={onSuccess}
+      />
 
       <ConfirmDialog
         open={confirmOpen}
