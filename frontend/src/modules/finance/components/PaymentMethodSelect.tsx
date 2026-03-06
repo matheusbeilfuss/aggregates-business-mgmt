@@ -1,3 +1,5 @@
+import { PaymentMethodEnum } from "@/types";
+import { paymentMethodLabel } from "@/modules/finance/utils/labels";
 import {
   Select,
   SelectTrigger,
@@ -7,8 +9,8 @@ import {
 } from "@/components/ui/select";
 
 type Props = {
-  value: string;
-  onChange: (value: string) => void;
+  value: PaymentMethodEnum | "";
+  onChange: (value: PaymentMethodEnum) => void;
 };
 
 export function PaymentMethodSelect({ value, onChange }: Props) {
@@ -18,13 +20,11 @@ export function PaymentMethodSelect({ value, onChange }: Props) {
         <SelectValue placeholder="Selecione um método de pagamento" />
       </SelectTrigger>
       <SelectContent>
-        <SelectItem value="CREDIT_CARD">Cartão de crédito</SelectItem>
-        <SelectItem value="DEBIT_CARD">Cartão de débito</SelectItem>
-        <SelectItem value="CASH">Dinheiro</SelectItem>
-        <SelectItem value="PIX">PIX</SelectItem>
-        <SelectItem value="BANK_TRANSFER">Transferência bancária</SelectItem>
-        <SelectItem value="BANK_SLIP">Boleto bancário</SelectItem>
-        <SelectItem value="CHECK">Cheque</SelectItem>
+        {Object.values(PaymentMethodEnum).map((method) => (
+          <SelectItem key={method} value={method}>
+            {paymentMethodLabel[method]}
+          </SelectItem>
+        ))}
       </SelectContent>
     </Select>
   );
