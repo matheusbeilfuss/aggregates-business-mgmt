@@ -128,7 +128,10 @@ export function ExpenseForm({
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+      <form
+        onSubmit={form.handleSubmit(onSubmit)}
+        className="flex flex-col gap-6 flex-1"
+      >
         <FormField
           control={form.control}
           name="date"
@@ -356,12 +359,14 @@ export function ExpenseForm({
           </div>
 
           {isFixed && (
-            <FixedExpenseTemplateList
-              templates={templates}
-              selectedId={selectedTemplateId}
-              onSelect={handleTemplateSelect}
-              onRefetch={onTemplatesRefetch}
-            />
+            <div className="max-h-[246px] overflow-hidden">
+              <FixedExpenseTemplateList
+                templates={templates}
+                selectedId={selectedTemplateId}
+                onSelect={handleTemplateSelect}
+                onRefetch={onTemplatesRefetch}
+              />
+            </div>
           )}
         </div>
 

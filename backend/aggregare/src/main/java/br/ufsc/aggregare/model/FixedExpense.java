@@ -30,6 +30,7 @@ public class FixedExpense implements Serializable {
 	@Positive(message = "O valor padrão deve ser maior que zero.")
 	private BigDecimal defaultValue;
 
+	@NotBlank(message = "A categoria é obrigatória.")
 	private String category;
 
 	public FixedExpense() {

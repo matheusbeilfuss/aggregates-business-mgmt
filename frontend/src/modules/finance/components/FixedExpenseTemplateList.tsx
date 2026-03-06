@@ -50,22 +50,16 @@ export function FixedExpenseTemplateList({
     }
   };
 
+  const deleteDescription = lastToDelete.current
+    ? `${lastToDelete.current.name} · ${formatLocalCurrency(lastToDelete.current.defaultValue)} · ${lastToDelete.current.category}`
+    : "";
+
   return (
     <div className="flex flex-col gap-2 h-full">
-      <div className="flex items-center justify-between">
-        <span className="text-sm font-medium">Despesas fixas cadastradas</span>
-        <Button
-          type="button"
-          variant="ghost"
-          size="sm"
-          onClick={() => setAddOpen(true)}
-        >
-          <Plus className="h-4 w-4 mr-1" />
-          Nova
-        </Button>
-      </div>
-
-      <div className="border rounded-md divide-y max-h-42 overflow-y-auto">
+      <span className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+        Despesas fixas cadastradas
+      </span>
+      <div className="flex-1 border rounded-md divide-y overflow-y-auto min-h-0">
         {templates.length === 0 && (
           <p className="text-sm text-muted-foreground p-3">
             Nenhuma despesa fixa cadastrada.
@@ -91,7 +85,6 @@ export function FixedExpenseTemplateList({
               <span className="text-sm text-muted-foreground">
                 {formatLocalCurrency(t.defaultValue)}
               </span>
-
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button
@@ -133,6 +126,18 @@ export function FixedExpenseTemplateList({
         ))}
       </div>
 
+      <div className="flex justify-end">
+        <Button
+          type="button"
+          variant="outline"
+          size="sm"
+          onClick={() => setAddOpen(true)}
+        >
+          <Plus className="h-4 w-4 mr-1" />
+          Nova despesa fixa
+        </Button>
+      </div>
+
       <AddFixedExpenseDialog
         open={addOpen}
         onOpenChange={setAddOpen}
@@ -150,7 +155,7 @@ export function FixedExpenseTemplateList({
         open={!!toDelete}
         onOpenChange={(open) => !open && setToDelete(null)}
         title="Tem certeza que deseja remover a despesa fixa abaixo?"
-        description={`${lastToDelete.current?.name} · ${formatLocalCurrency(lastToDelete.current?.defaultValue ?? 0)} · ${lastToDelete.current?.category}`}
+        description={deleteDescription}
         onConfirm={handleDelete}
         variant="destructive"
         confirmLabel="Remover"

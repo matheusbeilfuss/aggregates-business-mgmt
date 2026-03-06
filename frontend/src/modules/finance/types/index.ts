@@ -10,7 +10,7 @@ export type Expense = {
   paymentDate: string | null;
   type: ExpenseTypeEnum;
   paymentStatus: PaymentStatusEnum;
-  category: string | null;
+  category: string;
 
   vehicle: string | null;
   kmDriven: number | null;
