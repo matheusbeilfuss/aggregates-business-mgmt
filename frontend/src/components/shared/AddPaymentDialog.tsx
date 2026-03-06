@@ -1,7 +1,3 @@
-import {
-  OrderPaymentFormData,
-  orderPaymentSchema,
-} from "@/modules/order/schemas/order.schemas";
 import { OrderItem } from "@/modules/order/types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
@@ -33,6 +29,10 @@ import {
 import { Input } from "../ui/input";
 import { ApiError } from "@/lib/api";
 import { PaymentMethodSelect } from "@/modules/finance/components/PaymentMethodSelect";
+import {
+  PaymentFormData,
+  paymentSchema,
+} from "@/modules/finance/schemas/payment.schemas";
 
 interface AddPaymentDialogProps {
   open: boolean;
@@ -47,8 +47,8 @@ export function AddPaymentDialog({
   order,
   onSuccess,
 }: AddPaymentDialogProps) {
-  const form = useForm<OrderPaymentFormData>({
-    resolver: zodResolver(orderPaymentSchema),
+  const form = useForm<PaymentFormData>({
+    resolver: zodResolver(paymentSchema),
     defaultValues: {
       paymentMethod: undefined,
       paymentValue: 0,
@@ -56,7 +56,7 @@ export function AddPaymentDialog({
     },
   });
 
-  async function onSubmit(data: OrderPaymentFormData) {
+  async function onSubmit(data: PaymentFormData) {
     try {
       await orderService.addPayment(
         order.id,

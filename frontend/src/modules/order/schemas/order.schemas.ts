@@ -1,4 +1,3 @@
-import { PaymentMethodEnum } from "@/types";
 import { z } from "zod";
 
 export const orderSchema = z
@@ -92,15 +91,3 @@ export const orderSchema = z
   });
 
 export type OrderFormData = z.infer<typeof orderSchema>;
-
-export const orderPaymentSchema = z.object({
-  paymentValue: z.coerce
-    .number({ invalid_type_error: "O valor é obrigatório." })
-    .positive("O valor deve ser maior que zero."),
-  paymentMethod: z.nativeEnum(PaymentMethodEnum, {
-    errorMap: () => ({ message: "O método de pagamento é obrigatório." }),
-  }),
-  date: z.string().min(1, "A data é obrigatória."),
-});
-
-export type OrderPaymentFormData = z.infer<typeof orderPaymentSchema>;

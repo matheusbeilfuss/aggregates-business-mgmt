@@ -1,5 +1,4 @@
 import { useForm } from "react-hook-form";
-import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
 import {
@@ -30,16 +29,7 @@ import {
   formatTime,
   toIsoDate,
 } from "@/utils";
-
-const schema = z.object({
-  paymentValue: z.coerce
-    .number({ invalid_type_error: "O valor é obrigatório." })
-    .positive("O valor deve ser maior que zero."),
-  paymentMethod: z.string().min(1, "O método de pagamento é obrigatório."),
-  date: z.string().min(1, "A data é obrigatória."),
-});
-
-type Values = z.infer<typeof schema>;
+import { PaymentFormData, paymentSchema } from "../schemas/payment.schemas";
 
 type AddMode = { mode: "add"; order: OrderItem };
 type EditMode = { mode: "edit"; payment: Payment };
@@ -60,11 +50,15 @@ export function PaymentDialog({
   const order = isEdit ? props.payment.order : props.order;
   const orderLabel = order.product ? order.product.name : order.service;
 
-  const form = useForm<Values>({
-    resolver: zodResolver(schema),
+  const form = useForm<PaymentFormData>({
+    resolver: zodResolver(paymentSchema),
     defaultValues: isEdit
       ? undefined
-      : { paymentMethod: "", paymentValue: 0, date: toIsoDate(new Date()) },
+      : {
+          paymentMethod: undefined,
+          paymentValue: 0,
+          date: toIsoDate(new Date()),
+        },
     values: isEdit
       ? {
           paymentValue: props.payment.paymentValue,
@@ -74,7 +68,7 @@ export function PaymentDialog({
       : undefined,
   });
 
-  const onSubmit = async (values: Values) => {
+  const onSubmit = async (values: PaymentFormData) => {
     try {
       if (isEdit) {
         await api.put(`/payments/${props.payment.id}`, values);

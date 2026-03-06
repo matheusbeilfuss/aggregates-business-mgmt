@@ -4,7 +4,7 @@ import { PageContainer } from "@/components/shared/PageContainer";
 import { usePageTitle } from "@/hooks/usePageTitle";
 import { ExpenseForm } from "../components/ExpenseForm";
 import { useFixedExpenses } from "../hooks/useFixedExpenses";
-import { ExpenseFormValues } from "../schemas/expense.schema";
+import { ExpenseFormValues } from "../schemas/expense.schemas";
 import { api, ApiError } from "@/lib/api";
 import { useExpense } from "../hooks/useExpense";
 import { LoadingState } from "@/components/shared";

@@ -22,7 +22,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { FixedExpenseTemplateList } from "./FixedExpenseTemplateList";
-import { expenseSchema, ExpenseFormValues } from "../schemas/expense.schema";
+import { expenseSchema, ExpenseFormValues } from "../schemas/expense.schemas";
 import { ExpenseTypeEnum, PaymentStatusEnum } from "@/types";
 import { FixedExpense } from "../types";
 import { toIsoDate } from "@/utils";
