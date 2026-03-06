@@ -11,7 +11,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
-import { formatLocalCurrency } from "@/utils/";
+import { formatLocalCurrency } from "@/utils";
 import { ProductSupplier } from "@/modules/product-supplier/types";
 import { Price } from "../types";
 import { ApiError } from "@/lib/api";

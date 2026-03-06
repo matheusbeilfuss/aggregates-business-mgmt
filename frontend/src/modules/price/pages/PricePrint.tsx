@@ -1,6 +1,6 @@
 import { useEffect, useRef } from "react";
 import { usePrices } from "../hooks/usePrices";
-import { formatLocalCurrency } from "@/utils/";
+import { formatLocalCurrency } from "@/utils";
 import { PriceCategory } from "../types";
 import { usePageTitle } from "@/hooks/usePageTitle";
 import { useAuth } from "@/modules/auth/hooks/useAuth";
