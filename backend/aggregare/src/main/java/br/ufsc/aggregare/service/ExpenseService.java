@@ -87,7 +87,7 @@ public class ExpenseService {
 	}
 
 	@Transactional
-	public Expense update(Long id, ExpenseInputDTO dto) {
+	public ExpenseDTO update(Long id, ExpenseInputDTO dto) {
 		expenseValidator.validate(dto);
 
 		Expense existingExpense = expenseRepository.findById(id)
@@ -110,9 +110,10 @@ public class ExpenseService {
 		if (wasFuel && isFuel) {
 			fuelService.updateByExpenseId(existingExpense.getId(), dto);
 		}
-
+it
 		updateExpense(existingExpense, dto);
-		return expenseRepository.save(existingExpense);
+		Expense savedExpense = expenseRepository.save(existingExpense);
+		return toFullDTO(savedExpense);
 	}
 
 	private void updateExpense(Expense expense, ExpenseInputDTO dto) {
