@@ -62,13 +62,13 @@ public class PaymentController {
 
 	@GetMapping
 	public ResponseEntity<List<Payment>> findAll(@RequestParam(required = false) LocalDate startDate, @RequestParam(required = false) LocalDate endDate) {
-		List<Payment> payments;
-
-		if (startDate != null && endDate != null) {
-			payments = service.findByPeriod(startDate, endDate);
-		} else {
-			payments = service.findAll();
+		if ((startDate == null) != (endDate == null)) {
+			return ResponseEntity.badRequest().build();
 		}
+
+		List<Payment> payments = (startDate != null)
+				? service.findByPeriod(startDate, endDate)
+				: service.findAll();
 
 		return ResponseEntity.ok().body(payments);
 	}
