@@ -61,12 +61,12 @@ public class ExpenseController {
 	}
 
 	@GetMapping
-	public ResponseEntity<List<Expense>> findAll(@RequestParam(required = false) LocalDate startDate, @RequestParam(required = false) LocalDate endDate) {
+	public ResponseEntity<List<ExpenseDTO>> findAll(@RequestParam(required = false) LocalDate startDate, @RequestParam(required = false) LocalDate endDate) {
 		if ((startDate == null) != (endDate == null)) {
 			return ResponseEntity.badRequest().build();
 		}
 
-		List<Expense> expenses = (startDate != null)
+		List<ExpenseDTO> expenses = (startDate != null)
 				? service.findByPeriod(startDate, endDate)
 				: service.findAll();
 

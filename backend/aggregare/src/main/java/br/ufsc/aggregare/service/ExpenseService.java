@@ -178,12 +178,16 @@ public class ExpenseService {
 		return dto;
 	}
 
-	public List<Expense> findAll() {
-		return expenseRepository.findAll();
+	public List<ExpenseDTO> findAll() {
+		return expenseRepository.findAll().stream()
+				.map(this::toFullDTO)
+				.toList();
 	}
 
-	public List<Expense> findByPeriod(LocalDate startDate, LocalDate endDate) {
-		return expenseRepository.findByDateBetween(startDate, endDate);
+	public List<ExpenseDTO> findByPeriod(LocalDate startDate, LocalDate endDate) {
+		return expenseRepository.findByDateBetween(startDate, endDate).stream()
+				.map(this::toFullDTO)
+				.toList();
 	}
 
 	public List<String> findDistinctCategories() {
