@@ -110,7 +110,7 @@ public class ExpenseService {
 		if (wasFuel && isFuel) {
 			fuelService.updateByExpenseId(existingExpense.getId(), dto);
 		}
-it
+
 		updateExpense(existingExpense, dto);
 		Expense savedExpense = expenseRepository.save(existingExpense);
 		return toFullDTO(savedExpense);
