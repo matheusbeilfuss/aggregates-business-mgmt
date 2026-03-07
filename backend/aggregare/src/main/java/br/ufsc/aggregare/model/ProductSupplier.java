@@ -4,6 +4,7 @@ import java.io.Serial;
 import java.io.Serializable;
 import java.util.Objects;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -29,10 +30,18 @@ public class ProductSupplier implements Serializable {
 	@JoinColumn(name = "supplier_id")
 	private Supplier supplier;
 
+	@Column(nullable = false)
 	private Double tonCost;
+
+	@Column(nullable = false)
 	private Double costPerCubicMeter;
+
+	@Column(nullable = false)
 	private Double costFor5CubicMeters;
+
+	@Column(nullable = false)
 	private Double density;
+
 	private String observations;
 
 	public ProductSupplier() {

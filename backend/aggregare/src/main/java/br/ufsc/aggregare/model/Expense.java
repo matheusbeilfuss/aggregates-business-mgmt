@@ -9,6 +9,7 @@ import java.util.Objects;
 import br.ufsc.aggregare.model.enums.ExpenseTypeEnum;
 import br.ufsc.aggregare.model.enums.PaymentStatusEnum;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -26,18 +27,27 @@ public class Expense implements Serializable {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
+	@Column(nullable = false)
 	private String name;
+
+	@Column(nullable = false)
 	private BigDecimal expenseValue;
+
+	@Column(nullable = false)
 	private LocalDate date;
+
 	private LocalDate dueDate;
 	private LocalDate paymentDate;
 
+	@Column(nullable = false)
 	@Enumerated(EnumType.STRING)
 	private ExpenseTypeEnum type;
 
+	@Column(nullable = false)
 	@Enumerated(EnumType.STRING)
 	private PaymentStatusEnum paymentStatus;
 
+	@Column(nullable = false)
 	private String category;
 
 	public Expense() {

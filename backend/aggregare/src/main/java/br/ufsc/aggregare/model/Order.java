@@ -47,19 +47,27 @@ public class Order implements Serializable {
 	private Double tonQuantity;
 	private String service;
 
+	@Column(nullable = false)
 	@Enumerated(EnumType.STRING)
 	private OrderTypeEnum type;
 
+	@Column(nullable = false)
 	private LocalDate scheduledDate;
+
+	@Column(nullable = false)
 	private LocalTime scheduledTime;
+
 	private String observations;
 
+	@Column(nullable = false)
 	@Enumerated(EnumType.STRING)
 	private OrderStatusEnum status;
 
+	@Column(nullable = false)
 	@Enumerated(EnumType.STRING)
 	private PaymentStatusEnum paymentStatus;
 
+	@Column(nullable = false)
 	private BigDecimal orderValue;
 
 	@Column(nullable = false)
