@@ -27,8 +27,12 @@ export function PaymentsTab({ payments, onRefetch }: PaymentsTabProps) {
     const map = new Map<PaymentMethodEnum, Payment[]>();
 
     for (const payment of payments) {
-      const existing = map.get(payment.paymentMethod) ?? [];
-      map.set(payment.paymentMethod, [...existing, payment]);
+      const existing = map.get(payment.paymentMethod);
+      if (existing) {
+        existing.push(payment);
+      } else {
+        map.set(payment.paymentMethod, [payment]);
+      }
     }
 
     return PAYMENT_GROUP_ORDER.filter((key) => map.has(key)).map((key) => {

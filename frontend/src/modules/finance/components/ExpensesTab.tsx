@@ -38,8 +38,12 @@ export function ExpensesTab({ expenses, onRefetch }: Props) {
           ? ExpenseTypeEnum.VARIABLE
           : expense.type;
 
-      const existing = map.get(key) ?? [];
-      map.set(key, [...existing, expense]);
+      const existing = map.get(key);
+      if (existing) {
+        existing.push(expense);
+      } else {
+        map.set(key, [expense]);
+      }
     }
 
     return PAID_TYPE_ORDER.filter((type) => map.has(type)).map((type) => {
