@@ -11,6 +11,7 @@ import br.ufsc.aggregare.model.enums.OrderStatusEnum;
 import br.ufsc.aggregare.model.enums.OrderTypeEnum;
 import br.ufsc.aggregare.model.enums.PaymentStatusEnum;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -61,6 +62,7 @@ public class Order implements Serializable {
 
 	private BigDecimal orderValue;
 
+	@Column(nullable = false)
 	private BigDecimal remainingValue;
 
 	public Order() {
