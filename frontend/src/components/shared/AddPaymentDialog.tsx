@@ -167,7 +167,7 @@ export function AddPaymentDialog({
                   <FormLabel>Método de pagamento</FormLabel>
                   <FormControl>
                     <PaymentMethodSelect
-                      value={field.value}
+                      value={field.value ?? ""}
                       onChange={field.onChange}
                     />
                   </FormControl>
