@@ -3,6 +3,6 @@ export { LoadingState } from "./LoadingState";
 export { FormActions } from "./FormActions";
 export { ConfirmDialog } from "./ConfirmDialog";
 export { DatePicker } from "./DatePicker";
-export { AddPaymentDialog } from "./AddPaymentDialog";
+export { PaymentDialog } from "./PaymentDialog";
 export { NotFound } from "./NotFound";
 export { PeriodPicker } from "./PeriodPicker";

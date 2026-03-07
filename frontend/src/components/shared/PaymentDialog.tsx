@@ -1,103 +1,118 @@
-import { OrderItem } from "@/modules/order/types";
+import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { toast } from "sonner";
 import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from "@/components/ui/dialog";
+import {
+  Form,
   FormField,
   FormItem,
   FormLabel,
   FormControl,
   FormMessage,
-  Form,
-} from "../ui/form";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-} from "../ui/dialog";
-import { Button } from "../ui/button";
-import { useForm } from "react-hook-form";
-import { toast } from "sonner";
-import { orderService } from "@/modules/order/services/order.service";
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 import { Loader2 } from "lucide-react";
+import { api, ApiError } from "@/lib/api";
+import { OrderItem } from "@/modules/order/types";
+import { Payment } from "../../modules/finance/types";
+import { PaymentMethodSelect } from "../../modules/finance/components/PaymentMethodSelect";
 import {
   formatLocalCurrency,
   formatLocalDate,
   formatTime,
   toIsoDate,
 } from "@/utils";
-import { Input } from "../ui/input";
-import { ApiError } from "@/lib/api";
-import { PaymentMethodSelect } from "@/modules/finance/components/PaymentMethodSelect";
 import {
   PaymentFormData,
   paymentSchema,
-} from "@/modules/finance/schemas/payment.schemas";
+} from "../../modules/finance/schemas/payment.schemas";
 
-interface AddPaymentDialogProps {
+type AddMode = { mode: "add"; order: OrderItem };
+type EditMode = { mode: "edit"; payment: Payment };
+
+type Props = (AddMode | EditMode) & {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  order: OrderItem;
   onSuccess: () => void;
-}
+};
 
-export function AddPaymentDialog({
+export function PaymentDialog({
   open,
   onOpenChange,
-  order,
   onSuccess,
-}: AddPaymentDialogProps) {
+  ...props
+}: Props) {
+  const isEdit = props.mode === "edit";
+  const order = isEdit ? props.payment.order : props.order;
+  const orderLabel = order.product ? order.product.name : order.service;
+
   const form = useForm<PaymentFormData>({
     resolver: zodResolver(paymentSchema),
-    defaultValues: {
-      paymentMethod: undefined,
-      paymentValue: 0,
-      date: toIsoDate(new Date()),
-    },
+    defaultValues: isEdit
+      ? undefined
+      : {
+          paymentMethod: undefined,
+          paymentValue: 0,
+          date: toIsoDate(new Date()),
+        },
+    values: isEdit
+      ? {
+          paymentValue: props.payment.paymentValue,
+          paymentMethod: props.payment.paymentMethod,
+          date: props.payment.date,
+        }
+      : undefined,
   });
 
-  async function onSubmit(data: PaymentFormData) {
+  const onSubmit = async (values: PaymentFormData) => {
     try {
-      await orderService.addPayment(
-        order.id,
-        data.paymentValue,
-        data.paymentMethod,
-        data.date,
-      );
-
-      toast.success("Pagamento adicionado com sucesso");
+      if (isEdit) {
+        await api.put(`/payments/${props.payment.id}`, values);
+        toast.success("Entrada atualizada com sucesso.");
+      } else {
+        await api.post("/payments", { ...values, orderId: order.id });
+        toast.success("Pagamento adicionado com sucesso.");
+      }
       form.reset();
       onSuccess();
+      onOpenChange(false);
     } catch (error) {
       if (error instanceof ApiError) {
         toast.error(error.message);
       } else {
-        toast.error("Não foi possível adicionar o pagamento");
+        toast.error(
+          isEdit
+            ? "Não foi possível atualizar a entrada."
+            : "Não foi possível adicionar o pagamento.",
+        );
       }
     }
-  }
-
-  const isSubmitting = form.formState.isSubmitting;
-
-  const orderLabel = order.product ? order.product.name : order.service;
-
-  const remaining = order.remainingValue;
+  };
 
   return (
     <Dialog
       open={open}
-      onOpenChange={(open) => {
-        onOpenChange(open);
-        if (!open) {
-          form.reset();
-        }
+      onOpenChange={(o) => {
+        onOpenChange(o);
+        if (!o) form.reset();
       }}
     >
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Adicionar pagamento</DialogTitle>
+          <DialogTitle>
+            {isEdit ? "Editar entrada" : "Adicionar pagamento"}
+          </DialogTitle>
           <DialogDescription>
-            Insira os detalhes do pagamento para o pedido abaixo
+            {isEdit
+              ? "Edite os detalhes do pagamento para o pedido abaixo"
+              : "Insira os detalhes do pagamento para o pedido abaixo"}
           </DialogDescription>
         </DialogHeader>
 
@@ -122,9 +137,9 @@ export function AddPaymentDialog({
             <div>
               <p className="text-xs text-muted-foreground">Falta pagar</p>
               <p
-                className={`text-sm font-medium ${remaining <= 0 ? "text-green-500" : "text-orange-500"}`}
+                className={`text-sm font-medium ${order.remainingValue <= 0 ? "text-green-500" : "text-orange-500"}`}
               >
-                {formatLocalCurrency(Math.max(remaining, 0))}
+                {formatLocalCurrency(order.remainingValue)}
               </p>
             </div>
           </div>
@@ -133,7 +148,7 @@ export function AddPaymentDialog({
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit(onSubmit)}
-            className="grid w-full gap-4 pt-4"
+            className="grid gap-4 pt-4"
           >
             <FormField
               control={form.control}
@@ -198,9 +213,8 @@ export function AddPaymentDialog({
               >
                 Cancelar
               </Button>
-
-              <Button type="submit" disabled={isSubmitting}>
-                {isSubmitting && (
+              <Button type="submit" disabled={form.formState.isSubmitting}>
+                {form.formState.isSubmitting && (
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                 )}
                 Salvar
