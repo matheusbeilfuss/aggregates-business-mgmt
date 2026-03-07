@@ -112,7 +112,7 @@ export function ExpenseForm({
 
   useEffect(() => {
     if (type === ExpenseTypeEnum.FUEL) {
-      form.setValue("name", vehicle ?? "Combustível");
+      form.setValue("name", vehicle || "Combustível");
     }
   }, [vehicle, type, form]);
 
