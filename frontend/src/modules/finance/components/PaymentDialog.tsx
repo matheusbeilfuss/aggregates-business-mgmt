@@ -19,7 +19,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Loader2 } from "lucide-react";
-import { api } from "@/lib/api";
+import { api, ApiError } from "@/lib/api";
 import { OrderItem } from "@/modules/order/types";
 import { Payment } from "../types";
 import { PaymentMethodSelect } from "./PaymentMethodSelect";
@@ -80,12 +80,16 @@ export function PaymentDialog({
       form.reset();
       onSuccess();
       onOpenChange(false);
-    } catch {
-      toast.error(
-        isEdit
-          ? "Não foi possível atualizar a entrada."
-          : "Não foi possível adicionar o pagamento.",
-      );
+    } catch (error) {
+      if (error instanceof ApiError) {
+        toast.error(error.message);
+      } else {
+        toast.error(
+          isEdit
+            ? "Não foi possível atualizar a entrada."
+            : "Não foi possível adicionar o pagamento.",
+        );
+      }
     }
   };
 
