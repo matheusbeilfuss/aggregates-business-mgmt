@@ -47,7 +47,7 @@ export function AddFixedExpenseDialog({
   onSuccess,
   initialValues,
 }: Props) {
-  const { categories } = useExpenseOptions();
+  const { categories } = useExpenseOptions({ enabled: open });
   const isEditing = !!initialValues;
 
   const form = useForm<Values>({
