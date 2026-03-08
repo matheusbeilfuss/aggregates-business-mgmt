@@ -5,7 +5,9 @@ import { usePageTitle } from "@/hooks/usePageTitle";
 import { ExpenseForm } from "../components/ExpenseForm";
 import { useFixedExpenses } from "../hooks/useFixedExpenses";
 import { ExpenseFormValues } from "../schemas/expense.schemas";
-import { api, ApiError } from "@/lib/api";
+import { ApiError } from "@/lib/api";
+import { expenseService } from "../services/expense.service";
+import { ExpenseInputDTO } from "../types";
 
 export default function ExpenseAdd() {
   usePageTitle("Adicionar saída");
@@ -14,7 +16,24 @@ export default function ExpenseAdd() {
 
   const handleSubmit = async (values: ExpenseFormValues) => {
     try {
-      await api.post("/expenses", values);
+      const dto: ExpenseInputDTO = {
+        name: values.name,
+        expenseValue: values.expenseValue,
+        date: values.date,
+        type: values.type,
+        paymentStatus: values.paymentStatus,
+        category: values.category,
+        dueDate: values.dueDate ?? null,
+        paymentDate: values.paymentDate ?? null,
+        vehicle: values.vehicle ?? null,
+        kmDriven: values.kmDriven ?? null,
+        liters: values.liters ?? null,
+        pricePerLiter: values.pricePerLiter ?? null,
+        fuelSupplier: values.fuelSupplier ?? null,
+      };
+
+      await expenseService.create(dto);
+
       toast.success("A saída foi criada com sucesso.");
       navigate("/finance?tab=expenses");
     } catch (error) {
