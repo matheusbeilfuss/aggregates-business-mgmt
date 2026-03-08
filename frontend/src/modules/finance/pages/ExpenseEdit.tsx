@@ -1,4 +1,4 @@
-import { useNavigate, useParams } from "react-router-dom";
+import { Navigate, useNavigate, useParams } from "react-router-dom";
 import { toast } from "sonner";
 import { PageContainer } from "@/components/shared/PageContainer";
 import { usePageTitle } from "@/hooks/usePageTitle";
@@ -12,15 +12,22 @@ import { ExpenseTypeEnum } from "@/types";
 
 export default function ExpenseEdit() {
   usePageTitle("Editar saída");
-  const { id } = useParams();
+
   const navigate = useNavigate();
 
+  const { id } = useParams();
+  const expenseId = Number(id);
+
   const { data: templates, refetch: refetchTemplates } = useFixedExpenses();
-  const { data: expense, loading } = useExpense(id ? parseInt(id) : null);
+  const { data: expense, loading } = useExpense(expenseId);
+
+  if (!id || Number.isNaN(expenseId) || expenseId <= 0) {
+    return <Navigate to="/finance?tab=expenses" replace />;
+  }
 
   const handleSubmit = async (values: ExpenseFormValues) => {
     try {
-      await api.put(`/expenses/${id}`, values);
+      await api.put(`/expenses/${expenseId}`, values);
       toast.success("Saída atualizada com sucesso.");
       navigate("/finance?tab=expenses");
     } catch (error) {
