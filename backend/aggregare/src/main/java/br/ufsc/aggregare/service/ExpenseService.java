@@ -2,12 +2,15 @@ package br.ufsc.aggregare.service;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import br.ufsc.aggregare.model.Expense;
+import br.ufsc.aggregare.model.Fuel;
 import br.ufsc.aggregare.model.Stock;
 import br.ufsc.aggregare.model.dto.ExpenseDTO;
 import br.ufsc.aggregare.model.dto.ExpenseInputDTO;
@@ -178,16 +181,39 @@ public class ExpenseService {
 		return dto;
 	}
 
-	public List<ExpenseDTO> findAll() {
-		return expenseRepository.findAll().stream()
-				.map(this::toFullDTO)
+	private List<ExpenseDTO> toExpenseDTOs(List<Expense> expenses) {
+		List<Long> fuelExpenseIds = expenses.stream()
+				.filter(e -> ExpenseTypeEnum.FUEL.equals(e.getType()))
+				.map(Expense::getId)
+				.toList();
+
+		Map<Long, Fuel> fuelByExpenseId = fuelService.findByExpenseIdIn(fuelExpenseIds)
+				.stream()
+				.collect(Collectors.toMap(f -> f.getExpense().getId(), f -> f));
+
+		return expenses.stream()
+				.map(e -> toFullDTO(e, fuelByExpenseId.get(e.getId())))
 				.toList();
 	}
 
+	private ExpenseDTO toFullDTO(Expense expense, Fuel fuel) {
+		ExpenseDTO dto = expenseToDTO(expense);
+		if (fuel != null) {
+			dto.setVehicle(fuel.getVehicle());
+			dto.setKmDriven(fuel.getKmDriven());
+			dto.setLiters(fuel.getLiters());
+			dto.setPricePerLiter(fuel.getPricePerLiter());
+			dto.setFuelSupplier(fuel.getFuelSupplier());
+		}
+		return dto;
+	}
+
+	public List<ExpenseDTO> findAll() {
+		return toExpenseDTOs(expenseRepository.findAll());
+	}
+
 	public List<ExpenseDTO> findByPeriod(LocalDate startDate, LocalDate endDate) {
-		return expenseRepository.findByDateBetween(startDate, endDate).stream()
-				.map(this::toFullDTO)
-				.toList();
+		return toExpenseDTOs(expenseRepository.findByDateBetween(startDate, endDate));
 	}
 
 	public List<String> findDistinctCategories() {

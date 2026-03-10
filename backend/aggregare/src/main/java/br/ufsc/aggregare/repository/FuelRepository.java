@@ -14,6 +14,8 @@ public interface FuelRepository extends JpaRepository<Fuel, Long> {
 
 	Optional<Fuel> findByExpenseId(Long expenseId);
 
+	List<Fuel> findByExpenseIdIn(List<Long> expenseIds);
+
 	@Query("SELECT DISTINCT f.vehicle FROM Fuel f WHERE f.vehicle IS NOT NULL AND f.vehicle <> ''")
 	List<String> findDistinctVehicles();
 

@@ -61,6 +61,10 @@ public class FuelService {
 		return fuelRepository.findByExpenseId(expenseId);
 	}
 
+	public List<Fuel> findByExpenseIdIn(List<Long> expenseIds) {
+		return fuelRepository.findByExpenseIdIn(expenseIds);
+	}
+
 	public List<String> findDistinctVehicles() {
 		return fuelRepository.findDistinctVehicles();
 	}
