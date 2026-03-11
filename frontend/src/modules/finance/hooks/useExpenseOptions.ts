@@ -2,18 +2,22 @@ import { useCallback } from "react";
 import { useApi } from "@/hooks/useApi";
 import { api } from "@/lib/api";
 
-export const useExpenseOptions = ({ enabled = true } = {}) => {
+export const useExpenseOptions = ({
+  enabled = true,
+  includeVehicles = true,
+  includeFuelSuppliers = true,
+} = {}) => {
   const categories = useApi(
     useCallback(() => api.get<string[]>("/expenses/categories"), []),
     { enabled },
   );
   const vehicles = useApi(
     useCallback(() => api.get<string[]>("/expenses/vehicles"), []),
-    { enabled },
+    { enabled: enabled && includeVehicles },
   );
   const fuelSuppliers = useApi(
     useCallback(() => api.get<string[]>("/expenses/fuel-suppliers"), []),
-    { enabled },
+    { enabled: enabled && includeFuelSuppliers },
   );
 
   return {

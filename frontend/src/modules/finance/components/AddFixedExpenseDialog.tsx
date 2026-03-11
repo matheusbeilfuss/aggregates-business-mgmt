@@ -47,7 +47,11 @@ export function AddFixedExpenseDialog({
   onSuccess,
   initialValues,
 }: Props) {
-  const { categories } = useExpenseOptions({ enabled: open });
+  const { categories } = useExpenseOptions({
+    enabled: open,
+    includeVehicles: false,
+    includeFuelSuppliers: false,
+  });
   const isEditing = !!initialValues;
 
   const form = useForm<Values>({
