@@ -13,7 +13,7 @@ import { ConfirmDialog } from "@/components/shared/ConfirmDialog";
 import { Payment } from "../types";
 import { api, ApiError } from "@/lib/api";
 import { formatLocalCurrency, formatLocalDate } from "@/utils";
-import { PaymentDialog } from "../../../components/shared/PaymentDialog";
+import { PaymentDialog } from "@/components/shared/PaymentDialog";
 
 type Props = {
   payment: Payment;

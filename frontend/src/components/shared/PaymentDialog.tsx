@@ -21,18 +21,18 @@ import { Button } from "@/components/ui/button";
 import { Loader2 } from "lucide-react";
 import { api, ApiError } from "@/lib/api";
 import { OrderItem } from "@/modules/order/types";
-import { Payment } from "../../modules/finance/types";
-import { PaymentMethodSelect } from "../../modules/finance/components/PaymentMethodSelect";
+import { Payment } from "@/modules/finance/types";
+import { PaymentMethodSelect } from "@/modules/finance/components/PaymentMethodSelect";
+import {
+  paymentSchema,
+  PaymentFormData,
+} from "@/modules/finance/schemas/payment.schemas";
 import {
   formatLocalCurrency,
   formatLocalDate,
   formatTime,
   toIsoDate,
 } from "@/utils";
-import {
-  PaymentFormData,
-  paymentSchema,
-} from "../../modules/finance/schemas/payment.schemas";
 
 type AddMode = { mode: "add"; order: OrderItem };
 type EditMode = { mode: "edit"; payment: Payment };
