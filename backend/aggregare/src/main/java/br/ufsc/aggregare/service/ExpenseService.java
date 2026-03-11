@@ -36,7 +36,7 @@ public class ExpenseService {
 	}
 
 	@Transactional
-	public Expense insert(ExpenseInputDTO dto) {
+	public ExpenseDTO insert(ExpenseInputDTO dto) {
 		expenseValidator.validate(dto);
 
 		Expense expense = expenseFromInputDTO(dto);
@@ -46,7 +46,7 @@ public class ExpenseService {
 			fuelService.insert(dto, savedExpense);
 		}
 
-		return savedExpense;
+		return toFullDTO(savedExpense);
 	}
 
 	private Expense expenseFromInputDTO(ExpenseInputDTO dto) {

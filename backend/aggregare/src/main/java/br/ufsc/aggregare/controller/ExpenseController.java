@@ -37,8 +37,8 @@ public class ExpenseController {
 	}
 
 	@PostMapping
-	public ResponseEntity<Expense> insert(@RequestBody @Valid ExpenseInputDTO dto) {
-		Expense expense = service.insert(dto);
+	public ResponseEntity<ExpenseDTO> insert(@RequestBody @Valid ExpenseInputDTO dto) {
+		ExpenseDTO expense = service.insert(dto);
 		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(expense.getId()).toUri();
 		return ResponseEntity.created(uri).body(expense);
 	}
