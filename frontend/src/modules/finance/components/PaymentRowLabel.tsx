@@ -9,14 +9,16 @@ type PaymentRowLabelProps = {
 export function PaymentRowLabel({ payment }: PaymentRowLabelProps) {
   const isService = payment.order.type === OrderTypeEnum.SERVICE;
 
-  const description = isService
-    ? (payment.order.service ?? `Pedido #${payment.order.id}`)
-    : (payment.order.product?.name ?? `Pedido #${payment.order.id}`);
-
   const quantity =
     !isService && payment.order.m3Quantity != null
       ? `${payment.order.m3Quantity} m³`
       : null;
+
+  const description = isService
+    ? (payment.order.service ?? `Pedido #${payment.order.id}`)
+    : quantity && payment.order.product?.name
+      ? `${quantity} de ${payment.order.product.name}`
+      : `Pedido #${payment.order.id}`;
 
   const isPaid = payment.order.paymentStatus === PaymentStatusEnum.PAID;
   const isPartial = payment.order.paymentStatus === PaymentStatusEnum.PARTIAL;
@@ -27,11 +29,10 @@ export function PaymentRowLabel({ payment }: PaymentRowLabelProps) {
 
       <span className="text-muted-foreground flex items-center gap-2">
         {description}
-        {quantity && (
-          <span className="text-xs rounded bg-muted px-2 py-0.5 shrink-0">
-            {quantity}
-          </span>
-        )}
+
+        <span className="text-xs rounded bg-muted px-2 py-0.5 shrink-0">
+          #{payment.order.id}
+        </span>
       </span>
 
       <span className="text-muted-foreground md:block">
