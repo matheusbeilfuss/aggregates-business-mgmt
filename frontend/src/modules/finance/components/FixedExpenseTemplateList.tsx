@@ -139,12 +139,14 @@ export function FixedExpenseTemplateList({
       </div>
 
       <AddFixedExpenseDialog
+        key={addOpen ? "add-open" : "add-closed"}
         open={addOpen}
         onOpenChange={setAddOpen}
         onSuccess={onRefetch}
       />
 
       <AddFixedExpenseDialog
+        key={toEdit?.id ?? "edit-closed"}
         open={!!toEdit}
         onOpenChange={(open) => !open && setToEdit(null)}
         onSuccess={onRefetch}

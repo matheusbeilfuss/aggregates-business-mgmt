@@ -52,14 +52,13 @@ export function AddFixedExpenseDialog({
 
   const form = useForm<Values>({
     resolver: zodResolver(schema),
-    defaultValues: { name: "", defaultValue: 0, category: "" },
-    values: initialValues
+    defaultValues: initialValues
       ? {
           name: initialValues.name,
           defaultValue: initialValues.defaultValue,
           category: initialValues.category,
         }
-      : undefined,
+      : { name: "", defaultValue: 0, category: "" },
   });
 
   const onSubmit = async (values: Values) => {
@@ -71,7 +70,6 @@ export function AddFixedExpenseDialog({
         await api.post("/fixed-expenses", values);
         toast.success("A despesa fixa foi cadastrada.");
       }
-      form.reset();
       onSuccess();
       onOpenChange(false);
     } catch (error) {
