@@ -1,6 +1,7 @@
 package br.ufsc.aggregare.service;
 
 import java.time.LocalDate;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -187,7 +188,9 @@ public class ExpenseService {
 				.map(Expense::getId)
 				.toList();
 
-		Map<Long, Fuel> fuelByExpenseId = fuelService.findByExpenseIdIn(fuelExpenseIds)
+		Map<Long, Fuel> fuelByExpenseId = fuelExpenseIds.isEmpty()
+				? Collections.emptyMap()
+				: fuelService.findByExpenseIdIn(fuelExpenseIds)
 				.stream()
 				.collect(Collectors.toMap(f -> f.getExpense().getId(), f -> f));
 
