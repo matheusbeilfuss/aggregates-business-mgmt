@@ -9,7 +9,7 @@ export const orderService = {
 
   getById: (id: number) => api.get<OrderItem>(`/orders/${id}`),
 
-  create: (data: CreateOrderPayload) => api.post<OrderItem>(`/orders`, data),
+  insert: (data: CreateOrderPayload) => api.post<OrderItem>(`/orders`, data),
 
   update: (id: number, data: CreateOrderPayload) =>
     api.put<OrderItem>(`/orders/${id}`, data),

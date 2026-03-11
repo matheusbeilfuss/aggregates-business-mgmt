@@ -48,7 +48,7 @@ export function OrderAdd() {
           state: data.state,
         };
 
-        const newClient = await clientService.create(newClientPayload);
+        const newClient = await clientService.insert(newClientPayload);
 
         if (newClient && newClient.id) {
           clientId = newClient.id;
@@ -77,7 +77,7 @@ export function OrderAdd() {
         service: data.type === "SERVICE" ? (data.service ?? null) : null,
       };
 
-      await orderService.create(payload);
+      await orderService.insert(payload);
       toast.success("O pedido foi criado com sucesso.");
       navigate("/orders");
     } catch (error) {

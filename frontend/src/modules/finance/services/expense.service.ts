@@ -6,7 +6,7 @@ export const expenseService = {
 
   markAsPaid: (id: number) => api.patch(`/expenses/${id}/pay`, {}),
 
-  create: (data: ExpenseInputDTO) => api.post<Expense>("/expenses", data),
+  insert: (data: ExpenseInputDTO) => api.post<Expense>("/expenses", data),
 
   update: (id: number, data: ExpenseInputDTO) =>
     api.put<Expense>(`/expenses/${id}`, data),

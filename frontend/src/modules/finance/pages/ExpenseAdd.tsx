@@ -32,7 +32,7 @@ export default function ExpenseAdd() {
         fuelSupplier: values.fuelSupplier ?? null,
       };
 
-      await expenseService.create(dto);
+      await expenseService.insert(dto);
 
       toast.success("A saída foi criada com sucesso.");
       navigate("/finance?tab=expenses");
