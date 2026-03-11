@@ -57,11 +57,11 @@ export function ExpenseForm({
       category: "",
       dueDate: null,
       paymentDate: toIsoDate(new Date()),
-      vehicle: "",
+      vehicle: null,
       kmDriven: null,
       liters: null,
       pricePerLiter: null,
-      fuelSupplier: "",
+      fuelSupplier: null,
       ...defaultValues,
     },
   });

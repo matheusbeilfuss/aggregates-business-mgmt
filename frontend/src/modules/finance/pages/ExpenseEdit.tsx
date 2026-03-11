@@ -11,6 +11,7 @@ import { LoadingState } from "@/components/shared";
 import { ExpenseTypeEnum } from "@/types";
 import { expenseService } from "../services/expense.service";
 import { ExpenseInputDTO } from "../types";
+import { toExpenseInputDTO } from "../utils/expenseDTO";
 
 export default function ExpenseEdit() {
   usePageTitle("Editar saída");
@@ -29,22 +30,7 @@ export default function ExpenseEdit() {
 
   const handleSubmit = async (values: ExpenseFormValues) => {
     try {
-      const dto: ExpenseInputDTO = {
-        name: values.name,
-        expenseValue: values.expenseValue,
-        date: values.date,
-        type: values.type,
-        paymentStatus: values.paymentStatus,
-        category: values.category,
-        dueDate: values.dueDate ?? null,
-        paymentDate: values.paymentDate ?? null,
-        vehicle: values.vehicle ?? null,
-        kmDriven: values.kmDriven ?? null,
-        liters: values.liters ?? null,
-        pricePerLiter: values.pricePerLiter ?? null,
-        fuelSupplier: values.fuelSupplier ?? null,
-      };
-
+      const dto: ExpenseInputDTO = toExpenseInputDTO(values);
       await expenseService.update(expenseId, dto);
 
       toast.success("Saída atualizada com sucesso.");

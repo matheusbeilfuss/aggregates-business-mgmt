@@ -8,6 +8,7 @@ import { ExpenseFormValues } from "../schemas/expense.schemas";
 import { ApiError } from "@/lib/api";
 import { expenseService } from "../services/expense.service";
 import { ExpenseInputDTO } from "../types";
+import { toExpenseInputDTO } from "../utils/expenseDTO";
 
 export default function ExpenseAdd() {
   usePageTitle("Adicionar saída");
@@ -16,22 +17,7 @@ export default function ExpenseAdd() {
 
   const handleSubmit = async (values: ExpenseFormValues) => {
     try {
-      const dto: ExpenseInputDTO = {
-        name: values.name,
-        expenseValue: values.expenseValue,
-        date: values.date,
-        type: values.type,
-        paymentStatus: values.paymentStatus,
-        category: values.category,
-        dueDate: values.dueDate ?? null,
-        paymentDate: values.paymentDate ?? null,
-        vehicle: values.vehicle ?? null,
-        kmDriven: values.kmDriven ?? null,
-        liters: values.liters ?? null,
-        pricePerLiter: values.pricePerLiter ?? null,
-        fuelSupplier: values.fuelSupplier ?? null,
-      };
-
+      const dto: ExpenseInputDTO = toExpenseInputDTO(values);
       await expenseService.insert(dto);
 
       toast.success("A saída foi criada com sucesso.");
