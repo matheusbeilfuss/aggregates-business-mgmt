@@ -12,8 +12,6 @@ import br.ufsc.aggregare.model.Order;
 import br.ufsc.aggregare.model.OrderAddress;
 import br.ufsc.aggregare.model.Product;
 import br.ufsc.aggregare.model.dto.OrderInputDTO;
-import br.ufsc.aggregare.model.dto.PaymentInputDTO;
-import br.ufsc.aggregare.model.dto.PaymentInsertDTO;
 import br.ufsc.aggregare.model.enums.OrderStatusEnum;
 import br.ufsc.aggregare.model.enums.OrderTypeEnum;
 import br.ufsc.aggregare.model.enums.PaymentStatusEnum;
@@ -155,22 +153,6 @@ public class OrderService {
 
 		existingOrder.setStatus(OrderStatusEnum.DELIVERED);
 		orderRepository.save(existingOrder);
-		return existingOrder;
-	}
-
-	@Transactional
-	public Order addPayment(Long id, PaymentInputDTO paymentDTO) {
-		Order existingOrder = orderRepository.findById(id)
-				.orElseThrow(() -> new ResourceNotFoundException(id));
-
-		PaymentInsertDTO dto = new PaymentInsertDTO();
-		dto.setOrderId(id);
-		dto.setPaymentValue(paymentDTO.getPaymentValue());
-		dto.setPaymentMethod(paymentDTO.getPaymentMethod());
-		dto.setDate(paymentDTO.getDate());
-
-		paymentService.insert(dto);
-
 		return existingOrder;
 	}
 

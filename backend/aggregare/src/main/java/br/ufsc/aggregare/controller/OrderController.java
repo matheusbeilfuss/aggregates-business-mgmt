@@ -20,7 +20,6 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import br.ufsc.aggregare.model.Order;
 import br.ufsc.aggregare.model.dto.OrderInputDTO;
-import br.ufsc.aggregare.model.dto.PaymentInputDTO;
 import br.ufsc.aggregare.service.OrderService;
 
 import jakarta.validation.Valid;
@@ -77,12 +76,6 @@ public class OrderController {
 	@PatchMapping(value = "/{id}/delivered")
 	public ResponseEntity<Order> markAsDelivered(@PathVariable Long id) {
 		Order order = service.markAsDelivered(id);
-		return ResponseEntity.ok().body(order);
-	}
-
-	@PatchMapping(value = "/{id}/payment")
-	public ResponseEntity<Order> addPayment(@PathVariable Long id, @RequestBody @Valid PaymentInputDTO payment) {
-		Order order = service.addPayment(id, payment);
 		return ResponseEntity.ok().body(order);
 	}
 }

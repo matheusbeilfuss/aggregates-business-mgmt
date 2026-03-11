@@ -16,17 +16,5 @@ export const orderService = {
 
   markAsDelivered: (id: number) => api.patch(`/orders/${id}/delivered`, {}),
 
-  addPayment: (
-    orderId: number,
-    paymentValue: number,
-    paymentMethod: string,
-    date: string,
-  ) =>
-    api.patch(`/orders/${orderId}/payment`, {
-      paymentValue,
-      paymentMethod,
-      date,
-    }),
-
   delete: (id: number) => api.delete(`/orders/${id}`),
 };
