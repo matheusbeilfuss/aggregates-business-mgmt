@@ -60,7 +60,7 @@ export function AddProductDialog({
     };
 
     try {
-      await productService.create(payload);
+      await productService.insert(payload);
       toast.success("O produto foi criado com sucesso.");
       onOpenChange(false);
       form.reset();

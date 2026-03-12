@@ -1,14 +1,19 @@
 package br.ufsc.aggregare.service;
 
 import java.time.LocalDate;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import br.ufsc.aggregare.model.Expense;
+import br.ufsc.aggregare.model.Fuel;
 import br.ufsc.aggregare.model.Stock;
+import br.ufsc.aggregare.model.dto.ExpenseDTO;
 import br.ufsc.aggregare.model.dto.ExpenseInputDTO;
 import br.ufsc.aggregare.model.dto.StockReplenishDTO;
 import br.ufsc.aggregare.model.enums.ExpenseTypeEnum;
@@ -32,7 +37,7 @@ public class ExpenseService {
 	}
 
 	@Transactional
-	public Expense insert(ExpenseInputDTO dto) {
+	public ExpenseDTO insert(ExpenseInputDTO dto) {
 		expenseValidator.validate(dto);
 
 		Expense expense = expenseFromInputDTO(dto);
@@ -42,7 +47,7 @@ public class ExpenseService {
 			fuelService.insert(dto, savedExpense);
 		}
 
-		return savedExpense;
+		return toFullDTO(savedExpense);
 	}
 
 	private Expense expenseFromInputDTO(ExpenseInputDTO dto) {
@@ -86,7 +91,7 @@ public class ExpenseService {
 	}
 
 	@Transactional
-	public Expense update(Long id, ExpenseInputDTO dto) {
+	public ExpenseDTO update(Long id, ExpenseInputDTO dto) {
 		expenseValidator.validate(dto);
 
 		Expense existingExpense = expenseRepository.findById(id)
@@ -111,7 +116,8 @@ public class ExpenseService {
 		}
 
 		updateExpense(existingExpense, dto);
-		return expenseRepository.save(existingExpense);
+		Expense savedExpense = expenseRepository.save(existingExpense);
+		return toFullDTO(savedExpense);
 	}
 
 	private void updateExpense(Expense expense, ExpenseInputDTO dto) {
@@ -125,12 +131,103 @@ public class ExpenseService {
 		expense.setCategory(dto.getCategory());
 	}
 
+	@Transactional
+	public ExpenseDTO markAsPaid(Long id) {
+		Expense expense = expenseRepository.findById(id)
+				.orElseThrow(() -> new ResourceNotFoundException(id));
+
+		expense.setPaymentStatus(PaymentStatusEnum.PAID);
+		expense.setPaymentDate(LocalDate.now());
+
+		expenseRepository.save(expense);
+		return toFullDTO(expense);
+	}
+
 	public Expense findById(Long id) {
 		return expenseRepository.findById(id)
 				.orElseThrow(() -> new ResourceNotFoundException(id));
 	}
 
-	public List<Expense> findAll() {
-		return expenseRepository.findAll();
+	public ExpenseDTO findByIdWithFuel(Long id) {
+		Expense expense = expenseRepository.findById(id)
+				.orElseThrow(() -> new ResourceNotFoundException(id));
+		return toFullDTO(expense);
+	}
+
+	private ExpenseDTO expenseToDTO(Expense expense) {
+		ExpenseDTO dto = new ExpenseDTO();
+		dto.setId(expense.getId());
+		dto.setName(expense.getName());
+		dto.setExpenseValue(expense.getExpenseValue());
+		dto.setDate(expense.getDate());
+		dto.setDueDate(expense.getDueDate());
+		dto.setPaymentDate(expense.getPaymentDate());
+		dto.setType(expense.getType());
+		dto.setPaymentStatus(expense.getPaymentStatus());
+		dto.setCategory(expense.getCategory());
+		return dto;
+	}
+
+	private ExpenseDTO toFullDTO(Expense expense) {
+		ExpenseDTO dto = expenseToDTO(expense);
+		if (ExpenseTypeEnum.FUEL.equals(expense.getType())) {
+			fuelService.findByExpenseId(expense.getId()).ifPresent(fuel -> {
+				dto.setVehicle(fuel.getVehicle());
+				dto.setKmDriven(fuel.getKmDriven());
+				dto.setLiters(fuel.getLiters());
+				dto.setPricePerLiter(fuel.getPricePerLiter());
+				dto.setFuelSupplier(fuel.getFuelSupplier());
+			});
+		}
+		return dto;
+	}
+
+	private List<ExpenseDTO> toExpenseDTOs(List<Expense> expenses) {
+		List<Long> fuelExpenseIds = expenses.stream()
+				.filter(e -> ExpenseTypeEnum.FUEL.equals(e.getType()))
+				.map(Expense::getId)
+				.toList();
+
+		Map<Long, Fuel> fuelByExpenseId = fuelExpenseIds.isEmpty()
+				? Collections.emptyMap()
+				: fuelService.findByExpenseIdIn(fuelExpenseIds)
+				.stream()
+				.collect(Collectors.toMap(f -> f.getExpense().getId(), f -> f));
+
+		return expenses.stream()
+				.map(e -> toFullDTO(e, fuelByExpenseId.get(e.getId())))
+				.toList();
+	}
+
+	private ExpenseDTO toFullDTO(Expense expense, Fuel fuel) {
+		ExpenseDTO dto = expenseToDTO(expense);
+		if (fuel != null) {
+			dto.setVehicle(fuel.getVehicle());
+			dto.setKmDriven(fuel.getKmDriven());
+			dto.setLiters(fuel.getLiters());
+			dto.setPricePerLiter(fuel.getPricePerLiter());
+			dto.setFuelSupplier(fuel.getFuelSupplier());
+		}
+		return dto;
+	}
+
+	public List<ExpenseDTO> findAll() {
+		return toExpenseDTOs(expenseRepository.findAll());
+	}
+
+	public List<ExpenseDTO> findByPeriod(LocalDate startDate, LocalDate endDate) {
+		return toExpenseDTOs(expenseRepository.findByDateBetween(startDate, endDate));
+	}
+
+	public List<String> findDistinctCategories() {
+		return expenseRepository.findDistinctCategories();
+	}
+
+	public List<String> findDistinctVehicles() {
+		return fuelService.findDistinctVehicles();
+	}
+
+	public List<String> findDistinctFuelSuppliers() {
+		return fuelService.findDistinctFuelSuppliers();
 	}
 }

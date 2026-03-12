@@ -8,6 +8,7 @@ import br.ufsc.aggregare.model.enums.PhoneTypeEnum;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -32,8 +33,10 @@ public class Phone implements Serializable {
 	@JsonIgnore
 	private Client client;
 
+	@Column(nullable = false)
 	private String number;
 
+	@Column(nullable = false)
 	@Enumerated(EnumType.STRING)
 	private PhoneTypeEnum type;
 

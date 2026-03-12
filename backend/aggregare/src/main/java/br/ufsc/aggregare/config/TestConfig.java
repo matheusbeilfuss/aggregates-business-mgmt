@@ -175,8 +175,8 @@ public class TestConfig implements CommandLineRunner {
 		OrderAddress orderAddress2 = new OrderAddress(null, "Avenida X", "500", "Bairro Y", "Cidade Z", "SC");
 		orderAddressRepository.saveAll(Arrays.asList(orderAddress1, orderAddress2));
 
-		Order order1 = new Order(null, product1, client1, orderAddress1, 5.0, 7.5, null, OrderTypeEnum.MATERIAL, dataTeste1, horaTeste1, "Entregar no portão", OrderStatusEnum.PENDING, PaymentStatusEnum.PENDING, BigDecimal.valueOf(415.00));
-		Order order2 = new Order(null, product2, client2, orderAddress2, null, null, "Serviço de máquina", OrderTypeEnum.SERVICE, dataTeste1, horaTeste1, "Ligar antes de chegar", OrderStatusEnum.PENDING, PaymentStatusEnum.PENDING, BigDecimal.valueOf(500.00));
+		Order order1 = new Order(null, product1, client1, orderAddress1, 5.0, 7.5, null, OrderTypeEnum.MATERIAL, dataTeste1, horaTeste1, "Entregar no portão", OrderStatusEnum.PENDING, PaymentStatusEnum.PARTIAL, BigDecimal.valueOf(415.00), BigDecimal.valueOf(215.00));
+		Order order2 = new Order(null, product2, client2, orderAddress2, null, null, "Serviço de máquina", OrderTypeEnum.SERVICE, dataTeste1, horaTeste1, "Ligar antes de chegar", OrderStatusEnum.PENDING, PaymentStatusEnum.PARTIAL, BigDecimal.valueOf(500.00), BigDecimal.valueOf(200.00));
 		orderRepository.saveAll(Arrays.asList(order1, order2));
 
 		Payment payment1 = new Payment(null, order1, BigDecimal.valueOf(200.00), dataTeste1, PaymentMethodEnum.CASH);
@@ -187,18 +187,15 @@ public class TestConfig implements CommandLineRunner {
 		FixedExpense fixedExpense2 = new FixedExpense(null, "Jornal", BigDecimal.valueOf(20.00), "Escritório");
 		fixedExpenseRepository.saveAll(Arrays.asList(fixedExpense1, fixedExpense2));
 
-		LocalDate expenseDate1 = LocalDate.of(2025, 12, 19);
-		LocalDate expenseDueDate1 = LocalDate.of(2026, 1, 19);
-		LocalDate expenseDate2 = LocalDate.of(2025, 11, 28);
-		LocalDate expenseDueDate2 = LocalDate.of(2025, 12, 28);
+		LocalDate dataTeste2 = LocalDate.now().plusMonths(1);
 
-		Expense expense1 = new Expense(null, "Conserto pneu caminhão", BigDecimal.valueOf(150.00), expenseDate1, expenseDueDate1, expenseDate1, ExpenseTypeEnum.VARIABLE, PaymentStatusEnum.PAID, "Mecânica");
-		Expense expense2 = new Expense(null, fixedExpense1.getName(), fixedExpense1.getDefaultValue(), expenseDate1, expenseDueDate1, null, ExpenseTypeEnum.FIXED, PaymentStatusEnum.PENDING, fixedExpense1.getCategory());
-		Expense expense3 = new Expense(null, fixedExpense2.getName(), fixedExpense2.getDefaultValue(), expenseDate2, expenseDueDate2, null, ExpenseTypeEnum.FIXED, PaymentStatusEnum.PENDING, fixedExpense2.getCategory());
-		Expense expense4 = new Expense(null, "Combustível máquina", BigDecimal.valueOf(250.00), expenseDate2, expenseDueDate2, expenseDate2, ExpenseTypeEnum.FUEL, PaymentStatusEnum.PAID, "Combustível");
+		Expense expense1 = new Expense(null, "Conserto pneu caminhão", BigDecimal.valueOf(150.00), dataTeste1, dataTeste2, dataTeste1, ExpenseTypeEnum.VARIABLE, PaymentStatusEnum.PAID, "Mecânica");
+		Expense expense2 = new Expense(null, fixedExpense1.getName(), fixedExpense1.getDefaultValue(), dataTeste1, dataTeste2, null, ExpenseTypeEnum.FIXED, PaymentStatusEnum.PENDING, fixedExpense1.getCategory());
+		Expense expense3 = new Expense(null, fixedExpense2.getName(), fixedExpense2.getDefaultValue(), dataTeste1, dataTeste2, null, ExpenseTypeEnum.FIXED, PaymentStatusEnum.PENDING, fixedExpense2.getCategory());
+		Expense expense4 = new Expense(null, "Combustível máquina", BigDecimal.valueOf(250.00), dataTeste1, dataTeste2, dataTeste1, ExpenseTypeEnum.FUEL, PaymentStatusEnum.PAID, "Combustível");
 		expenseRepository.saveAll(Arrays.asList(expense1, expense2, expense3, expense4));
 
-		Fuel fuel1 = new Fuel(null, expense4, "Mercedes 1313", 100, 85.30, 6.03, "Posto Dom Bosco");
+		Fuel fuel1 = new Fuel(null, expense4, "Mercedes 1313", 100.00, 85.30, 6.03, "Posto Dom Bosco");
 		fuelRepository.save(fuel1);
 	}
 }

@@ -4,6 +4,7 @@ import java.io.Serial;
 import java.io.Serializable;
 import java.util.Objects;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -25,8 +26,12 @@ public class Stock implements Serializable {
 	@Version
 	private Long version;
 
+	@Column(nullable = false)
 	private Double tonQuantity;
+
+	@Column(nullable = false)
 	private Double m3Quantity;
+
 	private Double density;
 
 	@OneToOne

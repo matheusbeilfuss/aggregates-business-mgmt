@@ -11,6 +11,7 @@ import br.ufsc.aggregare.model.enums.OrderStatusEnum;
 import br.ufsc.aggregare.model.enums.OrderTypeEnum;
 import br.ufsc.aggregare.model.enums.PaymentStatusEnum;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -46,27 +47,38 @@ public class Order implements Serializable {
 	private Double tonQuantity;
 	private String service;
 
+	@Column(nullable = false)
 	@Enumerated(EnumType.STRING)
 	private OrderTypeEnum type;
 
+	@Column(nullable = false)
 	private LocalDate scheduledDate;
+
+	@Column(nullable = false)
 	private LocalTime scheduledTime;
+
 	private String observations;
 
+	@Column(nullable = false)
 	@Enumerated(EnumType.STRING)
 	private OrderStatusEnum status;
 
+	@Column(nullable = false)
 	@Enumerated(EnumType.STRING)
 	private PaymentStatusEnum paymentStatus;
 
+	@Column(nullable = false)
 	private BigDecimal orderValue;
+
+	@Column(nullable = false)
+	private BigDecimal remainingValue;
 
 	public Order() {
 	}
 
 	public Order(Long id, Product product, Client client, OrderAddress orderAddress, Double m3Quantity, Double tonQuantity,
 			String service, OrderTypeEnum type, LocalDate scheduledDate, LocalTime scheduledTime,
-			String observations, OrderStatusEnum status, PaymentStatusEnum paymentStatus, BigDecimal orderValue) {
+			String observations, OrderStatusEnum status, PaymentStatusEnum paymentStatus, BigDecimal orderValue, BigDecimal remainingValue) {
 		this.id = id;
 		this.product = product;
 		this.client = client;
@@ -81,6 +93,7 @@ public class Order implements Serializable {
 		this.status = status;
 		this.paymentStatus = paymentStatus;
 		this.orderValue = orderValue;
+		this.remainingValue = remainingValue;
 	}
 
 	public Long getId() {
@@ -193,6 +206,14 @@ public class Order implements Serializable {
 
 	public void setOrderValue(BigDecimal orderValue) {
 		this.orderValue = orderValue;
+	}
+
+	public BigDecimal getRemainingValue() {
+		return remainingValue;
+	}
+
+	public void setRemainingValue(BigDecimal remainingValue) {
+		this.remainingValue = remainingValue;
 	}
 
 	@Override public boolean equals(Object o) {

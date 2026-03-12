@@ -19,7 +19,7 @@ export function PageContainer({
           <h2 className="text-xl text-primary font-bold pt-10">{subtitle}</h2>
         )}
       </div>
-      {children}
+      <div className="flex flex-col flex-1 min-h-0">{children}</div>
     </div>
   );
 }

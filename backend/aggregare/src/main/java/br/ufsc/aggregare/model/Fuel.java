@@ -26,7 +26,7 @@ public class Fuel implements Serializable {
 	private Expense expense;
 
 	private String vehicle;
-	private Integer kmDriven;
+	private Double kmDriven;
 	private Double liters;
 	private Double pricePerLiter;
 	private String fuelSupplier;
@@ -34,7 +34,7 @@ public class Fuel implements Serializable {
 	public Fuel() {
 	}
 
-	public Fuel(Long id, Expense expense, String vehicle, Integer kmDriven, Double liters, Double pricePerLiter, String fuelSupplier) {
+	public Fuel(Long id, Expense expense, String vehicle, Double kmDriven, Double liters, Double pricePerLiter, String fuelSupplier) {
 		this.id = id;
 		this.expense = expense;
 		this.vehicle = vehicle;
@@ -68,11 +68,11 @@ public class Fuel implements Serializable {
 		this.vehicle = vehicle;
 	}
 
-	public Integer getKmDriven() {
+	public Double getKmDriven() {
 		return kmDriven;
 	}
 
-	public void setKmDriven(Integer kmDriven) {
+	public void setKmDriven(Double kmDriven) {
 		this.kmDriven = kmDriven;
 	}
 

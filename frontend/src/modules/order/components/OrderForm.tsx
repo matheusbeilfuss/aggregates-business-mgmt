@@ -17,7 +17,7 @@ import { OrderFormData } from "../schemas/order.schemas";
 import { ProductSelect } from "./ProductSelect";
 import { QuantityCombobox } from "./QuantityCombobox";
 import { ClientCombobox } from "./ClientCombobox";
-import { toIsoDate } from "../utils/toIsoDate";
+import { toIsoDate } from "@/utils";
 import { useEffect, useMemo } from "react";
 
 import { selectPreferredPhone } from "../utils/selectPreferredPhone";

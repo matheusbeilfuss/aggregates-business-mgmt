@@ -28,13 +28,14 @@ public class ExpenseInputDTO {
 	@NotNull(message = "O tipo da despesa é obrigatório.")
 	private ExpenseTypeEnum type;
 
-	@NotNull(message = "O status do pagamento é obrigatório.")
+	@NotNull(message = "O status da despesa é obrigatório.")
 	private PaymentStatusEnum paymentStatus;
 
+	@NotBlank(message = "A categoria da despesa é obrigatória.")
 	private String category;
 
 	private String vehicle;
-	private Integer kmDriven;
+	private Double kmDriven;
 	private Double liters;
 	private Double pricePerLiter;
 	private String fuelSupplier;
@@ -43,7 +44,7 @@ public class ExpenseInputDTO {
 	}
 
 	public ExpenseInputDTO(String name, BigDecimal expenseValue, LocalDate date, LocalDate dueDate, LocalDate paymentDate, ExpenseTypeEnum type, PaymentStatusEnum paymentStatus,
-			String category, String vehicle, Integer kmDriven, Double liters, Double pricePerLiter, String fuelSupplier) {
+			String category, String vehicle, Double kmDriven, Double liters, Double pricePerLiter, String fuelSupplier) {
 		this.name = name;
 		this.expenseValue = expenseValue;
 		this.date = date;
@@ -131,11 +132,11 @@ public class ExpenseInputDTO {
 		this.vehicle = vehicle;
 	}
 
-	public Integer getKmDriven() {
+	public Double getKmDriven() {
 		return kmDriven;
 	}
 
-	public void setKmDriven(Integer kmDriven) {
+	public void setKmDriven(Double kmDriven) {
 		this.kmDriven = kmDriven;
 	}
 

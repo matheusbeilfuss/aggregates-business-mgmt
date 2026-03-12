@@ -2,8 +2,7 @@ import {
   Home,
   Scale,
   Tags,
-  TrendingDown,
-  TrendingUp,
+  Banknote,
   Truck,
   BookUser,
   HandCoins,
@@ -29,14 +28,9 @@ export const items = [
     icon: Warehouse,
   },
   {
-    title: "Entradas",
-    url: "#",
-    icon: TrendingUp,
-  },
-  {
-    title: "Saídas",
-    url: "#",
-    icon: TrendingDown,
+    title: "Financeiro",
+    url: "/finance",
+    icon: Banknote,
   },
   {
     title: "Balanços",

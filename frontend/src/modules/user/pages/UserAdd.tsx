@@ -14,7 +14,7 @@ export function UserAdd() {
 
   const handleSubmit = async (data: CreateUserFormData, image?: File) => {
     try {
-      await userService.create(data, image);
+      await userService.insert(data, image);
       toast.success("Usuário criado com sucesso!");
       navigate("/admin/users");
     } catch (error) {

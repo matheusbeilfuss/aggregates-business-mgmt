@@ -9,7 +9,8 @@ export function PrivateRoute() {
   if (isLoading) {
     return (
       <div className="flex items-center justify-center h-screen">
-        <Loader className="animate-spin" /> Loading...
+        <Loader className="animate-spin" />
+        <p className="mx-2">Carregando...</p>
       </div>
     );
   }

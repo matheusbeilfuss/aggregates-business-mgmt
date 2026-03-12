@@ -5,6 +5,7 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Objects;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -23,13 +24,17 @@ public class FixedExpense implements Serializable {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
+	@Column(nullable = false)
 	@NotBlank(message = "O nome da despesa fixa é obrigatório.")
 	private String name;
 
+	@Column(nullable = false)
 	@NotNull(message = "O valor padrão é obrigatório.")
 	@Positive(message = "O valor padrão deve ser maior que zero.")
 	private BigDecimal defaultValue;
 
+	@Column(nullable = false)
+	@NotBlank(message = "A categoria é obrigatória.")
 	private String category;
 
 	public FixedExpense() {

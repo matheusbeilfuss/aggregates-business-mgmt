@@ -8,12 +8,12 @@ import { useOrders } from "../hooks/useOrders";
 import { OrderSection } from "../components/OrderSection";
 import { OrderItem } from "../types";
 import { useState } from "react";
-import { toIsoDate } from "../utils/toIsoDate";
+import { toIsoDate } from "@/utils";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router";
 import { orderService } from "../services/order.service";
 import { toast } from "sonner";
-import { AddPaymentDialog } from "@/components/shared/AddPaymentDialog";
+import { PaymentDialog } from "@/components/shared/PaymentDialog";
 import { ApiError } from "@/lib/api";
 import { usePageTitle } from "@/hooks/usePageTitle";
 
@@ -27,8 +27,8 @@ export function Order() {
   const [orderToMarkAsDelivered, setOrderToMarkAsDelivered] =
     useState<OrderItem | null>(null);
   const [orderToDelete, setOrderToDelete] = useState<OrderItem | null>(null);
-  const [isAddPaymentDialogOpen, setIsAddPaymentDialogOpen] = useState(false);
-  const [orderToAddPayment, setOrderToAddPayment] = useState<OrderItem | null>(
+  const [isPaymentDialogOpen, setIsPaymentDialogOpen] = useState(false);
+  const [orderForPayment, setOrderForPayment] = useState<OrderItem | null>(
     null,
   );
 
@@ -47,9 +47,9 @@ export function Order() {
     setOrderToDelete(order);
   }
 
-  function openAddPaymentDialog(order: OrderItem) {
-    setOrderToAddPayment(order);
-    setIsAddPaymentDialogOpen(true);
+  function openPaymentDialog(order: OrderItem) {
+    setOrderForPayment(order);
+    setIsPaymentDialogOpen(true);
   }
 
   async function handleMarkOrderAsDelivered() {
@@ -109,14 +109,14 @@ export function Order() {
             title="Pendentes"
             orders={pendingOrders}
             onMarkAsDelivered={openDeliveredDialog}
-            onAddPayment={openAddPaymentDialog}
+            onAddPayment={openPaymentDialog}
             onDeleteOrder={openDeleteDialog}
           />
 
           <OrderSection
             title="Entregues"
             orders={completedOrders}
-            onAddPayment={openAddPaymentDialog}
+            onAddPayment={openPaymentDialog}
             onDeleteOrder={openDeleteDialog}
           />
         </div>
@@ -153,17 +153,18 @@ export function Order() {
         variant="destructive"
       />
 
-      {orderToAddPayment && (
-        <AddPaymentDialog
-          open={isAddPaymentDialogOpen}
+      {orderForPayment && (
+        <PaymentDialog
+          mode="add"
+          open={isPaymentDialogOpen}
           onOpenChange={(open) => {
-            setIsAddPaymentDialogOpen(open);
-            if (!open) setOrderToAddPayment(null);
+            setIsPaymentDialogOpen(open);
+            if (!open) setOrderForPayment(null);
           }}
-          order={orderToAddPayment}
+          order={orderForPayment}
           onSuccess={() => {
-            setIsAddPaymentDialogOpen(false);
-            setOrderToAddPayment(null);
+            setIsPaymentDialogOpen(false);
+            setOrderForPayment(null);
             refetch();
           }}
         />

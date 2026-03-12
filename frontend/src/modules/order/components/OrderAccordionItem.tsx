@@ -6,7 +6,7 @@ import {
 import { OrderItem } from "../types";
 import { OrderActions } from "./OrderActions";
 import { Separator } from "@/components/ui/separator";
-import { formatTime } from "../utils/formatTime";
+import { formatTime } from "@/utils";
 import { selectPreferredPhone } from "../utils/selectPreferredPhone";
 import { Phone } from "@/modules/client/types";
 

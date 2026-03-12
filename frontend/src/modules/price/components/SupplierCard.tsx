@@ -1,6 +1,6 @@
 import { Card, CardHeader, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { formatCurrency } from "@/utils/money";
+import { formatLocalCurrency } from "@/utils";
 import { ProductSupplier } from "@/modules/product-supplier/types";
 import { SupplierActions } from "./SupplierActions";
 
@@ -50,22 +50,22 @@ export function SupplierCard({
           <dd>{ps.density.toLocaleString("pt-BR")}</dd>
 
           <dt className="text-muted-foreground">Custo / Ton</dt>
-          <dd>{formatCurrency(ps.tonCost)}</dd>
+          <dd>{formatLocalCurrency(ps.tonCost)}</dd>
 
           <dt className="text-muted-foreground">Custo m³</dt>
-          <dd>{formatCurrency(ps.costPerCubicMeter)}</dd>
+          <dd>{formatLocalCurrency(ps.costPerCubicMeter)}</dd>
 
           <dt className="text-muted-foreground">Lucro m³</dt>
           <dd className={oneM3Profit >= 0 ? "text-green-600" : "text-red-500"}>
-            {formatCurrency(oneM3Profit)}
+            {formatLocalCurrency(oneM3Profit)}
           </dd>
 
           <dt className="text-muted-foreground">Custo 5m³</dt>
-          <dd>{formatCurrency(ps.costFor5CubicMeters ?? 0)}</dd>
+          <dd>{formatLocalCurrency(ps.costFor5CubicMeters ?? 0)}</dd>
 
           <dt className="text-muted-foreground">Lucro 5m³</dt>
           <dd className={fiveM3Profit >= 0 ? "text-green-600" : "text-red-500"}>
-            {formatCurrency(fiveM3Profit)}
+            {formatLocalCurrency(fiveM3Profit)}
           </dd>
         </dl>
       </CardContent>

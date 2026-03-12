@@ -1,5 +1,8 @@
 package br.ufsc.aggregare.service;
 
+import java.util.List;
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -52,5 +55,21 @@ public class FuelService {
 		existingFuel.setLiters(dto.getLiters());
 		existingFuel.setPricePerLiter(dto.getPricePerLiter());
 		existingFuel.setFuelSupplier(dto.getFuelSupplier());
+	}
+
+	public Optional<Fuel> findByExpenseId(Long expenseId) {
+		return fuelRepository.findByExpenseId(expenseId);
+	}
+
+	public List<Fuel> findByExpenseIdIn(List<Long> expenseIds) {
+		return fuelRepository.findByExpenseIdIn(expenseIds);
+	}
+
+	public List<String> findDistinctVehicles() {
+		return fuelRepository.findDistinctVehicles();
+	}
+
+	public List<String> findDistinctFuelSuppliers() {
+		return fuelRepository.findDistinctFuelSuppliers();
 	}
 }

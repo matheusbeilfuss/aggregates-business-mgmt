@@ -1,16 +1,19 @@
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 
-interface FormActionsProps {
-  cancelPath: string;
+type FormActionsProps = {
   submitLabel?: string;
   onSubmit?: () => void;
   isSubmitting?: boolean;
   formId?: string;
-}
+} & (
+  | { onCancel: () => void; cancelPath?: never }
+  | { cancelPath: string; onCancel?: never }
+);
 
 export function FormActions({
   cancelPath,
+  onCancel,
   submitLabel = "Salvar",
   onSubmit,
   isSubmitting = false,
@@ -18,13 +21,18 @@ export function FormActions({
 }: FormActionsProps) {
   const navigate = useNavigate();
 
+  const handleCancel = () => {
+    if (onCancel) onCancel();
+    else if (cancelPath) navigate(cancelPath);
+  };
+
   return (
     <div className="mt-auto flex justify-end gap-4 py-12">
       <Button
         type="button"
         variant="outline"
         className="px-6 py-6 text-base cursor-pointer"
-        onClick={() => navigate(cancelPath)}
+        onClick={handleCancel}
         disabled={isSubmitting}
       >
         Cancelar

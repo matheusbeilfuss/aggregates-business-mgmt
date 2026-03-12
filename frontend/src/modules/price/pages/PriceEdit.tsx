@@ -86,6 +86,15 @@ export function PriceEdit() {
     },
   });
 
+  const error = pricesError || suppliersError || categoryError;
+
+  useEffect(() => {
+    if (error) {
+      toast.error("Não foi possível carregar os dados.");
+      navigate("/prices");
+    }
+  }, [error, navigate]);
+
   useEffect(() => {
     if ((prices ?? []).length === 0) return;
 
@@ -146,12 +155,9 @@ export function PriceEdit() {
   }
 
   const loading = pricesLoading || suppliersLoading || categoryLoading;
-  const error = pricesError || suppliersError || categoryError;
 
   return (
     <PageContainer title="Editar preços">
-      {error && <p className="text-red-500 mb-4">{error.message}</p>}
-
       {loading ? (
         <LoadingState rows={5} />
       ) : (

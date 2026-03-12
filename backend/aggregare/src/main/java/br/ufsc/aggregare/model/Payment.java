@@ -8,6 +8,7 @@ import java.util.Objects;
 
 import br.ufsc.aggregare.model.enums.PaymentMethodEnum;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -31,9 +32,13 @@ public class Payment implements Serializable {
 	@JoinColumn(name = "order_id")
 	private Order order;
 
+	@Column(nullable = false)
 	private BigDecimal paymentValue;
+
+	@Column(nullable = false)
 	private LocalDate date;
 
+	@Column(nullable = false)
 	@Enumerated(EnumType.STRING)
 	private PaymentMethodEnum paymentMethod;
 

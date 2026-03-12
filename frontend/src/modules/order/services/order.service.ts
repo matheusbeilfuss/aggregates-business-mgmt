@@ -9,18 +9,12 @@ export const orderService = {
 
   getById: (id: number) => api.get<OrderItem>(`/orders/${id}`),
 
-  create: (data: CreateOrderPayload) => api.post<OrderItem>(`/orders`, data),
+  insert: (data: CreateOrderPayload) => api.post<OrderItem>(`/orders`, data),
 
   update: (id: number, data: CreateOrderPayload) =>
     api.put<OrderItem>(`/orders/${id}`, data),
 
   markAsDelivered: (id: number) => api.patch(`/orders/${id}/delivered`, {}),
-
-  addPayment: (orderId: number, paymentValue: number, paymentMethod: string) =>
-    api.patch(`/orders/${orderId}/payment`, {
-      paymentValue,
-      paymentMethod,
-    }),
 
   delete: (id: number) => api.delete(`/orders/${id}`),
 };
