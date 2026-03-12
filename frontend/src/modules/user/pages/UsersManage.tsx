@@ -35,7 +35,7 @@ export function UsersManage() {
 
   const navigate = useNavigate();
 
-  const { data: users, loading, refetch } = useUsers();
+  const { data: users, loading, error, refetch } = useUsers();
   const { user: loggedUser } = useAuth();
 
   const [userToDelete, setUserToDelete] = useState<number | null>(null);
@@ -103,6 +103,8 @@ export function UsersManage() {
 
   return (
     <PageContainer title="Gerenciar acessos">
+      {error && <p className="text-red-500 mb-4">{error.message}</p>}
+
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {users?.map((user) => {
           const isSelf = user.id === loggedUser?.id;

@@ -12,6 +12,7 @@ import { ExpenseTypeEnum } from "@/types";
 import { expenseService } from "../services/expense.service";
 import { ExpenseInputDTO } from "../types";
 import { toExpenseInputDTO } from "../utils/expenseDTO";
+import { useEffect } from "react";
 
 export default function ExpenseEdit() {
   usePageTitle("Editar saída");
@@ -22,7 +23,14 @@ export default function ExpenseEdit() {
   const expenseId = Number(id);
 
   const { data: templates, refetch: refetchTemplates } = useFixedExpenses();
-  const { data: expense, loading } = useExpense(expenseId);
+  const { data: expense, loading, error } = useExpense(expenseId);
+
+  useEffect(() => {
+    if (error) {
+      toast.error("Não foi possível carregar a saída.");
+      navigate("/finance?tab=expenses");
+    }
+  }, [error, navigate]);
 
   if (!id || Number.isNaN(expenseId) || expenseId <= 0) {
     return <Navigate to="/finance?tab=expenses" replace />;

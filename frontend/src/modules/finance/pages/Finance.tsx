@@ -39,12 +39,14 @@ export default function Finance() {
   const {
     data: payments,
     loading: loadingPayments,
+    error: paymentsError,
     refetch: refetchPayments,
   } = useFinancePayments(period);
 
   const {
     data: expenses,
     loading: loadingExpenses,
+    error: expensesError,
     refetch: refetchExpenses,
   } = useFinanceExpenses(period);
 
@@ -63,6 +65,8 @@ export default function Finance() {
 
   const balance = totalIncome - totalExpenses;
 
+  const error = paymentsError || expensesError;
+
   const loading = loadingPayments || loadingExpenses;
 
   return (
@@ -77,6 +81,8 @@ export default function Finance() {
           </span>
         )}
       </div>
+
+      {error && <p className="text-red-500 mb-4">{error.message}</p>}
 
       {loading ? (
         <LoadingState />
