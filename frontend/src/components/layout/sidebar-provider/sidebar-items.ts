@@ -49,7 +49,7 @@ export const items = [
   },
   {
     title: "Cobranças",
-    url: "#",
+    url: "/receivables",
     icon: HandCoins,
   },
   {

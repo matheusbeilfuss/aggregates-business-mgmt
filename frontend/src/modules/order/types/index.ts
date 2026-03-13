@@ -47,6 +47,17 @@ interface ServiceOrderItem extends BaseOrderItem {
 
 export type OrderItem = MaterialOrderItem | ServiceOrderItem;
 
+export type OrderForPayment = {
+  id: number;
+  client: { name: string };
+  product: { name: string } | null;
+  service: string | null;
+  scheduledDate: string;
+  scheduledTime: string;
+  orderValue: number;
+  remainingValue: number;
+};
+
 // Payloads para API
 
 export interface CreateOrderPayload {

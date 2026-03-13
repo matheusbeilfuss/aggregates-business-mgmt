@@ -20,6 +20,7 @@ import { PricePrint } from "./modules/price/pages/PricePrint";
 import Finance from "./modules/finance/pages/Finance";
 import ExpenseAdd from "./modules/finance/pages/ExpenseAdd";
 import ExpenseEdit from "./modules/finance/pages/ExpenseEdit";
+import Receivables from "./modules/receivables/pages/Receivables";
 
 export const router = createBrowserRouter([
   {
@@ -31,12 +32,19 @@ export const router = createBrowserRouter([
         element: <PrivateRoute />,
         children: [
           { index: true, element: <Home /> },
+
           { path: "orders", element: <Order /> },
           { path: "orders/new", element: <OrderAdd /> },
           { path: "orders/:id", element: <OrderEdit /> },
+
           { path: "stocks", element: <Stock /> },
           { path: "stocks/:id", element: <StockEdit /> },
           { path: "stocks/:id/replenish", element: <StockReplenish /> },
+
+          { path: "finance", element: <Finance /> },
+          { path: "finance/expenses/new", element: <ExpenseAdd /> },
+          { path: "finance/expenses/:id/edit", element: <ExpenseEdit /> },
+
           { path: "prices", element: <Price /> },
           { path: "prices/categories/:categoryId", element: <PriceEdit /> },
           {
@@ -47,9 +55,8 @@ export const router = createBrowserRouter([
             path: "prices/categories/:categoryId/suppliers/:productSupplierId/edit",
             element: <ProductSupplierEdit />,
           },
-          { path: "finance", element: <Finance /> },
-          { path: "finance/expenses/new", element: <ExpenseAdd /> },
-          { path: "finance/expenses/:id/edit", element: <ExpenseEdit /> },
+
+          { path: "receivables", element: <Receivables /> },
 
           { path: "user", element: <User /> },
           {

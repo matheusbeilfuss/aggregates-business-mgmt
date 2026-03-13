@@ -13,9 +13,10 @@ import { useState } from "react";
 interface DatePickerProps {
   value: Date;
   onChange: (date: Date) => void;
+  disabled?: boolean;
 }
 
-export function DatePicker({ value, onChange }: DatePickerProps) {
+export function DatePicker({ value, onChange, disabled }: DatePickerProps) {
   const [open, setOpen] = useState(false);
 
   return (
@@ -26,6 +27,7 @@ export function DatePicker({ value, onChange }: DatePickerProps) {
             variant="outline"
             id="date"
             className="justify-start font-normal"
+            disabled={disabled}
           >
             {value.toLocaleDateString("pt-BR")}
           </Button>

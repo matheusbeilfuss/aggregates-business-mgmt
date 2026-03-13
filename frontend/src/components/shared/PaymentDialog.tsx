@@ -20,7 +20,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Loader2 } from "lucide-react";
 import { api, ApiError } from "@/lib/api";
-import { OrderItem } from "@/modules/order/types";
+import { OrderForPayment } from "@/modules/order/types";
 import { Payment } from "@/modules/finance/types";
 import { PaymentMethodSelect } from "@/modules/finance/components/PaymentMethodSelect";
 import {
@@ -34,7 +34,7 @@ import {
   toIsoDate,
 } from "@/utils";
 
-type AddMode = { mode: "add"; order: OrderItem };
+type AddMode = { mode: "add"; order: OrderForPayment };
 type EditMode = { mode: "edit"; payment: Payment };
 
 type Props = (AddMode | EditMode) & {
