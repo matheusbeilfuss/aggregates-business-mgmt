@@ -61,7 +61,9 @@ export default function Receivables() {
           clientName: items[0].clientName,
           total,
           oldestDate,
-          items,
+          items: items.sort((a, b) =>
+            a.scheduledDate.localeCompare(b.scheduledDate),
+          ),
         };
       })
       .sort((a, b) => a.oldestDate.localeCompare(b.oldestDate));
