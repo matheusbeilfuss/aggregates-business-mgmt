@@ -19,11 +19,13 @@ export function ReceivableGroup({ group, onAddPayment }: Props) {
       <AccordionItem value={group.clientName} className="border-0">
         <AccordionTrigger className="px-4 py-3 hover:no-underline hover:bg-muted/50">
           <div className="flex flex-1 items-center justify-between pr-4 text-sm md:grid md:grid-cols-[2fr_1fr_1fr] md:gap-x-4">
-            <span className="font-medium text-left">{group.clientName}</span>
-            <span className="text-muted-foreground text-left">
-              Desde {formatLocalDate(group.oldestDate)}
-            </span>
-            <span className="font-semibold text-orange-500 text-right">
+            <div className="flex flex-col gap-0.5 text-left md:contents">
+              <span className="font-medium">{group.clientName}</span>
+              <span className="text-xs text-muted-foreground md:text-sm">
+                Desde {formatLocalDate(group.oldestDate)}
+              </span>
+            </div>
+            <span className="font-semibold text-orange-500 text-right md:text-right">
               {formatLocalCurrency(group.total)}
             </span>
           </div>

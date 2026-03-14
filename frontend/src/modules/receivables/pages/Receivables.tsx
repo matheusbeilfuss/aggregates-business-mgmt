@@ -4,9 +4,9 @@ import { usePageTitle } from "@/hooks/usePageTitle";
 import { PageContainer, LoadingState } from "@/components/shared";
 import { PaymentDialog } from "@/components/shared/PaymentDialog";
 import { PeriodPicker } from "@/components/shared/PeriodPicker";
+import { FinanceTotalBar } from "@/components/shared/FinanceTotalBar";
 import { Button } from "@/components/ui/button";
 import { ReceivableGroup } from "../components/ReceivableGroup";
-import { FinanceTotalBar } from "@/modules/finance/components/FinanceTotalBar";
 import { useReceivables } from "../hooks/useReceivables";
 import { Receivable, ReceivableGroup as ReceivableGroupType } from "../types";
 import { DatePeriod } from "@/types";
@@ -111,7 +111,7 @@ export default function Receivables() {
             Nenhuma cobrança pendente{showAll ? "" : " no período selecionado"}.
           </p>
         ) : (
-          <div className="flex flex-col gap-2">
+          <div className="flex flex-col gap-2 pb-4">
             {groups.map((group) => (
               <ReceivableGroup
                 key={group.clientName}

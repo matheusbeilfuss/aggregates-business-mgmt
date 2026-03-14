@@ -15,7 +15,7 @@ const statusLabel: Partial<Record<PaymentStatusEnum, string>> = {
 
 const statusColor: Partial<Record<PaymentStatusEnum, string>> = {
   [PaymentStatusEnum.PENDING]: "text-orange-500",
-  [PaymentStatusEnum.PARTIAL]: "text-yellow-500",
+  [PaymentStatusEnum.PARTIAL]: "text-amber-500",
 };
 
 export function ReceivableRow({ receivable, onAddPayment }: Props) {
@@ -25,30 +25,31 @@ export function ReceivableRow({ receivable, onAddPayment }: Props) {
       : (receivable.productName ?? `Pedido #${receivable.id}`);
 
   return (
-    <div className="flex flex-col gap-1 px-4 py-3 text-sm border-t md:grid md:grid-cols-[1fr_1fr_1fr_1fr_auto] md:gap-x-4 md:items-center">
-      <span className="flex items-center gap-2">
-        {label}
-
-        <span className="text-xs text-muted-foreground rounded bg-muted px-2 py-0.5 shrink-0">
-          #{receivable.id}
+    <div className="grid grid-cols-[1fr_auto] gap-x-4 items-center px-4 py-3 text-sm border-t md:grid-cols-[1fr_1fr_1fr_1fr_auto]">
+      <div className="flex flex-col gap-0.5 md:contents">
+        <span className="flex items-center gap-2">
+          {label}
+          <span className="text-xs text-muted-foreground rounded bg-muted px-2 py-0.5 shrink-0">
+            #{receivable.id}
+          </span>
         </span>
-      </span>
 
-      <span className="text-muted-foreground">
-        {formatLocalDate(receivable.scheduledDate)} às{" "}
-        {formatTime(receivable.scheduledTime)}
-      </span>
+        <span className="text-muted-foreground">
+          {formatLocalDate(receivable.scheduledDate)} às{" "}
+          {formatTime(receivable.scheduledTime)}
+        </span>
 
-      <span className="text-muted-foreground">
-        Total: {formatLocalCurrency(receivable.orderValue)}
-      </span>
+        <span className="text-muted-foreground">
+          Total: {formatLocalCurrency(receivable.orderValue)}
+        </span>
 
-      <span
-        className={`font-medium ${statusColor[receivable.paymentStatus] ?? ""}`}
-      >
-        {statusLabel[receivable.paymentStatus] ?? receivable.paymentStatus} ·{" "}
-        {formatLocalCurrency(receivable.remainingValue)} restante
-      </span>
+        <span
+          className={`font-medium md:text-right ${statusColor[receivable.paymentStatus] ?? ""}`}
+        >
+          {statusLabel[receivable.paymentStatus] ?? receivable.paymentStatus} ·{" "}
+          {formatLocalCurrency(receivable.remainingValue)} restante
+        </span>
+      </div>
 
       <ReceivableRowActions
         receivable={receivable}

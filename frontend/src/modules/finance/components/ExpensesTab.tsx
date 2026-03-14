@@ -7,7 +7,7 @@ import { FinanceAccordionGroup, AccordionGroup } from "./FinanceAccordionGroup";
 import { ExpenseRowActions } from "./ExpenseRowActions";
 import { expenseTypeLabel } from "../utils/labels";
 import { ExpenseRowLabel } from "./ExpenseRowLabel";
-import { FinanceTotalBar } from "./FinanceTotalBar";
+import { FinanceTotalBar } from "@/components/shared";
 
 type Props = {
   expenses: Expense[];
