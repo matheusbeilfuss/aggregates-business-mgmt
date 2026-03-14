@@ -51,7 +51,8 @@ export function PaymentDialog({
 }: Props) {
   const isEdit = props.mode === "edit";
   const order = isEdit ? props.payment.order : props.order;
-  const orderLabel = order.product ? order.product.name : order.service;
+  const orderLabel =
+    order.product?.name ?? order.service ?? `Pedido #${order.id}`;
 
   const form = useForm<PaymentFormData>({
     resolver: zodResolver(paymentSchema),
