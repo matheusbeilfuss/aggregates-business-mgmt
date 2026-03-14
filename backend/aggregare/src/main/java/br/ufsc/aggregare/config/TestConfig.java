@@ -157,7 +157,8 @@ public class TestConfig implements CommandLineRunner {
 
 		Client client1 = new Client(null, "Ana Paula", "12345678900", "ana@gmail.com");
 		Client client2 = new Client(null, "Bruno Costa", "98765432100", "bruno@gmail.com");
-		clientRepository.saveAll(Arrays.asList(client1, client2));
+		Client client3 = new Client(null, "Carla Silva", "45678912300", "carla@gmail.com");
+		clientRepository.saveAll(Arrays.asList(client1, client2, client3));
 
 		Phone phone1 = new Phone(null, client1, "(48) 91234-5678", PhoneTypeEnum.WHATSAPP);
 		Phone phone2 = new Phone(null, client1, "(48) 3456-7890", PhoneTypeEnum.FIXO);
@@ -177,7 +178,9 @@ public class TestConfig implements CommandLineRunner {
 
 		Order order1 = new Order(null, product1, client1, orderAddress1, 5.0, 7.5, null, OrderTypeEnum.MATERIAL, dataTeste1, horaTeste1, "Entregar no portão", OrderStatusEnum.PENDING, PaymentStatusEnum.PARTIAL, BigDecimal.valueOf(415.00), BigDecimal.valueOf(215.00));
 		Order order2 = new Order(null, product2, client2, orderAddress2, null, null, "Serviço de máquina", OrderTypeEnum.SERVICE, dataTeste1, horaTeste1, "Ligar antes de chegar", OrderStatusEnum.PENDING, PaymentStatusEnum.PARTIAL, BigDecimal.valueOf(500.00), BigDecimal.valueOf(200.00));
-		orderRepository.saveAll(Arrays.asList(order1, order2));
+		Order order3 = new Order(null, product3, client1, orderAddress1, 10.0, 15.0, null, OrderTypeEnum.MATERIAL, dataTeste1.minusMonths(2), horaTeste1, "Casa amarela", OrderStatusEnum.DELIVERED, PaymentStatusEnum.PARTIAL, BigDecimal.valueOf(1450.00), BigDecimal.valueOf(450.00));
+		Order order4 = new Order(null, product1, client3, orderAddress2, 3.0, 4.5, null, OrderTypeEnum.MATERIAL, dataTeste1.minusMonths(2), horaTeste1, "Obra no fim da rua", OrderStatusEnum.PENDING, PaymentStatusEnum.PENDING, BigDecimal.valueOf(250.00), BigDecimal.valueOf(250.00));
+		orderRepository.saveAll(Arrays.asList(order1, order2, order3, order4));
 
 		Payment payment1 = new Payment(null, order1, BigDecimal.valueOf(200.00), dataTeste1, PaymentMethodEnum.CASH);
 		Payment payment2 = new Payment(null, order2, BigDecimal.valueOf(300.00), dataTeste1, PaymentMethodEnum.BANK_TRANSFER);

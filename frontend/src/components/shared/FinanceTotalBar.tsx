@@ -3,11 +3,16 @@ import { formatLocalCurrency } from "@/utils";
 type Props = {
   label?: string;
   value: number;
-  variant: "income" | "expense";
+  variant: "income" | "expense" | "receivable";
 };
 
 export function FinanceTotalBar({ label = "Total", value, variant }: Props) {
-  const bg = variant === "income" ? "bg-blue-50" : "bg-orange-50";
+  const bg =
+    variant === "income"
+      ? "bg-blue-50"
+      : variant === "expense"
+        ? "bg-orange-50"
+        : "bg-purple-50";
 
   return (
     <div

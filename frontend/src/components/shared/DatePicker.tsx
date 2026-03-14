@@ -8,15 +8,19 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { useState } from "react";
+import { useId, useState } from "react";
 
 interface DatePickerProps {
   value: Date;
   onChange: (date: Date) => void;
+  disabled?: boolean;
+  id?: string;
 }
 
-export function DatePicker({ value, onChange }: DatePickerProps) {
+export function DatePicker({ value, onChange, disabled, id }: DatePickerProps) {
   const [open, setOpen] = useState(false);
+  const reactId = useId();
+  const buttonId = id ?? reactId;
 
   return (
     <Field className="mx-auto w-min">
@@ -24,8 +28,9 @@ export function DatePicker({ value, onChange }: DatePickerProps) {
         <PopoverTrigger asChild>
           <Button
             variant="outline"
-            id="date"
+            id={buttonId}
             className="justify-start font-normal"
+            disabled={disabled}
           >
             {value.toLocaleDateString("pt-BR")}
           </Button>

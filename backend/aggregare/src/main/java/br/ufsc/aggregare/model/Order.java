@@ -36,11 +36,11 @@ public class Order implements Serializable {
 	private Product product;
 
 	@ManyToOne
-	@JoinColumn(name = "client_id")
+	@JoinColumn(name = "client_id", nullable = false)
 	private Client client;
 
 	@ManyToOne
-	@JoinColumn(name = "address_id")
+	@JoinColumn(name = "address_id", nullable = false)
 	private OrderAddress orderAddress;
 
 	private Double m3Quantity;

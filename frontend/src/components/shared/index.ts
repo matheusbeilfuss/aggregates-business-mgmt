@@ -6,3 +6,4 @@ export { DatePicker } from "./DatePicker";
 export { PaymentDialog } from "./PaymentDialog";
 export { NotFound } from "./NotFound";
 export { PeriodPicker } from "./PeriodPicker";
+export { FinanceTotalBar } from "./FinanceTotalBar";

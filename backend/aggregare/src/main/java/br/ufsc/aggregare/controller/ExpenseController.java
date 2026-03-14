@@ -62,8 +62,9 @@ public class ExpenseController {
 	@GetMapping
 	public ResponseEntity<List<ExpenseDTO>> findAll(@RequestParam(required = false) LocalDate startDate, @RequestParam(required = false) LocalDate endDate) {
 		if ((startDate == null) != (endDate == null)) {
-			return ResponseEntity.badRequest().build();
+			throw new IllegalArgumentException("As datas de início e fim do período devem ser informadas juntas");
 		}
+
 
 		List<ExpenseDTO> expenses = (startDate != null)
 				? service.findByPeriod(startDate, endDate)

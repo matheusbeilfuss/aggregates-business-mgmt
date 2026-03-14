@@ -20,6 +20,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import br.ufsc.aggregare.model.Order;
 import br.ufsc.aggregare.model.dto.OrderInputDTO;
+import br.ufsc.aggregare.model.dto.ReceivableDTO;
 import br.ufsc.aggregare.service.OrderService;
 
 import jakarta.validation.Valid;
@@ -54,6 +55,12 @@ public class OrderController {
 		return ResponseEntity.ok().body(order);
 	}
 
+	@PatchMapping(value = "/{id}/delivered")
+	public ResponseEntity<Order> markAsDelivered(@PathVariable Long id) {
+		Order order = service.markAsDelivered(id);
+		return ResponseEntity.ok().body(order);
+	}
+
 	@GetMapping(value = "/{id}")
 	public ResponseEntity<Order> findById(@PathVariable Long id) {
 		Order order = service.findById(id);
@@ -73,9 +80,12 @@ public class OrderController {
 		return ResponseEntity.ok().body(orders);
 	}
 
-	@PatchMapping(value = "/{id}/delivered")
-	public ResponseEntity<Order> markAsDelivered(@PathVariable Long id) {
-		Order order = service.markAsDelivered(id);
-		return ResponseEntity.ok().body(order);
+	@GetMapping("/receivables")
+	public ResponseEntity<List<ReceivableDTO>> findReceivables(@RequestParam(required = false) LocalDate startDate, @RequestParam(required = false) LocalDate endDate) {
+		if ((startDate == null) != (endDate == null)) {
+			throw new IllegalArgumentException("As datas de início e fim do período devem ser informadas juntas");
+		}
+
+		return ResponseEntity.ok(service.findReceivables(startDate, endDate));
 	}
 }

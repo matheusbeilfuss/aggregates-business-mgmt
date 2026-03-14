@@ -5,7 +5,7 @@ import { FinanceAccordionGroup, AccordionGroup } from "./FinanceAccordionGroup";
 import { PaymentRowActions } from "./PaymentRowActions";
 import { paymentMethodLabel } from "../utils/labels";
 import { PaymentRowLabel } from "./PaymentRowLabel";
-import { FinanceTotalBar } from "./FinanceTotalBar";
+import { FinanceTotalBar } from "@/components/shared";
 
 type PaymentsTabProps = {
   payments: Payment[];

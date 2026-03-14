@@ -12,6 +12,7 @@ import br.ufsc.aggregare.model.Order;
 import br.ufsc.aggregare.model.OrderAddress;
 import br.ufsc.aggregare.model.Product;
 import br.ufsc.aggregare.model.dto.OrderInputDTO;
+import br.ufsc.aggregare.model.dto.ReceivableDTO;
 import br.ufsc.aggregare.model.enums.OrderStatusEnum;
 import br.ufsc.aggregare.model.enums.OrderTypeEnum;
 import br.ufsc.aggregare.model.enums.PaymentStatusEnum;
@@ -169,6 +170,21 @@ public class OrderService {
 		return orderRepository.findByScheduledDate(scheduledDate);
 	}
 
+	public List<ReceivableDTO> findReceivables(LocalDate startDate, LocalDate endDate) {
+		List<PaymentStatusEnum> unpaidStatuses = List.of(
+				PaymentStatusEnum.PENDING,
+				PaymentStatusEnum.PARTIAL
+		);
+
+		List<Order> orders = (startDate != null && endDate != null)
+				? orderRepository.findByPaymentStatusInAndScheduledDateBetween(unpaidStatuses, startDate, endDate)
+				: orderRepository.findByPaymentStatusIn(unpaidStatuses);
+
+		return orders.stream()
+				.map(this::toReceivableDTO)
+				.toList();
+	}
+
 	private Order orderFromInputDTO(OrderInputDTO dto) {
 		Order order = new Order();
 
@@ -210,6 +226,24 @@ public class OrderService {
 		orderAddress.setCity(dto.getCity());
 		orderAddress.setState(dto.getState());
 		return orderAddress;
+	}
+
+	private ReceivableDTO toReceivableDTO(Order order) {
+		String productName = order.getProduct() != null ? order.getProduct().getName() : null;
+
+		return new ReceivableDTO(
+				order.getId(),
+				order.getClient().getId(),
+				order.getClient().getName(),
+				order.getType(),
+				productName,
+				order.getService(),
+				order.getScheduledDate(),
+				order.getScheduledTime(),
+				order.getOrderValue(),
+				order.getRemainingValue(),
+				order.getPaymentStatus()
+		);
 	}
 
 	private boolean hasValidStockData(Order order) {
