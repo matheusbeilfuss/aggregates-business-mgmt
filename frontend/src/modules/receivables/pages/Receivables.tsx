@@ -36,18 +36,18 @@ export default function Receivables() {
   const groups = useMemo<ReceivableGroupType[]>(() => {
     if (!receivables) return [];
 
-    const map = new Map<string, Receivable[]>();
+    const map = new Map<number, Receivable[]>();
     for (const r of receivables) {
-      const existing = map.get(r.clientName);
+      const existing = map.get(r.clientId);
       if (existing) {
         existing.push(r);
       } else {
-        map.set(r.clientName, [r]);
+        map.set(r.clientId, [r]);
       }
     }
 
     return Array.from(map.entries())
-      .map(([clientName, items]) => {
+      .map(([clientId, items]) => {
         const total = items.reduce(
           (acc, r) => acc + Number(r.remainingValue),
           0,
@@ -56,7 +56,13 @@ export default function Receivables() {
           (oldest, r) => (r.scheduledDate < oldest ? r.scheduledDate : oldest),
           items[0].scheduledDate,
         );
-        return { clientName, total, oldestDate, items };
+        return {
+          clientId,
+          clientName: items[0].clientName,
+          total,
+          oldestDate,
+          items,
+        };
       })
       .sort((a, b) => a.oldestDate.localeCompare(b.oldestDate));
   }, [receivables]);
@@ -114,7 +120,7 @@ export default function Receivables() {
           <div className="flex flex-col gap-2 pb-4">
             {groups.map((group) => (
               <ReceivableGroup
-                key={group.clientName}
+                key={group.clientId}
                 group={group}
                 onAddPayment={setReceivableForPayment}
               />

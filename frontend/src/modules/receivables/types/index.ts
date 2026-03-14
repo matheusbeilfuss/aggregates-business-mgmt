@@ -2,6 +2,7 @@ import { OrderTypeEnum, PaymentStatusEnum } from "@/types";
 
 export type Receivable = {
   id: number;
+  clientId: number;
   clientName: string;
   type: OrderTypeEnum;
   productName: string | null;
@@ -14,6 +15,7 @@ export type Receivable = {
 };
 
 export type ReceivableGroup = {
+  clientId: number;
   clientName: string;
   total: number;
   oldestDate: string;

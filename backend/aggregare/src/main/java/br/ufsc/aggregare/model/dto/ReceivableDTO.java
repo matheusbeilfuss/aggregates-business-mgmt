@@ -10,6 +10,7 @@ import java.time.LocalTime;
 public class ReceivableDTO {
 
 	private Long id;
+	private Long clientId;
 	private String clientName;
 	private OrderTypeEnum type;
 	private String productName;
@@ -23,10 +24,11 @@ public class ReceivableDTO {
 	public ReceivableDTO() {
 	}
 
-	public ReceivableDTO(Long id, String clientName, OrderTypeEnum type, String productName, String service, LocalDate scheduledDate, LocalTime scheduledTime,
+	public ReceivableDTO(Long id, Long clientId, String clientName, OrderTypeEnum type, String productName, String service, LocalDate scheduledDate, LocalTime scheduledTime,
 			BigDecimal orderValue,
 			BigDecimal remainingValue, PaymentStatusEnum paymentStatus) {
 		this.id = id;
+		this.clientId = clientId;
 		this.clientName = clientName;
 		this.type = type;
 		this.productName = productName;
@@ -44,6 +46,14 @@ public class ReceivableDTO {
 
 	public void setId(Long id) {
 		this.id = id;
+	}
+
+	public Long getClientId() {
+		return clientId;
+	}
+
+	public void setClientId(Long clientId) {
+		this.clientId = clientId;
 	}
 
 	public String getClientName() {

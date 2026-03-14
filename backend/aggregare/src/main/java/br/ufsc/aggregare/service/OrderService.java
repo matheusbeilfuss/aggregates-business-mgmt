@@ -230,11 +230,11 @@ public class OrderService {
 
 	private ReceivableDTO toReceivableDTO(Order order) {
 		String productName = order.getProduct() != null ? order.getProduct().getName() : null;
-		String clientName = order.getClient() != null ? order.getClient().getName() : null;
 
 		return new ReceivableDTO(
 				order.getId(),
-				clientName,
+				order.getClient().getId(),
+				order.getClient().getName(),
 				order.getType(),
 				productName,
 				order.getService(),

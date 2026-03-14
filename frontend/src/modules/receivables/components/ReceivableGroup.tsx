@@ -16,7 +16,7 @@ type Props = {
 export function ReceivableGroup({ group, onAddPayment }: Props) {
   return (
     <Accordion type="single" collapsible className="border rounded-md">
-      <AccordionItem value={group.clientName} className="border-0">
+      <AccordionItem value={String(group.clientId)} className="border-0">
         <AccordionTrigger className="px-4 py-3 hover:no-underline hover:bg-muted/50">
           <div className="flex flex-1 items-center justify-between pr-4 text-sm md:grid md:grid-cols-[2fr_1fr_1fr] md:gap-x-4">
             <div className="flex flex-col gap-0.5 text-left md:contents">
