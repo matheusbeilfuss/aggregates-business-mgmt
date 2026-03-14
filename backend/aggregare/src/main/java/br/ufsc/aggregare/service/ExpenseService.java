@@ -211,14 +211,19 @@ public class ExpenseService {
 		return dto;
 	}
 
-	public List<ExpenseDTO> findAll() {
-		return toExpenseDTOs(expenseRepository.findAll());
+	public List<ExpenseDTO> findAll(ExpenseTypeEnum type) {
+		List<Expense> expenses = (type != null)
+				? expenseRepository.findByType(type)
+				: expenseRepository.findAll();
+		return toExpenseDTOs(expenses);
 	}
 
-	public List<ExpenseDTO> findByPeriod(LocalDate startDate, LocalDate endDate) {
-		return toExpenseDTOs(expenseRepository.findByDateBetween(startDate, endDate));
+	public List<ExpenseDTO> findByPeriod(LocalDate startDate, LocalDate endDate, ExpenseTypeEnum type) {
+		List<Expense> expenses = (type != null)
+				? expenseRepository.findByDateBetweenAndType(startDate, endDate, type)
+				: expenseRepository.findByDateBetween(startDate, endDate);
+		return toExpenseDTOs(expenses);
 	}
-
 	public List<String> findDistinctCategories() {
 		return expenseRepository.findDistinctCategories();
 	}
