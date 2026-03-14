@@ -46,14 +46,19 @@ export default function Receivables() {
       }
     }
 
-    return Array.from(map.entries()).map(([clientName, items]) => {
-      const total = items.reduce((acc, r) => acc + Number(r.remainingValue), 0);
-      const oldestDate = items.reduce(
-        (oldest, r) => (r.scheduledDate < oldest ? r.scheduledDate : oldest),
-        items[0].scheduledDate,
-      );
-      return { clientName, total, oldestDate, items };
-    });
+    return Array.from(map.entries())
+      .map(([clientName, items]) => {
+        const total = items.reduce(
+          (acc, r) => acc + Number(r.remainingValue),
+          0,
+        );
+        const oldestDate = items.reduce(
+          (oldest, r) => (r.scheduledDate < oldest ? r.scheduledDate : oldest),
+          items[0].scheduledDate,
+        );
+        return { clientName, total, oldestDate, items };
+      })
+      .sort((a, b) => a.oldestDate.localeCompare(b.oldestDate));
   }, [receivables]);
 
   const grandTotal = useMemo(
