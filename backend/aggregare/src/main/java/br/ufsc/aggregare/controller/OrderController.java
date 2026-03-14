@@ -83,7 +83,7 @@ public class OrderController {
 	@GetMapping("/receivables")
 	public ResponseEntity<List<ReceivableDTO>> findReceivables(@RequestParam(required = false) LocalDate startDate, @RequestParam(required = false) LocalDate endDate) {
 		if ((startDate == null) != (endDate == null)) {
-			return ResponseEntity.badRequest().build();
+			throw new IllegalArgumentException("As datas de início e fim do período devem ser informadas juntas");
 		}
 
 		return ResponseEntity.ok(service.findReceivables(startDate, endDate));

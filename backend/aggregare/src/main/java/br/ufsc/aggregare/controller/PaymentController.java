@@ -63,8 +63,9 @@ public class PaymentController {
 	@GetMapping
 	public ResponseEntity<List<Payment>> findAll(@RequestParam(required = false) LocalDate startDate, @RequestParam(required = false) LocalDate endDate) {
 		if ((startDate == null) != (endDate == null)) {
-			return ResponseEntity.badRequest().build();
+			throw new IllegalArgumentException("As datas de início e fim do período devem ser informadas juntas");
 		}
+
 
 		List<Payment> payments = (startDate != null)
 				? service.findByPeriod(startDate, endDate)
