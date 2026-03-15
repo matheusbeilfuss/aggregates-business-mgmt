@@ -4,7 +4,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import { FuelExpense } from "@/modules/finance/types";
+import { FuelExpense } from "../types";
 import {
   formatLocalCurrency,
   formatLocalDate,

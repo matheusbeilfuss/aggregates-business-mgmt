@@ -1,7 +1,7 @@
 import { useCallback } from "react";
 import { useApi } from "@/hooks/useApi";
 import { financeService } from "@/modules/finance/services/finance.service";
-import { FuelExpense } from "@/modules/finance/types";
+import { FuelExpense } from "../types";
 import { ExpenseTypeEnum } from "@/types";
 
 type Options = {
