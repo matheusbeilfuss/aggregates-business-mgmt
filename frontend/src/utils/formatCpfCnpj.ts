@@ -1,16 +1,16 @@
 export function formatCpfCnpj(value: string): string {
-  const digits = value.replace(/\D/g, "");
+  const digits = value.replace(/\D/g, "").slice(0, 14);
 
-  if (digits.length === 11) {
-    return digits.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, "$1.$2.$3-$4");
-  }
+  if (digits.length <= 3) return digits;
+  if (digits.length <= 6) return `${digits.slice(0, 3)}.${digits.slice(3)}`;
+  if (digits.length <= 9)
+    return `${digits.slice(0, 3)}.${digits.slice(3, 6)}.${digits.slice(6)}`;
 
-  if (digits.length === 14) {
-    return digits.replace(
-      /(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})/,
-      "$1.$2.$3/$4-$5",
-    );
-  }
+  if (digits.length <= 11)
+    return `${digits.slice(0, 3)}.${digits.slice(3, 6)}.${digits.slice(6, 9)}-${digits.slice(9)}`;
 
-  return value;
+  if (digits.length <= 12)
+    return `${digits.slice(0, 2)}.${digits.slice(2, 5)}.${digits.slice(5, 8)}/${digits.slice(8)}`;
+
+  return `${digits.slice(0, 2)}.${digits.slice(2, 5)}.${digits.slice(5, 8)}/${digits.slice(8, 12)}-${digits.slice(12)}`;
 }

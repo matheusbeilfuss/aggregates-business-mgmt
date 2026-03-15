@@ -22,7 +22,12 @@ import { OrderFormData } from "../schemas/order.schemas";
 import { ProductSelect } from "./ProductSelect";
 import { QuantityCombobox } from "./QuantityCombobox";
 import { ClientCombobox } from "./ClientCombobox";
-import { toIsoDate, selectPrimaryPhone } from "@/utils";
+import {
+  toIsoDate,
+  selectPrimaryPhone,
+  formatPhone,
+  formatCpfCnpj,
+} from "@/utils";
 import { useEffect, useMemo } from "react";
 
 import { Product } from "@/modules/product/types";
@@ -68,7 +73,7 @@ export function OrderForm({
     if (!client) return;
 
     form.setValue("clientName", client.name);
-    form.setValue("cpfCnpj", client.cpfCnpj);
+    form.setValue("cpfCnpj", formatCpfCnpj(client.cpfCnpj ?? ""));
 
     if (client.address) {
       form.setValue("state", client.address.state);
@@ -81,7 +86,7 @@ export function OrderForm({
     if (client.phones?.length) {
       const primaryPhone = selectPrimaryPhone(client.phones);
       if (primaryPhone) {
-        form.setValue("phone", primaryPhone.number);
+        form.setValue("phone", formatPhone(primaryPhone.number));
         form.setValue("phoneType", primaryPhone.type);
       }
     }
@@ -221,9 +226,12 @@ export function OrderForm({
                     <FormLabel>Telefone</FormLabel>
                     <FormControl>
                       <Input
-                        {...field}
+                        value={field.value}
                         type="text"
                         onFocus={(e) => e.target.select()}
+                        onChange={(e) =>
+                          field.onChange(formatPhone(e.target.value))
+                        }
                       />
                     </FormControl>
                     <FormMessage />
@@ -255,7 +263,9 @@ export function OrderForm({
                     <Input
                       type="text"
                       value={field.value ?? ""}
-                      onChange={(e) => field.onChange(e.target.value)}
+                      onChange={(e) =>
+                        field.onChange(formatCpfCnpj(e.target.value))
+                      }
                     />
                   </FormControl>
                   <FormMessage />
