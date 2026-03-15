@@ -20,6 +20,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import br.ufsc.aggregare.model.dto.ExpenseDTO;
 import br.ufsc.aggregare.model.dto.ExpenseInputDTO;
+import br.ufsc.aggregare.model.enums.ExpenseTypeEnum;
 import br.ufsc.aggregare.service.ExpenseService;
 
 import jakarta.validation.Valid;
@@ -60,15 +61,19 @@ public class ExpenseController {
 	}
 
 	@GetMapping
-	public ResponseEntity<List<ExpenseDTO>> findAll(@RequestParam(required = false) LocalDate startDate, @RequestParam(required = false) LocalDate endDate) {
+	public ResponseEntity<List<ExpenseDTO>> findAll(
+			@RequestParam(required = false) LocalDate startDate,
+			@RequestParam(required = false) LocalDate endDate,
+			@RequestParam(required = false) ExpenseTypeEnum type
+	) {
 		if ((startDate == null) != (endDate == null)) {
 			throw new IllegalArgumentException("As datas de início e fim do período devem ser informadas juntas");
 		}
 
 
 		List<ExpenseDTO> expenses = (startDate != null)
-				? service.findByPeriod(startDate, endDate)
-				: service.findAll();
+				? service.findByPeriod(startDate, endDate, type)
+				: service.findAll(type);
 
 		return ResponseEntity.ok().body(expenses);
 	}

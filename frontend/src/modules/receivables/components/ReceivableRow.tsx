@@ -1,21 +1,17 @@
 import { Receivable } from "../types";
-import { OrderTypeEnum, PaymentStatusEnum } from "@/types";
-import { formatLocalCurrency, formatLocalDate, formatTime } from "@/utils";
+import { OrderTypeEnum } from "@/types";
+import {
+  formatLocalCurrency,
+  formatLocalDate,
+  formatTime,
+  paymentStatusColor,
+  paymentStatusLabel,
+} from "@/utils";
 import { ReceivableRowActions } from "./ReceivableRowActions";
 
 type Props = {
   receivable: Receivable;
   onAddPayment: (receivable: Receivable) => void;
-};
-
-const statusLabel: Partial<Record<PaymentStatusEnum, string>> = {
-  [PaymentStatusEnum.PENDING]: "Pendente",
-  [PaymentStatusEnum.PARTIAL]: "Parcial",
-};
-
-const statusColor: Partial<Record<PaymentStatusEnum, string>> = {
-  [PaymentStatusEnum.PENDING]: "text-orange-500",
-  [PaymentStatusEnum.PARTIAL]: "text-amber-500",
 };
 
 export function ReceivableRow({ receivable, onAddPayment }: Props) {
@@ -44,10 +40,11 @@ export function ReceivableRow({ receivable, onAddPayment }: Props) {
         </span>
 
         <span
-          className={`font-medium md:text-right ${statusColor[receivable.paymentStatus] ?? ""}`}
+          className={`font-medium md:text-right ${paymentStatusColor[receivable.paymentStatus] ?? ""}`}
         >
-          {statusLabel[receivable.paymentStatus] ?? receivable.paymentStatus} ·{" "}
-          {formatLocalCurrency(receivable.remainingValue)} restante
+          {paymentStatusLabel[receivable.paymentStatus] ??
+            receivable.paymentStatus}{" "}
+          · {formatLocalCurrency(receivable.remainingValue)} restante
         </span>
       </div>
 

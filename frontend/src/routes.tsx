@@ -21,6 +21,7 @@ import Finance from "./modules/finance/pages/Finance";
 import ExpenseAdd from "./modules/finance/pages/ExpenseAdd";
 import ExpenseEdit from "./modules/finance/pages/ExpenseEdit";
 import Receivables from "./modules/receivables/pages/Receivables";
+import Fuel from "./modules/fuel/pages/Fuel";
 
 export const router = createBrowserRouter([
   {
@@ -57,7 +58,7 @@ export const router = createBrowserRouter([
           },
 
           { path: "receivables", element: <Receivables /> },
-
+          { path: "fuel", element: <Fuel /> },
           { path: "user", element: <User /> },
           {
             element: <AdminRoute />,

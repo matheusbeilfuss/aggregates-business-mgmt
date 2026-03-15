@@ -54,7 +54,7 @@ export const items = [
   },
   {
     title: "Combustível",
-    url: "#",
+    url: "/fuel",
     icon: Fuel,
   },
   {
