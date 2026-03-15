@@ -1,11 +1,30 @@
 import { api } from "@/lib/api";
-import { Expense, Payment } from "../types";
+import { Expense, FuelExpense, Payment } from "../types";
 import { toIsoDate } from "@/utils";
+import { ExpenseTypeEnum } from "@/types";
 
-const getExpenses = (startDate: Date, endDate: Date) =>
-  api.get<Expense[]>(
-    `/expenses?startDate=${toIsoDate(startDate)}&endDate=${toIsoDate(endDate)}`,
-  );
+function getExpenses(
+  startDate: Date,
+  endDate: Date,
+  type: ExpenseTypeEnum.FUEL,
+): Promise<FuelExpense[]>;
+function getExpenses(
+  startDate: Date,
+  endDate: Date,
+  type?: ExpenseTypeEnum,
+): Promise<Expense[]>;
+function getExpenses(
+  startDate: Date,
+  endDate: Date,
+  type?: ExpenseTypeEnum,
+): Promise<Expense[]> {
+  const params = new URLSearchParams({
+    startDate: toIsoDate(startDate),
+    endDate: toIsoDate(endDate),
+  });
+  if (type) params.append("type", type);
+  return api.get<Expense[]>(`/expenses?${params.toString()}`);
+}
 
 const getPayments = (startDate: Date, endDate: Date) =>
   api.get<Payment[]>(

@@ -1,5 +1,5 @@
 import { PaymentMethodEnum } from "@/types";
-import { paymentMethodLabel } from "@/modules/finance/utils/labels";
+import { paymentMethodLabel } from "@/utils";
 import {
   Select,
   SelectTrigger,

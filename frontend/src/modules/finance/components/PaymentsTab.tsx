@@ -3,7 +3,7 @@ import { Payment } from "../types";
 import { PaymentMethodEnum } from "@/types";
 import { FinanceAccordionGroup, AccordionGroup } from "./FinanceAccordionGroup";
 import { PaymentRowActions } from "./PaymentRowActions";
-import { paymentMethodLabel } from "../utils/labels";
+import { paymentMethodLabel } from "@/utils";
 import { PaymentRowLabel } from "./PaymentRowLabel";
 import { FinanceTotalBar } from "@/components/shared";
 
