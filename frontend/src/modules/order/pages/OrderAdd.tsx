@@ -10,7 +10,6 @@ import { orderFormDefaults } from "../utils/orderFormDefaults";
 import { ApiError } from "@/lib/api";
 import { usePageTitle } from "@/hooks/usePageTitle";
 import { useProducts } from "@/modules/product/hooks";
-import { useClients } from "@/modules/client/hooks";
 import { clientService } from "@/modules/client/services/client.service";
 import { CreateClientPayload } from "@/modules/client/types";
 
@@ -19,7 +18,6 @@ export function OrderAdd() {
 
   const navigate = useNavigate();
   const { data: products, loading: productsLoading } = useProducts();
-  const { data: clients, loading: clientsLoading } = useClients();
 
   const form = useForm<OrderFormData>({
     resolver: zodResolver(orderSchema),
@@ -34,12 +32,7 @@ export function OrderAdd() {
       if (!clientId) {
         const newClientPayload: CreateClientPayload = {
           name: data.clientName!,
-          phones: [
-            {
-              number: data.phone,
-              type: data.phoneType,
-            },
-          ],
+          phones: [{ number: data.phone, type: data.phoneType }],
           cpfCnpj: data.cpfCnpj,
           street: data.street,
           number: data.number,
@@ -94,8 +87,7 @@ export function OrderAdd() {
       title="Adicionar pedido"
       form={form}
       products={products ?? []}
-      clients={clients ?? []}
-      loading={productsLoading || clientsLoading}
+      loading={productsLoading}
       onSubmit={onSubmit}
       submitLabel="Adicionar"
     />

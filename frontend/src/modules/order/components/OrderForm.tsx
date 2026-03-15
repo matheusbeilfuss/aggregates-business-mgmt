@@ -31,7 +31,6 @@ import {
 import { useEffect, useMemo } from "react";
 
 import { Product } from "@/modules/product/types";
-import { Client } from "@/modules/client/types";
 import { useClient } from "@/modules/client/hooks";
 import { useCategoryPrices } from "@/modules/price/hooks";
 
@@ -39,7 +38,6 @@ interface OrderFormProps {
   title: string;
   form: UseFormReturn<OrderFormData>;
   products: Product[];
-  clients: Client[];
   loading?: boolean;
   onSubmit: (data: OrderFormData) => void;
   submitLabel: string;
@@ -49,7 +47,6 @@ export function OrderForm({
   title,
   form,
   products,
-  clients,
   loading = false,
   onSubmit,
   submitLabel,
@@ -197,7 +194,6 @@ export function OrderForm({
                     <ClientCombobox
                       value={field.value ?? ""}
                       clientId={form.watch("clientId")}
-                      clients={clients ?? []}
                       onChange={(value) => {
                         field.onChange(value);
                         form.setValue("clientId", undefined);

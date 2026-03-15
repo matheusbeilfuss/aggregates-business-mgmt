@@ -257,7 +257,7 @@ public class TestConfig implements CommandLineRunner {
 		List<Phone> phones = new ArrayList<>();
 		List<Address> addresses = new ArrayList<>();
 
-		for (int i = 0; i < 300; i++) {
+		for (int i = 0; i < 1000; i++) {
 
 			String firstName = firstNames[random.nextInt(firstNames.length)];
 			String lastName = lastNames[random.nextInt(lastNames.length)];

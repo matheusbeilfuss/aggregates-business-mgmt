@@ -6,13 +6,13 @@ import { useEffect } from "react";
 import { orderService } from "../services/order.service";
 import { OrderForm } from "./OrderForm";
 import { CreateOrderPayload } from "../types";
-import { selectPrimaryPhone } from "@/utils";
 import { orderFormDefaults } from "../utils/orderFormDefaults";
 import { toast } from "sonner";
 import { ApiError } from "@/lib/api";
 import { useOrder } from "../hooks";
 import { useProducts } from "@/modules/product/hooks";
-import { useClient, useClients } from "@/modules/client/hooks";
+import { useClient } from "@/modules/client/hooks";
+import { selectPrimaryPhone, formatPhone, formatCpfCnpj } from "@/utils";
 
 interface OrderEditFormProps {
   orderId: number;
@@ -23,7 +23,6 @@ export function OrderEditForm({ orderId }: OrderEditFormProps) {
 
   const { data: order, loading: orderLoading } = useOrder(orderId);
   const { data: products } = useProducts();
-  const { data: clients } = useClients();
   const { data: client } = useClient(order?.client?.id);
 
   const form = useForm<OrderFormData>({
@@ -44,9 +43,9 @@ export function OrderEditForm({ orderId }: OrderEditFormProps) {
       clientId: order.client.id,
       clientName: order.client.name,
       phone: client?.phones?.length
-        ? (selectPrimaryPhone(client.phones)?.number ?? "")
+        ? formatPhone(selectPrimaryPhone(client.phones)?.number ?? "")
         : "",
-      cpfCnpj: order.client.cpfCnpj,
+      cpfCnpj: formatCpfCnpj(order.client.cpfCnpj ?? ""),
       state: order.orderAddress.state,
       city: order.orderAddress.city,
       neighborhood: order.orderAddress.neighborhood,
@@ -78,7 +77,6 @@ export function OrderEditForm({ orderId }: OrderEditFormProps) {
 
     try {
       await orderService.update(orderId, payload);
-
       toast.success("Pedido atualizado com sucesso.");
       navigate("/orders");
     } catch (error) {
@@ -95,7 +93,6 @@ export function OrderEditForm({ orderId }: OrderEditFormProps) {
       title="Editar pedido"
       form={form}
       products={products ?? []}
-      clients={clients ?? []}
       loading={orderLoading}
       onSubmit={onSubmit}
       submitLabel="Salvar alterações"

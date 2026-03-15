@@ -7,12 +7,11 @@ import {
   ComboboxList,
 } from "@/components/ui/combobox";
 import { Client } from "@/modules/client/types";
-import { useMemo } from "react";
+import { useClientSearch } from "@/modules/client/hooks";
 
 interface ClientComboboxProps {
   value: string;
   clientId?: number;
-  clients: Client[];
   className?: string;
   onChange: (value: string) => void;
   onClientSelect: (client: Client) => void;
@@ -21,25 +20,18 @@ interface ClientComboboxProps {
 export function ClientCombobox({
   value,
   clientId,
-  clients,
   className,
   onChange,
   onClientSelect,
 }: ClientComboboxProps) {
-  const filteredClients = useMemo(() => {
-    return clients.filter((client) =>
-      client.name.toLowerCase().includes(value.toLowerCase()),
-    );
-  }, [clients, value]);
+  const { results, loading } = useClientSearch(value);
 
   return (
     <Combobox
       value={clientId ? String(clientId) : ""}
       onValueChange={(val) => {
-        const client = clients.find((c) => String(c.id) === val);
-        if (client) {
-          onClientSelect(client);
-        }
+        const client = results.find((c) => String(c.id) === val);
+        if (client) onClientSelect(client);
       }}
     >
       <ComboboxInput
@@ -49,16 +41,23 @@ export function ClientCombobox({
         placeholder="Busque ou digite o nome do cliente"
       />
       <ComboboxContent>
-        {filteredClients.length === 0 && (
-          <ComboboxEmpty>Novo cliente</ComboboxEmpty>
+        {loading ? (
+          <ComboboxEmpty>Buscando...</ComboboxEmpty>
+        ) : results.length === 0 ? (
+          <ComboboxEmpty>
+            {value.trim().length < 3
+              ? "Digite pelo menos 3 caracteres"
+              : "Novo cliente"}
+          </ComboboxEmpty>
+        ) : (
+          <ComboboxList>
+            {results.map((client) => (
+              <ComboboxItem key={client.id} value={String(client.id)}>
+                {client.name}
+              </ComboboxItem>
+            ))}
+          </ComboboxList>
         )}
-        <ComboboxList>
-          {filteredClients.map((client) => (
-            <ComboboxItem key={client.id} value={String(client.id)}>
-              {client.name}
-            </ComboboxItem>
-          ))}
-        </ComboboxList>
       </ComboboxContent>
     </Combobox>
   );
