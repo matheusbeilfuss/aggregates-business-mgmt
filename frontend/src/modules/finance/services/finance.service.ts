@@ -17,12 +17,18 @@ function getExpenses(
   startDate: Date,
   endDate: Date,
   type?: ExpenseTypeEnum,
-): Promise<Expense[]> {
+): Promise<FuelExpense[] | Expense[]> {
   const params = new URLSearchParams({
     startDate: toIsoDate(startDate),
     endDate: toIsoDate(endDate),
   });
+
   if (type) params.append("type", type);
+
+  if (type === ExpenseTypeEnum.FUEL) {
+    return api.get<FuelExpense[]>(`/expenses?${params.toString()}`);
+  }
+
   return api.get<Expense[]>(`/expenses?${params.toString()}`);
 }
 

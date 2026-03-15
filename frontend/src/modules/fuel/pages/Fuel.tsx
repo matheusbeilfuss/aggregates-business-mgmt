@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { startOfMonth, endOfMonth } from "date-fns";
 import { usePageTitle } from "@/hooks/usePageTitle";
 import { PageContainer, LoadingState } from "@/components/shared";
@@ -7,7 +7,6 @@ import { FinanceTotalBar } from "@/components/shared/FinanceTotalBar";
 import { FuelRow } from "../components/FuelRow";
 import { useFuelExpenses } from "../hooks/useFuelExpenses";
 import { DatePeriod } from "@/types";
-import { useEffect } from "react";
 import { toast } from "sonner";
 
 export default function Fuel() {
