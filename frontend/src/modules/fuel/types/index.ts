@@ -1,4 +1,4 @@
-import { ExpenseTypeEnum, PaymentStatusEnum } from "@/types";
+import type { ExpenseTypeEnum, PaymentStatusEnum } from "@/types";
 
 export type FuelData = {
   vehicle: string | null;

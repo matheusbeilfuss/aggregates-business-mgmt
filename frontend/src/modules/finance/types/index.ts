@@ -1,6 +1,6 @@
 import { OrderItem } from "@/modules/order/types";
 import { ExpenseTypeEnum, PaymentMethodEnum, PaymentStatusEnum } from "@/types";
-import { FuelData, FuelExpense } from "@/modules/fuel/types";
+import type { FuelData, FuelExpense } from "@/modules/fuel/types";
 
 export type { FuelData, FuelExpense };
 
