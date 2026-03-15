@@ -6,7 +6,7 @@ import { useEffect } from "react";
 import { orderService } from "../services/order.service";
 import { OrderForm } from "./OrderForm";
 import { CreateOrderPayload } from "../types";
-import { selectPreferredPhone } from "../utils/selectPreferredPhone";
+import { selectPrimaryPhone } from "@/utils";
 import { orderFormDefaults } from "../utils/orderFormDefaults";
 import { toast } from "sonner";
 import { ApiError } from "@/lib/api";
@@ -44,7 +44,7 @@ export function OrderEditForm({ orderId }: OrderEditFormProps) {
       clientId: order.client.id,
       clientName: order.client.name,
       phone: client?.phones?.length
-        ? (selectPreferredPhone(client.phones)?.number ?? "")
+        ? (selectPrimaryPhone(client.phones)?.number ?? "")
         : "",
       cpfCnpj: order.client.cpfCnpj,
       state: order.orderAddress.state,

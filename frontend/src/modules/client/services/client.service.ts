@@ -7,4 +7,9 @@ export const clientService = {
   getById: (clientId: number) => api.get<Client>(`/clients/${clientId}`),
 
   insert: (data: CreateClientPayload) => api.post<Client>(`/clients`, data),
+
+  update: (clientId: number, data: CreateClientPayload) =>
+    api.put<Client>(`/clients/${clientId}`, data),
+
+  delete: (clientId: number) => api.delete(`/clients/${clientId}`),
 };

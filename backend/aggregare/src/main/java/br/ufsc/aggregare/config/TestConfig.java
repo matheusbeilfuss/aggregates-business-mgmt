@@ -3,7 +3,10 @@ package br.ufsc.aggregare.config;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
+import java.util.Random;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
@@ -158,16 +161,50 @@ public class TestConfig implements CommandLineRunner {
 		Client client1 = new Client(null, "Ana Paula", "12345678900", "ana@gmail.com");
 		Client client2 = new Client(null, "Bruno Costa", "98765432100", "bruno@gmail.com");
 		Client client3 = new Client(null, "Carla Silva", "45678912300", "carla@gmail.com");
-		clientRepository.saveAll(Arrays.asList(client1, client2, client3));
+		Client client4 = new Client(null, "Daniel Martins", "11122233344", "daniel@gmail.com");
+		Client client5 = new Client(null, "Eduarda Lopes", "22233344455", "eduarda@gmail.com");
+		Client client6 = new Client(null, "Felipe Rocha", "33344455566", "felipe@gmail.com");
+		Client client7 = new Client(null, "Gabriela Souza", "44455566677", "gabriela@gmail.com");
+		Client client8 = new Client(null, "Henrique Alves", "55566677788", "henrique@gmail.com");
+		Client client9 = new Client(null, "Isabela Fernandes", "66677788899", "isabela@gmail.com");
+		Client client10 = new Client(null, "João Pedro", "77788899900", "joao@gmail.com");
+
+		clientRepository.saveAll(Arrays.asList(client1, client2, client3, client4, client5, client6, client7, client8, client9, client10));
 
 		Phone phone1 = new Phone(null, client1, "(48) 91234-5678", PhoneTypeEnum.WHATSAPP);
 		Phone phone2 = new Phone(null, client1, "(48) 3456-7890", PhoneTypeEnum.FIXO);
 		Phone phone3 = new Phone(null, client2, "(48) 99876-5432", PhoneTypeEnum.OUTRO);
-		phoneRepository.saveAll(Arrays.asList(phone1, phone2, phone3));
+		Phone phone4 = new Phone(null, client3, "(48) 3456-3456",  PhoneTypeEnum.FIXO);
+		Phone phone5 = new Phone(null, client4, "(48) 99111-1111", PhoneTypeEnum.WHATSAPP);
+		Phone phone6 = new Phone(null, client4, "(48) 3333-1111", PhoneTypeEnum.FIXO);
+		Phone phone7 = new Phone(null, client5, "(48) 99222-2222", PhoneTypeEnum.WHATSAPP);
+		Phone phone8 = new Phone(null, client6, "(48) 99333-3333", PhoneTypeEnum.OUTRO);
+		Phone phone9 = new Phone(null, client6, "(48) 3344-3333", PhoneTypeEnum.FIXO);
+		Phone phone10 = new Phone(null, client7, "(48) 99444-4444", PhoneTypeEnum.WHATSAPP);
+		Phone phone11 = new Phone(null, client7, "(48) 99555-4444", PhoneTypeEnum.OUTRO);
+		Phone phone12 = new Phone(null, client8, "(48) 99666-6666", PhoneTypeEnum.WHATSAPP);
+		Phone phone13 = new Phone(null, client9, "(48) 99777-7777", PhoneTypeEnum.WHATSAPP);
+		Phone phone14 = new Phone(null, client9, "(48) 3377-7777", PhoneTypeEnum.FIXO);
+		Phone phone15 = new Phone(null, client10, "(48) 99888-8888", PhoneTypeEnum.WHATSAPP);
+		Phone phone16 = new Phone(null, client10, "(48) 3388-8888", PhoneTypeEnum.FIXO);
+		Phone phone17 = new Phone(null, client10, "(48) 99999-9999", PhoneTypeEnum.OUTRO);
+
+		phoneRepository.saveAll(Arrays.asList(phone1, phone2, phone3, phone4, phone5, phone6, phone7, phone8, phone9, phone10, phone11, phone12, phone13, phone14, phone15, phone16, phone17));
 
 		Address address1 = new Address(null, client1, "SC", "Florianópolis", "Centro", "Rua das Flores", "100");
 		Address address2 = new Address(null, client2, "SC", "Florianópolis", "Pantanal", "Rua dos Papagaios", "1500");
-		addressRepository.saveAll(Arrays.asList(address1, address2));
+		Address address3 = new Address(null, client3, "SC", "Florianópolis", "Carvoeira", "Rua Cap. Romualdo de Barros", "2100");
+		Address address4 = new Address(null, client4, "SC", "Florianópolis", "Trindade", "Rua Lauro Linhares", "1200");
+		Address address5 = new Address(null, client5, "SC", "Florianópolis", "Itacorubi", "Rua Pastor William", "350");
+		Address address6 = new Address(null, client6, "SC", "Florianópolis", "Coqueiros", "Rua Desembargador Pedro Silva", "890");
+		Address address7 = new Address(null, client7, "SC", "Florianópolis", "Estreito", "Rua General Liberato Bittencourt", "540");
+		Address address8 = new Address(null, client8, "SC", "Florianópolis", "Capoeiras", "Rua Santos Saraiva", "760");
+		Address address9 = new Address(null, client9, "SC", "Florianópolis", "Ingleses", "Servidão Caminho do Mar", "210");
+		Address address10 = new Address(null, client10, "SC", "Florianópolis", "Campeche", "Rua Pequeno Príncipe", "980");
+
+		addressRepository.saveAll(Arrays.asList(address1, address2, address3, address4, address5, address6, address7, address8, address9, address10));
+
+		generateTestClients();
 
 		LocalDate dataTeste1 = LocalDate.now();
 		LocalTime horaTeste1 = LocalTime.now();
@@ -200,5 +237,66 @@ public class TestConfig implements CommandLineRunner {
 
 		Fuel fuel1 = new Fuel(null, expense4, "Mercedes 1313", 100.00, 85.30, 6.03, "Posto Dom Bosco");
 		fuelRepository.save(fuel1);
+	}
+
+	public void generateTestClients() {
+
+		String[] firstNames = {
+				"Ana","Bruno","Carla","Daniel","Eduarda","Felipe","Gabriela","Henrique","Isabela","João",
+				"Karina","Lucas","Mariana","Nicolas","Olivia","Paulo","Quésia","Rafael","Sabrina","Tiago",
+				"Ursula","Vinicius","William","Xavier","Yasmin","Zeca"
+		};
+
+		String[] lastNames = {
+				"Silva","Souza","Costa","Oliveira","Pereira","Rodrigues","Almeida","Nunes","Lopes","Carvalho"
+		};
+
+		Random random = new Random();
+
+		List<Client> clients = new ArrayList<>();
+		List<Phone> phones = new ArrayList<>();
+		List<Address> addresses = new ArrayList<>();
+
+		for (int i = 0; i < 300; i++) {
+
+			String firstName = firstNames[random.nextInt(firstNames.length)];
+			String lastName = lastNames[random.nextInt(lastNames.length)];
+			String fullName = firstName + " " + lastName;
+
+			String cpf = String.format("%011d", random.nextLong(100000000000L));
+			String email = firstName.toLowerCase() + i + "@gmail.com";
+
+			Client client = new Client(null, fullName, cpf, email);
+			clients.add(client);
+		}
+
+		clientRepository.saveAll(clients);
+
+		for (Client client : clients) {
+
+			Phone phone = new Phone(
+					null,
+					client,
+					"(48) 9" + (1000 + random.nextInt(9000)) + "-" + (1000 + random.nextInt(9000)),
+					PhoneTypeEnum.WHATSAPP
+			);
+
+			phones.add(phone);
+
+			Address address = new Address(
+					null,
+					client,
+					"SC",
+					"Florianópolis",
+					"Centro",
+					"Rua " + (100 + random.nextInt(900)),
+					String.valueOf(random.nextInt(2000))
+			);
+
+			addresses.add(address);
+		}
+
+		phoneRepository.saveAll(phones);
+		addressRepository.saveAll(addresses);
 	}
 }

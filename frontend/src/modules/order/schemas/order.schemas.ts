@@ -1,3 +1,4 @@
+import { PHONE_TYPES } from "@/modules/client/types";
 import { z } from "zod";
 
 export const orderSchema = z
@@ -8,7 +9,7 @@ export const orderSchema = z
     phone: z
       .string({ required_error: "Telefone obrigatório" })
       .min(1, "Telefone obrigatório"),
-    phoneType: z.enum(["WHATSAPP", "CELULAR", "FIXO", "OUTRO"]),
+    phoneType: z.enum(PHONE_TYPES),
     cpfCnpj: z.string().optional(),
     street: z
       .string({ required_error: "Rua obrigatória" })

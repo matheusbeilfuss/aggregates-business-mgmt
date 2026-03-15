@@ -5,7 +5,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { PhoneType } from "@/modules/client/types";
+import { PHONE_TYPES, PhoneType } from "@/modules/client/types";
+import { phoneTypeLabel } from "@/modules/client/utils/labels";
 
 interface PhoneTypeSelectProps {
   value?: PhoneType;
@@ -24,7 +25,7 @@ export function PhoneTypeSelect({
 }: PhoneTypeSelectProps) {
   return (
     <Select
-      value={value?.toString() ?? ""}
+      value={value ?? ""}
       onValueChange={(val) => onChange(val as PhoneType)}
       disabled={disabled}
     >
@@ -32,10 +33,11 @@ export function PhoneTypeSelect({
         <SelectValue placeholder={placeholder} />
       </SelectTrigger>
       <SelectContent>
-        <SelectItem value="WHATSAPP">WhatsApp</SelectItem>
-        <SelectItem value="CELULAR">Celular</SelectItem>
-        <SelectItem value="FIXO">Fixo</SelectItem>
-        <SelectItem value="OUTRO">Outro</SelectItem>
+        {PHONE_TYPES.map((type) => (
+          <SelectItem key={type} value={type}>
+            {phoneTypeLabel[type]}
+          </SelectItem>
+        ))}
       </SelectContent>
     </Select>
   );

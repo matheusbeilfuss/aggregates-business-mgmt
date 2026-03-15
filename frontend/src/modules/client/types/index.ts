@@ -1,5 +1,5 @@
-export type PhoneType = "WHATSAPP" | "CELULAR" | "FIXO" | "OUTRO";
-
+export const PHONE_TYPES = ["WHATSAPP", "CELULAR", "FIXO", "OUTRO"] as const;
+export type PhoneType = (typeof PHONE_TYPES)[number];
 export interface Client {
   id: number;
   name: string;

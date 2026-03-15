@@ -9,7 +9,12 @@ import {
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { PageContainer, FormActions, LoadingState } from "@/components/shared";
+import {
+  PageContainer,
+  FormActions,
+  LoadingState,
+  PhoneTypeSelect,
+} from "@/components/shared";
 import { DatePicker } from "@/components/shared/DatePicker";
 import { UseFormReturn } from "react-hook-form";
 
@@ -17,11 +22,9 @@ import { OrderFormData } from "../schemas/order.schemas";
 import { ProductSelect } from "./ProductSelect";
 import { QuantityCombobox } from "./QuantityCombobox";
 import { ClientCombobox } from "./ClientCombobox";
-import { toIsoDate } from "@/utils";
+import { toIsoDate, selectPrimaryPhone } from "@/utils";
 import { useEffect, useMemo } from "react";
 
-import { selectPreferredPhone } from "../utils/selectPreferredPhone";
-import { PhoneTypeSelect } from "./PhoneTypeSelect";
 import { Product } from "@/modules/product/types";
 import { Client } from "@/modules/client/types";
 import { useClient } from "@/modules/client/hooks";
@@ -76,10 +79,10 @@ export function OrderForm({
     }
 
     if (client.phones?.length) {
-      const preferredPhone = selectPreferredPhone(client.phones);
-      if (preferredPhone) {
-        form.setValue("phone", preferredPhone.number);
-        form.setValue("phoneType", preferredPhone.type);
+      const primaryPhone = selectPrimaryPhone(client.phones);
+      if (primaryPhone) {
+        form.setValue("phone", primaryPhone.number);
+        form.setValue("phoneType", primaryPhone.type);
       }
     }
   }, [client, form]);

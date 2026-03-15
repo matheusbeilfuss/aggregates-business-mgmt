@@ -22,6 +22,7 @@ import ExpenseAdd from "./modules/finance/pages/ExpenseAdd";
 import ExpenseEdit from "./modules/finance/pages/ExpenseEdit";
 import Receivables from "./modules/receivables/pages/Receivables";
 import Fuel from "./modules/fuel/pages/Fuel";
+import { Client } from "./modules/client/pages/Client";
 
 export const router = createBrowserRouter([
   {
@@ -57,8 +58,12 @@ export const router = createBrowserRouter([
             element: <ProductSupplierEdit />,
           },
 
+          { path: "clients", element: <Client /> },
+
           { path: "receivables", element: <Receivables /> },
+
           { path: "fuel", element: <Fuel /> },
+
           { path: "user", element: <User /> },
           {
             element: <AdminRoute />,
