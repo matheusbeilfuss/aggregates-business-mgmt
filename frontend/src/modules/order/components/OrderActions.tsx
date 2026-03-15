@@ -72,7 +72,10 @@ export function OrderActions({
             </DropdownMenuItem>
           )}
 
-        <DropdownMenuItem className="flex items-center gap-2">
+        <DropdownMenuItem
+          className="flex items-center gap-2"
+          onClick={() => navigate(`/clients?id=${order.client.id}`)}
+        >
           <User className="h-4 w-4" />
           Cliente
         </DropdownMenuItem>

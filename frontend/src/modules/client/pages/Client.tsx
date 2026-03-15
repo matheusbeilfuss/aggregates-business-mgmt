@@ -1,5 +1,5 @@
-import { useState, useMemo, useRef } from "react";
-import { useNavigate } from "react-router-dom";
+import { useState, useMemo, useRef, useEffect } from "react";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { Plus, Search, Users } from "lucide-react";
 import { toast } from "sonner";
 
@@ -18,11 +18,21 @@ import { ApiError } from "@/lib/api";
 
 export function Client() {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+
   const { data: clients, loading, refetch } = useClients();
 
   const [search, setSearch] = useState("");
   const [selectedClient, setSelectedClient] = useState<Client | null>(null);
   const [clientToDelete, setClientToDelete] = useState<Client | null>(null);
+
+  useEffect(() => {
+    const idParam = searchParams.get("id");
+    if (!idParam || !clients) return;
+
+    const found = clients.find((c) => c.id === Number(idParam));
+    if (found) setSelectedClient(found);
+  }, [clients, searchParams]);
 
   const sectionRefs = useRef<Record<string, HTMLDivElement | null>>({});
 
