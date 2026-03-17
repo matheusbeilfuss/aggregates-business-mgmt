@@ -23,6 +23,7 @@ import ExpenseEdit from "./modules/finance/pages/ExpenseEdit";
 import Receivables from "./modules/receivables/pages/Receivables";
 import Fuel from "./modules/fuel/pages/Fuel";
 import { Client } from "./modules/client/pages/Client";
+import { ClientAdd } from "./modules/client/pages/ClientAdd";
 
 export const router = createBrowserRouter([
   {
@@ -36,7 +37,7 @@ export const router = createBrowserRouter([
           { index: true, element: <Home /> },
 
           { path: "orders", element: <Order /> },
-          { path: "orders/new", element: <OrderAdd /> },
+          { path: "orders/add", element: <OrderAdd /> },
           { path: "orders/:id", element: <OrderEdit /> },
 
           { path: "stocks", element: <Stock /> },
@@ -44,7 +45,7 @@ export const router = createBrowserRouter([
           { path: "stocks/:id/replenish", element: <StockReplenish /> },
 
           { path: "finance", element: <Finance /> },
-          { path: "finance/expenses/new", element: <ExpenseAdd /> },
+          { path: "finance/expenses/add", element: <ExpenseAdd /> },
           { path: "finance/expenses/:id/edit", element: <ExpenseEdit /> },
 
           { path: "prices", element: <Price /> },
@@ -59,6 +60,7 @@ export const router = createBrowserRouter([
           },
 
           { path: "clients", element: <Client /> },
+          { path: "clients/add", element: <ClientAdd /> },
 
           { path: "receivables", element: <Receivables /> },
 
@@ -69,7 +71,7 @@ export const router = createBrowserRouter([
             element: <AdminRoute />,
             children: [
               { path: "admin/users", element: <UsersManage /> },
-              { path: "admin/users/new", element: <UserAdd /> },
+              { path: "admin/users/add", element: <UserAdd /> },
             ],
           },
           { path: "*", element: <NotFound /> },

@@ -204,7 +204,7 @@ public class TestConfig implements CommandLineRunner {
 
 		addressRepository.saveAll(Arrays.asList(address1, address2, address3, address4, address5, address6, address7, address8, address9, address10));
 
-		generateTestClients();
+		// generateTestClients();
 
 		LocalDate dataTeste1 = LocalDate.now();
 		LocalTime horaTeste1 = LocalTime.now();
