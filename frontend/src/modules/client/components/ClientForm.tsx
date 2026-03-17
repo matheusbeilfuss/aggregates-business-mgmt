@@ -105,8 +105,9 @@ export function ClientForm({
                   </FormLabel>
                   <FormControl>
                     <Input
+                      {...field}
                       type="text"
-                      value={field.value ?? ""}
+                      onFocus={(e) => e.target.select()}
                       onChange={(e) =>
                         field.onChange(formatCpfCnpj(e.target.value))
                       }
@@ -175,7 +176,7 @@ export function ClientForm({
                       {index === 0 && <FormLabel>Número</FormLabel>}
                       <FormControl>
                         <Input
-                          value={field.value}
+                          {...field}
                           type="text"
                           placeholder="(XX) XXXXX-XXXX"
                           onFocus={(e) => e.target.select()}
@@ -236,8 +237,8 @@ export function ClientForm({
                   <FormControl>
                     <div className="relative">
                       <Input
+                        {...field}
                         type="text"
-                        value={field.value ?? ""}
                         placeholder="00000-000"
                         onChange={(e) =>
                           field.onChange(formatCep(e.target.value))

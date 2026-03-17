@@ -66,7 +66,6 @@ export function OrderForm({
 
   const categoryId = selectedProduct?.category?.id;
   const { data: categoryPrices } = useCategoryPrices(categoryId);
-
   const { data: client } = useClient(clientId);
 
   const cep = useWatch({ control: form.control, name: "cep" });
@@ -243,7 +242,7 @@ export function OrderForm({
                     <FormLabel>Telefone</FormLabel>
                     <FormControl>
                       <Input
-                        value={field.value}
+                        {...field}
                         type="text"
                         onFocus={(e) => e.target.select()}
                         onChange={(e) =>
@@ -278,8 +277,9 @@ export function OrderForm({
                   <FormLabel>CPF/CNPJ</FormLabel>
                   <FormControl>
                     <Input
+                      {...field}
                       type="text"
-                      value={field.value ?? ""}
+                      onFocus={(e) => e.target.select()}
                       onChange={(e) =>
                         field.onChange(formatCpfCnpj(e.target.value))
                       }
@@ -303,8 +303,8 @@ export function OrderForm({
                   <FormControl>
                     <div className="relative">
                       <Input
+                        {...field}
                         type="text"
-                        value={field.value ?? ""}
                         placeholder="00000-000"
                         onChange={(e) =>
                           field.onChange(formatCep(e.target.value))
@@ -330,8 +330,8 @@ export function OrderForm({
                   <FormLabel>Rua</FormLabel>
                   <FormControl>
                     <Input
-                      type="text"
                       {...field}
+                      type="text"
                       onFocus={(e) => e.target.select()}
                     />
                   </FormControl>
@@ -347,9 +347,9 @@ export function OrderForm({
                   <FormLabel>Número</FormLabel>
                   <FormControl>
                     <Input
+                      {...field}
                       type="text"
-                      value={field.value ?? ""}
-                      onChange={(e) => field.onChange(e.target.value)}
+                      onFocus={(e) => e.target.select()}
                     />
                   </FormControl>
                   <FormMessage />
@@ -369,10 +369,9 @@ export function OrderForm({
                   </FormLabel>
                   <FormControl>
                     <Input
+                      {...field}
                       type="text"
-                      value={field.value ?? ""}
                       placeholder="Apto, bloco, sala..."
-                      onChange={(e) => field.onChange(e.target.value)}
                       onFocus={(e) => e.target.select()}
                     />
                   </FormControl>
@@ -388,8 +387,8 @@ export function OrderForm({
                   <FormLabel>Bairro</FormLabel>
                   <FormControl>
                     <Input
-                      type="text"
                       {...field}
+                      type="text"
                       onFocus={(e) => e.target.select()}
                     />
                   </FormControl>
@@ -405,8 +404,8 @@ export function OrderForm({
                   <FormLabel>Cidade</FormLabel>
                   <FormControl>
                     <Input
-                      type="text"
                       {...field}
+                      type="text"
                       onFocus={(e) => e.target.select()}
                     />
                   </FormControl>
@@ -422,8 +421,8 @@ export function OrderForm({
                   <FormLabel>Estado</FormLabel>
                   <FormControl>
                     <Input
-                      type="text"
                       {...field}
+                      type="text"
                       onFocus={(e) => e.target.select()}
                     />
                   </FormControl>
@@ -464,8 +463,8 @@ export function OrderForm({
                     <FormLabel>Serviço</FormLabel>
                     <FormControl>
                       <Input
-                        type="text"
                         {...field}
+                        type="text"
                         onFocus={(e) => e.target.select()}
                       />
                     </FormControl>
@@ -507,8 +506,8 @@ export function OrderForm({
                   <FormLabel>Valor</FormLabel>
                   <FormControl>
                     <Input
+                      {...field}
                       type="number"
-                      value={field.value ?? ""}
                       onChange={(e) =>
                         field.onChange(
                           e.target.value === ""
@@ -530,8 +529,8 @@ export function OrderForm({
                   <FormLabel>Horário</FormLabel>
                   <FormControl>
                     <Input
-                      type="time"
                       {...field}
+                      type="time"
                       onFocus={(e) => e.target.select()}
                     />
                   </FormControl>
