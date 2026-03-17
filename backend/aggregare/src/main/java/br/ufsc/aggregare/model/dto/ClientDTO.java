@@ -41,6 +41,21 @@ public class ClientDTO {
 		this.phones = phones.stream().map(PhoneDTO::new).toList();
 	}
 
+	public ClientDTO(Long id, String name, String cpfCnpj, String email, String cep,String state, String city, String neighborhood, String street, String number, String complement, List<PhoneDTO> phones) {
+		this.id = id;
+		this.name = name;
+		this.cpfCnpj = cpfCnpj;
+		this.email = email;
+		this.cep = cep;
+		this.state = state;
+		this.city = city;
+		this.neighborhood = neighborhood;
+		this.street = street;
+		this.number = number;
+		this.complement = complement;
+		this.phones = phones;
+	}
+
 	public Long getId() {
 		return id;
 	}
