@@ -13,8 +13,7 @@ import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { Client } from "../types";
 import { phoneTypeLabel } from "../utils/labels";
-import { selectPrimaryPhone } from "@/utils";
-import { formatCpfCnpj } from "@/utils/formatCpfCnpj";
+import { selectPrimaryPhone, formatCpfCnpj } from "@/utils";
 import { PhoneTypeIcon } from "./PhoneTypeIcon";
 
 interface ClientProfileProps {

@@ -42,7 +42,7 @@ export function OrderActions({
       <DropdownMenuContent align="end">
         <DropdownMenuItem
           className="flex items-center gap-2 cursor-pointer"
-          onClick={() => {
+          onSelect={() => {
             navigate(`/orders/${order.id}`);
           }}
         >
@@ -53,7 +53,7 @@ export function OrderActions({
         {order.status === "PENDING" && onMarkAsDelivered && (
           <DropdownMenuItem
             className="flex items-center gap-2 cursor-pointer"
-            onClick={() => onMarkAsDelivered(order)}
+            onSelect={() => onMarkAsDelivered(order)}
           >
             <Check className="h-4 w-4" />
             Marcar como entregue
@@ -65,7 +65,7 @@ export function OrderActions({
             order.paymentStatus === "PARTIAL") && (
             <DropdownMenuItem
               className="flex items-center gap-2 cursor-pointer"
-              onClick={() => onAddPayment(order)}
+              onSelect={() => onAddPayment(order)}
             >
               <DollarSign className="h-4 w-4" />
               Adicionar pagamento
@@ -74,7 +74,7 @@ export function OrderActions({
 
         <DropdownMenuItem
           className="flex items-center gap-2"
-          onClick={() => navigate(`/clients?id=${order.client.id}`)}
+          onSelect={() => navigate(`/clients?id=${order.client.id}`)}
         >
           <User className="h-4 w-4" />
           Cliente
@@ -82,7 +82,7 @@ export function OrderActions({
 
         <DropdownMenuItem
           className="flex items-center gap-2 text-destructive"
-          onClick={() => onDeleteOrder && onDeleteOrder(order)}
+          onSelect={() => onDeleteOrder && onDeleteOrder(order)}
         >
           <Trash2 className="h-4 w-4 text-destructive" />
           Excluir

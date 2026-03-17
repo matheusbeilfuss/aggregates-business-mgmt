@@ -27,7 +27,7 @@ export function ReceivableRowActions({ receivable, onAddPayment }: Props) {
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
-        <DropdownMenuItem onClick={() => onAddPayment(receivable)}>
+        <DropdownMenuItem onSelect={() => onAddPayment(receivable)}>
           <DollarSign className="h-4 w-4" />
           Adicionar pagamento
         </DropdownMenuItem>

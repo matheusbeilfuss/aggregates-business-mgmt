@@ -70,13 +70,13 @@ export function ExpenseRowActions({
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
           {showMarkAsPaid && (
-            <DropdownMenuItem onClick={() => setConfirmPaidOpen(true)}>
+            <DropdownMenuItem onSelect={() => setConfirmPaidOpen(true)}>
               <DollarSign className="mr-2 h-4 w-4" />
               Marcar como paga
             </DropdownMenuItem>
           )}
           <DropdownMenuItem
-            onClick={() => {
+            onSelect={() => {
               navigate(`/finance/expenses/${expense.id}/edit`);
             }}
           >
@@ -85,7 +85,7 @@ export function ExpenseRowActions({
           </DropdownMenuItem>
           <DropdownMenuItem
             className="text-destructive"
-            onClick={() => setConfirmDeleteOpen(true)}
+            onSelect={() => setConfirmDeleteOpen(true)}
           >
             <Trash2 className="mr-2 h-4 w-4" />
             Excluir

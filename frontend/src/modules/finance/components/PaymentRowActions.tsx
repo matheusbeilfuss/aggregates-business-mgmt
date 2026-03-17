@@ -47,13 +47,13 @@ export function PaymentRowActions({ payment, onSuccess }: Props) {
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
-          <DropdownMenuItem onClick={() => setEditOpen(true)}>
+          <DropdownMenuItem onSelect={() => setEditOpen(true)}>
             <Pencil className="mr-2 h-4 w-4" />
             Editar
           </DropdownMenuItem>
           <DropdownMenuItem
             className="text-destructive"
-            onClick={() => setConfirmOpen(true)}
+            onSelect={() => setConfirmOpen(true)}
           >
             <Trash2 className="mr-2 h-4 w-4" />
             Excluir

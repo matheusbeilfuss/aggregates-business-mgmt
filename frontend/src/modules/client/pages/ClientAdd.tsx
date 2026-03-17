@@ -42,7 +42,7 @@ export function ClientAdd() {
         cep: data.cep || undefined,
         street: data.street,
         number: data.number,
-        complement: data.complement,
+        complement: data.complement || undefined,
         neighborhood: data.neighborhood,
         city: data.city,
         state: data.state,
