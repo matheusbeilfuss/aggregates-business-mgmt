@@ -12,7 +12,12 @@ import { ApiError } from "@/lib/api";
 import { useOrder } from "../hooks";
 import { useProducts } from "@/modules/product/hooks";
 import { useClient } from "@/modules/client/hooks";
-import { selectPrimaryPhone, formatPhone, formatCpfCnpj } from "@/utils";
+import {
+  selectPrimaryPhone,
+  formatPhone,
+  formatCpfCnpj,
+  formatCep,
+} from "@/utils";
 
 interface OrderEditFormProps {
   orderId: number;
@@ -46,11 +51,15 @@ export function OrderEditForm({ orderId }: OrderEditFormProps) {
         ? formatPhone(selectPrimaryPhone(client.phones)?.number ?? "")
         : "",
       cpfCnpj: formatCpfCnpj(order.client.cpfCnpj ?? ""),
+
+      cep: formatCep(order.orderAddress.cep ?? ""),
       state: order.orderAddress.state,
       city: order.orderAddress.city,
       neighborhood: order.orderAddress.neighborhood,
       street: order.orderAddress.street,
       number: order.orderAddress.number,
+      complement: order.orderAddress.complement ?? "",
+
       productId: order.product?.id,
       m3Quantity: order.m3Quantity ?? undefined,
       service: order.service ?? "",
@@ -63,9 +72,11 @@ export function OrderEditForm({ orderId }: OrderEditFormProps) {
       clientId: data.clientId!,
       state: data.state,
       city: data.city,
+      cep: data.cep || undefined,
       street: data.street,
       number: data.number,
       neighborhood: data.neighborhood,
+      complement: data.complement || undefined,
       scheduledDate: data.scheduledDate,
       scheduledTime: data.scheduledTime,
       observations: data.observations ?? null,

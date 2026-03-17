@@ -72,11 +72,22 @@ export function OrderAccordionItem({
         <Separator />
         <div className="flex flex-col gap-2 p-5 sm:flex-row sm:justify-between">
           <span className="font-medium">R$ {order.orderValue.toFixed(2)}</span>
-          <p>
-            {order.orderAddress.street}, Nº {order.orderAddress.number}
-          </p>
-          <p>{order.orderAddress.city}</p>
+
+          <div>
+            <p>
+              {order.orderAddress.street}, Nº {order.orderAddress.number}
+              {order.orderAddress.complement &&
+                `, ${order.orderAddress.complement}`}
+            </p>
+            <p className="text-muted-foreground">
+              {order.orderAddress.neighborhood} — {order.orderAddress.city}/
+              {order.orderAddress.state}
+              {order.orderAddress.cep && ` · ${order.orderAddress.cep}`}
+            </p>
+          </div>
+
           <p>{primaryPhone?.number || "Telefone não cadastrado"}</p>
+
           {isMaterial && order.tonQuantity != null && (
             <p>
               {order.m3Quantity} m³ · {order.tonQuantity.toFixed(2)} ton

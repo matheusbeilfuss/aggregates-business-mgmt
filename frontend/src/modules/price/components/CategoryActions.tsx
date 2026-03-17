@@ -5,7 +5,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
-import { MoreHorizontal, Pencil, Tag, X } from "lucide-react";
+import { MoreHorizontal, Pencil, Tag, Trash2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 interface CategoryActionsProps {
@@ -50,7 +50,7 @@ export function CategoryActions({
           className="text-red-500 focus:text-red-500 cursor-pointer"
           onSelect={onDelete}
         >
-          <X className="mr-2 h-4 w-4 text-red-500" />
+          <Trash2 className="mr-2 h-4 w-4 text-red-500" />
           Excluir
         </DropdownMenuItem>
       </DropdownMenuContent>

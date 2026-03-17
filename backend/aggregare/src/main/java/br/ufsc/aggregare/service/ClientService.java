@@ -80,6 +80,8 @@ public class ClientService {
 			addr.setCity(newAddressData.getCity());
 			addr.setState(newAddressData.getState());
 			addr.setNeighborhood(newAddressData.getNeighborhood());
+			addr.setComplement(newAddressData.getComplement());
+			addr.setCep(newAddressData.getCep());
 		}
 
 		existingClient.getPhones().clear();
@@ -120,6 +122,8 @@ public class ClientService {
 		address.setNeighborhood(dto.getNeighborhood());
 		address.setStreet(dto.getStreet());
 		address.setNumber(dto.getNumber());
+		address.setComplement(dto.getComplement());
+		address.setCep(dto.getCep());
 		address.setClient(client);
 		return address;
 	}

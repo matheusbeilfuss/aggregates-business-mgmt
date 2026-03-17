@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { MoreHorizontal, Pencil, X } from "lucide-react";
+import { MoreHorizontal, Pencil, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 
 import {
@@ -55,7 +55,7 @@ export function PaymentRowActions({ payment, onSuccess }: Props) {
             className="text-destructive"
             onClick={() => setConfirmOpen(true)}
           >
-            <X className="mr-2 h-4 w-4" />
+            <Trash2 className="mr-2 h-4 w-4" />
             Excluir
           </DropdownMenuItem>
         </DropdownMenuContent>

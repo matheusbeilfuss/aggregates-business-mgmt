@@ -1,5 +1,6 @@
 export const PHONE_TYPES = ["WHATSAPP", "CELULAR", "FIXO", "OUTRO"] as const;
 export type PhoneType = (typeof PHONE_TYPES)[number];
+
 export interface Client {
   id: number;
   name: string;
@@ -17,8 +18,10 @@ export interface Phone {
 
 export interface Address {
   id: number;
+  cep?: string;
   street: string;
   number: string;
+  complement?: string;
   neighborhood: string;
   city: string;
   state: string;
@@ -34,9 +37,12 @@ export interface CreatePhonePayload {
 export interface CreateClientPayload {
   name: string;
   cpfCnpj?: string;
+  email?: string;
   phones: CreatePhonePayload[];
+  cep?: string;
   street: string;
   number: string;
+  complement?: string;
   neighborhood: string;
   city: string;
   state: string;

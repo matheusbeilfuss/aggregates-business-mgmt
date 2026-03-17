@@ -191,16 +191,16 @@ public class TestConfig implements CommandLineRunner {
 
 		phoneRepository.saveAll(Arrays.asList(phone1, phone2, phone3, phone4, phone5, phone6, phone7, phone8, phone9, phone10, phone11, phone12, phone13, phone14, phone15, phone16, phone17));
 
-		Address address1 = new Address(null, client1, "SC", "Florianópolis", "Centro", "Rua das Flores", "100");
-		Address address2 = new Address(null, client2, "SC", "Florianópolis", "Pantanal", "Rua dos Papagaios", "1500");
-		Address address3 = new Address(null, client3, "SC", "Florianópolis", "Carvoeira", "Rua Cap. Romualdo de Barros", "2100");
-		Address address4 = new Address(null, client4, "SC", "Florianópolis", "Trindade", "Rua Lauro Linhares", "1200");
-		Address address5 = new Address(null, client5, "SC", "Florianópolis", "Itacorubi", "Rua Pastor William", "350");
-		Address address6 = new Address(null, client6, "SC", "Florianópolis", "Coqueiros", "Rua Desembargador Pedro Silva", "890");
-		Address address7 = new Address(null, client7, "SC", "Florianópolis", "Estreito", "Rua General Liberato Bittencourt", "540");
-		Address address8 = new Address(null, client8, "SC", "Florianópolis", "Capoeiras", "Rua Santos Saraiva", "760");
-		Address address9 = new Address(null, client9, "SC", "Florianópolis", "Ingleses", "Servidão Caminho do Mar", "210");
-		Address address10 = new Address(null, client10, "SC", "Florianópolis", "Campeche", "Rua Pequeno Príncipe", "980");
+		Address address1 = new Address(null, client1, "Rua das Flores", "100", "Apto. 110", "Centro", "Florianópolis", "SC", "88000-000");
+		Address address2 = new Address(null, client2, "Rua dos Papagaios", "1500", "Casa Esquina", "Pantanal", "Florianópolis", "SC", "88040-000");
+		Address address3 = new Address(null, client3, "Rua Cap. Romualdo de Barros", "2100", "Ao lado da padaria", "Carvoeira", "Florianópolis", "SC", "88040-600");
+		Address address4 = new Address(null, client4, "Rua Lauro Linhares", "1200", "Casa Amarela", "Trindade", "Florianópolis", "SC", "88036-002");
+		Address address5 = new Address(null, client5, "Rua Pastor William", "350", "Prédio verde", "Itacorubi", "Florianópolis", "SC", "88034-101");
+		Address address6 = new Address(null, client6, "Rua Desembargador Pedro Silva", "890", null, "Coqueiros", "Florianópolis", "SC", "88080-700");
+		Address address7 = new Address(null, client7, "Rua General Liberato Bittencourt", "540", null, "Estreito", "Florianópolis", "SC", "88075-400");
+		Address address8 = new Address(null, client8, "Rua Santos Saraiva", "760", null, "Capoeiras", "Florianópolis", "SC", "88070-100");
+		Address address9 = new Address(null, client9, "Servidão Caminho do Mar", "210", null, "Ingleses", "Florianópolis", "SC", "88058-620");
+		Address address10 = new Address(null, client10, "Rua Pequeno Príncipe", "980", null, "Campeche", "Florianópolis", "SC", "88063-000");
 
 		addressRepository.saveAll(Arrays.asList(address1, address2, address3, address4, address5, address6, address7, address8, address9, address10));
 
@@ -209,8 +209,9 @@ public class TestConfig implements CommandLineRunner {
 		LocalDate dataTeste1 = LocalDate.now();
 		LocalTime horaTeste1 = LocalTime.now();
 
-		OrderAddress orderAddress1 = new OrderAddress(null, "Rua A", "200", "Bairro B", "Cidade C", "SC");
-		OrderAddress orderAddress2 = new OrderAddress(null, "Avenida X", "500", "Bairro Y", "Cidade Z", "SC");
+		OrderAddress orderAddress1 = new OrderAddress(null, "Rua A", "200","Apto. 104", "Bairro B", "Cidade C", "SC", "88000-000");
+
+		OrderAddress orderAddress2 = new OrderAddress(null, "Avenida X", "500", "Casa Esquina", "Bairro Y", "Cidade Z", "SC", "88000-000");
 		orderAddressRepository.saveAll(Arrays.asList(orderAddress1, orderAddress2));
 
 		Order order1 = new Order(null, product1, client1, orderAddress1, 5.0, 7.5, null, OrderTypeEnum.MATERIAL, dataTeste1, horaTeste1, "Entregar no portão", OrderStatusEnum.PENDING, PaymentStatusEnum.PARTIAL, BigDecimal.valueOf(415.00), BigDecimal.valueOf(215.00));
@@ -286,11 +287,13 @@ public class TestConfig implements CommandLineRunner {
 			Address address = new Address(
 					null,
 					client,
-					"SC",
-					"Florianópolis",
-					"Centro",
 					"Rua " + (100 + random.nextInt(900)),
-					String.valueOf(random.nextInt(2000))
+					String.valueOf(random.nextInt(2000)),
+					null,
+					"Centro",
+					"Florianópolis",
+					"SC",
+					"88000-000"
 			);
 
 			addresses.add(address);

@@ -35,6 +35,8 @@ public class Address implements Serializable {
 	@Column(nullable = false)
 	private String number;
 
+	private String complement;
+
 	@Column(nullable = false)
 	private String neighborhood;
 
@@ -44,17 +46,21 @@ public class Address implements Serializable {
 	@Column(nullable = false)
 	private String state;
 
+	private String cep;
+
 	public Address() {
 	}
 
-	public Address(Long id, Client client, String state, String city, String neighborhood, String street, String number) {
+	public Address(Long id, Client client, String street, String number, String complement, String neighborhood, String city, String state, String cep) {
 		this.id = id;
 		this.client = client;
-		this.state = state;
-		this.city = city;
-		this.neighborhood = neighborhood;
 		this.street = street;
 		this.number = number;
+		this.complement = complement;
+		this.neighborhood = neighborhood;
+		this.city = city;
+		this.state = state;
+		this.cep = cep;
 	}
 
 	public Long getId() {
@@ -73,30 +79,6 @@ public class Address implements Serializable {
 		this.client = client;
 	}
 
-	public String getState() {
-		return state;
-	}
-
-	public void setState(String state) {
-		this.state = state;
-	}
-
-	public String getCity() {
-		return city;
-	}
-
-	public void setCity(String city) {
-		this.city = city;
-	}
-
-	public String getNeighborhood() {
-		return neighborhood;
-	}
-
-	public void setNeighborhood(String neighborhood) {
-		this.neighborhood = neighborhood;
-	}
-
 	public String getStreet() {
 		return street;
 	}
@@ -111,6 +93,46 @@ public class Address implements Serializable {
 
 	public void setNumber(String number) {
 		this.number = number;
+	}
+
+	public String getComplement() {
+		return complement;
+	}
+
+	public void setComplement(String complement) {
+		this.complement = complement;
+	}
+
+	public String getNeighborhood() {
+		return neighborhood;
+	}
+
+	public void setNeighborhood(String neighborhood) {
+		this.neighborhood = neighborhood;
+	}
+
+	public String getCity() {
+		return city;
+	}
+
+	public void setCity(String city) {
+		this.city = city;
+	}
+
+	public String getState() {
+		return state;
+	}
+
+	public void setState(String state) {
+		this.state = state;
+	}
+
+	public String getCep() {
+		return cep;
+	}
+
+	public void setCep(String cep) {
+		this.cep = cep;
 	}
 
 	@Override public boolean equals(Object o) {

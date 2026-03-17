@@ -9,8 +9,8 @@ import {
   DollarSign,
   MoreHorizontal,
   Pencil,
+  Trash2,
   User,
-  X,
 } from "lucide-react";
 import { OrderItem } from "../types";
 import { Button } from "@/components/ui/button";
@@ -84,7 +84,7 @@ export function OrderActions({
           className="flex items-center gap-2 text-destructive"
           onClick={() => onDeleteOrder && onDeleteOrder(order)}
         >
-          <X className="h-4 w-4 text-destructive" />
+          <Trash2 className="h-4 w-4 text-destructive" />
           Excluir
         </DropdownMenuItem>
       </DropdownMenuContent>

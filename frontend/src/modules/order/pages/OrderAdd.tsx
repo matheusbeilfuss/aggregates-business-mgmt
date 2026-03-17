@@ -39,6 +39,8 @@ export function OrderAdd() {
           neighborhood: data.neighborhood,
           city: data.city,
           state: data.state,
+          cep: data.cep,
+          complement: data.complement,
         };
 
         const newClient = await clientService.insert(newClientPayload);
@@ -56,11 +58,13 @@ export function OrderAdd() {
       const payload: CreateOrderPayload = {
         type: data.type,
         clientId: clientId!,
+        cep: data.cep || undefined,
         state: data.state,
         city: data.city,
         street: data.street,
         number: data.number,
         neighborhood: data.neighborhood,
+        complement: data.complement || undefined,
         scheduledDate: data.scheduledDate,
         scheduledTime: data.scheduledTime,
         observations: data.observations ?? null,

@@ -33,10 +33,6 @@ export function ClientProfile({
   const whatsappPhone = client.phones.find((p) => p.type === "WHATSAPP");
   const primaryPhone = selectPrimaryPhone(client.phones);
 
-  const addressLine = client.address
-    ? `${client.address.street}, Nº ${client.address.number} — ${client.address.neighborhood}, ${client.address.city}/${client.address.state}`
-    : null;
-
   return (
     <div className="flex flex-col h-full">
       {onBack && (
@@ -103,12 +99,23 @@ export function ClientProfile({
             </div>
           )}
 
-          {addressLine && (
+          {client.address && (
             <div className="flex items-start gap-3">
               <MapPin className="h-5 w-5 mt-0.5 text-muted-foreground shrink-0" />
               <div>
                 <p className="text-xs text-muted-foreground mb-0.5">Endereço</p>
-                <p className="text-sm font-medium">{addressLine}</p>
+                <p className="text-sm font-medium">
+                  {client.address.street}, Nº {client.address.number}
+                  {client.address.complement &&
+                    `, ${client.address.complement}`}
+                </p>
+                <p className="text-sm text-muted-foreground">
+                  {client.address.neighborhood}
+                </p>
+                <p className="text-sm text-muted-foreground">
+                  {client.address.city}/{client.address.state}
+                  {client.address.cep && ` — ${client.address.cep}`}
+                </p>
               </div>
             </div>
           )}

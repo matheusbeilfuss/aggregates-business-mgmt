@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { MoreHorizontal, Pencil, X, DollarSign } from "lucide-react";
+import { MoreHorizontal, Pencil, DollarSign, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 
 import {
@@ -87,7 +87,7 @@ export function ExpenseRowActions({
             className="text-destructive"
             onClick={() => setConfirmDeleteOpen(true)}
           >
-            <X className="mr-2 h-4 w-4" />
+            <Trash2 className="mr-2 h-4 w-4" />
             Excluir
           </DropdownMenuItem>
         </DropdownMenuContent>

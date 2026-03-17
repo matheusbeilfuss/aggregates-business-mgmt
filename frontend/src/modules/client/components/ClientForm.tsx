@@ -1,5 +1,6 @@
-import { useFieldArray, UseFormReturn } from "react-hook-form";
-import { Plus, Trash2 } from "lucide-react";
+import { useFieldArray, UseFormReturn, useWatch } from "react-hook-form";
+import { Plus, Trash2, Loader2 } from "lucide-react";
+import { useEffect } from "react";
 
 import {
   Form,
@@ -20,7 +21,8 @@ import {
 } from "@/components/shared";
 
 import { ClientFormData } from "../schemas/client.schemas";
-import { formatPhone, formatCpfCnpj } from "@/utils";
+import { formatPhone, formatCpfCnpj, formatCep } from "@/utils";
+import { useCepLookup } from "@/hooks/useCepLookup";
 
 interface ClientFormProps {
   title: string;
@@ -41,6 +43,23 @@ export function ClientForm({
     control: form.control,
     name: "phones",
   });
+
+  const cep = useWatch({ control: form.control, name: "cep" });
+  const {
+    address,
+    loading: cepLoading,
+    error: cepError,
+  } = useCepLookup(cep ?? "");
+
+  useEffect(() => {
+    if (!address) return;
+    form.setValue("street", address.street, { shouldValidate: true });
+    form.setValue("neighborhood", address.neighborhood, {
+      shouldValidate: true,
+    });
+    form.setValue("city", address.city, { shouldValidate: true });
+    form.setValue("state", address.state, { shouldValidate: true });
+  }, [address, form]);
 
   if (loading) {
     return (
@@ -130,7 +149,7 @@ export function ClientForm({
                 variant="outline"
                 size="sm"
                 className="gap-2"
-                onClick={() => append({ number: "", type: "WHATSAPP" })}
+                onClick={() => append({ number: "", type: "CELULAR" })}
               >
                 <Plus className="h-4 w-4" />
                 Adicionar telefone
@@ -144,12 +163,15 @@ export function ClientForm({
             )}
 
             {fields.map((field, index) => (
-              <div key={field.id} className="flex items-start gap-3">
+              <div
+                key={field.id}
+                className="grid grid-cols-[1fr_8rem_2rem] items-start gap-3"
+              >
                 <FormField
                   control={form.control}
                   name={`phones.${index}.number`}
                   render={({ field }) => (
-                    <FormItem className="flex-1">
+                    <FormItem>
                       {index === 0 && <FormLabel>Número</FormLabel>}
                       <FormControl>
                         <Input
@@ -171,7 +193,7 @@ export function ClientForm({
                   control={form.control}
                   name={`phones.${index}.type`}
                   render={({ field }) => (
-                    <FormItem className="w-28 md:w-40">
+                    <FormItem>
                       {index === 0 && <FormLabel>Tipo</FormLabel>}
                       <PhoneTypeSelect
                         value={field.value}
@@ -187,7 +209,7 @@ export function ClientForm({
                   variant="ghost"
                   size="icon"
                   disabled={fields.length === 1}
-                  className={`text-muted-foreground hover:text-destructive shrink-0 ${index === 0 ? "mt-6" : ""}`}
+                  className={`text-muted-foreground hover:text-destructive ${index === 0 ? "mt-6" : ""}`}
                   onClick={() => remove(index)}
                 >
                   <Trash2 className="h-4 w-4" />
@@ -200,6 +222,40 @@ export function ClientForm({
 
           <p className="text-sm font-medium mb-4">Endereço</p>
           <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+            <FormField
+              control={form.control}
+              name="cep"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>
+                    CEP{" "}
+                    <span className="text-muted-foreground font-normal">
+                      (opcional)
+                    </span>
+                  </FormLabel>
+                  <FormControl>
+                    <div className="relative">
+                      <Input
+                        type="text"
+                        value={field.value ?? ""}
+                        placeholder="00000-000"
+                        onChange={(e) =>
+                          field.onChange(formatCep(e.target.value))
+                        }
+                      />
+                      {cepLoading && (
+                        <Loader2 className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 animate-spin text-muted-foreground" />
+                      )}
+                    </div>
+                  </FormControl>
+                  {cepError && (
+                    <p className="text-sm text-destructive">{cepError}</p>
+                  )}
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
             <FormField
               control={form.control}
               name="street"
@@ -228,6 +284,30 @@ export function ClientForm({
                     <Input
                       {...field}
                       type="text"
+                      onFocus={(e) => e.target.select()}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="complement"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>
+                    Complemento{" "}
+                    <span className="text-muted-foreground font-normal">
+                      (opcional)
+                    </span>
+                  </FormLabel>
+                  <FormControl>
+                    <Input
+                      {...field}
+                      type="text"
+                      placeholder="Apto, bloco, sala..."
                       onFocus={(e) => e.target.select()}
                     />
                   </FormControl>

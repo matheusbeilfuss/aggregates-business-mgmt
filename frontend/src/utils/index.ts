@@ -6,4 +6,5 @@ export { toIsoDate } from "./toIsoDate";
 export { selectPrimaryPhone } from "./selectPrimaryPhone";
 export { formatCpfCnpj } from "./formatCpfCnpj";
 export { formatPhone } from "./formatPhone";
+export { formatCep } from "./formatCep";
 export * from "./labels";
