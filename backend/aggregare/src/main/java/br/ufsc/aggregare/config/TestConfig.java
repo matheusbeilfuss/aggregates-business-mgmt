@@ -204,8 +204,6 @@ public class TestConfig implements CommandLineRunner {
 
 		addressRepository.saveAll(Arrays.asList(address1, address2, address3, address4, address5, address6, address7, address8, address9, address10));
 
-		// generateTestClients();
-
 		LocalDate dataTeste1 = LocalDate.now();
 		LocalTime horaTeste1 = LocalTime.now();
 
@@ -238,68 +236,5 @@ public class TestConfig implements CommandLineRunner {
 
 		Fuel fuel1 = new Fuel(null, expense4, "Mercedes 1313", 100.00, 85.30, 6.03, "Posto Dom Bosco");
 		fuelRepository.save(fuel1);
-	}
-
-	public void generateTestClients() {
-
-		String[] firstNames = {
-				"Ana","Bruno","Carla","Daniel","Eduarda","Felipe","Gabriela","Henrique","Isabela","João",
-				"Karina","Lucas","Mariana","Nicolas","Olivia","Paulo","Quésia","Rafael","Sabrina","Tiago",
-				"Ursula","Vinicius","William","Xavier","Yasmin","Zeca"
-		};
-
-		String[] lastNames = {
-				"Silva","Souza","Costa","Oliveira","Pereira","Rodrigues","Almeida","Nunes","Lopes","Carvalho"
-		};
-
-		Random random = new Random();
-
-		List<Client> clients = new ArrayList<>();
-		List<Phone> phones = new ArrayList<>();
-		List<Address> addresses = new ArrayList<>();
-
-		for (int i = 0; i < 1000; i++) {
-
-			String firstName = firstNames[random.nextInt(firstNames.length)];
-			String lastName = lastNames[random.nextInt(lastNames.length)];
-			String fullName = firstName + " " + lastName;
-
-			String cpf = String.format("%011d", random.nextLong(100000000000L));
-			String email = firstName.toLowerCase() + i + "@gmail.com";
-
-			Client client = new Client(null, fullName, cpf, email);
-			clients.add(client);
-		}
-
-		clientRepository.saveAll(clients);
-
-		for (Client client : clients) {
-
-			Phone phone = new Phone(
-					null,
-					client,
-					"(48) 9" + (1000 + random.nextInt(9000)) + "-" + (1000 + random.nextInt(9000)),
-					PhoneTypeEnum.WHATSAPP
-			);
-
-			phones.add(phone);
-
-			Address address = new Address(
-					null,
-					client,
-					"Rua " + (100 + random.nextInt(900)),
-					String.valueOf(random.nextInt(2000)),
-					null,
-					"Centro",
-					"Florianópolis",
-					"SC",
-					"88000-000"
-			);
-
-			addresses.add(address);
-		}
-
-		phoneRepository.saveAll(phones);
-		addressRepository.saveAll(addresses);
 	}
 }

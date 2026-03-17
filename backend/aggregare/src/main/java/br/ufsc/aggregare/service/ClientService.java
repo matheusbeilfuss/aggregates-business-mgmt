@@ -84,7 +84,7 @@ public class ClientService {
 			addr.setCep(newAddressData.getCep());
 		}
 
-		existingClient.getPhones().clear();
+		new ArrayList<>(existingClient.getPhones()).forEach(existingClient::removePhone);
 
 		List<Phone> newPhones = phonesFromDTO(existingClient, dto);
 		for (Phone phone : newPhones) {

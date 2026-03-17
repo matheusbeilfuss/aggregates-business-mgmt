@@ -24,6 +24,7 @@ import Receivables from "./modules/receivables/pages/Receivables";
 import Fuel from "./modules/fuel/pages/Fuel";
 import { Client } from "./modules/client/pages/Client";
 import { ClientAdd } from "./modules/client/pages/ClientAdd";
+import { ClientEdit } from "./modules/client/pages/ClientEdit";
 
 export const router = createBrowserRouter([
   {
@@ -61,6 +62,7 @@ export const router = createBrowserRouter([
 
           { path: "clients", element: <Client /> },
           { path: "clients/add", element: <ClientAdd /> },
+          { path: "clients/:id/edit", element: <ClientEdit /> },
 
           { path: "receivables", element: <Receivables /> },
 
