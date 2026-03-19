@@ -15,6 +15,7 @@ import type { Client } from "../types";
 import { ClientProfile } from "../components/ClientProfile";
 import { groupByLetter } from "../utils/groupByLetter";
 import { ApiError } from "@/lib/api";
+import { formatCpfCnpj } from "@/utils";
 
 export function Client() {
   const navigate = useNavigate();
@@ -205,7 +206,7 @@ export function Client() {
         title="Você tem certeza de que deseja excluir o cliente abaixo?"
         description={
           clientToDelete
-            ? [clientToDelete.name, clientToDelete.cpfCnpj]
+            ? [clientToDelete.name, formatCpfCnpj(clientToDelete.cpfCnpj)]
                 .filter(Boolean)
                 .join(" · ")
             : ""

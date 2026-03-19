@@ -38,6 +38,10 @@ export function OrderEditForm({ orderId }: OrderEditFormProps) {
   useEffect(() => {
     if (!order) return;
 
+    const primaryPhone = client?.phones?.length
+      ? selectPrimaryPhone(client.phones)
+      : null;
+
     form.reset({
       type: order.type,
       scheduledDate: order.scheduledDate,
@@ -47,9 +51,8 @@ export function OrderEditForm({ orderId }: OrderEditFormProps) {
 
       clientId: order.client.id,
       clientName: order.client.name,
-      phone: client?.phones?.length
-        ? formatPhone(selectPrimaryPhone(client.phones)?.number ?? "")
-        : "",
+      phone: primaryPhone ? formatPhone(primaryPhone.number) : "",
+      phoneType: primaryPhone?.type ?? "WHATSAPP",
       cpfCnpj: formatCpfCnpj(order.client.cpfCnpj ?? ""),
 
       cep: formatCep(order.orderAddress.cep ?? ""),
