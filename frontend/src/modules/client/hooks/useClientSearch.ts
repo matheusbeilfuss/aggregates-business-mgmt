@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import { Client } from "../types";
 import { clientService } from "../services/client.service";
 
