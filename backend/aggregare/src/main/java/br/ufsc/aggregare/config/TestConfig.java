@@ -204,15 +204,16 @@ public class TestConfig implements CommandLineRunner {
 		LocalDate dataTeste1 = LocalDate.now();
 		LocalTime horaTeste1 = LocalTime.now();
 
-		OrderAddress orderAddress1 = new OrderAddress(null, "Rua A", "200","Apto. 104", "Bairro B", "Cidade C", "SC", "88000-000");
-
-		OrderAddress orderAddress2 = new OrderAddress(null, "Avenida X", "500", "Casa Esquina", "Bairro Y", "Cidade Z", "SC", "88000-000");
-		orderAddressRepository.saveAll(Arrays.asList(orderAddress1, orderAddress2));
+		OrderAddress orderAddress1 = new OrderAddress(null, "Rua A", "200", "Apto. 104", "Bairro A", "Cidade A", "SC", "88040-000");
+		OrderAddress orderAddress2 = new OrderAddress(null, "Avenida X", "300", "Casa Esquina", "Bairro B", "Cidade B", "SC", "88040-000");
+		OrderAddress orderAddress3 = new OrderAddress(null, "Rua B", "400", "Apto. 12", "Bairro C", "Cidade C", "SC", "88040-000");
+		OrderAddress orderAddress4 = new OrderAddress(null, "Avenida Y", "500", "Casa Azul", "Bairro D", "Cidade D", "SC", "88040-000");
+		orderAddressRepository.saveAll(Arrays.asList(orderAddress1, orderAddress2, orderAddress3, orderAddress4));
 
 		Order order1 = new Order(null, product1, client1, orderAddress1, 5.0, 7.5, null, OrderTypeEnum.MATERIAL, dataTeste1, horaTeste1, "Entregar no portão", OrderStatusEnum.PENDING, PaymentStatusEnum.PARTIAL, BigDecimal.valueOf(415.00), BigDecimal.valueOf(215.00));
 		Order order2 = new Order(null, product2, client2, orderAddress2, null, null, "Serviço de máquina", OrderTypeEnum.SERVICE, dataTeste1, horaTeste1, "Ligar antes de chegar", OrderStatusEnum.PENDING, PaymentStatusEnum.PARTIAL, BigDecimal.valueOf(500.00), BigDecimal.valueOf(200.00));
-		Order order3 = new Order(null, product3, client1, orderAddress1, 10.0, 15.0, null, OrderTypeEnum.MATERIAL, dataTeste1.minusMonths(2), horaTeste1, "Casa amarela", OrderStatusEnum.DELIVERED, PaymentStatusEnum.PARTIAL, BigDecimal.valueOf(1450.00), BigDecimal.valueOf(450.00));
-		Order order4 = new Order(null, product1, client3, orderAddress2, 3.0, 4.5, null, OrderTypeEnum.MATERIAL, dataTeste1.minusMonths(2), horaTeste1, "Obra no fim da rua", OrderStatusEnum.PENDING, PaymentStatusEnum.PENDING, BigDecimal.valueOf(250.00), BigDecimal.valueOf(250.00));
+		Order order3 = new Order(null, product3, client1, orderAddress3, 10.0, 15.0, null, OrderTypeEnum.MATERIAL, dataTeste1.minusMonths(2), horaTeste1, "Casa amarela", OrderStatusEnum.DELIVERED, PaymentStatusEnum.PARTIAL, BigDecimal.valueOf(1450.00), BigDecimal.valueOf(450.00));
+		Order order4 = new Order(null, product1, client3, orderAddress4, 3.0, 4.5, null, OrderTypeEnum.MATERIAL, dataTeste1.minusMonths(2), horaTeste1, "Obra no fim da rua", OrderStatusEnum.PENDING, PaymentStatusEnum.PENDING, BigDecimal.valueOf(250.00), BigDecimal.valueOf(250.00));
 		orderRepository.saveAll(Arrays.asList(order1, order2, order3, order4));
 
 		Payment payment1 = new Payment(null, order1, BigDecimal.valueOf(200.00), dataTeste1, PaymentMethodEnum.CASH);
