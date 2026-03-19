@@ -203,7 +203,13 @@ export function Client() {
         open={!!clientToDelete}
         onOpenChange={(open) => !open && setClientToDelete(null)}
         title="Você tem certeza de que deseja excluir o cliente abaixo?"
-        description={`${clientToDelete?.name} · ${clientToDelete?.cpfCnpj}`}
+        description={
+          clientToDelete
+            ? [clientToDelete.name, clientToDelete.cpfCnpj]
+                .filter(Boolean)
+                .join(" · ")
+            : ""
+        }
         onConfirm={handleDelete}
         confirmLabel="Excluir"
         variant="destructive"
