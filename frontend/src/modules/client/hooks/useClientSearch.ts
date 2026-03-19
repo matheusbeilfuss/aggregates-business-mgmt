@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Client } from "../types";
 import { clientService } from "../services/client.service";
 
@@ -23,20 +23,24 @@ export function useClientSearch(query: string): UseClientSearchResult {
       return;
     }
 
+    let ignore = false;
     setLoading(true);
 
     const timer = setTimeout(async () => {
       try {
         const data = await clientService.search(trimmed);
-        setResults(data ?? []);
+        if (!ignore) setResults(data ?? []);
       } catch {
-        setResults([]);
+        if (!ignore) setResults([]);
       } finally {
-        setLoading(false);
+        if (!ignore) setLoading(false);
       }
     }, DEBOUNCE_MS);
 
-    return () => clearTimeout(timer);
+    return () => {
+      ignore = true;
+      clearTimeout(timer);
+    };
   }, [query]);
 
   return { results, loading };
