@@ -12,6 +12,7 @@ import { usePageTitle } from "@/hooks/usePageTitle";
 import { useProducts } from "@/modules/product/hooks";
 import { clientService } from "@/modules/client/services/client.service";
 import { CreateClientPayload } from "@/modules/client/types";
+import { stripNonDigits } from "@/utils";
 
 export function OrderAdd() {
   usePageTitle("Adicionar pedido");
@@ -32,14 +33,16 @@ export function OrderAdd() {
       if (!clientId) {
         const newClientPayload: CreateClientPayload = {
           name: data.clientName!,
-          phones: [{ number: data.phone, type: data.phoneType }],
-          cpfCnpj: data.cpfCnpj,
+          phones: [
+            { number: stripNonDigits(data.phone), type: data.phoneType },
+          ],
+          cpfCnpj: data.cpfCnpj ? stripNonDigits(data.cpfCnpj) : undefined,
           street: data.street,
           number: data.number,
           neighborhood: data.neighborhood,
           city: data.city,
           state: data.state,
-          cep: data.cep,
+          cep: data.cep ? stripNonDigits(data.cep) : undefined,
           complement: data.complement,
         };
 
@@ -58,7 +61,7 @@ export function OrderAdd() {
       const payload: CreateOrderPayload = {
         type: data.type,
         clientId: clientId!,
-        cep: data.cep || undefined,
+        cep: data.cep ? stripNonDigits(data.cep) : undefined,
         state: data.state,
         city: data.city,
         street: data.street,

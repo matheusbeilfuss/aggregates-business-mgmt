@@ -6,7 +6,7 @@ import { toast } from "sonner";
 
 import { usePageTitle } from "@/hooks/usePageTitle";
 import { ApiError } from "@/lib/api";
-import { formatPhone, formatCpfCnpj, formatCep } from "@/utils";
+import { formatPhone, formatCpfCnpj, formatCep, stripNonDigits } from "@/utils";
 import { clientService } from "../services/client.service";
 import { clientSchema, ClientFormData } from "../schemas/client.schemas";
 import { ClientForm } from "../components/ClientForm";
@@ -19,7 +19,9 @@ export function ClientEdit() {
   const clientId = Number(id);
   const navigate = useNavigate();
 
-  const { data: client, loading } = useClient(clientId);
+  const { data: client, loading } = useClient(
+    Number.isFinite(clientId) ? clientId : null,
+  );
 
   const form = useForm<ClientFormData>({
     resolver: zodResolver(clientSchema),
@@ -28,7 +30,7 @@ export function ClientEdit() {
       name: "",
       cpfCnpj: "",
       email: "",
-      phones: [{ number: "", type: "CELULAR" }],
+      phones: [{ number: "", type: "WHATSAPP" }],
       cep: "",
       street: "",
       number: "",
@@ -68,10 +70,13 @@ export function ClientEdit() {
     try {
       await clientService.update(clientId, {
         name: data.name,
-        cpfCnpj: data.cpfCnpj || undefined,
+        cpfCnpj: data.cpfCnpj ? stripNonDigits(data.cpfCnpj) : undefined,
         email: data.email || undefined,
-        phones: data.phones,
-        cep: data.cep || undefined,
+        phones: data.phones.map((p) => ({
+          number: stripNonDigits(p.number),
+          type: p.type,
+        })),
+        cep: data.cep ? stripNonDigits(data.cep) : undefined,
         street: data.street,
         number: data.number,
         complement: data.complement || undefined,

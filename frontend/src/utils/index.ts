@@ -7,4 +7,5 @@ export { selectPrimaryPhone } from "./selectPrimaryPhone";
 export { formatCpfCnpj } from "./formatCpfCnpj";
 export { formatPhone } from "./formatPhone";
 export { formatCep } from "./formatCep";
+export { stripNonDigits } from "./stripNonDigits";
 export * from "./labels";

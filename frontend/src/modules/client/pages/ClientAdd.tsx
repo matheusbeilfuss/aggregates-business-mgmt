@@ -8,6 +8,7 @@ import { ApiError } from "@/lib/api";
 import { clientService } from "../services/client.service";
 import { clientSchema, ClientFormData } from "../schemas/client.schemas";
 import { ClientForm } from "../components/ClientForm";
+import { stripNonDigits } from "@/utils";
 
 export function ClientAdd() {
   usePageTitle("Adicionar cliente");
@@ -36,10 +37,13 @@ export function ClientAdd() {
     try {
       await clientService.insert({
         name: data.name,
-        cpfCnpj: data.cpfCnpj || undefined,
+        cpfCnpj: data.cpfCnpj ? stripNonDigits(data.cpfCnpj) : undefined,
         email: data.email || undefined,
-        phones: data.phones,
-        cep: data.cep || undefined,
+        phones: data.phones.map((p) => ({
+          number: stripNonDigits(p.number),
+          type: p.type,
+        })),
+        cep: data.cep ? stripNonDigits(data.cep) : undefined,
         street: data.street,
         number: data.number,
         complement: data.complement || undefined,
