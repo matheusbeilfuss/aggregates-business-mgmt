@@ -7,7 +7,7 @@ const phoneSchema = z.object({
 });
 
 export const clientSchema = z.object({
-  name: z.string().min(1, "Nome obrigatório"),
+  name: z.string().trim().min(1, "Nome obrigatório"),
   cpfCnpj: z.string().optional(),
   email: z.string().email("E-mail inválido").optional().or(z.literal("")),
   phones: z.array(phoneSchema).min(1, "Pelo menos um telefone é obrigatório"),
