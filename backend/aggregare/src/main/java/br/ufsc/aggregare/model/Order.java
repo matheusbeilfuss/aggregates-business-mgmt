@@ -41,7 +41,7 @@ public class Order implements Serializable {
 	private Client client;
 
 	@OneToOne
-	@JoinColumn(name = "address_id", nullable = false)
+	@JoinColumn(name = "address_id", nullable = false, unique = true)
 	private OrderAddress orderAddress;
 
 	private Double m3Quantity;
