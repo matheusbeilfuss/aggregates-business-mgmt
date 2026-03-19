@@ -43,7 +43,7 @@ export function OrderAdd() {
           city: data.city,
           state: data.state,
           cep: data.cep ? stripNonDigits(data.cep) : undefined,
-          complement: data.complement,
+          complement: data.complement || undefined,
         };
 
         const newClient = await clientService.insert(newClientPayload);
