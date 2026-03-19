@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { Navigate, useNavigate, useParams } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
@@ -59,6 +59,10 @@ export function ClientEdit() {
       state: client.address?.state ?? "",
     });
   }, [client, form]);
+
+  if (!Number.isFinite(clientId)) {
+    return <Navigate to="/clients" replace />;
+  }
 
   const onSubmit = async (data: ClientFormData) => {
     try {
