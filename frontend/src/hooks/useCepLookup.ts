@@ -42,6 +42,11 @@ export function useCepLookup(cep: string): UseCepLookupResult {
           `https://viacep.com.br/ws/${digits}/json/`,
           { signal },
         );
+
+        if (!response.ok) {
+          throw new Error(`ViaCEP retornou status ${response.status}`);
+        }
+
         const data = await response.json();
 
         if (!signal.aborted) {
