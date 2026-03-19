@@ -44,7 +44,7 @@ export const items = [
   },
   {
     title: "Clientes",
-    url: "#",
+    url: "/clients",
     icon: BookUser,
   },
   {

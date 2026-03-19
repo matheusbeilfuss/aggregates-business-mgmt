@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { MoreHorizontal, Pencil, X } from "lucide-react";
+import { MoreHorizontal, Pencil, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 
 import {
@@ -47,15 +47,15 @@ export function PaymentRowActions({ payment, onSuccess }: Props) {
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
-          <DropdownMenuItem onClick={() => setEditOpen(true)}>
+          <DropdownMenuItem onSelect={() => setEditOpen(true)}>
             <Pencil className="mr-2 h-4 w-4" />
             Editar
           </DropdownMenuItem>
           <DropdownMenuItem
             className="text-destructive"
-            onClick={() => setConfirmOpen(true)}
+            onSelect={() => setConfirmOpen(true)}
           >
-            <X className="mr-2 h-4 w-4" />
+            <Trash2 className="mr-2 h-4 w-4" />
             Excluir
           </DropdownMenuItem>
         </DropdownMenuContent>

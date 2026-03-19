@@ -9,29 +9,38 @@ import {
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { PageContainer, FormActions, LoadingState } from "@/components/shared";
+import {
+  PageContainer,
+  FormActions,
+  LoadingState,
+  PhoneTypeSelect,
+} from "@/components/shared";
 import { DatePicker } from "@/components/shared/DatePicker";
-import { UseFormReturn } from "react-hook-form";
+import { UseFormReturn, useWatch } from "react-hook-form";
+import { Loader2 } from "lucide-react";
 
 import { OrderFormData } from "../schemas/order.schemas";
 import { ProductSelect } from "./ProductSelect";
 import { QuantityCombobox } from "./QuantityCombobox";
 import { ClientCombobox } from "./ClientCombobox";
-import { toIsoDate } from "@/utils";
+import {
+  toIsoDate,
+  selectPrimaryPhone,
+  formatPhone,
+  formatCpfCnpj,
+  formatCep,
+} from "@/utils";
 import { useEffect, useMemo } from "react";
 
-import { selectPreferredPhone } from "../utils/selectPreferredPhone";
-import { PhoneTypeSelect } from "./PhoneTypeSelect";
 import { Product } from "@/modules/product/types";
-import { Client } from "@/modules/client/types";
 import { useClient } from "@/modules/client/hooks";
 import { useCategoryPrices } from "@/modules/price/hooks";
+import { useCepLookup } from "@/hooks/useCepLookup";
 
 interface OrderFormProps {
   title: string;
   form: UseFormReturn<OrderFormData>;
   products: Product[];
-  clients: Client[];
   loading?: boolean;
   onSubmit: (data: OrderFormData) => void;
   submitLabel: string;
@@ -41,7 +50,6 @@ export function OrderForm({
   title,
   form,
   products,
-  clients,
   loading = false,
   onSubmit,
   submitLabel,
@@ -58,31 +66,49 @@ export function OrderForm({
 
   const categoryId = selectedProduct?.category?.id;
   const { data: categoryPrices } = useCategoryPrices(categoryId);
-
   const { data: client } = useClient(clientId);
+
+  const cep = useWatch({ control: form.control, name: "cep" });
+  const {
+    address: cepAddress,
+    loading: cepLoading,
+    error: cepError,
+  } = useCepLookup(cep ?? "");
 
   useEffect(() => {
     if (!client) return;
 
     form.setValue("clientName", client.name);
-    form.setValue("cpfCnpj", client.cpfCnpj);
+    form.setValue("cpfCnpj", formatCpfCnpj(client.cpfCnpj ?? ""));
 
     if (client.address) {
-      form.setValue("state", client.address.state);
-      form.setValue("city", client.address.city);
-      form.setValue("neighborhood", client.address.neighborhood);
+      form.setValue("cep", formatCep(client.address.cep ?? ""));
       form.setValue("street", client.address.street);
       form.setValue("number", client.address.number);
+      form.setValue("complement", client.address.complement ?? "");
+      form.setValue("neighborhood", client.address.neighborhood);
+      form.setValue("city", client.address.city);
+      form.setValue("state", client.address.state);
     }
 
     if (client.phones?.length) {
-      const preferredPhone = selectPreferredPhone(client.phones);
-      if (preferredPhone) {
-        form.setValue("phone", preferredPhone.number);
-        form.setValue("phoneType", preferredPhone.type);
+      const primaryPhone = selectPrimaryPhone(client.phones);
+      if (primaryPhone) {
+        form.setValue("phone", formatPhone(primaryPhone.number));
+        form.setValue("phoneType", primaryPhone.type);
       }
     }
   }, [client, form]);
+
+  useEffect(() => {
+    if (!cepAddress) return;
+    form.setValue("street", cepAddress.street, { shouldValidate: true });
+    form.setValue("neighborhood", cepAddress.neighborhood, {
+      shouldValidate: true,
+    });
+    form.setValue("city", cepAddress.city, { shouldValidate: true });
+    form.setValue("state", cepAddress.state, { shouldValidate: true });
+  }, [cepAddress, form]);
 
   useEffect(() => {
     if (orderType === "SERVICE") {
@@ -163,7 +189,6 @@ export function OrderForm({
                         </FormControl>
                         <FormLabel className="font-normal">Material</FormLabel>
                       </FormItem>
-
                       <FormItem className="flex items-center gap-2 space-y-0">
                         <FormControl>
                           <RadioGroupItem value="SERVICE" />
@@ -189,7 +214,6 @@ export function OrderForm({
                     <ClientCombobox
                       value={field.value ?? ""}
                       clientId={form.watch("clientId")}
-                      clients={clients ?? []}
                       onChange={(value) => {
                         field.onChange(value);
                         form.setValue("clientId", undefined);
@@ -221,6 +245,9 @@ export function OrderForm({
                         {...field}
                         type="text"
                         onFocus={(e) => e.target.select()}
+                        onChange={(e) =>
+                          field.onChange(formatPhone(e.target.value))
+                        }
                       />
                     </FormControl>
                     <FormMessage />
@@ -250,9 +277,12 @@ export function OrderForm({
                   <FormLabel>CPF/CNPJ</FormLabel>
                   <FormControl>
                     <Input
+                      {...field}
                       type="text"
-                      value={field.value ?? ""}
-                      onChange={(e) => field.onChange(e.target.value)}
+                      onFocus={(e) => e.target.select()}
+                      onChange={(e) =>
+                        field.onChange(formatCpfCnpj(e.target.value))
+                      }
                     />
                   </FormControl>
                   <FormMessage />
@@ -261,34 +291,33 @@ export function OrderForm({
             />
             <FormField
               control={form.control}
-              name="state"
+              name="cep"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Estado</FormLabel>
+                  <FormLabel>
+                    CEP{" "}
+                    <span className="text-muted-foreground font-normal">
+                      (opcional)
+                    </span>
+                  </FormLabel>
                   <FormControl>
-                    <Input
-                      type="text"
-                      {...field}
-                      onFocus={(e) => e.target.select()}
-                    />
+                    <div className="relative">
+                      <Input
+                        {...field}
+                        type="text"
+                        placeholder="00000-000"
+                        onChange={(e) =>
+                          field.onChange(formatCep(e.target.value))
+                        }
+                      />
+                      {cepLoading && (
+                        <Loader2 className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 animate-spin text-muted-foreground" />
+                      )}
+                    </div>
                   </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="city"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Cidade</FormLabel>
-                  <FormControl>
-                    <Input
-                      type="text"
-                      {...field}
-                      onFocus={(e) => e.target.select()}
-                    />
-                  </FormControl>
+                  {cepError && (
+                    <p className="text-sm text-destructive">{cepError}</p>
+                  )}
                   <FormMessage />
                 </FormItem>
               )}
@@ -301,25 +330,8 @@ export function OrderForm({
                   <FormLabel>Rua</FormLabel>
                   <FormControl>
                     <Input
-                      type="text"
                       {...field}
-                      onFocus={(e) => e.target.select()}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="neighborhood"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Bairro</FormLabel>
-                  <FormControl>
-                    <Input
                       type="text"
-                      {...field}
                       onFocus={(e) => e.target.select()}
                     />
                   </FormControl>
@@ -335,9 +347,83 @@ export function OrderForm({
                   <FormLabel>Número</FormLabel>
                   <FormControl>
                     <Input
+                      {...field}
                       type="text"
-                      value={field.value ?? ""}
-                      onChange={(e) => field.onChange(e.target.value)}
+                      onFocus={(e) => e.target.select()}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="complement"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>
+                    Complemento{" "}
+                    <span className="text-muted-foreground font-normal">
+                      (opcional)
+                    </span>
+                  </FormLabel>
+                  <FormControl>
+                    <Input
+                      {...field}
+                      type="text"
+                      placeholder="Apto, bloco, sala..."
+                      onFocus={(e) => e.target.select()}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="neighborhood"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Bairro</FormLabel>
+                  <FormControl>
+                    <Input
+                      {...field}
+                      type="text"
+                      onFocus={(e) => e.target.select()}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="city"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Cidade</FormLabel>
+                  <FormControl>
+                    <Input
+                      {...field}
+                      type="text"
+                      onFocus={(e) => e.target.select()}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="state"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Estado</FormLabel>
+                  <FormControl>
+                    <Input
+                      {...field}
+                      type="text"
+                      onFocus={(e) => e.target.select()}
                     />
                   </FormControl>
                   <FormMessage />
@@ -377,8 +463,8 @@ export function OrderForm({
                     <FormLabel>Serviço</FormLabel>
                     <FormControl>
                       <Input
-                        type="text"
                         {...field}
+                        type="text"
                         onFocus={(e) => e.target.select()}
                       />
                     </FormControl>
@@ -387,7 +473,6 @@ export function OrderForm({
                 )}
               />
             )}
-
             {orderType === "MATERIAL" && (
               <FormField
                 control={form.control}
@@ -413,7 +498,6 @@ export function OrderForm({
                 )}
               />
             )}
-
             <FormField
               control={form.control}
               name="orderValue"
@@ -422,8 +506,8 @@ export function OrderForm({
                   <FormLabel>Valor</FormLabel>
                   <FormControl>
                     <Input
+                      {...field}
                       type="number"
-                      value={field.value ?? ""}
                       onChange={(e) =>
                         field.onChange(
                           e.target.value === ""
@@ -445,8 +529,8 @@ export function OrderForm({
                   <FormLabel>Horário</FormLabel>
                   <FormControl>
                     <Input
-                      type="time"
                       {...field}
+                      type="time"
                       onFocus={(e) => e.target.select()}
                     />
                   </FormControl>
@@ -461,7 +545,12 @@ export function OrderForm({
               name="observations"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Informações adicionais</FormLabel>
+                  <FormLabel>
+                    Informações adicionais{" "}
+                    <span className="text-muted-foreground font-normal">
+                      (opcional)
+                    </span>
+                  </FormLabel>
                   <FormControl>
                     <Textarea {...field} onFocus={(e) => e.target.select()} />
                   </FormControl>

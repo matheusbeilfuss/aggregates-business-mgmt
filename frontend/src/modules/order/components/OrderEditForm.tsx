@@ -6,13 +6,19 @@ import { useEffect } from "react";
 import { orderService } from "../services/order.service";
 import { OrderForm } from "./OrderForm";
 import { CreateOrderPayload } from "../types";
-import { selectPreferredPhone } from "../utils/selectPreferredPhone";
 import { orderFormDefaults } from "../utils/orderFormDefaults";
 import { toast } from "sonner";
 import { ApiError } from "@/lib/api";
 import { useOrder } from "../hooks";
 import { useProducts } from "@/modules/product/hooks";
-import { useClient, useClients } from "@/modules/client/hooks";
+import { useClient } from "@/modules/client/hooks";
+import {
+  selectPrimaryPhone,
+  formatPhone,
+  formatCpfCnpj,
+  formatCep,
+  stripNonDigits,
+} from "@/utils";
 
 interface OrderEditFormProps {
   orderId: number;
@@ -23,7 +29,6 @@ export function OrderEditForm({ orderId }: OrderEditFormProps) {
 
   const { data: order, loading: orderLoading } = useOrder(orderId);
   const { data: products } = useProducts();
-  const { data: clients } = useClients();
   const { data: client } = useClient(order?.client?.id);
 
   const form = useForm<OrderFormData>({
@@ -34,6 +39,10 @@ export function OrderEditForm({ orderId }: OrderEditFormProps) {
   useEffect(() => {
     if (!order) return;
 
+    const primaryPhone = client?.phones?.length
+      ? selectPrimaryPhone(client.phones)
+      : null;
+
     form.reset({
       type: order.type,
       scheduledDate: order.scheduledDate,
@@ -43,15 +52,18 @@ export function OrderEditForm({ orderId }: OrderEditFormProps) {
 
       clientId: order.client.id,
       clientName: order.client.name,
-      phone: client?.phones?.length
-        ? (selectPreferredPhone(client.phones)?.number ?? "")
-        : "",
-      cpfCnpj: order.client.cpfCnpj,
+      phone: primaryPhone ? formatPhone(primaryPhone.number) : "",
+      phoneType: primaryPhone?.type ?? "WHATSAPP",
+      cpfCnpj: formatCpfCnpj(order.client.cpfCnpj ?? ""),
+
+      cep: formatCep(order.orderAddress.cep ?? ""),
       state: order.orderAddress.state,
       city: order.orderAddress.city,
       neighborhood: order.orderAddress.neighborhood,
       street: order.orderAddress.street,
       number: order.orderAddress.number,
+      complement: order.orderAddress.complement ?? "",
+
       productId: order.product?.id,
       m3Quantity: order.m3Quantity ?? undefined,
       service: order.service ?? "",
@@ -64,9 +76,11 @@ export function OrderEditForm({ orderId }: OrderEditFormProps) {
       clientId: data.clientId!,
       state: data.state,
       city: data.city,
+      cep: data.cep ? stripNonDigits(data.cep) : undefined,
       street: data.street,
       number: data.number,
       neighborhood: data.neighborhood,
+      complement: data.complement || undefined,
       scheduledDate: data.scheduledDate,
       scheduledTime: data.scheduledTime,
       observations: data.observations ?? null,
@@ -78,7 +92,6 @@ export function OrderEditForm({ orderId }: OrderEditFormProps) {
 
     try {
       await orderService.update(orderId, payload);
-
       toast.success("Pedido atualizado com sucesso.");
       navigate("/orders");
     } catch (error) {
@@ -95,7 +108,6 @@ export function OrderEditForm({ orderId }: OrderEditFormProps) {
       title="Editar pedido"
       form={form}
       products={products ?? []}
-      clients={clients ?? []}
       loading={orderLoading}
       onSubmit={onSubmit}
       submitLabel="Salvar alterações"

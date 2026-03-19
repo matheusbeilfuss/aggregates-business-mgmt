@@ -7,8 +7,10 @@ export type PaymentStatus = "PENDING" | "PARTIAL" | "PAID";
 
 export interface OrderAddress {
   id: number;
+  cep?: string;
   street: string;
   number: string;
+  complement?: string;
   neighborhood: string;
   city: string;
   state: string;
@@ -64,11 +66,13 @@ export interface CreateOrderPayload {
   productId: number | null;
 
   clientId: number;
-  state: string;
-  city: string;
+  cep?: string;
   street: string;
   number: string;
+  complement?: string;
   neighborhood: string;
+  city: string;
+  state: string;
 
   m3Quantity?: number;
   service?: string | null;

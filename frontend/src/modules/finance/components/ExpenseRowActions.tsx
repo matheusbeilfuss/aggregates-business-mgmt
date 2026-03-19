@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { MoreHorizontal, Pencil, X, DollarSign } from "lucide-react";
+import { MoreHorizontal, Pencil, DollarSign, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 
 import {
@@ -70,13 +70,13 @@ export function ExpenseRowActions({
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
           {showMarkAsPaid && (
-            <DropdownMenuItem onClick={() => setConfirmPaidOpen(true)}>
+            <DropdownMenuItem onSelect={() => setConfirmPaidOpen(true)}>
               <DollarSign className="mr-2 h-4 w-4" />
               Marcar como paga
             </DropdownMenuItem>
           )}
           <DropdownMenuItem
-            onClick={() => {
+            onSelect={() => {
               navigate(`/finance/expenses/${expense.id}/edit`);
             }}
           >
@@ -85,9 +85,9 @@ export function ExpenseRowActions({
           </DropdownMenuItem>
           <DropdownMenuItem
             className="text-destructive"
-            onClick={() => setConfirmDeleteOpen(true)}
+            onSelect={() => setConfirmDeleteOpen(true)}
           >
-            <X className="mr-2 h-4 w-4" />
+            <Trash2 className="mr-2 h-4 w-4" />
             Excluir
           </DropdownMenuItem>
         </DropdownMenuContent>

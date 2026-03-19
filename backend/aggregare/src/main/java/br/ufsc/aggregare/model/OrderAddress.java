@@ -26,6 +26,8 @@ public class OrderAddress implements Serializable {
 	@Column(nullable = false)
 	private String number;
 
+	private String complement;
+
 	@Column(nullable = false)
 	private String neighborhood;
 
@@ -35,16 +37,20 @@ public class OrderAddress implements Serializable {
 	@Column(nullable = false)
 	private String state;
 
+	private String cep;
+
 	public OrderAddress() {
 	}
 
-	public OrderAddress(Long id, String street, String number, String neighborhood, String city, String state) {
+	public OrderAddress(Long id, String street, String number, String complement, String neighborhood, String city, String state, String cep) {
 		this.id = id;
 		this.street = street;
 		this.number = number;
+		this.complement = complement;
 		this.neighborhood = neighborhood;
 		this.city = city;
 		this.state = state;
+		this.cep = cep;
 	}
 
 	public Long getId() {
@@ -71,6 +77,14 @@ public class OrderAddress implements Serializable {
 		this.number = number;
 	}
 
+	public String getComplement() {
+		return complement;
+	}
+
+	public void setComplement(String complement) {
+		this.complement = complement;
+	}
+
 	public String getNeighborhood() {
 		return neighborhood;
 	}
@@ -93,6 +107,14 @@ public class OrderAddress implements Serializable {
 
 	public void setState(String state) {
 		this.state = state;
+	}
+
+	public String getCep() {
+		return cep;
+	}
+
+	public void setCep(String cep) {
+		this.cep = cep;
 	}
 
 	@Override public boolean equals(Object o) {

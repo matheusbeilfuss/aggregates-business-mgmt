@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import { Pencil, X, MoreHorizontal, Tag } from "lucide-react";
+import { Pencil, MoreHorizontal, Tag, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -59,7 +59,7 @@ export function SupplierActions({
           className="text-red-500 focus:text-red-500 cursor-pointer"
           onSelect={() => onDelete(ps.id)}
         >
-          <X className="mr-2 h-4 w-4 text-red-500" />
+          <Trash2 className="mr-2 h-4 w-4 text-red-500" />
           Excluir
         </DropdownMenuItem>
       </DropdownMenuContent>

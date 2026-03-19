@@ -83,8 +83,9 @@ public class OrderService {
 			}
 		}
 
-		orderAddressRepository.delete(existingOrder.getOrderAddress());
+		OrderAddress orderAddress = existingOrder.getOrderAddress();
 		orderRepository.delete(existingOrder);
+		orderAddressRepository.delete(orderAddress);
 	}
 
 	@Transactional
@@ -142,9 +143,11 @@ public class OrderService {
 	private void updateOrderAddress(OrderAddress existingOrderAddress, OrderInputDTO dto) {
 		existingOrderAddress.setStreet(dto.getStreet());
 		existingOrderAddress.setNumber(dto.getNumber());
+		existingOrderAddress.setComplement(dto.getComplement());
 		existingOrderAddress.setNeighborhood(dto.getNeighborhood());
 		existingOrderAddress.setCity(dto.getCity());
 		existingOrderAddress.setState(dto.getState());
+		existingOrderAddress.setCep(dto.getCep());
 	}
 
 	@Transactional
@@ -222,9 +225,11 @@ public class OrderService {
 		OrderAddress orderAddress = new OrderAddress();
 		orderAddress.setStreet(dto.getStreet());
 		orderAddress.setNumber(dto.getNumber());
+		orderAddress.setComplement(dto.getComplement());
 		orderAddress.setNeighborhood(dto.getNeighborhood());
 		orderAddress.setCity(dto.getCity());
 		orderAddress.setState(dto.getState());
+		orderAddress.setCep(dto.getCep());
 		return orderAddress;
 	}
 

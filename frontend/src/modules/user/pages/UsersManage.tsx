@@ -171,7 +171,7 @@ export function UsersManage() {
       <div className="mt-auto flex justify-end py-12">
         <Button
           className="bg-slate-500 hover:bg-slate-600 text-white px-6 py-6 text-base cursor-pointer"
-          onClick={() => navigate("/admin/users/new")}
+          onClick={() => navigate("/admin/users/add")}
         >
           <UserPlus />
           Adicionar acesso

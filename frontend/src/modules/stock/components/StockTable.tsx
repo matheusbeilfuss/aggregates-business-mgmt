@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import { MoreHorizontal, Pencil, Plus, X } from "lucide-react";
+import { MoreHorizontal, Pencil, Plus, Trash2 } from "lucide-react";
 
 import {
   Table,
@@ -134,7 +134,7 @@ export function StockTable({ stocks, onDeleteProduct }: StockTableProps) {
                             className="cursor-pointer"
                             onSelect={() => onDeleteProduct(stock.product)}
                           >
-                            <X className="mr-2 h-4 w-4" />
+                            <Trash2 className="mr-2 h-4 w-4" />
                             Excluir
                           </DropdownMenuItem>
 

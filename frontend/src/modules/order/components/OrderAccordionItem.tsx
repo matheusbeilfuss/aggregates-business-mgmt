@@ -6,8 +6,8 @@ import {
 import { OrderItem } from "../types";
 import { OrderActions } from "./OrderActions";
 import { Separator } from "@/components/ui/separator";
-import { formatTime } from "@/utils";
-import { selectPreferredPhone } from "../utils/selectPreferredPhone";
+import { formatCep, formatPhone, formatTime } from "@/utils";
+import { selectPrimaryPhone } from "@/utils";
 import { Phone } from "@/modules/client/types";
 
 interface OrderAccordionItemProps {
@@ -23,7 +23,7 @@ export function OrderAccordionItem({
   onAddPayment,
   onDeleteOrder,
 }: OrderAccordionItemProps) {
-  const preferredPhone: Phone | null = selectPreferredPhone(
+  const primaryPhone: Phone | null = selectPrimaryPhone(
     order.client.phones ?? [],
   );
 
@@ -72,11 +72,26 @@ export function OrderAccordionItem({
         <Separator />
         <div className="flex flex-col gap-2 p-5 sm:flex-row sm:justify-between">
           <span className="font-medium">R$ {order.orderValue.toFixed(2)}</span>
+
+          <div>
+            <p>
+              {order.orderAddress.street}, Nº {order.orderAddress.number}
+              {order.orderAddress.complement &&
+                `, ${order.orderAddress.complement}`}
+            </p>
+            <p className="text-muted-foreground">
+              {order.orderAddress.neighborhood} — {order.orderAddress.city}/
+              {order.orderAddress.state}
+              {order.orderAddress.cep &&
+                ` · (${formatCep(order.orderAddress.cep)})`}
+            </p>
+          </div>
+
           <p>
-            {order.orderAddress.street}, Nº {order.orderAddress.number}
+            {formatPhone(primaryPhone?.number ?? "") ||
+              "Telefone não cadastrado"}
           </p>
-          <p>{order.orderAddress.city}</p>
-          <p>{preferredPhone?.number || "Telefone não cadastrado"}</p>
+
           {isMaterial && order.tonQuantity != null && (
             <p>
               {order.m3Quantity} m³ · {order.tonQuantity.toFixed(2)} ton

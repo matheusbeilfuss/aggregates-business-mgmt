@@ -10,16 +10,15 @@ import { orderFormDefaults } from "../utils/orderFormDefaults";
 import { ApiError } from "@/lib/api";
 import { usePageTitle } from "@/hooks/usePageTitle";
 import { useProducts } from "@/modules/product/hooks";
-import { useClients } from "@/modules/client/hooks";
 import { clientService } from "@/modules/client/services/client.service";
 import { CreateClientPayload } from "@/modules/client/types";
+import { stripNonDigits } from "@/utils";
 
 export function OrderAdd() {
   usePageTitle("Adicionar pedido");
 
   const navigate = useNavigate();
   const { data: products, loading: productsLoading } = useProducts();
-  const { data: clients, loading: clientsLoading } = useClients();
 
   const form = useForm<OrderFormData>({
     resolver: zodResolver(orderSchema),
@@ -35,17 +34,16 @@ export function OrderAdd() {
         const newClientPayload: CreateClientPayload = {
           name: data.clientName!,
           phones: [
-            {
-              number: data.phone,
-              type: data.phoneType,
-            },
+            { number: stripNonDigits(data.phone), type: data.phoneType },
           ],
-          cpfCnpj: data.cpfCnpj,
+          cpfCnpj: data.cpfCnpj ? stripNonDigits(data.cpfCnpj) : undefined,
           street: data.street,
           number: data.number,
           neighborhood: data.neighborhood,
           city: data.city,
           state: data.state,
+          cep: data.cep ? stripNonDigits(data.cep) : undefined,
+          complement: data.complement || undefined,
         };
 
         const newClient = await clientService.insert(newClientPayload);
@@ -63,11 +61,13 @@ export function OrderAdd() {
       const payload: CreateOrderPayload = {
         type: data.type,
         clientId: clientId!,
+        cep: data.cep ? stripNonDigits(data.cep) : undefined,
         state: data.state,
         city: data.city,
         street: data.street,
         number: data.number,
         neighborhood: data.neighborhood,
+        complement: data.complement || undefined,
         scheduledDate: data.scheduledDate,
         scheduledTime: data.scheduledTime,
         observations: data.observations ?? null,
@@ -94,8 +94,7 @@ export function OrderAdd() {
       title="Adicionar pedido"
       form={form}
       products={products ?? []}
-      clients={clients ?? []}
-      loading={productsLoading || clientsLoading}
+      loading={productsLoading}
       onSubmit={onSubmit}
       submitLabel="Adicionar"
     />

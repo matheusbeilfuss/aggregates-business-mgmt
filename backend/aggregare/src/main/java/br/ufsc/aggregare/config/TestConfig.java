@@ -158,28 +158,62 @@ public class TestConfig implements CommandLineRunner {
 		Client client1 = new Client(null, "Ana Paula", "12345678900", "ana@gmail.com");
 		Client client2 = new Client(null, "Bruno Costa", "98765432100", "bruno@gmail.com");
 		Client client3 = new Client(null, "Carla Silva", "45678912300", "carla@gmail.com");
-		clientRepository.saveAll(Arrays.asList(client1, client2, client3));
+		Client client4 = new Client(null, "Daniel Martins", "11122233344", "daniel@gmail.com");
+		Client client5 = new Client(null, "Eduarda Lopes", "22233344455", "eduarda@gmail.com");
+		Client client6 = new Client(null, "Felipe Rocha", "33344455566", "felipe@gmail.com");
+		Client client7 = new Client(null, "Gabriela Souza", "44455566677", "gabriela@gmail.com");
+		Client client8 = new Client(null, "Henrique Alves", "55566677788", "henrique@gmail.com");
+		Client client9 = new Client(null, "Isabela Fernandes", "66677788899", "isabela@gmail.com");
+		Client client10 = new Client(null, "João Pedro", "77788899900", "joao@gmail.com");
+
+		clientRepository.saveAll(Arrays.asList(client1, client2, client3, client4, client5, client6, client7, client8, client9, client10));
 
 		Phone phone1 = new Phone(null, client1, "(48) 91234-5678", PhoneTypeEnum.WHATSAPP);
 		Phone phone2 = new Phone(null, client1, "(48) 3456-7890", PhoneTypeEnum.FIXO);
 		Phone phone3 = new Phone(null, client2, "(48) 99876-5432", PhoneTypeEnum.OUTRO);
-		phoneRepository.saveAll(Arrays.asList(phone1, phone2, phone3));
+		Phone phone4 = new Phone(null, client3, "(48) 3456-3456",  PhoneTypeEnum.FIXO);
+		Phone phone5 = new Phone(null, client4, "(48) 99111-1111", PhoneTypeEnum.WHATSAPP);
+		Phone phone6 = new Phone(null, client4, "(48) 3333-1111", PhoneTypeEnum.FIXO);
+		Phone phone7 = new Phone(null, client5, "(48) 99222-2222", PhoneTypeEnum.WHATSAPP);
+		Phone phone8 = new Phone(null, client6, "(48) 99333-3333", PhoneTypeEnum.OUTRO);
+		Phone phone9 = new Phone(null, client6, "(48) 3344-3333", PhoneTypeEnum.FIXO);
+		Phone phone10 = new Phone(null, client7, "(48) 99444-4444", PhoneTypeEnum.WHATSAPP);
+		Phone phone11 = new Phone(null, client7, "(48) 99555-4444", PhoneTypeEnum.OUTRO);
+		Phone phone12 = new Phone(null, client8, "(48) 99666-6666", PhoneTypeEnum.WHATSAPP);
+		Phone phone13 = new Phone(null, client9, "(48) 99777-7777", PhoneTypeEnum.WHATSAPP);
+		Phone phone14 = new Phone(null, client9, "(48) 3377-7777", PhoneTypeEnum.FIXO);
+		Phone phone15 = new Phone(null, client10, "(48) 99888-8888", PhoneTypeEnum.WHATSAPP);
+		Phone phone16 = new Phone(null, client10, "(48) 3388-8888", PhoneTypeEnum.FIXO);
+		Phone phone17 = new Phone(null, client10, "(48) 99999-9999", PhoneTypeEnum.OUTRO);
 
-		Address address1 = new Address(null, client1, "SC", "Florianópolis", "Centro", "Rua das Flores", "100");
-		Address address2 = new Address(null, client2, "SC", "Florianópolis", "Pantanal", "Rua dos Papagaios", "1500");
-		addressRepository.saveAll(Arrays.asList(address1, address2));
+		phoneRepository.saveAll(Arrays.asList(phone1, phone2, phone3, phone4, phone5, phone6, phone7, phone8, phone9, phone10, phone11, phone12, phone13, phone14, phone15, phone16, phone17));
+
+		Address address1 = new Address(null, client1, "Rua das Flores", "100", "Apto. 110", "Centro", "Florianópolis", "SC", "88000-000");
+		Address address2 = new Address(null, client2, "Rua dos Papagaios", "1500", "Casa Esquina", "Pantanal", "Florianópolis", "SC", "88040-000");
+		Address address3 = new Address(null, client3, "Rua Cap. Romualdo de Barros", "2100", "Ao lado da padaria", "Carvoeira", "Florianópolis", "SC", "88040-600");
+		Address address4 = new Address(null, client4, "Rua Lauro Linhares", "1200", "Casa Amarela", "Trindade", "Florianópolis", "SC", "88036-002");
+		Address address5 = new Address(null, client5, "Rua Pastor William", "350", "Prédio verde", "Itacorubi", "Florianópolis", "SC", "88034-101");
+		Address address6 = new Address(null, client6, "Rua Desembargador Pedro Silva", "890", null, "Coqueiros", "Florianópolis", "SC", "88080-700");
+		Address address7 = new Address(null, client7, "Rua General Liberato Bittencourt", "540", null, "Estreito", "Florianópolis", "SC", "88075-400");
+		Address address8 = new Address(null, client8, "Rua Santos Saraiva", "760", null, "Capoeiras", "Florianópolis", "SC", "88070-100");
+		Address address9 = new Address(null, client9, "Servidão Caminho do Mar", "210", null, "Ingleses", "Florianópolis", "SC", "88058-620");
+		Address address10 = new Address(null, client10, "Rua Pequeno Príncipe", "980", null, "Campeche", "Florianópolis", "SC", "88063-000");
+
+		addressRepository.saveAll(Arrays.asList(address1, address2, address3, address4, address5, address6, address7, address8, address9, address10));
 
 		LocalDate dataTeste1 = LocalDate.now();
 		LocalTime horaTeste1 = LocalTime.now();
 
-		OrderAddress orderAddress1 = new OrderAddress(null, "Rua A", "200", "Bairro B", "Cidade C", "SC");
-		OrderAddress orderAddress2 = new OrderAddress(null, "Avenida X", "500", "Bairro Y", "Cidade Z", "SC");
-		orderAddressRepository.saveAll(Arrays.asList(orderAddress1, orderAddress2));
+		OrderAddress orderAddress1 = new OrderAddress(null, "Rua A", "200", "Apto. 104", "Bairro A", "Cidade A", "SC", "88040-000");
+		OrderAddress orderAddress2 = new OrderAddress(null, "Avenida X", "300", "Casa Esquina", "Bairro B", "Cidade B", "SC", "88040-000");
+		OrderAddress orderAddress3 = new OrderAddress(null, "Rua B", "400", "Apto. 12", "Bairro C", "Cidade C", "SC", "88040-000");
+		OrderAddress orderAddress4 = new OrderAddress(null, "Avenida Y", "500", "Casa Azul", "Bairro D", "Cidade D", "SC", "88040-000");
+		orderAddressRepository.saveAll(Arrays.asList(orderAddress1, orderAddress2, orderAddress3, orderAddress4));
 
 		Order order1 = new Order(null, product1, client1, orderAddress1, 5.0, 7.5, null, OrderTypeEnum.MATERIAL, dataTeste1, horaTeste1, "Entregar no portão", OrderStatusEnum.PENDING, PaymentStatusEnum.PARTIAL, BigDecimal.valueOf(415.00), BigDecimal.valueOf(215.00));
 		Order order2 = new Order(null, product2, client2, orderAddress2, null, null, "Serviço de máquina", OrderTypeEnum.SERVICE, dataTeste1, horaTeste1, "Ligar antes de chegar", OrderStatusEnum.PENDING, PaymentStatusEnum.PARTIAL, BigDecimal.valueOf(500.00), BigDecimal.valueOf(200.00));
-		Order order3 = new Order(null, product3, client1, orderAddress1, 10.0, 15.0, null, OrderTypeEnum.MATERIAL, dataTeste1.minusMonths(2), horaTeste1, "Casa amarela", OrderStatusEnum.DELIVERED, PaymentStatusEnum.PARTIAL, BigDecimal.valueOf(1450.00), BigDecimal.valueOf(450.00));
-		Order order4 = new Order(null, product1, client3, orderAddress2, 3.0, 4.5, null, OrderTypeEnum.MATERIAL, dataTeste1.minusMonths(2), horaTeste1, "Obra no fim da rua", OrderStatusEnum.PENDING, PaymentStatusEnum.PENDING, BigDecimal.valueOf(250.00), BigDecimal.valueOf(250.00));
+		Order order3 = new Order(null, product3, client1, orderAddress3, 10.0, 15.0, null, OrderTypeEnum.MATERIAL, dataTeste1.minusMonths(2), horaTeste1, "Casa amarela", OrderStatusEnum.DELIVERED, PaymentStatusEnum.PARTIAL, BigDecimal.valueOf(1450.00), BigDecimal.valueOf(450.00));
+		Order order4 = new Order(null, product1, client3, orderAddress4, 3.0, 4.5, null, OrderTypeEnum.MATERIAL, dataTeste1.minusMonths(2), horaTeste1, "Obra no fim da rua", OrderStatusEnum.PENDING, PaymentStatusEnum.PENDING, BigDecimal.valueOf(250.00), BigDecimal.valueOf(250.00));
 		orderRepository.saveAll(Arrays.asList(order1, order2, order3, order4));
 
 		Payment payment1 = new Payment(null, order1, BigDecimal.valueOf(200.00), dataTeste1, PaymentMethodEnum.CASH);

@@ -13,11 +13,13 @@ public class ClientDTO {
 	private String cpfCnpj;
 	private String email;
 
+	private String cep;
 	private String state;
 	private String city;
 	private String neighborhood;
 	private String street;
 	private String number;
+	private String complement;
 
 	private List<PhoneDTO> phones;
 
@@ -29,24 +31,28 @@ public class ClientDTO {
 		this.name = client.getName();
 		this.cpfCnpj = client.getCpfCnpj();
 		this.email = client.getEmail();
+		this.cep = address.getCep();
 		this.state = address.getState();
 		this.city = address.getCity();
 		this.neighborhood = address.getNeighborhood();
 		this.street = address.getStreet();
 		this.number = address.getNumber();
+		this.complement = address.getComplement();
 		this.phones = phones.stream().map(PhoneDTO::new).toList();
 	}
 
-	public ClientDTO(Long id, String name, String cpfCnpj, String email, String state, String city, String neighborhood, String street, String number, List<PhoneDTO> phones) {
+	public ClientDTO(Long id, String name, String cpfCnpj, String email, String cep,String state, String city, String neighborhood, String street, String number, String complement, List<PhoneDTO> phones) {
 		this.id = id;
 		this.name = name;
 		this.cpfCnpj = cpfCnpj;
 		this.email = email;
+		this.cep = cep;
 		this.state = state;
 		this.city = city;
 		this.neighborhood = neighborhood;
 		this.street = street;
 		this.number = number;
+		this.complement = complement;
 		this.phones = phones;
 	}
 
@@ -80,6 +86,14 @@ public class ClientDTO {
 
 	public void setEmail(String email) {
 		this.email = email;
+	}
+
+	public String getCep() {
+		return cep;
+	}
+
+	public void setCep(String cep) {
+		this.cep = cep;
 	}
 
 	public String getState() {
@@ -120,6 +134,14 @@ public class ClientDTO {
 
 	public void setNumber(String number) {
 		this.number = number;
+	}
+
+	public String getComplement() {
+		return complement;
+	}
+
+	public void setComplement(String complement) {
+		this.complement = complement;
 	}
 
 	public List<PhoneDTO> getPhones() {

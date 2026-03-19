@@ -103,6 +103,11 @@ public class Client implements Serializable {
 		phone.setClient(this);
 	}
 
+	public void removePhone(Phone phone) {
+		phones.remove(phone);
+		phone.setClient(null);
+	}
+
 	@Override public boolean equals(Object o) {
 		if (o == null || getClass() != o.getClass())
 			return false;
