@@ -17,6 +17,7 @@ import {
   formatPhone,
   formatCpfCnpj,
   formatCep,
+  stripNonDigits,
 } from "@/utils";
 
 interface OrderEditFormProps {
@@ -75,7 +76,7 @@ export function OrderEditForm({ orderId }: OrderEditFormProps) {
       clientId: data.clientId!,
       state: data.state,
       city: data.city,
-      cep: data.cep || undefined,
+      cep: data.cep ? stripNonDigits(data.cep) : undefined,
       street: data.street,
       number: data.number,
       neighborhood: data.neighborhood,

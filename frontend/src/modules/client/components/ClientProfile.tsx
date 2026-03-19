@@ -13,7 +13,12 @@ import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { Client } from "../types";
 import { phoneTypeLabel } from "../utils/labels";
-import { selectPrimaryPhone, formatCpfCnpj } from "@/utils";
+import {
+  selectPrimaryPhone,
+  formatCpfCnpj,
+  formatPhone,
+  formatCep,
+} from "@/utils";
 import { PhoneTypeIcon } from "./PhoneTypeIcon";
 
 interface ClientProfileProps {
@@ -83,7 +88,9 @@ export function ClientProfile({
                 <p className="text-xs text-muted-foreground mb-0.5">
                   {phoneTypeLabel[phone.type]}
                 </p>
-                <p className="text-sm font-medium">{phone.number}</p>
+                <p className="text-sm font-medium">
+                  {formatPhone(phone.number)}
+                </p>{" "}
               </div>
             </div>
           ))}
@@ -113,7 +120,7 @@ export function ClientProfile({
                 </p>
                 <p className="text-sm text-muted-foreground">
                   {client.address.city}/{client.address.state}
-                  {client.address.cep && ` — ${client.address.cep}`}
+                  {client.address.cep && ` — ${formatCep(client.address.cep)}`}
                 </p>
               </div>
             </div>

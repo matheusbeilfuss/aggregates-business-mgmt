@@ -157,9 +157,9 @@ export function ClientForm({
               </Button>
             </div>
 
-            {form.formState.errors.phones?.root && (
+            {form.formState.errors.phones?.message && (
               <p className="text-sm text-destructive">
-                {form.formState.errors.phones.root.message}
+                {form.formState.errors.phones.message}
               </p>
             )}
 

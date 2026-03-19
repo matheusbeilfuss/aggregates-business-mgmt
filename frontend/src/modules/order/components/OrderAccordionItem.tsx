@@ -6,7 +6,7 @@ import {
 import { OrderItem } from "../types";
 import { OrderActions } from "./OrderActions";
 import { Separator } from "@/components/ui/separator";
-import { formatTime } from "@/utils";
+import { formatCep, formatPhone, formatTime } from "@/utils";
 import { selectPrimaryPhone } from "@/utils";
 import { Phone } from "@/modules/client/types";
 
@@ -82,11 +82,15 @@ export function OrderAccordionItem({
             <p className="text-muted-foreground">
               {order.orderAddress.neighborhood} — {order.orderAddress.city}/
               {order.orderAddress.state}
-              {order.orderAddress.cep && ` · ${order.orderAddress.cep}`}
+              {order.orderAddress.cep &&
+                ` · (${formatCep(order.orderAddress.cep)})`}
             </p>
           </div>
 
-          <p>{primaryPhone?.number || "Telefone não cadastrado"}</p>
+          <p>
+            {formatPhone(primaryPhone?.number ?? "") ||
+              "Telefone não cadastrado"}
+          </p>
 
           {isMaterial && order.tonQuantity != null && (
             <p>
