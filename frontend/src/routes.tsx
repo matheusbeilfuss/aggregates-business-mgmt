@@ -25,6 +25,8 @@ import Fuel from "./modules/fuel/pages/Fuel";
 import { Client } from "./modules/client/pages/Client";
 import { ClientAdd } from "./modules/client/pages/ClientAdd";
 import { ClientEdit } from "./modules/client/pages/ClientEdit";
+import { BalancePrint } from "./modules/balance/pages/BalancePrint";
+import Balance from "./modules/balance/pages/Balance";
 
 export const router = createBrowserRouter([
   {
@@ -32,6 +34,8 @@ export const router = createBrowserRouter([
     children: [
       { path: "/login", element: <Login /> },
       { path: "/prices/print", element: <PricePrint /> },
+      { path: "/balance/print", element: <BalancePrint /> },
+
       {
         element: <PrivateRoute />,
         children: [
@@ -48,6 +52,8 @@ export const router = createBrowserRouter([
           { path: "finance", element: <Finance /> },
           { path: "finance/expenses/add", element: <ExpenseAdd /> },
           { path: "finance/expenses/:id/edit", element: <ExpenseEdit /> },
+
+          { path: "/balance", element: <Balance /> },
 
           { path: "prices", element: <Price /> },
           { path: "prices/categories/:categoryId", element: <PriceEdit /> },
