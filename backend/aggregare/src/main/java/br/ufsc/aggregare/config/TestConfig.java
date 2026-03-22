@@ -54,6 +54,41 @@ import br.ufsc.aggregare.repository.UserRepository;
 @Profile("test")
 public class TestConfig implements CommandLineRunner {
 
+	// Constantes - bairros e cidade
+
+	private static final String CIDADE          = "Florianópolis";
+	private static final String CENTRO          = "Centro";
+	private static final String TRINDADE        = "Trindade";
+	private static final String ITACORUBI       = "Itacorubi";
+	private static final String CARVOEIRA       = "Carvoeira";
+	private static final String AGRONOMICA      = "Agronômica";
+	private static final String CORREGO_GRANDE  = "Córrego Grande";
+	private static final String PANTANAL        = "Pantanal";
+	private static final String COQUEIROS       = "Coqueiros";
+	private static final String ESTREITO        = "Estreito";
+	private static final String CAMPECHE        = "Campeche";
+	private static final String CAPOEIRAS       = "Capoeiras";
+	private static final String INGLESES        = "Ingleses";
+
+	// CEPs reutilizados
+	private static final String CEP_CORREGO     = "88037-000";
+
+	// Constantes - categorias de despesa
+
+	private static final String CAT_MECANICA    = "Mecânica";
+	private static final String CAT_ESCRITORIO  = "Escritório";
+	private static final String CAT_MANUTENCAO  = "Manutenção";
+	private static final String CAT_EQUIPAMENTOS = "Equipamentos";
+
+	// Constantes - veículo e postos de combustível
+
+	private static final String CAMINHAO           = "Mercedes 1313";
+	private static final String POSTO_DOM_BOSCO    = "Posto Dom Bosco";
+	private static final String AUTO_POSTO_CENTRAL = "Auto Posto Central";
+	private static final double PRECO_LITRO        = 6.03;
+
+	// Repositórios
+
 	private final UserRepository userRepository;
 	private final CategoryRepository categoryRepository;
 	private final ProductRepository productRepository;
@@ -117,7 +152,7 @@ public class TestConfig implements CommandLineRunner {
 	// Entrypoint
 
 	@Override
-	public void run(String... args) throws Exception {
+	public void run(String... args) {
 		seedUsers();
 
 		List<Category> categories = seedCategories();
@@ -253,18 +288,18 @@ public class TestConfig implements CommandLineRunner {
 		));
 
 		addressRepository.saveAll(Arrays.asList(
-				new Address(null, c.get(0),  "Rua das Flores",                   "100",  "Apto. 110",       "Centro",        "Florianópolis", "SC", "88000-000"),
-				new Address(null, c.get(1),  "Rua dos Papagaios",                "1500", "Casa Esquina",    "Pantanal",      "Florianópolis", "SC", "88040-000"),
-				new Address(null, c.get(2),  "Rua Cap. Romualdo de Barros",      "2100", "Ao lado padaria", "Carvoeira",     "Florianópolis", "SC", "88040-600"),
-				new Address(null, c.get(3),  "Rua Lauro Linhares",               "1200", "Casa Amarela",    "Trindade",      "Florianópolis", "SC", "88036-002"),
-				new Address(null, c.get(4),  "Rua Pastor William",               "350",  "Prédio Verde",    "Itacorubi",     "Florianópolis", "SC", "88034-101"),
-				new Address(null, c.get(5),  "Rua Desembargador Pedro Silva",    "890",  null,              "Coqueiros",     "Florianópolis", "SC", "88080-700"),
-				new Address(null, c.get(6),  "Rua Gen. Liberato Bittencourt",    "540",  null,              "Estreito",      "Florianópolis", "SC", "88075-400"),
-				new Address(null, c.get(7),  "Rua Santos Saraiva",               "760",  null,              "Capoeiras",     "Florianópolis", "SC", "88070-100"),
-				new Address(null, c.get(8),  "Servidão Caminho do Mar",          "210",  null,              "Ingleses",      "Florianópolis", "SC", "88058-620"),
-				new Address(null, c.get(9),  "Rua Pequeno Príncipe",             "980",  null,              "Campeche",      "Florianópolis", "SC", "88063-000"),
-				new Address(null, c.get(10), "Rua João Pio Duarte Silva",        "300",  null,              "Córrego Grande","Florianópolis", "SC", "88037-000"),
-				new Address(null, c.get(11), "Avenida Beira Mar Norte",          "450",  "Bloco B",         "Agronômica",    "Florianópolis", "SC", "88025-301")
+				new Address(null, c.get(0),  "Rua das Flores",                "100",  "Apto. 110",       CENTRO,        CIDADE, "SC", "88000-000"),
+				new Address(null, c.get(1),  "Rua dos Papagaios",             "1500", "Casa Esquina",    PANTANAL,      CIDADE, "SC", "88040-000"),
+				new Address(null, c.get(2),  "Rua Cap. Romualdo de Barros",   "2100", "Ao lado padaria", CARVOEIRA,     CIDADE, "SC", "88040-600"),
+				new Address(null, c.get(3),  "Rua Lauro Linhares",            "1200", "Casa Amarela",    TRINDADE,      CIDADE, "SC", "88036-002"),
+				new Address(null, c.get(4),  "Rua Pastor William",            "350",  "Prédio Verde",    ITACORUBI,     CIDADE, "SC", "88034-101"),
+				new Address(null, c.get(5),  "Rua Desembargador Pedro Silva", "890",  null,              COQUEIROS,     CIDADE, "SC", "88080-700"),
+				new Address(null, c.get(6),  "Rua Gen. Liberato Bittencourt", "540",  null,              ESTREITO,      CIDADE, "SC", "88075-400"),
+				new Address(null, c.get(7),  "Rua Santos Saraiva",            "760",  null,              CAPOEIRAS,     CIDADE, "SC", "88070-100"),
+				new Address(null, c.get(8),  "Servidão Caminho do Mar",       "210",  null,              INGLESES,      CIDADE, "SC", "88058-620"),
+				new Address(null, c.get(9),  "Rua Pequeno Príncipe",          "980",  null,              CAMPECHE,      CIDADE, "SC", "88063-000"),
+				new Address(null, c.get(10), "Rua João Pio Duarte Silva",     "300",  null,              CORREGO_GRANDE,CIDADE, "SC", CEP_CORREGO),
+				new Address(null, c.get(11), "Avenida Beira Mar Norte",       "450",  "Bloco B",         AGRONOMICA,    CIDADE, "SC", "88025-301")
 		));
 	}
 
@@ -279,54 +314,54 @@ public class TestConfig implements CommandLineRunner {
 
 		OrderAddress[] oa = orderAddressRepository.saveAll(Arrays.asList(
 				// Janeiro [0..5]
-				new OrderAddress(null, "Rua das Acácias",              "110", null,          "Trindade",      "Florianópolis", "SC", "88036-000"),
-				new OrderAddress(null, "Rua Dep. Mário Pugliesi",      "205", "Casa Fundo",  "Itacorubi",     "Florianópolis", "SC", "88034-000"),
-				new OrderAddress(null, "Av. Madre Benvenuta",          "1237",null,          "Córrego Grande","Florianópolis", "SC", "88037-000"),
-				new OrderAddress(null, "Rua Dom Jaime de Barros Câmara","310",null,          "Pantanal",      "Florianópolis", "SC", "88040-000"),
-				new OrderAddress(null, "Rua Cap. Romualdo de Barros",  "88",  null,          "Carvoeira",     "Florianópolis", "SC", "88040-600"),
-				new OrderAddress(null, "Rua Tenente Silveira",         "150", "Bloco A",     "Centro",        "Florianópolis", "SC", "88010-000"),
+				new OrderAddress(null, "Rua das Acácias",               "110", null,         TRINDADE,       CIDADE, "SC", "88036-000"),
+				new OrderAddress(null, "Rua Dep. Mário Pugliesi",       "205", "Casa Fundo", ITACORUBI,      CIDADE, "SC", "88034-000"),
+				new OrderAddress(null, "Av. Madre Benvenuta",           "1237",null,         CORREGO_GRANDE, CIDADE, "SC", CEP_CORREGO),
+				new OrderAddress(null, "Rua Dom Jaime de Barros Câmara","310", null,         PANTANAL,       CIDADE, "SC", "88040-000"),
+				new OrderAddress(null, "Rua Cap. Romualdo de Barros",   "88",  null,         CARVOEIRA,      CIDADE, "SC", "88040-600"),
+				new OrderAddress(null, "Rua Tenente Silveira",          "150", "Bloco A",    CENTRO,         CIDADE, "SC", "88010-000"),
 				// Fevereiro [6..11]
-				new OrderAddress(null, "Rua Bocaiúva",                 "2150",null,          "Centro",        "Florianópolis", "SC", "88015-530"),
-				new OrderAddress(null, "Rua Osmar Cunha",              "183", null,          "Centro",        "Florianópolis", "SC", "88015-100"),
-				new OrderAddress(null, "Rua Felipe Schmidt",           "515", "Apto 302",   "Centro",         "Florianópolis", "SC", "88010-000"),
-				new OrderAddress(null, "Servidão dos Açores",          "44",  null,          "Campeche",      "Florianópolis", "SC", "88063-000"),
-				new OrderAddress(null, "Rua Ivo Silveira",             "920", null,          "Capoeiras",     "Florianópolis", "SC", "88070-000"),
-				new OrderAddress(null, "Rua Henrique Veras",           "320", null,          "Lagoa da Conc.","Florianópolis", "SC", "88062-000"),
+				new OrderAddress(null, "Rua Bocaiúva",                  "2150",null,         CENTRO,         CIDADE, "SC", "88015-530"),
+				new OrderAddress(null, "Rua Osmar Cunha",               "183", null,         CENTRO,         CIDADE, "SC", "88015-100"),
+				new OrderAddress(null, "Rua Felipe Schmidt",            "515", "Apto 302",   CENTRO,         CIDADE, "SC", "88010-000"),
+				new OrderAddress(null, "Servidão dos Açores",           "44",  null,         CAMPECHE,       CIDADE, "SC", "88063-000"),
+				new OrderAddress(null, "Rua Ivo Silveira",              "920", null,         CAPOEIRAS,      CIDADE, "SC", "88070-000"),
+				new OrderAddress(null, "Rua Henrique Veras",            "320", null,         "Lagoa da Conc.",CIDADE,"SC", "88062-000"),
 				// Março [12..17]
-				new OrderAddress(null, "Rua Almirante Lamego",         "780", null,          "Centro",        "Florianópolis", "SC", "88015-000"),
-				new OrderAddress(null, "Rua Adolfo Konder",            "160", null,          "Agronômica",    "Florianópolis", "SC", "88025-000"),
-				new OrderAddress(null, "Rua Gen. Eurico Gaspar Dutra", "90",  null,          "Estreito",      "Florianópolis", "SC", "88075-000"),
-				new OrderAddress(null, "Rua Santos Dumont",            "411", null,          "Coqueiros",     "Florianópolis", "SC", "88080-000"),
-				new OrderAddress(null, "Rua Lauro Müller",             "232", null,          "Estreito",      "Florianópolis", "SC", "88072-000"),
-				new OrderAddress(null, "Rua Anita Garibaldi",          "670", null,          "Agronômica",    "Florianópolis", "SC", "88025-200"),
+				new OrderAddress(null, "Rua Almirante Lamego",          "780", null,         CENTRO,         CIDADE, "SC", "88015-000"),
+				new OrderAddress(null, "Rua Adolfo Konder",             "160", null,         AGRONOMICA,     CIDADE, "SC", "88025-000"),
+				new OrderAddress(null, "Rua Gen. Eurico Gaspar Dutra",  "90",  null,         ESTREITO,       CIDADE, "SC", "88075-000"),
+				new OrderAddress(null, "Rua Santos Dumont",             "411", null,         COQUEIROS,      CIDADE, "SC", "88080-000"),
+				new OrderAddress(null, "Rua Lauro Müller",              "232", null,         ESTREITO,       CIDADE, "SC", "88072-000"),
+				new OrderAddress(null, "Rua Anita Garibaldi",           "670", null,         AGRONOMICA,     CIDADE, "SC", "88025-200"),
 				// Abril [18..23]
-				new OrderAddress(null, "Rua Presidente Coutinho",      "780", null,          "Centro",        "Florianópolis", "SC", "88015-230"),
-				new OrderAddress(null, "Rua Jerônimo Coelho",          "100", null,          "Centro",        "Florianópolis", "SC", "88010-030"),
-				new OrderAddress(null, "Av. Othon Gama D'Eça",         "900", null,          "Centro",        "Florianópolis", "SC", "88015-240"),
-				new OrderAddress(null, "Rua Arno Hoeschl",             "55",  null,          "Itacorubi",     "Florianópolis", "SC", "88034-250"),
-				new OrderAddress(null, "Rua Desemb. Vitor Lima",       "344", null,          "Trindade",      "Florianópolis", "SC", "88040-400"),
-				new OrderAddress(null, "Rua João Pinto",               "53",  null,          "Centro",        "Florianópolis", "SC", "88010-530"),
+				new OrderAddress(null, "Rua Presidente Coutinho",       "780", null,         CENTRO,         CIDADE, "SC", "88015-230"),
+				new OrderAddress(null, "Rua Jerônimo Coelho",           "100", null,         CENTRO,         CIDADE, "SC", "88010-030"),
+				new OrderAddress(null, "Av. Othon Gama D'Eça",          "900", null,         CENTRO,         CIDADE, "SC", "88015-240"),
+				new OrderAddress(null, "Rua Arno Hoeschl",              "55",  null,         ITACORUBI,      CIDADE, "SC", "88034-250"),
+				new OrderAddress(null, "Rua Desemb. Vitor Lima",        "344", null,         TRINDADE,       CIDADE, "SC", "88040-400"),
+				new OrderAddress(null, "Rua João Pinto",                "53",  null,         CENTRO,         CIDADE, "SC", "88010-530"),
 				// Maio [24..29]
-				new OrderAddress(null, "Rua Esteves Júnior",           "295", null,          "Centro",        "Florianópolis", "SC", "88015-130"),
-				new OrderAddress(null, "Rua dos Açores",               "650", null,          "Campeche",      "Florianópolis", "SC", "88063-100"),
-				new OrderAddress(null, "Rua Prof. Milton Sulivan",     "110", null,          "Córrego Grande","Florianópolis", "SC", "88037-300"),
-				new OrderAddress(null, "Rua João Pio Duarte Silva",    "188", null,          "Córrego Grande","Florianópolis", "SC", "88037-000"),
-				new OrderAddress(null, "Rua Delfino Conti",            "400", null,          "Pantanal",      "Florianópolis", "SC", "88040-370"),
-				new OrderAddress(null, "Rua Balthazar Buschle",        "120", null,          "Carvoeira",     "Florianópolis", "SC", "88040-550"),
+				new OrderAddress(null, "Rua Esteves Júnior",            "295", null,         CENTRO,         CIDADE, "SC", "88015-130"),
+				new OrderAddress(null, "Rua dos Açores",                "650", null,         CAMPECHE,       CIDADE, "SC", "88063-100"),
+				new OrderAddress(null, "Rua Prof. Milton Sulivan",      "110", null,         CORREGO_GRANDE, CIDADE, "SC", "88037-300"),
+				new OrderAddress(null, "Rua João Pio Duarte Silva",     "188", null,         CORREGO_GRANDE, CIDADE, "SC", CEP_CORREGO),
+				new OrderAddress(null, "Rua Delfino Conti",             "400", null,         PANTANAL,       CIDADE, "SC", "88040-370"),
+				new OrderAddress(null, "Rua Balthazar Buschle",         "120", null,         CARVOEIRA,      CIDADE, "SC", "88040-550"),
 				// Junho [30..35]
-				new OrderAddress(null, "Rua Silveira de Souza",        "218", null,          "Agronômica",    "Florianópolis", "SC", "88025-200"),
-				new OrderAddress(null, "Rua do Antão",                 "88",  null,          "Ingleses",      "Florianópolis", "SC", "88058-000"),
-				new OrderAddress(null, "Rua dos Turistas",             "310", null,          "Canasvieiras",  "Florianópolis", "SC", "88054-000"),
-				new OrderAddress(null, "Rua José Henrique Boiteux",    "75",  null,          "Ipiranga",      "Florianópolis", "SC", "88030-000"),
-				new OrderAddress(null, "Rua Victor Meireles",          "430", null,          "Centro",        "Florianópolis", "SC", "88015-400"),
-				new OrderAddress(null, "Rua Eng. Osvaldo Reis",        "200", null,          "Coqueiros",     "Florianópolis", "SC", "88080-200"),
+				new OrderAddress(null, "Rua Silveira de Souza",         "218", null,         AGRONOMICA,     CIDADE, "SC", "88025-200"),
+				new OrderAddress(null, "Rua do Antão",                  "88",  null,         INGLESES,       CIDADE, "SC", "88058-000"),
+				new OrderAddress(null, "Rua dos Turistas",              "310", null,         "Canasvieiras", CIDADE, "SC", "88054-000"),
+				new OrderAddress(null, "Rua José Henrique Boiteux",     "75",  null,         "Ipiranga",     CIDADE, "SC", "88030-000"),
+				new OrderAddress(null, "Rua Victor Meireles",           "430", null,         CENTRO,         CIDADE, "SC", "88015-400"),
+				new OrderAddress(null, "Rua Eng. Osvaldo Reis",         "200", null,         COQUEIROS,      CIDADE, "SC", "88080-200"),
 				// Mês atual — entregues [36..37]
-				new OrderAddress(null, "Rua Padre Roma",               "95",  null,          "Centro",        "Florianópolis", "SC", "88010-090"),
-				new OrderAddress(null, "Rua Frei Caneca",              "310", null,          "Trindade",      "Florianópolis", "SC", "88036-540"),
+				new OrderAddress(null, "Rua Padre Roma",                "95",  null,         CENTRO,         CIDADE, "SC", "88010-090"),
+				new OrderAddress(null, "Rua Frei Caneca",               "310", null,         TRINDADE,       CIDADE, "SC", "88036-540"),
 				// Mês atual — pedidos do dia [38..40]
-				new OrderAddress(null, "Rua Lauro Linhares",           "450", "Casa Verde",  "Trindade",      "Florianópolis", "SC", "88036-002"),
-				new OrderAddress(null, "Av. Beira Mar Norte",          "780", null,          "Agronômica",    "Florianópolis", "SC", "88025-000"),
-				new OrderAddress(null, "Rua Desemb. Pedro Silva",      "1100",null,          "Coqueiros",     "Florianópolis", "SC", "88080-700")
+				new OrderAddress(null, "Rua Lauro Linhares",            "450", "Casa Verde", TRINDADE,       CIDADE, "SC", "88036-002"),
+				new OrderAddress(null, "Av. Beira Mar Norte",           "780", null,         AGRONOMICA,     CIDADE, "SC", "88025-000"),
+				new OrderAddress(null, "Rua Desemb. Pedro Silva",       "1100",null,         COQUEIROS,      CIDADE, "SC", "88080-700")
 		)).toArray(new OrderAddress[0]);
 
 		LocalDate hoje = LocalDate.now();
@@ -342,7 +377,7 @@ public class TestConfig implements CommandLineRunner {
 				mkMaterial(p.get(1), c.get(4),  oa[1],  3.0, 4.50, d(1,12),  tarde1, null,                450.00, OrderStatusEnum.DELIVERED, PaymentStatusEnum.PAID),
 				mkMaterial(p.get(4), c.get(5),  oa[2],  4.0, 5.20, d(1,16),  tarde2, "Deixar no quintal", 600.00, OrderStatusEnum.DELIVERED, PaymentStatusEnum.PAID),
 				mkMaterial(p.get(2), c.get(6),  oa[3],  2.0, 2.84, d(1,22),  manha,  null,                300.00, OrderStatusEnum.DELIVERED, PaymentStatusEnum.PAID),
-				mkServico( p.get(1), c.get(7),  oa[4],  "Espalhamento de brita", d(1,25), tarde1, null,   530.00, OrderStatusEnum.DELIVERED, PaymentStatusEnum.PAID),
+				mkServico( p.get(1), c.get(7),  oa[4],  "Espalhamento de brita",  d(1,25), tarde1,         530.00, OrderStatusEnum.DELIVERED, PaymentStatusEnum.PAID),
 				mkMaterial(p.get(5), c.get(8),  oa[5],  5.0, 6.75, d(1,29),  tarde2, null,                750.00, OrderStatusEnum.DELIVERED, PaymentStatusEnum.PAID)
 		));
 		paymentRepository.saveAll(Arrays.asList(
@@ -356,12 +391,12 @@ public class TestConfig implements CommandLineRunner {
 
 		// Fevereiro
 		List<Order> fev = orderRepository.saveAll(Arrays.asList(
-				mkMaterial(p.get(0), c.get(9),  oa[6],  3.0, 4.35, d(2, 5),  manha,  null,                480.00, OrderStatusEnum.DELIVERED, PaymentStatusEnum.PAID),
-				mkMaterial(p.get(1), c.get(10), oa[7],  5.0, 7.50, d(2,10),  tarde1, null,                850.00, OrderStatusEnum.DELIVERED, PaymentStatusEnum.PAID),
-				mkServico( p.get(4), c.get(0),  oa[8],  "Nivelamento de pátio",  d(2,14), tarde2, null,   600.00, OrderStatusEnum.DELIVERED, PaymentStatusEnum.PAID),
-				mkMaterial(p.get(2), c.get(1),  oa[9],  4.0, 5.68, d(2,19),  manha,  null,                650.00, OrderStatusEnum.DELIVERED, PaymentStatusEnum.PAID),
-				mkMaterial(p.get(3), c.get(2),  oa[10], 3.0, 4.14, d(2,24),  tarde1, null,                550.00, OrderStatusEnum.DELIVERED, PaymentStatusEnum.PAID),
-				mkMaterial(p.get(5), c.get(3),  oa[11], 2.0, 2.70, d(2,27),  tarde2, null,                400.00, OrderStatusEnum.DELIVERED, PaymentStatusEnum.PAID)
+				mkMaterial(p.get(0), c.get(9),  oa[6],  3.0, 4.35, d(2, 5),  manha,  null,               480.00, OrderStatusEnum.DELIVERED, PaymentStatusEnum.PAID),
+				mkMaterial(p.get(1), c.get(10), oa[7],  5.0, 7.50, d(2,10),  tarde1, null,               850.00, OrderStatusEnum.DELIVERED, PaymentStatusEnum.PAID),
+				mkServico( p.get(4), c.get(0),  oa[8],  "Nivelamento de pátio",   d(2,14), tarde2,        600.00, OrderStatusEnum.DELIVERED, PaymentStatusEnum.PAID),
+				mkMaterial(p.get(2), c.get(1),  oa[9],  4.0, 5.68, d(2,19),  manha,  null,               650.00, OrderStatusEnum.DELIVERED, PaymentStatusEnum.PAID),
+				mkMaterial(p.get(3), c.get(2),  oa[10], 3.0, 4.14, d(2,24),  tarde1, null,               550.00, OrderStatusEnum.DELIVERED, PaymentStatusEnum.PAID),
+				mkMaterial(p.get(5), c.get(3),  oa[11], 2.0, 2.70, d(2,27),  tarde2, null,               400.00, OrderStatusEnum.DELIVERED, PaymentStatusEnum.PAID)
 		));
 		paymentRepository.saveAll(Arrays.asList(
 				mkPayment(fev.get(0), 480.00, d(2, 5),  PaymentMethodEnum.PIX),
@@ -374,12 +409,12 @@ public class TestConfig implements CommandLineRunner {
 
 		// Março
 		List<Order> mar = orderRepository.saveAll(Arrays.asList(
-				mkMaterial(p.get(0), c.get(4),  oa[12], 5.0, 7.25, d(3, 3),  manha,  null,                800.00, OrderStatusEnum.DELIVERED, PaymentStatusEnum.PAID),
-				mkMaterial(p.get(1), c.get(5),  oa[13], 3.0, 4.50, d(3, 8),  tarde1, null,                480.00, OrderStatusEnum.DELIVERED, PaymentStatusEnum.PAID),
-				mkServico( p.get(2), c.get(6),  oa[14], "Compactação de base",   d(3,13), tarde2, null,   650.00, OrderStatusEnum.DELIVERED, PaymentStatusEnum.PAID),
-				mkMaterial(p.get(4), c.get(7),  oa[15], 5.0, 6.50, d(3,19),  manha,  "Portão de ferro",   760.00, OrderStatusEnum.DELIVERED, PaymentStatusEnum.PAID),
-				mkMaterial(p.get(5), c.get(8),  oa[16], 2.0, 2.70, d(3,24),  tarde1, null,                300.00, OrderStatusEnum.DELIVERED, PaymentStatusEnum.PAID),
-				mkMaterial(p.get(3), c.get(9),  oa[17], 4.0, 5.52, d(3,28),  tarde2, null,                750.00, OrderStatusEnum.DELIVERED, PaymentStatusEnum.PAID)
+				mkMaterial(p.get(0), c.get(4),  oa[12], 5.0, 7.25, d(3, 3),  manha,  null,              800.00, OrderStatusEnum.DELIVERED, PaymentStatusEnum.PAID),
+				mkMaterial(p.get(1), c.get(5),  oa[13], 3.0, 4.50, d(3, 8),  tarde1, null,              480.00, OrderStatusEnum.DELIVERED, PaymentStatusEnum.PAID),
+				mkServico( p.get(2), c.get(6),  oa[14], "Compactação de base",    d(3,13), tarde2,       650.00, OrderStatusEnum.DELIVERED, PaymentStatusEnum.PAID),
+				mkMaterial(p.get(4), c.get(7),  oa[15], 5.0, 6.50, d(3,19),  manha,  "Portão de ferro", 760.00, OrderStatusEnum.DELIVERED, PaymentStatusEnum.PAID),
+				mkMaterial(p.get(5), c.get(8),  oa[16], 2.0, 2.70, d(3,24),  tarde1, null,              300.00, OrderStatusEnum.DELIVERED, PaymentStatusEnum.PAID),
+				mkMaterial(p.get(3), c.get(9),  oa[17], 4.0, 5.52, d(3,28),  tarde2, null,              750.00, OrderStatusEnum.DELIVERED, PaymentStatusEnum.PAID)
 		));
 		paymentRepository.saveAll(Arrays.asList(
 				mkPayment(mar.get(0), 800.00, d(3, 3),  PaymentMethodEnum.PIX),
@@ -392,12 +427,12 @@ public class TestConfig implements CommandLineRunner {
 
 		// Abril
 		List<Order> abr = orderRepository.saveAll(Arrays.asList(
-				mkMaterial(p.get(1), c.get(10), oa[18], 5.0, 7.50, d(4, 4),  manha,  null,                  850.00, OrderStatusEnum.DELIVERED, PaymentStatusEnum.PAID),
-				mkServico( p.get(0), c.get(11), oa[19], "Espalhamento de pedrisco", d(4, 9), tarde1, null,   500.00, OrderStatusEnum.DELIVERED, PaymentStatusEnum.PAID),
-				mkMaterial(p.get(2), c.get(0),  oa[20], 4.0, 5.68, d(4,15),  tarde2, null,                  680.00, OrderStatusEnum.DELIVERED, PaymentStatusEnum.PAID),
-				mkMaterial(p.get(4), c.get(1),  oa[21], 3.0, 3.90, d(4,21),  manha,  null,                  460.00, OrderStatusEnum.DELIVERED, PaymentStatusEnum.PAID),
-				mkMaterial(p.get(5), c.get(2),  oa[22], 2.0, 2.70, d(4,25),  tarde1, null,                  300.00, OrderStatusEnum.DELIVERED, PaymentStatusEnum.PAID),
-				mkMaterial(p.get(3), c.get(3),  oa[23], 3.0, 4.14, d(4,29),  tarde2, "Obra no fim da rua",  460.00, OrderStatusEnum.DELIVERED, PaymentStatusEnum.PAID)
+				mkMaterial(p.get(1), c.get(10), oa[18], 5.0, 7.50, d(4, 4),  manha,  null,                 850.00, OrderStatusEnum.DELIVERED, PaymentStatusEnum.PAID),
+				mkServico( p.get(0), c.get(11), oa[19], "Espalhamento de pedrisco", d(4, 9),  tarde1,       500.00, OrderStatusEnum.DELIVERED, PaymentStatusEnum.PAID),
+				mkMaterial(p.get(2), c.get(0),  oa[20], 4.0, 5.68, d(4,15),  tarde2, null,                 680.00, OrderStatusEnum.DELIVERED, PaymentStatusEnum.PAID),
+				mkMaterial(p.get(4), c.get(1),  oa[21], 3.0, 3.90, d(4,21),  manha,  null,                 460.00, OrderStatusEnum.DELIVERED, PaymentStatusEnum.PAID),
+				mkMaterial(p.get(5), c.get(2),  oa[22], 2.0, 2.70, d(4,25),  tarde1, null,                 300.00, OrderStatusEnum.DELIVERED, PaymentStatusEnum.PAID),
+				mkMaterial(p.get(3), c.get(3),  oa[23], 3.0, 4.14, d(4,29),  tarde2, "Obra no fim da rua", 460.00, OrderStatusEnum.DELIVERED, PaymentStatusEnum.PAID)
 		));
 		paymentRepository.saveAll(Arrays.asList(
 				mkPayment(abr.get(0), 850.00, d(4, 4),  PaymentMethodEnum.PIX),
@@ -410,12 +445,12 @@ public class TestConfig implements CommandLineRunner {
 
 		// Maio
 		List<Order> mai = orderRepository.saveAll(Arrays.asList(
-				mkMaterial(p.get(0), c.get(4),  oa[24], 5.0, 7.25, d(5, 6),  manha,  null,                700.00, OrderStatusEnum.DELIVERED, PaymentStatusEnum.PAID),
-				mkMaterial(p.get(1), c.get(5),  oa[25], 5.0, 7.50, d(5,10),  tarde1, null,                850.00, OrderStatusEnum.DELIVERED, PaymentStatusEnum.PAID),
-				mkServico( p.get(4), c.get(6),  oa[26], "Nivelamento de terreno", d(5,15), tarde2, null,  700.00, OrderStatusEnum.DELIVERED, PaymentStatusEnum.PAID),
-				mkMaterial(p.get(2), c.get(7),  oa[27], 3.0, 4.26, d(5,20),  manha,  null,                510.00, OrderStatusEnum.DELIVERED, PaymentStatusEnum.PAID),
-				mkMaterial(p.get(5), c.get(8),  oa[28], 4.0, 5.40, d(5,24),  tarde1, null,                650.00, OrderStatusEnum.DELIVERED, PaymentStatusEnum.PAID),
-				mkMaterial(p.get(3), c.get(9),  oa[29], 2.0, 2.76, d(5,29),  tarde2, null,                650.00, OrderStatusEnum.DELIVERED, PaymentStatusEnum.PAID)
+				mkMaterial(p.get(0), c.get(4),  oa[24], 5.0, 7.25, d(5, 6),  manha,  null,               700.00, OrderStatusEnum.DELIVERED, PaymentStatusEnum.PAID),
+				mkMaterial(p.get(1), c.get(5),  oa[25], 5.0, 7.50, d(5,10),  tarde1, null,               850.00, OrderStatusEnum.DELIVERED, PaymentStatusEnum.PAID),
+				mkServico( p.get(4), c.get(6),  oa[26], "Nivelamento de terreno", d(5,15), tarde2,        700.00, OrderStatusEnum.DELIVERED, PaymentStatusEnum.PAID),
+				mkMaterial(p.get(2), c.get(7),  oa[27], 3.0, 4.26, d(5,20),  manha,  null,               510.00, OrderStatusEnum.DELIVERED, PaymentStatusEnum.PAID),
+				mkMaterial(p.get(5), c.get(8),  oa[28], 4.0, 5.40, d(5,24),  tarde1, null,               650.00, OrderStatusEnum.DELIVERED, PaymentStatusEnum.PAID),
+				mkMaterial(p.get(3), c.get(9),  oa[29], 2.0, 2.76, d(5,29),  tarde2, null,               650.00, OrderStatusEnum.DELIVERED, PaymentStatusEnum.PAID)
 		));
 		paymentRepository.saveAll(Arrays.asList(
 				mkPayment(mai.get(0), 700.00, d(5, 6),  PaymentMethodEnum.PIX),
@@ -428,12 +463,12 @@ public class TestConfig implements CommandLineRunner {
 
 		// Junho
 		List<Order> jun = orderRepository.saveAll(Arrays.asList(
-				mkMaterial(p.get(0), c.get(10), oa[30], 5.0, 7.25, d(6, 5),  manha,  null,               750.00, OrderStatusEnum.DELIVERED, PaymentStatusEnum.PAID),
-				mkMaterial(p.get(1), c.get(11), oa[31], 4.0, 6.00, d(6,10),  tarde1, null,               680.00, OrderStatusEnum.DELIVERED, PaymentStatusEnum.PAID),
-				mkServico( p.get(2), c.get(0),  oa[32], "Compactação de base",  d(6,16), tarde2, null,   650.00, OrderStatusEnum.DELIVERED, PaymentStatusEnum.PAID),
-				mkMaterial(p.get(4), c.get(1),  oa[33], 5.0, 6.50, d(6,20),  manha,  null,               760.00, OrderStatusEnum.DELIVERED, PaymentStatusEnum.PAID),
-				mkMaterial(p.get(5), c.get(2),  oa[34], 3.0, 4.05, d(6,25),  tarde1, null,               500.00, OrderStatusEnum.DELIVERED, PaymentStatusEnum.PAID),
-				mkMaterial(p.get(3), c.get(3),  oa[35], 2.0, 2.76, d(6,28),  tarde2, null,               700.00, OrderStatusEnum.DELIVERED, PaymentStatusEnum.PAID)
+				mkMaterial(p.get(0), c.get(10), oa[30], 5.0, 7.25, d(6, 5),  manha,  null,              750.00, OrderStatusEnum.DELIVERED, PaymentStatusEnum.PAID),
+				mkMaterial(p.get(1), c.get(11), oa[31], 4.0, 6.00, d(6,10),  tarde1, null,              680.00, OrderStatusEnum.DELIVERED, PaymentStatusEnum.PAID),
+				mkServico( p.get(2), c.get(0),  oa[32], "Compactação de base",   d(6,16), tarde2,        650.00, OrderStatusEnum.DELIVERED, PaymentStatusEnum.PAID),
+				mkMaterial(p.get(4), c.get(1),  oa[33], 5.0, 6.50, d(6,20),  manha,  null,              760.00, OrderStatusEnum.DELIVERED, PaymentStatusEnum.PAID),
+				mkMaterial(p.get(5), c.get(2),  oa[34], 3.0, 4.05, d(6,25),  tarde1, null,              500.00, OrderStatusEnum.DELIVERED, PaymentStatusEnum.PAID),
+				mkMaterial(p.get(3), c.get(3),  oa[35], 2.0, 2.76, d(6,28),  tarde2, null,              700.00, OrderStatusEnum.DELIVERED, PaymentStatusEnum.PAID)
 		));
 		paymentRepository.saveAll(Arrays.asList(
 				mkPayment(jun.get(0), 750.00, d(6, 5),  PaymentMethodEnum.PIX),
@@ -446,8 +481,8 @@ public class TestConfig implements CommandLineRunner {
 
 		// Mês atual
 		List<Order> mesAtualEntregues = orderRepository.saveAll(Arrays.asList(
-				mkMaterial(p.get(0), c.get(4),  oa[36], 5.0, 7.25, inicioMes1, manha,  null, 750.00, OrderStatusEnum.DELIVERED, PaymentStatusEnum.PAID),
-				mkMaterial(p.get(4), c.get(5),  oa[37], 3.0, 3.90, inicioMes2, tarde1, null, 480.00, OrderStatusEnum.DELIVERED, PaymentStatusEnum.PAID)
+				mkMaterial(p.get(0), c.get(4), oa[36], 5.0, 7.25, inicioMes1, manha,  null, 750.00, OrderStatusEnum.DELIVERED, PaymentStatusEnum.PAID),
+				mkMaterial(p.get(4), c.get(5), oa[37], 3.0, 3.90, inicioMes2, tarde1, null, 480.00, OrderStatusEnum.DELIVERED, PaymentStatusEnum.PAID)
 		));
 		paymentRepository.saveAll(Arrays.asList(
 				mkPayment(mesAtualEntregues.get(0), 750.00, inicioMes1, PaymentMethodEnum.PIX),
@@ -456,31 +491,33 @@ public class TestConfig implements CommandLineRunner {
 
 		// Pedidos do dia — PENDING
 		orderRepository.saveAll(Arrays.asList(
-				mkMaterial(p.get(2), c.get(6),  oa[38], 4.0, 5.68, hoje, LocalTime.of( 8, 0), "Chegar antes das 9h", 680.00, OrderStatusEnum.PENDING, PaymentStatusEnum.PENDING),
-				mkServico( p.get(0), c.get(7),  oa[39], "Espalhamento de brita", hoje, LocalTime.of(10, 0), null,    550.00, OrderStatusEnum.PENDING, PaymentStatusEnum.PENDING),
-				mkMaterial(p.get(4), c.get(8),  oa[40], 5.0, 6.50, hoje, LocalTime.of(14, 0), "Ligar antes de sair", 760.00, OrderStatusEnum.PENDING, PaymentStatusEnum.PENDING)
+				mkMaterial(p.get(2), c.get(6), oa[38], 4.0, 5.68, hoje, LocalTime.of( 8, 0), "Chegar antes das 9h", 680.00, OrderStatusEnum.PENDING, PaymentStatusEnum.PENDING),
+				mkServico( p.get(0), c.get(7), oa[39], "Espalhamento de brita",               hoje, LocalTime.of(10, 0),        550.00, OrderStatusEnum.PENDING, PaymentStatusEnum.PENDING),
+				mkMaterial(p.get(4), c.get(8), oa[40], 5.0, 6.50, hoje, LocalTime.of(14, 0), "Ligar antes de sair", 760.00, OrderStatusEnum.PENDING, PaymentStatusEnum.PENDING)
 		));
 
-		// Cobranças antigas — entregues há ~2 meses, fora do filtro do mês atual
+		// Cobranças antigas — entregues há ~2 meses, fora do filtro do mês atual.
+		// Ficam visíveis apenas ao clicar em "Ver todas" na tela de cobranças.
 		LocalDate duasMesAtras = hoje.minusMonths(2).withDayOfMonth(10);
 
 		OrderAddress oaAntiga1 = orderAddressRepository.save(
-				new OrderAddress(null, "Rua Silva Jardim", "320", null, "Centro", "Florianópolis", "SC", "88020-200")
+				new OrderAddress(null, "Rua Silva Jardim", "320", null,     CENTRO, CIDADE, "SC", "88020-200")
 		);
 		OrderAddress oaAntiga2 = orderAddressRepository.save(
-				new OrderAddress(null, "Rua Bocaiúva", "1870", "Sala 3", "Centro", "Florianópolis", "SC", "88015-530")
+				new OrderAddress(null, "Rua Bocaiúva",     "1870", "Sala 3", CENTRO, CIDADE, "SC", "88015-530")
 		);
 
-		Order antigaNaoPaga = orderRepository.save(
-				mkMaterial(p.get(1), c.get(9),  oaAntiga1, 3.0, 4.50, duasMesAtras, manha,  null, 480.00, OrderStatusEnum.DELIVERED, PaymentStatusEnum.PENDING)
+		// Pedido totalmente não pago — testa cobrança simples
+		orderRepository.save(
+				mkMaterial(p.get(1), c.get(9),  oaAntiga1, 3.0, 4.50, duasMesAtras,             manha,  null, 480.00, OrderStatusEnum.DELIVERED, PaymentStatusEnum.PENDING)
 		);
+
+		// Pedido parcialmente pago — cliente pagou R$200 dos R$680, restam R$480 em aberto
 		Order antigaParcial = orderRepository.save(
 				mkMaterial(p.get(3), c.get(11), oaAntiga2, 5.0, 6.90, duasMesAtras.plusDays(4), tarde1, null, 680.00, OrderStatusEnum.DELIVERED, PaymentStatusEnum.PARTIAL)
 		);
-		// Pagamento parcial: cliente pagou R$ 200 dos R$ 680 — restam R$ 480 em aberto
 		paymentRepository.save(mkPayment(antigaParcial, 200.00, duasMesAtras.plusDays(4), PaymentMethodEnum.CASH));
 	}
-
 
 	// Despesas
 
@@ -491,75 +528,75 @@ public class TestConfig implements CommandLineRunner {
 		// Templates de despesas fixas
 		FixedExpense fxAluguel   = fixedExpenseRepository.save(new FixedExpense(null, "Aluguel Galpão",        BigDecimal.valueOf(600.00), "Imóvel"));
 		FixedExpense fxSindicato = fixedExpenseRepository.save(new FixedExpense(null, "Mensalidade Sindicato", BigDecimal.valueOf( 80.00), "Sindicato"));
-		FixedExpense fxJornal    = fixedExpenseRepository.save(new FixedExpense(null, "Jornal",                BigDecimal.valueOf( 20.00), "Escritório"));
+		FixedExpense fxJornal    = fixedExpenseRepository.save(new FixedExpense(null, "Jornal",                BigDecimal.valueOf( 20.00), CAT_ESCRITORIO));
 		FixedExpense fxContabil  = fixedExpenseRepository.save(new FixedExpense(null, "Honorários Contábeis",  BigDecimal.valueOf(200.00), "Contabilidade"));
-		FixedExpense fxInternet  = fixedExpenseRepository.save(new FixedExpense(null, "Internet",              BigDecimal.valueOf( 99.90), "Escritório"));
+		FixedExpense fxInternet  = fixedExpenseRepository.save(new FixedExpense(null, "Internet",              BigDecimal.valueOf( 99.90), CAT_ESCRITORIO));
 
 		FixedExpense[] fixas = { fxAluguel, fxSindicato, fxJornal, fxContabil, fxInternet };
 
 		// Janeiro
 		saveFixasMes(fixas, 1);
 		expenseRepository.saveAll(Arrays.asList(
-				variavel("Manutenção caminhão",     400.00, d(1,12), "Mecânica"),
-				variavel("Material de escritório",   80.00, d(1,20), "Escritório"),
-				variavel("Seguro caminhão",          200.00, d(1,28), "Seguros"),
-				fuelExpense("Mercedes 1313",         370.00, d(1,18))
+				variavel("Manutenção caminhão",    400.00, d(1,12), CAT_MECANICA),
+				variavel("Material de escritório",  80.00, d(1,20), CAT_ESCRITORIO),
+				variavel("Seguro caminhão",         200.00, d(1,28), "Seguros"),
+				fuelExpense(370.00, d(1,18))
 		));
-		saveAbastecimento(d(1,18), "Mercedes 1313", 310.0, 61.36, 6.03, "Posto Dom Bosco");
+		saveAbastecimento(d(1,18), 310.0, 61.36, POSTO_DOM_BOSCO);
 
 		// Fevereiro
 		saveFixasMes(fixas, 2);
 		expenseRepository.saveAll(Arrays.asList(
-				variavel("Troca de óleo",            220.00, d(2, 8), "Mecânica"),
-				variavel("Limpeza pátio",             80.00, d(2,16), "Manutenção"),
-				variavel("Compra de EPI",            130.00, d(2,23), "Segurança"),
-				fuelExpense("Mercedes 1313",          440.00, d(2,15))
+				variavel("Troca de óleo",           220.00, d(2, 8), CAT_MECANICA),
+				variavel("Limpeza pátio",            80.00, d(2,16), CAT_MANUTENCAO),
+				variavel("Compra de EPI",           130.00, d(2,23), "Segurança"),
+				fuelExpense(440.00, d(2,15))
 		));
-		saveAbastecimento(d(2,15), "Mercedes 1313", 340.0, 72.97, 6.03, "Auto Posto Central");
+		saveAbastecimento(d(2,15), 340.0, 72.97, AUTO_POSTO_CENTRAL);
 
 		// Março
 		saveFixasMes(fixas, 3);
 		expenseRepository.saveAll(Arrays.asList(
-				variavel("Conserto balança",         350.00, d(3, 7), "Equipamentos"),
-				variavel("Impressão documentos",      45.00, d(3,14), "Escritório"),
-				variavel("Revisão periódica caminhão",475.00, d(3,20), "Mecânica"),
-				fuelExpense("Mercedes 1313",          370.00, d(3,12))
+				variavel("Conserto balança",         350.00, d(3, 7), CAT_EQUIPAMENTOS),
+				variavel("Impressão documentos",      45.00, d(3,14), CAT_ESCRITORIO),
+				variavel("Revisão periódica caminhão",475.00, d(3,20), CAT_MECANICA),
+				fuelExpense(370.00, d(3,12))
 		));
-		saveAbastecimento(d(3,12), "Mercedes 1313", 260.0, 61.36, 6.03, "Posto Dom Bosco");
+		saveAbastecimento(d(3,12), 260.0, 61.36, POSTO_DOM_BOSCO);
 
 		// Abril
 		saveFixasMes(fixas, 4);
 		expenseRepository.saveAll(Arrays.asList(
-				variavel("Limpeza depósito",          180.00, d(4, 9), "Manutenção"),
-				variavel("Compra ferramentas",        250.00, d(4,17), "Equipamentos"),
-				variavel("Conserto portão",           170.00, d(4,24), "Manutenção"),
-				fuelExpense("Mercedes 1313",           450.00, d(4,16))
+				variavel("Limpeza depósito",         180.00, d(4, 9), CAT_MANUTENCAO),
+				variavel("Compra ferramentas",       250.00, d(4,17), CAT_EQUIPAMENTOS),
+				variavel("Conserto portão",          170.00, d(4,24), CAT_MANUTENCAO),
+				fuelExpense(450.00, d(4,16))
 		));
-		saveAbastecimento(d(4,16), "Mercedes 1313", 360.0, 74.63, 6.03, "Auto Posto Central");
+		saveAbastecimento(d(4,16), 360.0, 74.63, AUTO_POSTO_CENTRAL);
 
 		// Maio
 		saveFixasMes(fixas, 5);
 		expenseRepository.saveAll(Arrays.asList(
-				variavel("Reparo elétrico",           430.00, d(5, 8), "Manutenção"),
-				variavel("Recarga gás compressor",     90.00, d(5,15), "Equipamentos"),
-				variavel("Pintura galpão",            650.00, d(5,22), "Manutenção"),
-				fuelExpense("Mercedes 1313",           450.00, d(5,19))
+				variavel("Reparo elétrico",          430.00, d(5, 8), CAT_MANUTENCAO),
+				variavel("Recarga gás compressor",    90.00, d(5,15), CAT_EQUIPAMENTOS),
+				variavel("Pintura galpão",           650.00, d(5,22), CAT_MANUTENCAO),
+				fuelExpense(450.00, d(5,19))
 		));
-		saveAbastecimento(d(5,19), "Mercedes 1313", 360.0, 74.63, 6.03, "Posto Dom Bosco");
+		saveAbastecimento(d(5,19), 360.0, 74.63, POSTO_DOM_BOSCO);
 
 		// Junho
 		saveFixasMes(fixas, 6);
 		expenseRepository.saveAll(Arrays.asList(
-				variavel("Compra pneus",              580.00, d(6, 6), "Mecânica"),
-				variavel("Manutenção balança",        155.00, d(6,13), "Equipamentos"),
-				variavel("Material de escritório",     95.00, d(6,20), "Escritório"),
-				fuelExpense("Mercedes 1313",           430.00, d(6,17))
+				variavel("Compra pneus",             580.00, d(6, 6), CAT_MECANICA),
+				variavel("Manutenção balança",       155.00, d(6,13), CAT_EQUIPAMENTOS),
+				variavel("Material de escritório",    95.00, d(6,20), CAT_ESCRITORIO),
+				fuelExpense(430.00, d(6,17))
 		));
-		saveAbastecimento(d(6,17), "Mercedes 1313", 310.0, 71.31, 6.03, "Auto Posto Central");
+		saveAbastecimento(d(6,17), 310.0, 71.31, AUTO_POSTO_CENTRAL);
 
 		// Mês atual
 		LocalDate diaPrimeiro = hoje.withDayOfMonth(1);
-		LocalDate vencimento = hoje.plusMonths(1).withDayOfMonth(5);
+		LocalDate vencimento  = hoje.plusMonths(1).withDayOfMonth(5);
 
 		expenseRepository.saveAll(Arrays.asList(
 				// Fixas já pagas no início do mês
@@ -574,16 +611,16 @@ public class TestConfig implements CommandLineRunner {
 						diaPrimeiro, vencimento, null,
 						ExpenseTypeEnum.FIXED, PaymentStatusEnum.PENDING, fxInternet.getCategory()),
 				// Variáveis do mês
-				variavel("Conserto pneu caminhão",    150.00, hoje.minusDays(5), "Mecânica"),
-				variavel("Limpeza escritório",          60.00, hoje.minusDays(2), "Escritório"),
-				fuelExpense("Mercedes 1313",           250.00, hoje.minusDays(3))
+				variavel("Conserto pneu caminhão", 150.00, hoje.minusDays(5), CAT_MECANICA),
+				variavel("Limpeza escritório",      60.00, hoje.minusDays(2), CAT_ESCRITORIO),
+				fuelExpense(250.00, hoje.minusDays(3))
 		));
-		saveAbastecimento(hoje.minusDays(3), "Mercedes 1313", 100.0, 41.46, 6.03, "Posto Dom Bosco");
+		saveAbastecimento(hoje.minusDays(3), 100.0, 41.46, POSTO_DOM_BOSCO);
 	}
 
 	// Helpers
 
-	// Pedido de material. Remaining é zero para PAID e igual ao total para PENDING
+	// Pedido de material. Remaining é zero para PAID e igual ao total para PENDING/PARTIAL
 	private Order mkMaterial(Product p, Client c, OrderAddress oa,
 			double qtdM3, double qtdTon,
 			LocalDate date, LocalTime time, String obs,
@@ -596,15 +633,15 @@ public class TestConfig implements CommandLineRunner {
 				BigDecimal.valueOf(total), BigDecimal.valueOf(remaining));
 	}
 
-	// Pedido de serviço. Remaining é zero para PAID e igual ao total para PENDING
+	// Pedido de serviço - obs é sempre nulo neste conjunto de dados, por isso omitido
 	private Order mkServico(Product p, Client c, OrderAddress oa,
 			String servico,
-			LocalDate date, LocalTime time, String obs,
+			LocalDate date, LocalTime time,
 			double total,
 			OrderStatusEnum status, PaymentStatusEnum payStatus) {
 		double remaining = payStatus == PaymentStatusEnum.PAID ? 0.00 : total;
 		return new Order(null, p, c, oa, null, null, servico,
-				OrderTypeEnum.SERVICE, date, time, obs,
+				OrderTypeEnum.SERVICE, date, time, null,
 				status, payStatus,
 				BigDecimal.valueOf(total), BigDecimal.valueOf(remaining));
 	}
@@ -639,25 +676,22 @@ public class TestConfig implements CommandLineRunner {
 				ExpenseTypeEnum.VARIABLE, PaymentStatusEnum.PAID, category);
 	}
 
-	// Instancia uma despesa de combustível paga (o Fuel é salvo via saveAbastecimento)
-	private Expense fuelExpense(String vehicle, double value, LocalDate date) {
-		return new Expense(null, vehicle, BigDecimal.valueOf(value),
+	// Instancia uma despesa de combustível paga para o caminhão padrão
+	// (o registro de Fuel é salvo separadamente via saveAbastecimento)
+	private Expense fuelExpense(double value, LocalDate date) {
+		return new Expense(null, CAMINHAO, BigDecimal.valueOf(value),
 				date, null, date,
 				ExpenseTypeEnum.FUEL, PaymentStatusEnum.PAID, "Combustível");
 	}
 
-	/**
-	 * Busca a despesa de combustível pela data e salva o registro de abastecimento.
-	 * Deve ser chamado logo após o saveAll que inclui o fuelExpense correspondente.
-	 */
-	private void saveAbastecimento(LocalDate date, String vehicle,
-			double km, double liters, double pricePerLiter,
-			String posto) {
+	// Busca a despesa de combustível pela data e salva o registro de abastecimento.
+	// Deve ser chamado logo após o saveAll que inclui o fuelExpense correspondente.
+	private void saveAbastecimento(LocalDate date, double km, double liters, String posto) {
 		expenseRepository.findAll().stream()
 				.filter(e -> e.getType() == ExpenseTypeEnum.FUEL
 						&& e.getDate().equals(date))
 				.findFirst()
 				.ifPresent(ex -> fuelRepository.save(
-						new Fuel(null, ex, vehicle, km, liters, pricePerLiter, posto)));
+						new Fuel(null, ex, CAMINHAO, km, liters, PRECO_LITRO, posto)));
 	}
 }
