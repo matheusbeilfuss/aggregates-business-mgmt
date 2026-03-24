@@ -373,12 +373,12 @@ public class TestConfig implements CommandLineRunner {
 
 		// Janeiro
 		List<Order> jan = orderRepository.saveAll(Arrays.asList(
-				mkMaterial(p.get(0), c.get(3),  oa[0],  5.0, 7.25, d(1, 8),  manha,  null,                750.00, OrderStatusEnum.DELIVERED, PaymentStatusEnum.PAID),
-				mkMaterial(p.get(1), c.get(4),  oa[1],  3.0, 4.50, d(1,12),  tarde1, null,                450.00, OrderStatusEnum.DELIVERED, PaymentStatusEnum.PAID),
-				mkMaterial(p.get(4), c.get(5),  oa[2],  4.0, 5.20, d(1,16),  tarde2, "Deixar no quintal", 600.00, OrderStatusEnum.DELIVERED, PaymentStatusEnum.PAID),
-				mkMaterial(p.get(2), c.get(6),  oa[3],  2.0, 2.84, d(1,22),  manha,  null,                300.00, OrderStatusEnum.DELIVERED, PaymentStatusEnum.PAID),
-				mkServico( p.get(1), c.get(7),  oa[4],  "Espalhamento de brita",  d(1,25), tarde1,         530.00, OrderStatusEnum.DELIVERED, PaymentStatusEnum.PAID),
-				mkMaterial(p.get(5), c.get(8),  oa[5],  5.0, 6.75, d(1,29),  tarde2, null,                750.00, OrderStatusEnum.DELIVERED, PaymentStatusEnum.PAID)
+				mkMaterial(p.get(0), c.get(3),  oa[0],  5.0, 7.25, d(1, 8),  manha,  null,                750.00, 750.00, OrderStatusEnum.DELIVERED, PaymentStatusEnum.PAID),
+				mkMaterial(p.get(1), c.get(4),  oa[1],  3.0, 4.50, d(1,12),  tarde1, null,                450.00, 450.00, OrderStatusEnum.DELIVERED, PaymentStatusEnum.PAID),
+				mkMaterial(p.get(4), c.get(5),  oa[2],  4.0, 5.20, d(1,16),  tarde2, "Deixar no quintal", 600.00, 600.00, OrderStatusEnum.DELIVERED, PaymentStatusEnum.PAID),
+				mkMaterial(p.get(2), c.get(6),  oa[3],  2.0, 2.84, d(1,22),  manha,  null,                300.00, 300.00, OrderStatusEnum.DELIVERED, PaymentStatusEnum.PAID),
+				mkServico( p.get(1), c.get(7),  oa[4],  "Espalhamento de brita",  d(1,25), tarde1,         530.00, 530.00, OrderStatusEnum.DELIVERED, PaymentStatusEnum.PAID),
+				mkMaterial(p.get(5), c.get(8),  oa[5],  5.0, 6.75, d(1,29),  tarde2, null,                750.00, 750.00, OrderStatusEnum.DELIVERED, PaymentStatusEnum.PAID)
 		));
 		paymentRepository.saveAll(Arrays.asList(
 				mkPayment(jan.get(0), 750.00, d(1, 8),  PaymentMethodEnum.PIX),
@@ -391,12 +391,12 @@ public class TestConfig implements CommandLineRunner {
 
 		// Fevereiro
 		List<Order> fev = orderRepository.saveAll(Arrays.asList(
-				mkMaterial(p.get(0), c.get(9),  oa[6],  3.0, 4.35, d(2, 5),  manha,  null,               480.00, OrderStatusEnum.DELIVERED, PaymentStatusEnum.PAID),
-				mkMaterial(p.get(1), c.get(10), oa[7],  5.0, 7.50, d(2,10),  tarde1, null,               850.00, OrderStatusEnum.DELIVERED, PaymentStatusEnum.PAID),
-				mkServico( p.get(4), c.get(0),  oa[8],  "Nivelamento de pátio",   d(2,14), tarde2,        600.00, OrderStatusEnum.DELIVERED, PaymentStatusEnum.PAID),
-				mkMaterial(p.get(2), c.get(1),  oa[9],  4.0, 5.68, d(2,19),  manha,  null,               650.00, OrderStatusEnum.DELIVERED, PaymentStatusEnum.PAID),
-				mkMaterial(p.get(3), c.get(2),  oa[10], 3.0, 4.14, d(2,24),  tarde1, null,               550.00, OrderStatusEnum.DELIVERED, PaymentStatusEnum.PAID),
-				mkMaterial(p.get(5), c.get(3),  oa[11], 2.0, 2.70, d(2,27),  tarde2, null,               400.00, OrderStatusEnum.DELIVERED, PaymentStatusEnum.PAID)
+				mkMaterial(p.get(0), c.get(9),  oa[6],  3.0, 4.35, d(2, 5),  manha,  null,               480.00, 480.00, OrderStatusEnum.DELIVERED, PaymentStatusEnum.PAID),
+				mkMaterial(p.get(1), c.get(10), oa[7],  5.0, 7.50, d(2,10),  tarde1, null,               850.00, 850.00, OrderStatusEnum.DELIVERED, PaymentStatusEnum.PAID),
+				mkServico( p.get(4), c.get(0),  oa[8],  "Nivelamento de pátio",   d(2,14), tarde2,        600.00, 600.00, OrderStatusEnum.DELIVERED, PaymentStatusEnum.PAID),
+				mkMaterial(p.get(2), c.get(1),  oa[9],  4.0, 5.68, d(2,19),  manha,  null,               650.00, 650.00, OrderStatusEnum.DELIVERED, PaymentStatusEnum.PAID),
+				mkMaterial(p.get(3), c.get(2),  oa[10], 3.0, 4.14, d(2,24),  tarde1, null,               550.00, 550.00, OrderStatusEnum.DELIVERED, PaymentStatusEnum.PAID),
+				mkMaterial(p.get(5), c.get(3),  oa[11], 2.0, 2.70, d(2,27),  tarde2, null,               400.00, 400.00, OrderStatusEnum.DELIVERED, PaymentStatusEnum.PAID)
 		));
 		paymentRepository.saveAll(Arrays.asList(
 				mkPayment(fev.get(0), 480.00, d(2, 5),  PaymentMethodEnum.PIX),
@@ -409,12 +409,12 @@ public class TestConfig implements CommandLineRunner {
 
 		// Março
 		List<Order> mar = orderRepository.saveAll(Arrays.asList(
-				mkMaterial(p.get(0), c.get(4),  oa[12], 5.0, 7.25, d(3, 3),  manha,  null,              800.00, OrderStatusEnum.DELIVERED, PaymentStatusEnum.PAID),
-				mkMaterial(p.get(1), c.get(5),  oa[13], 3.0, 4.50, d(3, 8),  tarde1, null,              480.00, OrderStatusEnum.DELIVERED, PaymentStatusEnum.PAID),
-				mkServico( p.get(2), c.get(6),  oa[14], "Compactação de base",    d(3,13), tarde2,       650.00, OrderStatusEnum.DELIVERED, PaymentStatusEnum.PAID),
-				mkMaterial(p.get(4), c.get(7),  oa[15], 5.0, 6.50, d(3,19),  manha,  "Portão de ferro", 760.00, OrderStatusEnum.DELIVERED, PaymentStatusEnum.PAID),
-				mkMaterial(p.get(5), c.get(8),  oa[16], 2.0, 2.70, d(3,24),  tarde1, null,              300.00, OrderStatusEnum.DELIVERED, PaymentStatusEnum.PAID),
-				mkMaterial(p.get(3), c.get(9),  oa[17], 4.0, 5.52, d(3,28),  tarde2, null,              750.00, OrderStatusEnum.DELIVERED, PaymentStatusEnum.PAID)
+				mkMaterial(p.get(0), c.get(4),  oa[12], 5.0, 7.25, d(3, 3),  manha,  null,              800.00, 800.00, OrderStatusEnum.DELIVERED, PaymentStatusEnum.PAID),
+				mkMaterial(p.get(1), c.get(5),  oa[13], 3.0, 4.50, d(3, 8),  tarde1, null,              480.00, 480.00, OrderStatusEnum.DELIVERED, PaymentStatusEnum.PAID),
+				mkServico( p.get(2), c.get(6),  oa[14], "Compactação de base",    d(3,13), tarde2,       650.00, 650.00, OrderStatusEnum.DELIVERED, PaymentStatusEnum.PAID),
+				mkMaterial(p.get(4), c.get(7),  oa[15], 5.0, 6.50, d(3,19),  manha,  "Portão de ferro", 760.00, 760.00, OrderStatusEnum.DELIVERED, PaymentStatusEnum.PAID),
+				mkMaterial(p.get(5), c.get(8),  oa[16], 2.0, 2.70, d(3,24),  tarde1, null,              300.00, 300.00, OrderStatusEnum.DELIVERED, PaymentStatusEnum.PAID),
+				mkMaterial(p.get(3), c.get(9),  oa[17], 4.0, 5.52, d(3,28),  tarde2, null,              750.00, 750.00, OrderStatusEnum.DELIVERED, PaymentStatusEnum.PAID)
 		));
 		paymentRepository.saveAll(Arrays.asList(
 				mkPayment(mar.get(0), 800.00, d(3, 3),  PaymentMethodEnum.PIX),
@@ -427,12 +427,12 @@ public class TestConfig implements CommandLineRunner {
 
 		// Abril
 		List<Order> abr = orderRepository.saveAll(Arrays.asList(
-				mkMaterial(p.get(1), c.get(10), oa[18], 5.0, 7.50, d(4, 4),  manha,  null,                 850.00, OrderStatusEnum.DELIVERED, PaymentStatusEnum.PAID),
-				mkServico( p.get(0), c.get(11), oa[19], "Espalhamento de pedrisco", d(4, 9),  tarde1,       500.00, OrderStatusEnum.DELIVERED, PaymentStatusEnum.PAID),
-				mkMaterial(p.get(2), c.get(0),  oa[20], 4.0, 5.68, d(4,15),  tarde2, null,                 680.00, OrderStatusEnum.DELIVERED, PaymentStatusEnum.PAID),
-				mkMaterial(p.get(4), c.get(1),  oa[21], 3.0, 3.90, d(4,21),  manha,  null,                 460.00, OrderStatusEnum.DELIVERED, PaymentStatusEnum.PAID),
-				mkMaterial(p.get(5), c.get(2),  oa[22], 2.0, 2.70, d(4,25),  tarde1, null,                 300.00, OrderStatusEnum.DELIVERED, PaymentStatusEnum.PAID),
-				mkMaterial(p.get(3), c.get(3),  oa[23], 3.0, 4.14, d(4,29),  tarde2, "Obra no fim da rua", 460.00, OrderStatusEnum.DELIVERED, PaymentStatusEnum.PAID)
+				mkMaterial(p.get(1), c.get(10), oa[18], 5.0, 7.50, d(4, 4),  manha,  null,                 850.00, 850.00, OrderStatusEnum.DELIVERED, PaymentStatusEnum.PAID),
+				mkServico( p.get(0), c.get(11), oa[19], "Espalhamento de pedrisco", d(4, 9),  tarde1,       500.00, 500.00, OrderStatusEnum.DELIVERED, PaymentStatusEnum.PAID),
+				mkMaterial(p.get(2), c.get(0),  oa[20], 4.0, 5.68, d(4,15),  tarde2, null,                 680.00, 680.00, OrderStatusEnum.DELIVERED, PaymentStatusEnum.PAID),
+				mkMaterial(p.get(4), c.get(1),  oa[21], 3.0, 3.90, d(4,21),  manha,  null,                 460.00, 460.00, OrderStatusEnum.DELIVERED, PaymentStatusEnum.PAID),
+				mkMaterial(p.get(5), c.get(2),  oa[22], 2.0, 2.70, d(4,25),  tarde1, null,                 300.00, 300.00, OrderStatusEnum.DELIVERED, PaymentStatusEnum.PAID),
+				mkMaterial(p.get(3), c.get(3),  oa[23], 3.0, 4.14, d(4,29),  tarde2, "Obra no fim da rua", 460.00, 460.00, OrderStatusEnum.DELIVERED, PaymentStatusEnum.PAID)
 		));
 		paymentRepository.saveAll(Arrays.asList(
 				mkPayment(abr.get(0), 850.00, d(4, 4),  PaymentMethodEnum.PIX),
@@ -445,12 +445,12 @@ public class TestConfig implements CommandLineRunner {
 
 		// Maio
 		List<Order> mai = orderRepository.saveAll(Arrays.asList(
-				mkMaterial(p.get(0), c.get(4),  oa[24], 5.0, 7.25, d(5, 6),  manha,  null,               700.00, OrderStatusEnum.DELIVERED, PaymentStatusEnum.PAID),
-				mkMaterial(p.get(1), c.get(5),  oa[25], 5.0, 7.50, d(5,10),  tarde1, null,               850.00, OrderStatusEnum.DELIVERED, PaymentStatusEnum.PAID),
-				mkServico( p.get(4), c.get(6),  oa[26], "Nivelamento de terreno", d(5,15), tarde2,        700.00, OrderStatusEnum.DELIVERED, PaymentStatusEnum.PAID),
-				mkMaterial(p.get(2), c.get(7),  oa[27], 3.0, 4.26, d(5,20),  manha,  null,               510.00, OrderStatusEnum.DELIVERED, PaymentStatusEnum.PAID),
-				mkMaterial(p.get(5), c.get(8),  oa[28], 4.0, 5.40, d(5,24),  tarde1, null,               650.00, OrderStatusEnum.DELIVERED, PaymentStatusEnum.PAID),
-				mkMaterial(p.get(3), c.get(9),  oa[29], 2.0, 2.76, d(5,29),  tarde2, null,               650.00, OrderStatusEnum.DELIVERED, PaymentStatusEnum.PAID)
+				mkMaterial(p.get(0), c.get(4),  oa[24], 5.0, 7.25, d(5, 6),  manha,  null,               700.00, 700.00, OrderStatusEnum.DELIVERED, PaymentStatusEnum.PAID),
+				mkMaterial(p.get(1), c.get(5),  oa[25], 5.0, 7.50, d(5,10),  tarde1, null,               850.00, 850.00, OrderStatusEnum.DELIVERED, PaymentStatusEnum.PAID),
+				mkServico( p.get(4), c.get(6),  oa[26], "Nivelamento de terreno", d(5,15), tarde2,        700.00, 700.00, OrderStatusEnum.DELIVERED, PaymentStatusEnum.PAID),
+				mkMaterial(p.get(2), c.get(7),  oa[27], 3.0, 4.26, d(5,20),  manha,  null,               510.00, 510.00, OrderStatusEnum.DELIVERED, PaymentStatusEnum.PAID),
+				mkMaterial(p.get(5), c.get(8),  oa[28], 4.0, 5.40, d(5,24),  tarde1, null,               650.00, 650.00, OrderStatusEnum.DELIVERED, PaymentStatusEnum.PAID),
+				mkMaterial(p.get(3), c.get(9),  oa[29], 2.0, 2.76, d(5,29),  tarde2, null,               650.00, 650.00, OrderStatusEnum.DELIVERED, PaymentStatusEnum.PAID)
 		));
 		paymentRepository.saveAll(Arrays.asList(
 				mkPayment(mai.get(0), 700.00, d(5, 6),  PaymentMethodEnum.PIX),
@@ -463,12 +463,12 @@ public class TestConfig implements CommandLineRunner {
 
 		// Junho
 		List<Order> jun = orderRepository.saveAll(Arrays.asList(
-				mkMaterial(p.get(0), c.get(10), oa[30], 5.0, 7.25, d(6, 5),  manha,  null,              750.00, OrderStatusEnum.DELIVERED, PaymentStatusEnum.PAID),
-				mkMaterial(p.get(1), c.get(11), oa[31], 4.0, 6.00, d(6,10),  tarde1, null,              680.00, OrderStatusEnum.DELIVERED, PaymentStatusEnum.PAID),
-				mkServico( p.get(2), c.get(0),  oa[32], "Compactação de base",   d(6,16), tarde2,        650.00, OrderStatusEnum.DELIVERED, PaymentStatusEnum.PAID),
-				mkMaterial(p.get(4), c.get(1),  oa[33], 5.0, 6.50, d(6,20),  manha,  null,              760.00, OrderStatusEnum.DELIVERED, PaymentStatusEnum.PAID),
-				mkMaterial(p.get(5), c.get(2),  oa[34], 3.0, 4.05, d(6,25),  tarde1, null,              500.00, OrderStatusEnum.DELIVERED, PaymentStatusEnum.PAID),
-				mkMaterial(p.get(3), c.get(3),  oa[35], 2.0, 2.76, d(6,28),  tarde2, null,              700.00, OrderStatusEnum.DELIVERED, PaymentStatusEnum.PAID)
+				mkMaterial(p.get(0), c.get(10), oa[30], 5.0, 7.25, d(6, 5),  manha,  null,              750.00, 750.00, OrderStatusEnum.DELIVERED, PaymentStatusEnum.PAID),
+				mkMaterial(p.get(1), c.get(11), oa[31], 4.0, 6.00, d(6,10),  tarde1, null,              680.00, 680.00, OrderStatusEnum.DELIVERED, PaymentStatusEnum.PAID),
+				mkServico( p.get(2), c.get(0),  oa[32], "Compactação de base",   d(6,16), tarde2,        650.00, 650.00, OrderStatusEnum.DELIVERED, PaymentStatusEnum.PAID),
+				mkMaterial(p.get(4), c.get(1),  oa[33], 5.0, 6.50, d(6,20),  manha,  null,              760.00, 760.00, OrderStatusEnum.DELIVERED, PaymentStatusEnum.PAID),
+				mkMaterial(p.get(5), c.get(2),  oa[34], 3.0, 4.05, d(6,25),  tarde1, null,              500.00, 500.00, OrderStatusEnum.DELIVERED, PaymentStatusEnum.PAID),
+				mkMaterial(p.get(3), c.get(3),  oa[35], 2.0, 2.76, d(6,28),  tarde2, null,              700.00, 700.00, OrderStatusEnum.DELIVERED, PaymentStatusEnum.PAID)
 		));
 		paymentRepository.saveAll(Arrays.asList(
 				mkPayment(jun.get(0), 750.00, d(6, 5),  PaymentMethodEnum.PIX),
@@ -481,8 +481,8 @@ public class TestConfig implements CommandLineRunner {
 
 		// Mês atual
 		List<Order> mesAtualEntregues = orderRepository.saveAll(Arrays.asList(
-				mkMaterial(p.get(0), c.get(4), oa[36], 5.0, 7.25, inicioMes1, manha,  null, 750.00, OrderStatusEnum.DELIVERED, PaymentStatusEnum.PAID),
-				mkMaterial(p.get(4), c.get(5), oa[37], 3.0, 3.90, inicioMes2, tarde1, null, 480.00, OrderStatusEnum.DELIVERED, PaymentStatusEnum.PAID)
+				mkMaterial(p.get(0), c.get(4), oa[36], 5.0, 7.25, inicioMes1, manha,  null, 750.00, 750.00, OrderStatusEnum.DELIVERED, PaymentStatusEnum.PAID),
+				mkMaterial(p.get(4), c.get(5), oa[37], 3.0, 3.90, inicioMes2, tarde1, null, 480.00, 480.00, OrderStatusEnum.DELIVERED, PaymentStatusEnum.PAID)
 		));
 		paymentRepository.saveAll(Arrays.asList(
 				mkPayment(mesAtualEntregues.get(0), 750.00, inicioMes1, PaymentMethodEnum.PIX),
@@ -491,9 +491,9 @@ public class TestConfig implements CommandLineRunner {
 
 		// Pedidos do dia — PENDING
 		orderRepository.saveAll(Arrays.asList(
-				mkMaterial(p.get(2), c.get(6), oa[38], 4.0, 5.68, hoje, LocalTime.of( 8, 0), "Chegar antes das 9h", 680.00, OrderStatusEnum.PENDING, PaymentStatusEnum.PENDING),
-				mkServico( p.get(0), c.get(7), oa[39], "Espalhamento de brita",               hoje, LocalTime.of(10, 0),        550.00, OrderStatusEnum.PENDING, PaymentStatusEnum.PENDING),
-				mkMaterial(p.get(4), c.get(8), oa[40], 5.0, 6.50, hoje, LocalTime.of(14, 0), "Ligar antes de sair", 760.00, OrderStatusEnum.PENDING, PaymentStatusEnum.PENDING)
+				mkMaterial(p.get(2), c.get(6), oa[38], 4.0, 5.68, hoje, LocalTime.of( 8, 0), "Chegar antes das 9h", 680.00, 0.00, OrderStatusEnum.PENDING, PaymentStatusEnum.PENDING),
+				mkServico( p.get(0), c.get(7), oa[39], "Espalhamento de brita",               hoje, LocalTime.of(10, 0),        550.00, 0.00, OrderStatusEnum.PENDING, PaymentStatusEnum.PENDING),
+				mkMaterial(p.get(4), c.get(8), oa[40], 5.0, 6.50, hoje, LocalTime.of(14, 0), "Ligar antes de sair", 760.00, 0.00, OrderStatusEnum.PENDING, PaymentStatusEnum.PENDING)
 		));
 
 		// Cobranças antigas — entregues há ~2 meses, fora do filtro do mês atual.
@@ -507,14 +507,14 @@ public class TestConfig implements CommandLineRunner {
 				new OrderAddress(null, "Rua Bocaiúva",     "1870", "Sala 3", CENTRO, CIDADE, "SC", "88015-530")
 		);
 
-		// Pedido totalmente não pago — testa cobrança simples
+		// Pedido totalmente não pago
 		orderRepository.save(
-				mkMaterial(p.get(1), c.get(9),  oaAntiga1, 3.0, 4.50, duasMesAtras,             manha,  null, 480.00, OrderStatusEnum.DELIVERED, PaymentStatusEnum.PENDING)
+				mkMaterial(p.get(1), c.get(9),  oaAntiga1, 3.0, 4.50, duasMesAtras,             manha,  null, 480.00, 0.00, OrderStatusEnum.DELIVERED, PaymentStatusEnum.PENDING)
 		);
 
-		// Pedido parcialmente pago — cliente pagou R$200 dos R$680, restam R$480 em aberto
+		// Pedido parcialmente pago — cliente pagou R$200 dos R$680, restam R$480
 		Order antigaParcial = orderRepository.save(
-				mkMaterial(p.get(3), c.get(11), oaAntiga2, 5.0, 6.90, duasMesAtras.plusDays(4), tarde1, null, 680.00, OrderStatusEnum.DELIVERED, PaymentStatusEnum.PARTIAL)
+				mkMaterial(p.get(3), c.get(11), oaAntiga2, 5.0, 6.90, duasMesAtras.plusDays(4), tarde1, null, 680.00, 200.00, OrderStatusEnum.DELIVERED, PaymentStatusEnum.PARTIAL)
 		);
 		paymentRepository.save(mkPayment(antigaParcial, 200.00, duasMesAtras.plusDays(4), PaymentMethodEnum.CASH));
 	}
@@ -624,9 +624,9 @@ public class TestConfig implements CommandLineRunner {
 	private Order mkMaterial(Product p, Client c, OrderAddress oa,
 			double qtdM3, double qtdTon,
 			LocalDate date, LocalTime time, String obs,
-			double total,
+			double total, double amountPaid,
 			OrderStatusEnum status, PaymentStatusEnum payStatus) {
-		double remaining = payStatus == PaymentStatusEnum.PAID ? 0.00 : total;
+		double remaining = total - amountPaid;
 		return new Order(null, p, c, oa, qtdM3, qtdTon, null,
 				OrderTypeEnum.MATERIAL, date, time, obs,
 				status, payStatus,
@@ -637,9 +637,9 @@ public class TestConfig implements CommandLineRunner {
 	private Order mkServico(Product p, Client c, OrderAddress oa,
 			String servico,
 			LocalDate date, LocalTime time,
-			double total,
+			double total, double amountPaid,
 			OrderStatusEnum status, PaymentStatusEnum payStatus) {
-		double remaining = payStatus == PaymentStatusEnum.PAID ? 0.00 : total;
+		double remaining = total - amountPaid;
 		return new Order(null, p, c, oa, null, null, servico,
 				OrderTypeEnum.SERVICE, date, time, null,
 				status, payStatus,
