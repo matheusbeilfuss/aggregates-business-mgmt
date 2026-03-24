@@ -620,7 +620,7 @@ public class TestConfig implements CommandLineRunner {
 
 	// Helpers
 
-	// Pedido de material. Remaining é zero para PAID e igual ao total para PENDING/PARTIAL
+	// Pedido de material - Remaining é total do pedido menos a quantidade paga
 	private Order mkMaterial(Product p, Client c, OrderAddress oa,
 			double qtdM3, double qtdTon,
 			LocalDate date, LocalTime time, String obs,
