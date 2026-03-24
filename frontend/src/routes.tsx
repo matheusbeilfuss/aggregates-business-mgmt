@@ -53,7 +53,7 @@ export const router = createBrowserRouter([
           { path: "finance/expenses/add", element: <ExpenseAdd /> },
           { path: "finance/expenses/:id/edit", element: <ExpenseEdit /> },
 
-          { path: "/balance", element: <Balance /> },
+          { path: "balance", element: <Balance /> },
 
           { path: "prices", element: <Price /> },
           { path: "prices/categories/:categoryId", element: <PriceEdit /> },
