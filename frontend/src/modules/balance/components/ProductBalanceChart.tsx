@@ -49,7 +49,7 @@ export function ProductBalanceChart({ data }: Props) {
           type="category"
           dataKey="productName"
           tick={{ fontSize: 12 }}
-          width={90}
+          width={70}
         />
         <Tooltip
           formatter={(value: number) => formatLocalCurrency(value)}

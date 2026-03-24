@@ -29,19 +29,19 @@ const SERIES = [
 const tooltipFormatter = (value: number) => formatLocalCurrency(value);
 const labelFormatter = (label: string) => `Mês : ${label}`;
 
-const yAxisProps = {
-  tickFormatter: (value: number) => {
-    if (value === 0) return "R$ 0";
-    if (value >= 1_000_000) return `R$ ${(value / 1_000_000).toFixed(1)}M`;
-    if (value >= 1000) return `R$ ${(value / 1000).toFixed(1)}k`;
-    return `R$ ${value}`;
-  },
-  tick: { fontSize: 12 },
-  width: 72,
-};
-
 export function BalanceChart({ data }: Props) {
   const [chartType, setChartType] = useState<"line" | "bar">("line");
+
+  const yAxisProps = {
+    tickFormatter: (value: number) => {
+      if (value === 0) return "R$ 0";
+      if (value >= 1_000_000) return `R$ ${(value / 1_000_000).toFixed(1)}M`;
+      if (value >= 1000) return `R$ ${(value / 1000).toFixed(1)}k`;
+      return `R$ ${value}`;
+    },
+    tick: { fontSize: 12 },
+    width: 54,
+  };
 
   const commonProps = {
     data,

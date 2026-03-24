@@ -42,7 +42,7 @@ export default function Balance() {
 
   return (
     <PageContainer title="Balanços">
-      <div className="flex flex-col gap-8">
+      <div className="flex flex-col gap-8 pb-8">
         <div className="flex justify-center">
           <YearPicker year={year} onChange={setYear} />
         </div>
