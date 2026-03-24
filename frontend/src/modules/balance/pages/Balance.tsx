@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect } from "react";
 import { usePageTitle } from "@/hooks/usePageTitle";
 import { PageContainer, LoadingState } from "@/components/shared";
 import { Button } from "@/components/ui/button";
@@ -12,7 +12,6 @@ import { ProductBalanceChart } from "../components/ProductBalanceChart";
 import { useBalanceData } from "../hooks/useBalanceData";
 import { useProductBalance } from "../hooks/useProductBalance";
 import { toast } from "sonner";
-import { useEffect } from "react";
 
 export default function Balance() {
   usePageTitle("Balanços");
