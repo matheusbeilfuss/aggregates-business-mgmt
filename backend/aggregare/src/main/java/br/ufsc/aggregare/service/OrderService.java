@@ -1,7 +1,11 @@
 package br.ufsc.aggregare.service;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.orm.ObjectOptimisticLockingFailureException;
@@ -12,6 +16,7 @@ import br.ufsc.aggregare.model.Order;
 import br.ufsc.aggregare.model.OrderAddress;
 import br.ufsc.aggregare.model.Product;
 import br.ufsc.aggregare.model.dto.OrderInputDTO;
+import br.ufsc.aggregare.model.dto.ProductBalanceDTO;
 import br.ufsc.aggregare.model.dto.ReceivableDTO;
 import br.ufsc.aggregare.model.enums.OrderStatusEnum;
 import br.ufsc.aggregare.model.enums.OrderTypeEnum;
@@ -256,5 +261,40 @@ public class OrderService {
 				&& order.getProduct() != null
 				&& order.getM3Quantity() != null
 				&& order.getM3Quantity() > 0;
+	}
+
+	public List<ProductBalanceDTO> getBalanceByProduct(LocalDate startDate, LocalDate endDate) {
+		List<PaymentStatusEnum> paidStatuses = List.of(
+				PaymentStatusEnum.PAID,
+				PaymentStatusEnum.PARTIAL
+		);
+
+		List<Order> orders = orderRepository.findPaidMaterialOrdersByPeriod(startDate, endDate, paidStatuses);
+
+		Map<Long, ProductBalanceDTO> map = new LinkedHashMap<>();
+
+		for (Order order : orders) {
+			Product product = order.getProduct();
+			Long productId = product.getId();
+
+			BigDecimal paidValue = order.getOrderValue()
+					.subtract(order.getRemainingValue());
+
+			if (map.containsKey(productId)) {
+				ProductBalanceDTO existing = map.get(productId);
+				existing.setTotalValue(existing.getTotalValue().add(paidValue));
+			} else {
+				String categoryName = product.getCategory() != null
+						? product.getCategory().getName()
+						: "Sem categoria";
+				map.put(productId, new ProductBalanceDTO(
+						product.getName(),
+						categoryName,
+						paidValue
+				));
+			}
+		}
+
+		return new ArrayList<>(map.values());
 	}
 }

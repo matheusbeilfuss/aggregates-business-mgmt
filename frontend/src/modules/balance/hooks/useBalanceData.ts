@@ -2,7 +2,11 @@ import { useMemo } from "react";
 import { useFinanceExpenses } from "@/modules/finance/hooks/useFinanceExpenses";
 import { useFinancePayments } from "@/modules/finance/hooks/useFinancePayments";
 import { PaymentStatusEnum } from "@/types";
-import { MonthlyBalance, BalanceSummary } from "../types";
+import {
+  MonthlyBalance,
+  BalanceSummary,
+  ExpenseCategoryBalance,
+} from "../types";
 
 const MONTH_LABELS = [
   "Jan",
@@ -41,7 +45,6 @@ export function useBalanceData({ startDate, endDate }: Options) {
     if (!expenses || !payments) return [];
 
     const map = new Map<number, { expenses: number; income: number }>();
-
     for (let m = 1; m <= 12; m++) {
       map.set(m, { expenses: 0, income: 0 });
     }
@@ -86,9 +89,26 @@ export function useBalanceData({ startDate, endDate }: Options) {
     };
   }, [monthlyData]);
 
+  const expensesByCategory = useMemo<ExpenseCategoryBalance[]>(() => {
+    if (!expenses) return [];
+
+    const map = new Map<string, number>();
+
+    for (const expense of expenses) {
+      if (expense.paymentStatus !== PaymentStatusEnum.PAID) continue;
+      const key = expense.category ?? "Sem categoria";
+      map.set(key, (map.get(key) ?? 0) + Number(expense.expenseValue));
+    }
+
+    return Array.from(map.entries())
+      .map(([category, total]) => ({ category, total }))
+      .sort((a, b) => b.total - a.total);
+  }, [expenses]);
+
   return {
     monthlyData,
     summary,
+    expensesByCategory,
     loading: loadingExpenses || loadingPayments,
     error: expensesError || paymentsError,
   };

@@ -14,3 +14,14 @@ export type BalanceSummary = {
   avgIncome: number;
   avgProfit: number;
 };
+
+export type ExpenseCategoryBalance = {
+  category: string;
+  total: number;
+};
+
+export type ProductBalance = {
+  productName: string;
+  categoryName: string;
+  totalValue: number;
+};
