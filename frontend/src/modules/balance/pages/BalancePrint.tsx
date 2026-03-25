@@ -22,17 +22,31 @@ export function BalancePrint() {
     enabled: isAuthenticated,
   });
 
+  const hasRealData = useMemo(
+    () => monthlyData.some((m) => m.expenses > 0 || m.income > 0),
+    [monthlyData],
+  );
+
   const hasPrinted = useRef(false);
 
   useEffect(() => {
-    if (monthlyData.length > 0 && !hasPrinted.current) {
+    if (hasRealData && !hasPrinted.current) {
       hasPrinted.current = true;
       window.print();
     }
-  }, [monthlyData]);
+  }, [hasRealData]);
 
   if (authLoading || loading) return null;
   if (!isAuthenticated) return <Navigate to="/login" replace />;
+  if (!hasRealData)
+    return (
+      <div className="p-8 font-sans">
+        <h1 className="text-xl font-semibold mb-4">Balanço {year}</h1>
+        <p className="text-gray-500">
+          Nenhum dado disponível para este período.
+        </p>
+      </div>
+    );
 
   const MONTH_LABELS = [
     "Janeiro",
