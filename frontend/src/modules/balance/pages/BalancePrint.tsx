@@ -19,6 +19,7 @@ export function BalancePrint() {
   const { monthlyData, summary, loading } = useBalanceData({
     startDate,
     endDate,
+    enabled: isAuthenticated,
   });
 
   const hasPrinted = useRef(false);

@@ -26,20 +26,25 @@ const MONTH_LABELS = [
 type Options = {
   startDate: Date;
   endDate: Date;
+  enabled?: boolean;
 };
 
-export function useBalanceData({ startDate, endDate }: Options) {
+export function useBalanceData({
+  startDate,
+  endDate,
+  enabled = true,
+}: Options) {
   const {
     data: expenses,
     loading: loadingExpenses,
     error: expensesError,
-  } = useFinanceExpenses({ startDate, endDate });
+  } = useFinanceExpenses({ startDate, endDate, enabled });
 
   const {
     data: payments,
     loading: loadingPayments,
     error: paymentsError,
-  } = useFinancePayments({ startDate, endDate });
+  } = useFinancePayments({ startDate, endDate, enabled });
 
   const monthlyData = useMemo<MonthlyBalance[]>(() => {
     if (!expenses || !payments) return [];
