@@ -268,33 +268,6 @@ public class OrderService {
 				PaymentStatusEnum.PAID,
 				PaymentStatusEnum.PARTIAL
 		);
-
-		List<Order> orders = orderRepository.findMaterialOrdersByPeriodAndPaymentStatusIn(startDate, endDate, paidStatuses);
-
-		Map<Long, ProductBalanceDTO> map = new LinkedHashMap<>();
-
-		for (Order order : orders) {
-			Product product = order.getProduct();
-			Long productId = product.getId();
-
-			BigDecimal paidValue = order.getOrderValue()
-					.subtract(order.getRemainingValue());
-
-			if (map.containsKey(productId)) {
-				ProductBalanceDTO existing = map.get(productId);
-				existing.setTotalValue(existing.getTotalValue().add(paidValue));
-			} else {
-				String categoryName = product.getCategory() != null
-						? product.getCategory().getName()
-						: "Sem categoria";
-				map.put(productId, new ProductBalanceDTO(
-						product.getName(),
-						categoryName,
-						paidValue
-				));
-			}
-		}
-
-		return new ArrayList<>(map.values());
+		return orderRepository.findProductBalanceSummary(startDate, endDate, paidStatuses);
 	}
 }
