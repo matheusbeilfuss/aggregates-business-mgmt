@@ -269,7 +269,7 @@ public class OrderService {
 				PaymentStatusEnum.PARTIAL
 		);
 
-		List<Order> orders = orderRepository.findPaidMaterialOrdersByPeriod(startDate, endDate, paidStatuses);
+		List<Order> orders = orderRepository.findMaterialOrdersByPeriodAndPaymentStatusIn(startDate, endDate, paidStatuses);
 
 		Map<Long, ProductBalanceDTO> map = new LinkedHashMap<>();
 
