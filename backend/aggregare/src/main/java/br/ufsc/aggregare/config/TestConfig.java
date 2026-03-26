@@ -537,62 +537,62 @@ public class TestConfig implements CommandLineRunner {
 		// Janeiro
 		saveFixasMes(fixas, 1);
 		expenseRepository.saveAll(Arrays.asList(
-				variavel("Manutenção caminhão",    400.00, d(1,12), CAT_MECANICA),
-				variavel("Material de escritório",  80.00, d(1,20), CAT_ESCRITORIO),
-				variavel("Seguro caminhão",         200.00, d(1,28), "Seguros"),
-				fuelExpense(370.00, d(1,18))
+				variavel("Manutenção caminhão",   400.00, d(1,12), CAT_MECANICA),
+				variavel("Material de escritório", 80.00, d(1,20), CAT_ESCRITORIO),
+				variavel("Seguro caminhão",        200.00, d(1,28), "Seguros")
 		));
-		saveAbastecimento(d(1,18), 310.0, 61.36, POSTO_DOM_BOSCO);
+		Expense fuel1 = expenseRepository.save(fuelExpense(370.00, d(1,18)));
+		saveAbastecimento(fuel1, 310.0, 61.36, POSTO_DOM_BOSCO);
 
 		// Fevereiro
 		saveFixasMes(fixas, 2);
 		expenseRepository.saveAll(Arrays.asList(
-				variavel("Troca de óleo",           220.00, d(2, 8), CAT_MECANICA),
-				variavel("Limpeza pátio",            80.00, d(2,16), CAT_MANUTENCAO),
-				variavel("Compra de EPI",           130.00, d(2,23), "Segurança"),
-				fuelExpense(440.00, d(2,15))
+				variavel("Troca de óleo",  220.00, d(2, 8), CAT_MECANICA),
+				variavel("Limpeza pátio",   80.00, d(2,16), CAT_MANUTENCAO),
+				variavel("Compra de EPI",  130.00, d(2,23), "Segurança")
 		));
-		saveAbastecimento(d(2,15), 340.0, 72.97, AUTO_POSTO_CENTRAL);
+		Expense fuel2 = expenseRepository.save(fuelExpense(440.00, d(2,15)));
+		saveAbastecimento(fuel2, 340.0, 72.97, AUTO_POSTO_CENTRAL);
 
 		// Março
 		saveFixasMes(fixas, 3);
 		expenseRepository.saveAll(Arrays.asList(
-				variavel("Conserto balança",         350.00, d(3, 7), CAT_EQUIPAMENTOS),
-				variavel("Impressão documentos",      45.00, d(3,14), CAT_ESCRITORIO),
-				variavel("Revisão periódica caminhão",475.00, d(3,20), CAT_MECANICA),
-				fuelExpense(370.00, d(3,12))
+				variavel("Conserto balança",          350.00, d(3, 7), CAT_EQUIPAMENTOS),
+				variavel("Impressão documentos",       45.00, d(3,14), CAT_ESCRITORIO),
+				variavel("Revisão periódica caminhão", 475.00, d(3,20), CAT_MECANICA)
 		));
-		saveAbastecimento(d(3,12), 260.0, 61.36, POSTO_DOM_BOSCO);
+		Expense fuel3 = expenseRepository.save(fuelExpense(370.00, d(3,12)));
+		saveAbastecimento(fuel3, 260.0, 61.36, POSTO_DOM_BOSCO);
 
 		// Abril
 		saveFixasMes(fixas, 4);
 		expenseRepository.saveAll(Arrays.asList(
-				variavel("Limpeza depósito",         180.00, d(4, 9), CAT_MANUTENCAO),
-				variavel("Compra ferramentas",       250.00, d(4,17), CAT_EQUIPAMENTOS),
-				variavel("Conserto portão",          170.00, d(4,24), CAT_MANUTENCAO),
-				fuelExpense(450.00, d(4,16))
+				variavel("Limpeza depósito",  180.00, d(4, 9), CAT_MANUTENCAO),
+				variavel("Compra ferramentas",250.00, d(4,17), CAT_EQUIPAMENTOS),
+				variavel("Conserto portão",   170.00, d(4,24), CAT_MANUTENCAO)
 		));
-		saveAbastecimento(d(4,16), 360.0, 74.63, AUTO_POSTO_CENTRAL);
+		Expense fuel4 = expenseRepository.save(fuelExpense(450.00, d(4,16)));
+		saveAbastecimento(fuel4, 360.0, 74.63, AUTO_POSTO_CENTRAL);
 
 		// Maio
 		saveFixasMes(fixas, 5);
 		expenseRepository.saveAll(Arrays.asList(
-				variavel("Reparo elétrico",          430.00, d(5, 8), CAT_MANUTENCAO),
-				variavel("Recarga gás compressor",    90.00, d(5,15), CAT_EQUIPAMENTOS),
-				variavel("Pintura galpão",           650.00, d(5,22), CAT_MANUTENCAO),
-				fuelExpense(450.00, d(5,19))
+				variavel("Reparo elétrico",        430.00, d(5, 8), CAT_MANUTENCAO),
+				variavel("Recarga gás compressor",  90.00, d(5,15), CAT_EQUIPAMENTOS),
+				variavel("Pintura galpão",         650.00, d(5,22), CAT_MANUTENCAO)
 		));
-		saveAbastecimento(d(5,19), 360.0, 74.63, POSTO_DOM_BOSCO);
+		Expense fuel5 = expenseRepository.save(fuelExpense(450.00, d(5,19)));
+		saveAbastecimento(fuel5, 360.0, 74.63, POSTO_DOM_BOSCO);
 
 		// Junho
 		saveFixasMes(fixas, 6);
 		expenseRepository.saveAll(Arrays.asList(
-				variavel("Compra pneus",             580.00, d(6, 6), CAT_MECANICA),
-				variavel("Manutenção balança",       155.00, d(6,13), CAT_EQUIPAMENTOS),
-				variavel("Material de escritório",    95.00, d(6,20), CAT_ESCRITORIO),
-				fuelExpense(430.00, d(6,17))
+				variavel("Compra pneus",           580.00, d(6, 6), CAT_MECANICA),
+				variavel("Manutenção balança",     155.00, d(6,13), CAT_EQUIPAMENTOS),
+				variavel("Material de escritório",  95.00, d(6,20), CAT_ESCRITORIO)
 		));
-		saveAbastecimento(d(6,17), 310.0, 71.31, AUTO_POSTO_CENTRAL);
+		Expense fuel6 = expenseRepository.save(fuelExpense(430.00, d(6,17)));
+		saveAbastecimento(fuel6, 310.0, 71.31, AUTO_POSTO_CENTRAL);
 
 		// Mês atual
 		LocalDate diaPrimeiro = hoje.withDayOfMonth(1);
@@ -612,10 +612,10 @@ public class TestConfig implements CommandLineRunner {
 						ExpenseTypeEnum.FIXED, PaymentStatusEnum.PENDING, fxInternet.getCategory()),
 				// Variáveis do mês
 				variavel("Conserto pneu caminhão", 150.00, hoje.minusDays(5), CAT_MECANICA),
-				variavel("Limpeza escritório",      60.00, hoje.minusDays(2), CAT_ESCRITORIO),
-				fuelExpense(250.00, hoje.minusDays(3))
+				variavel("Limpeza escritório",      60.00, hoje.minusDays(2), CAT_ESCRITORIO)
 		));
-		saveAbastecimento(hoje.minusDays(3), 100.0, 41.46, POSTO_DOM_BOSCO);
+		Expense fuelAtual = expenseRepository.save(fuelExpense(250.00, hoje.minusDays(3)));
+		saveAbastecimento(fuelAtual, 100.0, 41.46, POSTO_DOM_BOSCO);
 	}
 
 	// Helpers
@@ -686,12 +686,7 @@ public class TestConfig implements CommandLineRunner {
 
 	// Busca a despesa de combustível pela data e salva o registro de abastecimento.
 	// Deve ser chamado logo após o saveAll que inclui o fuelExpense correspondente.
-	private void saveAbastecimento(LocalDate date, double km, double liters, String posto) {
-		expenseRepository.findAll().stream()
-				.filter(e -> e.getType() == ExpenseTypeEnum.FUEL
-						&& e.getDate().equals(date))
-				.findFirst()
-				.ifPresent(ex -> fuelRepository.save(
-						new Fuel(null, ex, CAMINHAO, km, liters, PRECO_LITRO, posto)));
+	private void saveAbastecimento(Expense fuelExpense, double km, double liters, String posto) {
+		fuelRepository.save(new Fuel(null, fuelExpense, CAMINHAO, km, liters, PRECO_LITRO, posto));
 	}
 }
