@@ -22,7 +22,7 @@ type Props = {
 
 const SERIES = [
   { key: "expenses", name: "Gastos", color: "#f97316" },
-  { key: "income", name: "Vendas", color: "#22c55e" },
+  { key: "income", name: "Recebimentos", color: "#22c55e" },
   { key: "profit", name: "Líquido", color: "#3b82f6" },
 ] as const;
 

@@ -14,7 +14,7 @@ export function BalanceSummaryTable({ summary }: Props) {
       colorClass: "text-orange-500",
     },
     {
-      label: "Vendas",
+      label: "Recebimentos",
       total: summary.totalIncome,
       avg: summary.avgIncome,
       colorClass: "text-green-500",

@@ -87,7 +87,7 @@ export function BalancePrint() {
               Gastos
             </th>
             <th className="border border-gray-300 bg-gray-100 px-4 py-2 text-right">
-              Vendas
+              Recebimentos
             </th>
             <th className="border border-gray-300 bg-gray-100 px-4 py-2 text-right">
               Líquido
