@@ -29,21 +29,19 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
        SELECT new br.ufsc.aggregare.model.dto.ProductBalanceDTO(
            p.name,
            COALESCE(c.name, 'Sem categoria'),
-           SUM(o.orderValue - o.remainingValue)
+           SUM(o.orderValue)
        )
        FROM Order o
        JOIN o.product p
        LEFT JOIN p.category c
        WHERE o.scheduledDate BETWEEN :startDate AND :endDate
-       AND o.paymentStatus IN :statuses
        AND o.type = br.ufsc.aggregare.model.enums.OrderTypeEnum.MATERIAL
        AND o.product IS NOT NULL
        GROUP BY p.id, p.name, c.name
-       ORDER BY SUM(o.orderValue - o.remainingValue) DESC
+       ORDER BY SUM(o.orderValue) DESC
        """)
 	List<ProductBalanceDTO> findProductBalanceSummary(
 			@Param("startDate") LocalDate startDate,
-			@Param("endDate") LocalDate endDate,
-			@Param("statuses") List<PaymentStatusEnum> statuses
+			@Param("endDate") LocalDate endDate
 	);
 }

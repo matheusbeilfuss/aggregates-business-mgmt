@@ -260,10 +260,6 @@ public class OrderService {
 	}
 
 	public List<ProductBalanceDTO> getBalanceByProduct(LocalDate startDate, LocalDate endDate) {
-		List<PaymentStatusEnum> paidStatuses = List.of(
-				PaymentStatusEnum.PAID,
-				PaymentStatusEnum.PARTIAL
-		);
-		return orderRepository.findProductBalanceSummary(startDate, endDate, paidStatuses);
+		return orderRepository.findProductBalanceSummary(startDate, endDate);
 	}
 }
