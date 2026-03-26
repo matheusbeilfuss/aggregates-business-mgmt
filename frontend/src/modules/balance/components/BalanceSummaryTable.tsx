@@ -32,11 +32,22 @@ export function BalanceSummaryTable({ summary }: Props) {
       <table className="w-full text-sm">
         <thead>
           <tr className="bg-muted/50">
-            <th className="px-4 py-3 text-left font-medium text-muted-foreground"></th>
-            <th className="px-4 py-3 text-right font-medium text-muted-foreground">
+            <th
+              scope="col"
+              className="px-4 py-3 text-left font-medium text-muted-foreground"
+            >
+              <span className="sr-only">Tipo</span>
+            </th>
+            <th
+              scope="col"
+              className="px-4 py-3 text-right font-medium text-muted-foreground"
+            >
               Total
             </th>
-            <th className="px-4 py-3 text-right font-medium text-muted-foreground">
+            <th
+              scope="col"
+              className="px-4 py-3 text-right font-medium text-muted-foreground"
+            >
               Média/mês
             </th>
           </tr>
