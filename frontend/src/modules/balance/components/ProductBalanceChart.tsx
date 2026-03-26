@@ -26,7 +26,7 @@ export function ProductBalanceChart({ data }: Props) {
   }
 
   const sorted = [...data].sort((a, b) => b.totalValue - a.totalValue);
-  const colors = generateColors(data.length);
+  const colors = generateColors(sorted.length);
 
   return (
     <ResponsiveContainer width="100%" height={280}>
@@ -56,7 +56,7 @@ export function ProductBalanceChart({ data }: Props) {
           labelFormatter={(label) => `Produto: ${label}`}
         />
         <Bar dataKey="totalValue" name="Vendas">
-          {data.map((_, index) => (
+          {sorted.map((_, index) => (
             <Cell key={index} fill={colors[index]} />
           ))}
         </Bar>
