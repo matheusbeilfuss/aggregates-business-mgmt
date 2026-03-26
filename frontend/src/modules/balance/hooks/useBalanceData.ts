@@ -1,5 +1,4 @@
 import { useMemo } from "react";
-import { useFinanceExpenses } from "@/modules/finance/hooks/useFinanceExpenses";
 import { useFinancePayments } from "@/modules/finance/hooks/useFinancePayments";
 import { PaymentStatusEnum } from "@/types";
 import {
@@ -7,6 +6,7 @@ import {
   BalanceSummary,
   ExpenseCategoryBalance,
 } from "../types";
+import { useBalanceExpenses } from "./useBalanceExpenses";
 
 const MONTH_LABELS = [
   "Jan",
@@ -38,7 +38,7 @@ export function useBalanceData({
     data: expenses,
     loading: loadingExpenses,
     error: expensesError,
-  } = useFinanceExpenses({ startDate, endDate, enabled });
+  } = useBalanceExpenses({ startDate, endDate, enabled });
 
   const {
     data: payments,
@@ -56,7 +56,8 @@ export function useBalanceData({
 
     for (const expense of expenses) {
       if (expense.paymentStatus !== PaymentStatusEnum.PAID) continue;
-      const month = new Date(expense.date + "T00:00:00").getMonth() + 1;
+      const dateString = expense.paymentDate ?? expense.date;
+      const month = new Date(dateString + "T00:00:00").getMonth() + 1;
       const entry = map.get(month)!;
       entry.expenses += Number(expense.expenseValue);
     }

@@ -224,6 +224,11 @@ public class ExpenseService {
 				: expenseRepository.findByDateBetween(startDate, endDate);
 		return toExpenseDTOs(expenses);
 	}
+
+	public List<ExpenseDTO> findPaidByEffectiveDate(LocalDate startDate, LocalDate endDate) {
+		return toExpenseDTOs(expenseRepository.findPaidByEffectiveDate(startDate, endDate));
+	}
+
 	public List<String> findDistinctCategories() {
 		return expenseRepository.findDistinctCategories();
 	}

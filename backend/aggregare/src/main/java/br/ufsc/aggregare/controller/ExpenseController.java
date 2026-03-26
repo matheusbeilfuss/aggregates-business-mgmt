@@ -78,6 +78,13 @@ public class ExpenseController {
 		return ResponseEntity.ok().body(expenses);
 	}
 
+	@GetMapping("/balance")
+	public ResponseEntity<List<ExpenseDTO>> findPaidByEffectiveDate(
+			@RequestParam LocalDate startDate,
+			@RequestParam LocalDate endDate) {
+		return ResponseEntity.ok(service.findPaidByEffectiveDate(startDate, endDate));
+	}
+
 	@GetMapping("/categories")
 	public ResponseEntity<List<String>> getCategories() {
 		return ResponseEntity.ok(service.findDistinctCategories());
