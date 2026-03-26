@@ -27,7 +27,7 @@ const SERIES = [
 ] as const;
 
 const tooltipFormatter = (value: number) => formatLocalCurrency(value);
-const labelFormatter = (label: string) => `Mês : ${label}`;
+const labelFormatter = (label: string) => `Mês: ${label}`;
 
 export function BalanceChart({ data }: Props) {
   const [chartType, setChartType] = useState<"line" | "bar">("line");

@@ -53,7 +53,7 @@ export function ProductBalanceChart({ data }: Props) {
         />
         <Tooltip
           formatter={(value: number) => formatLocalCurrency(value)}
-          labelFormatter={(label) => `Produto : ${label}`}
+          labelFormatter={(label) => `Produto: ${label}`}
         />
         <Bar dataKey="totalValue" name="Vendas">
           {data.map((_, index) => (
