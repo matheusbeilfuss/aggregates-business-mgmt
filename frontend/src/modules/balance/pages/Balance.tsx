@@ -47,7 +47,8 @@ export default function Balance() {
     }
   }, [error]);
 
-  const hasData = monthlyData.some((m) => m.expenses > 0 || m.income > 0);
+  const hasData =
+    !balanceError && monthlyData.some((m) => m.expenses > 0 || m.income > 0);
   const isLoading = loading || loadingProducts;
 
   return (
