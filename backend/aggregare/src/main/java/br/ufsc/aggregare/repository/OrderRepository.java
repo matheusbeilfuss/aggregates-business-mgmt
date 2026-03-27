@@ -36,7 +36,6 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
        LEFT JOIN p.category c
        WHERE o.scheduledDate BETWEEN :startDate AND :endDate
        AND o.type = br.ufsc.aggregare.model.enums.OrderTypeEnum.MATERIAL
-       AND o.product IS NOT NULL
        GROUP BY p.id, p.name, c.name
        ORDER BY SUM(o.orderValue) DESC
        """)
