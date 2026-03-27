@@ -1,0 +1,121 @@
+import { useMemo } from "react";
+import { useFinancePayments } from "@/modules/finance/hooks/useFinancePayments";
+import { PaymentStatusEnum } from "@/types";
+import {
+  MonthlyBalance,
+  BalanceSummary,
+  ExpenseCategoryBalance,
+} from "../types";
+import { useBalanceExpenses } from "./useBalanceExpenses";
+
+const MONTH_LABELS = [
+  "Jan",
+  "Fev",
+  "Mar",
+  "Abr",
+  "Mai",
+  "Jun",
+  "Jul",
+  "Ago",
+  "Set",
+  "Out",
+  "Nov",
+  "Dez",
+];
+
+type Options = {
+  startDate: Date;
+  endDate: Date;
+  enabled?: boolean;
+};
+
+export function useBalanceData({
+  startDate,
+  endDate,
+  enabled = true,
+}: Options) {
+  const {
+    data: expenses,
+    loading: loadingExpenses,
+    error: expensesError,
+  } = useBalanceExpenses({ startDate, endDate, enabled });
+
+  const {
+    data: payments,
+    loading: loadingPayments,
+    error: paymentsError,
+  } = useFinancePayments({ startDate, endDate, enabled });
+
+  const monthlyData = useMemo<MonthlyBalance[]>(() => {
+    if (!expenses || !payments) return [];
+
+    const map = new Map<number, { expenses: number; income: number }>();
+    for (let m = 1; m <= 12; m++) {
+      map.set(m, { expenses: 0, income: 0 });
+    }
+
+    for (const expense of expenses) {
+      if (expense.paymentStatus !== PaymentStatusEnum.PAID) continue;
+      const dateString = expense.paymentDate ?? expense.date;
+      const month = new Date(dateString + "T00:00:00").getMonth() + 1;
+      const entry = map.get(month)!;
+      entry.expenses += Number(expense.expenseValue);
+    }
+
+    for (const payment of payments) {
+      const month = new Date(payment.date + "T00:00:00").getMonth() + 1;
+      const entry = map.get(month)!;
+      entry.income += Number(payment.paymentValue);
+    }
+
+    return Array.from(map.entries()).map(([month, data]) => ({
+      month,
+      monthLabel: MONTH_LABELS[month - 1],
+      expenses: data.expenses,
+      income: data.income,
+      profit: data.income - data.expenses,
+    }));
+  }, [expenses, payments]);
+
+  const summary = useMemo<BalanceSummary>(() => {
+    const nonEmptyMonths =
+      monthlyData.filter((m) => m.expenses > 0 || m.income > 0).length || 1;
+
+    const totalExpenses = monthlyData.reduce((acc, m) => acc + m.expenses, 0);
+    const totalIncome = monthlyData.reduce((acc, m) => acc + m.income, 0);
+    const totalProfit = totalIncome - totalExpenses;
+
+    return {
+      totalExpenses,
+      totalIncome,
+      totalProfit,
+      avgExpenses: totalExpenses / nonEmptyMonths,
+      avgIncome: totalIncome / nonEmptyMonths,
+      avgProfit: totalProfit / nonEmptyMonths,
+    };
+  }, [monthlyData]);
+
+  const expensesByCategory = useMemo<ExpenseCategoryBalance[]>(() => {
+    if (!expenses) return [];
+
+    const map = new Map<string, number>();
+
+    for (const expense of expenses) {
+      if (expense.paymentStatus !== PaymentStatusEnum.PAID) continue;
+      const key = expense.category ?? "Sem categoria";
+      map.set(key, (map.get(key) ?? 0) + Number(expense.expenseValue));
+    }
+
+    return Array.from(map.entries())
+      .map(([category, total]) => ({ category, total }))
+      .sort((a, b) => b.total - a.total);
+  }, [expenses]);
+
+  return {
+    monthlyData,
+    summary,
+    expensesByCategory,
+    loading: loadingExpenses || loadingPayments,
+    error: expensesError || paymentsError,
+  };
+}

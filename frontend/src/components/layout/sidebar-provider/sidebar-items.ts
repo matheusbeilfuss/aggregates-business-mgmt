@@ -34,7 +34,7 @@ export const items = [
   },
   {
     title: "Balanços",
-    url: "#",
+    url: "/balance",
     icon: Scale,
   },
   {

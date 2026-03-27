@@ -12,6 +12,7 @@ import br.ufsc.aggregare.model.Order;
 import br.ufsc.aggregare.model.OrderAddress;
 import br.ufsc.aggregare.model.Product;
 import br.ufsc.aggregare.model.dto.OrderInputDTO;
+import br.ufsc.aggregare.model.dto.ProductBalanceDTO;
 import br.ufsc.aggregare.model.dto.ReceivableDTO;
 import br.ufsc.aggregare.model.enums.OrderStatusEnum;
 import br.ufsc.aggregare.model.enums.OrderTypeEnum;
@@ -256,5 +257,9 @@ public class OrderService {
 				&& order.getProduct() != null
 				&& order.getM3Quantity() != null
 				&& order.getM3Quantity() > 0;
+	}
+
+	public List<ProductBalanceDTO> getBalanceByProduct(LocalDate startDate, LocalDate endDate) {
+		return orderRepository.findProductBalanceSummary(startDate, endDate);
 	}
 }

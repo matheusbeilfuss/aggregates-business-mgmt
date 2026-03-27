@@ -20,6 +20,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import br.ufsc.aggregare.model.Order;
 import br.ufsc.aggregare.model.dto.OrderInputDTO;
+import br.ufsc.aggregare.model.dto.ProductBalanceDTO;
 import br.ufsc.aggregare.model.dto.ReceivableDTO;
 import br.ufsc.aggregare.service.OrderService;
 
@@ -87,5 +88,13 @@ public class OrderController {
 		}
 
 		return ResponseEntity.ok(service.findReceivables(startDate, endDate));
+	}
+
+	@GetMapping("/balance-by-product")
+	public ResponseEntity<List<ProductBalanceDTO>> getBalanceByProduct(
+			@RequestParam LocalDate startDate,
+			@RequestParam LocalDate endDate
+	) {
+		return ResponseEntity.ok(service.getBalanceByProduct(startDate, endDate));
 	}
 }

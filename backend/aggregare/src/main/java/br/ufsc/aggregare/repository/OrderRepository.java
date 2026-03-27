@@ -4,8 +4,11 @@ import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import br.ufsc.aggregare.model.Order;
+import br.ufsc.aggregare.model.dto.ProductBalanceDTO;
 import br.ufsc.aggregare.model.enums.PaymentStatusEnum;
 
 public interface OrderRepository extends JpaRepository<Order, Long> {
@@ -21,4 +24,23 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
 	);
 
 	List<Order> findByPaymentStatusIn(List<PaymentStatusEnum> statuses);
+
+	@Query("""
+       SELECT new br.ufsc.aggregare.model.dto.ProductBalanceDTO(
+           p.name,
+           COALESCE(c.name, 'Sem categoria'),
+           SUM(o.orderValue)
+       )
+       FROM Order o
+       JOIN o.product p
+       LEFT JOIN p.category c
+       WHERE o.scheduledDate BETWEEN :startDate AND :endDate
+       AND o.type = br.ufsc.aggregare.model.enums.OrderTypeEnum.MATERIAL
+       GROUP BY p.id, p.name, c.name
+       ORDER BY SUM(o.orderValue) DESC
+       """)
+	List<ProductBalanceDTO> findProductBalanceSummary(
+			@Param("startDate") LocalDate startDate,
+			@Param("endDate") LocalDate endDate
+	);
 }
