@@ -36,8 +36,8 @@ export function ExpenseCategoryChart({ data }: Props) {
           cy="50%"
           outerRadius={90}
         >
-          {data.map((_, index) => (
-            <Cell key={index} fill={colors[index]} />
+          {data.map((entry, index) => (
+            <Cell key={entry.category} fill={colors[index]} />
           ))}
         </Pie>
         <Tooltip formatter={(value: number) => formatLocalCurrency(value)} />

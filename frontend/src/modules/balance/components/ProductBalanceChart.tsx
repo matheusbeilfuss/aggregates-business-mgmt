@@ -56,8 +56,8 @@ export function ProductBalanceChart({ data }: Props) {
           labelFormatter={(label) => `Produto: ${label}`}
         />
         <Bar dataKey="totalValue" name="Vendas">
-          {sorted.map((_, index) => (
-            <Cell key={index} fill={colors[index]} />
+          {sorted.map((entry, index) => (
+            <Cell key={entry.productName} fill={colors[index]} />
           ))}
         </Bar>
       </BarChart>
