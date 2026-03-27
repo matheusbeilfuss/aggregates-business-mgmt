@@ -16,7 +16,7 @@ export function BalancePrint() {
   const startDate = useMemo(() => new Date(year, 0, 1), [year]);
   const endDate = useMemo(() => new Date(year, 11, 31), [year]);
 
-  const { monthlyData, summary, loading } = useBalanceData({
+  const { monthlyData, summary, loading, error } = useBalanceData({
     startDate,
     endDate,
     enabled: isAuthenticated,
@@ -38,6 +38,15 @@ export function BalancePrint() {
 
   if (authLoading || loading) return null;
   if (!isAuthenticated) return <Navigate to="/login" replace />;
+  if (error)
+    return (
+      <div className="p-8 font-sans">
+        <h1 className="text-xl font-semibold mb-4">Balanço {year}</h1>
+        <p className="text-red-500">
+          Não foi possível carregar os dados. Tente novamente.
+        </p>
+      </div>
+    );
   if (!hasRealData)
     return (
       <div className="p-8 font-sans">

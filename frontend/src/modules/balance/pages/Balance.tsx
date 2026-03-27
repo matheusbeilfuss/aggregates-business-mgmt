@@ -22,13 +22,24 @@ export default function Balance() {
   const startDate = useMemo(() => new Date(year, 0, 1), [year]);
   const endDate = useMemo(() => new Date(year, 11, 31), [year]);
 
-  const { monthlyData, summary, expensesByCategory, loading, error } =
-    useBalanceData({ startDate, endDate });
+  const {
+    monthlyData,
+    summary,
+    expensesByCategory,
+    loading,
+    error: balanceError,
+  } = useBalanceData({ startDate, endDate });
 
-  const { data: productBalance, loading: loadingProducts } = useProductBalance({
+  const {
+    data: productBalance,
+    loading: loadingProducts,
+    error: productBalanceError,
+  } = useProductBalance({
     startDate,
     endDate,
   });
+
+  const error = balanceError || productBalanceError;
 
   useEffect(() => {
     if (error) {
@@ -45,6 +56,12 @@ export default function Balance() {
         <div className="flex justify-center">
           <YearPicker year={year} onChange={setYear} />
         </div>
+
+        {error && (
+          <p className="text-red-500 text-sm text-center">
+            Não foi possível carregar todos os dados. Tente novamente.
+          </p>
+        )}
 
         {isLoading ? (
           <LoadingState />
