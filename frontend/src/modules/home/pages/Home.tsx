@@ -1,44 +1,39 @@
-import { HomeCard } from "@/modules/home/components/HomeCard";
-import { useEffect, useState } from "react";
-import { MockFetchData } from "@/MockFetchData";
-import { Skeleton } from "@/components/ui/skeleton";
 import { usePageTitle } from "@/hooks/usePageTitle";
+import { useAuth } from "@/modules/auth/hooks/useAuth";
+import { HomeBalanceCard } from "../components/HomeBalanceCard";
+import { HomeOrdersCard } from "../components/HomeOrdersCard";
+import { HomeStockCard } from "../components/HomeStockCard";
+import { HomeReceivablesCard } from "../components/HomeReceivablesCard";
+import { useHomeData } from "../hooks/useHomeData";
 
 export function Home() {
   usePageTitle("Início");
 
-  const [homeData, setHomeData] = useState<{
-    user: string;
-    cards: { title: string; content: string[] }[];
-  } | null>(null);
-
-  useEffect(() => {
-    MockFetchData().then((data) => {
-      setHomeData(data as any); // TODO: this'll be addressed in another issue
-    });
-  }, []);
+  const { user } = useAuth();
+  const { monthLabel, topOrders, lowStocks, topReceivables, balance, loading } =
+    useHomeData();
 
   return (
-    <div className="flex flex-col justify-center items-center mx-auto">
-      <div className="w-[80%] h-[20vh] flex flex-col justify-center items-start">
-        {homeData ? (
-          <h1 className="text-3xl">Olá, {homeData.user}</h1>
-        ) : (
-          <Skeleton className="h-8 w-48 rounded-full" />
-        )}
-      </div>
-      <div className="w-[80%] grid grid-cols-1 md:grid-cols-2 gap-10">
-        {homeData
-          ? homeData.cards.map((card) => (
-              <HomeCard
-                key={card.title}
-                title={card.title}
-                content={card.content}
-              />
-            ))
-          : Array.from({ length: 4 }).map((_, index) => (
-              <Skeleton key={index} className="h-48 w-full" />
-            ))}
+    <div className="flex flex-col mx-auto w-[80%] h-full gap-15 py-15 md:gap-24 md:py-24">
+      <h1 className="text-3xl">Olá, {user?.firstName ?? ""}</h1>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pb-15 md:pb-0">
+        <HomeBalanceCard
+          monthLabel={monthLabel}
+          income={balance.income}
+          expenses={balance.expenses}
+          avgProfit={balance.avgProfit}
+          loading={loading.balance}
+        />
+
+        <HomeOrdersCard orders={topOrders} loading={loading.orders} />
+
+        <HomeStockCard stocks={lowStocks} loading={loading.stocks} />
+
+        <HomeReceivablesCard
+          receivables={topReceivables}
+          loading={loading.receivables}
+        />
       </div>
     </div>
   );
