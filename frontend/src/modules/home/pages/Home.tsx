@@ -14,10 +14,10 @@ export function Home() {
     useHomeData();
 
   return (
-    <div className="flex flex-col mx-auto w-[80%] h-full gap-15 py-15 md:gap-24 md:py-24">
+    <div className="flex flex-col mx-auto w-[80%] h-full gap-16 py-16 md:gap-24 md:py-24">
       <h1 className="text-3xl">Olá, {user?.firstName ?? ""}</h1>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pb-15 md:pb-0">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pb-16 md:pb-0">
         <HomeBalanceCard
           monthLabel={monthLabel}
           income={balance.income}
