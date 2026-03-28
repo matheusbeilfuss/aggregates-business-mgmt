@@ -5,13 +5,28 @@ import { HomeOrdersCard } from "../components/HomeOrdersCard";
 import { HomeStockCard } from "../components/HomeStockCard";
 import { HomeReceivablesCard } from "../components/HomeReceivablesCard";
 import { useHomeData } from "../hooks/useHomeData";
+import { toast } from "sonner";
+import { useEffect } from "react";
 
 export function Home() {
   usePageTitle("Início");
 
   const { user } = useAuth();
-  const { monthLabel, topOrders, lowStocks, topReceivables, balance, loading } =
-    useHomeData();
+  const {
+    monthLabel,
+    topOrders,
+    lowStocks,
+    topReceivables,
+    balance,
+    loading,
+    error,
+  } = useHomeData();
+
+  useEffect(() => {
+    if (error) {
+      toast.error("Não foi possível carregar os dados da página inicial.");
+    }
+  }, [error]);
 
   return (
     <div className="flex flex-col mx-auto w-[80%] h-full gap-16 py-16 md:gap-24 md:py-24">

@@ -18,24 +18,35 @@ export function useHomeData() {
   const monthLabelCapitalized =
     monthLabel.charAt(0).toUpperCase() + monthLabel.slice(1);
 
-  const { data: orders, loading: loadingOrders } = useOrders(toIsoDate(today));
+  const {
+    data: orders,
+    loading: loadingOrders,
+    error: ordersError,
+  } = useOrders(toIsoDate(today));
 
-  const { data: stocks, loading: loadingStocks } = useStocks();
+  const {
+    data: stocks,
+    loading: loadingStocks,
+    error: stocksError,
+  } = useStocks();
 
-  const { data: receivables, loading: loadingReceivables } = useReceivables({
-    startDate,
-    endDate,
-  });
+  const {
+    data: receivables,
+    loading: loadingReceivables,
+    error: receivablesError,
+  } = useReceivables({ startDate, endDate });
 
-  const { data: expenses, loading: loadingExpenses } = useFinanceExpenses({
-    startDate,
-    endDate,
-  });
+  const {
+    data: expenses,
+    loading: loadingExpenses,
+    error: expensesError,
+  } = useFinanceExpenses({ startDate, endDate });
 
-  const { data: payments, loading: loadingPayments } = useFinancePayments({
-    startDate,
-    endDate,
-  });
+  const {
+    data: payments,
+    loading: loadingPayments,
+    error: paymentsError,
+  } = useFinancePayments({ startDate, endDate });
 
   const topOrders = useMemo(() => {
     if (!orders) return [];
@@ -84,5 +95,11 @@ export function useHomeData() {
       receivables: loadingReceivables,
       balance: loadingExpenses || loadingPayments,
     },
+    error:
+      ordersError ||
+      stocksError ||
+      receivablesError ||
+      expensesError ||
+      paymentsError,
   };
 }
