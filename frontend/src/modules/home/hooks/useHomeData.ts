@@ -65,10 +65,11 @@ export function useHomeData() {
         ?.filter((e) => e.paymentStatus === PaymentStatusEnum.PAID)
         .reduce((acc, e) => acc + Number(e.expenseValue), 0) ?? 0;
 
-    const nonEmptyMonths = 1;
-    const avgProfit = (totalIncome - totalExpenses) / nonEmptyMonths;
-
-    return { income: totalIncome, expenses: totalExpenses, avgProfit };
+    return {
+      income: totalIncome,
+      expenses: totalExpenses,
+      profit: totalIncome - totalExpenses,
+    };
   }, [payments, expenses]);
 
   return {

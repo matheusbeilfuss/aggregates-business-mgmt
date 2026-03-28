@@ -6,7 +6,7 @@ type Props = {
   monthLabel: string;
   income: number;
   expenses: number;
-  avgProfit: number;
+  profit: number;
   loading: boolean;
   className?: string;
 };
@@ -15,7 +15,7 @@ export function HomeBalanceCard({
   monthLabel,
   income,
   expenses,
-  avgProfit,
+  profit,
   loading,
   className,
 }: Props) {
@@ -65,11 +65,9 @@ export function HomeBalanceCard({
                   </span>
                 </div>
                 <div className="flex items-center justify-between gap-2">
-                  <span className="text-base text-muted-foreground">
-                    Média de lucro
-                  </span>
+                  <span className="text-base text-muted-foreground">Lucro</span>
                   <span className="text-base font-semibold">
-                    {formatLocalCurrency(avgProfit)}
+                    {formatLocalCurrency(profit)}
                   </span>
                 </div>
               </div>

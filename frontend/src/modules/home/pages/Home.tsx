@@ -22,7 +22,7 @@ export function Home() {
           monthLabel={monthLabel}
           income={balance.income}
           expenses={balance.expenses}
-          avgProfit={balance.avgProfit}
+          profit={balance.profit}
           loading={loading.balance}
         />
 
