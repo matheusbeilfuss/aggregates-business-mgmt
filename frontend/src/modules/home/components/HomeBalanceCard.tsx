@@ -19,8 +19,6 @@ export function HomeBalanceCard({
   loading,
   className,
 }: Props) {
-  const balance = income - expenses;
-
   return (
     <Link to="/balance" className="block">
       <Card
@@ -39,9 +37,9 @@ export function HomeBalanceCard({
               <div className="flex flex-col gap-1 md:flex-1">
                 <span className="text-sm text-muted-foreground">Saldo</span>
                 <p
-                  className={`text-4xl font-bold ${balance >= 0 ? "text-blue-500" : "text-orange-500"}`}
+                  className={`text-4xl font-bold ${profit >= 0 ? "text-blue-500" : "text-orange-500"}`}
                 >
-                  {formatLocalCurrency(balance)}
+                  {formatLocalCurrency(profit)}
                 </p>
               </div>
 
@@ -62,12 +60,6 @@ export function HomeBalanceCard({
                   </span>
                   <span className="text-base font-semibold">
                     {formatLocalCurrency(expenses)}
-                  </span>
-                </div>
-                <div className="flex items-center justify-between gap-2">
-                  <span className="text-base text-muted-foreground">Lucro</span>
-                  <span className="text-base font-semibold">
-                    {formatLocalCurrency(profit)}
                   </span>
                 </div>
               </div>
