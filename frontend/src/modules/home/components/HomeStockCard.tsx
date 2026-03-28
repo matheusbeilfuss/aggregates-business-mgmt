@@ -17,7 +17,7 @@ export function HomeStockCard({ stocks, loading, className }: Props) {
   return (
     <Link to="/stock" className="block">
       <Card
-        className={`cursor-pointer hover:shadow-md transition-shadow ${className ?? ""}`}
+        className={`cursor-pointer hover:shadow-md transition-shadow h-full ${className ?? ""}`}
         onClick={() => navigate("/stocks")}
       >
         <CardHeader>

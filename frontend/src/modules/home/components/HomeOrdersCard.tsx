@@ -13,7 +13,7 @@ export function HomeOrdersCard({ orders, loading, className }: Props) {
   return (
     <Link to="/orders" className="block">
       <Card
-        className={`cursor-pointer hover:shadow-md transition-shadow ${className ?? ""}`}
+        className={`cursor-pointer hover:shadow-md transition-shadow h-full ${className ?? ""}`}
       >
         <CardHeader>
           <CardTitle className="text-base font-medium">Pedidos</CardTitle>

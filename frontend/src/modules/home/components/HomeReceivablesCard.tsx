@@ -19,7 +19,7 @@ export function HomeReceivablesCard({
   return (
     <Link to="/receivables" className="block">
       <Card
-        className={`cursor-pointer hover:shadow-md transition-shadow ${className ?? ""}`}
+        className={`cursor-pointer hover:shadow-md transition-shadow h-full ${className ?? ""}`}
         onClick={() => navigate("/receivables")}
       >
         <CardHeader>

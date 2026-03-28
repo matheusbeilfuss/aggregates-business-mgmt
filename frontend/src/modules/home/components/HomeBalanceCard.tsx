@@ -24,7 +24,7 @@ export function HomeBalanceCard({
   return (
     <Link to="/balance" className="block">
       <Card
-        className={`cursor-pointer hover:shadow-md transition-shadow ${className ?? ""}`}
+        className={`cursor-pointer hover:shadow-md transition-shadow h-full ${className ?? ""}`}
       >
         <CardHeader>
           <CardTitle className="text-base font-medium text-muted-foreground">
