@@ -7,11 +7,12 @@ import { HomeReceivablesCard } from "../components/HomeReceivablesCard";
 import { useHomeData } from "../hooks/useHomeData";
 import { toast } from "sonner";
 import { useEffect } from "react";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export function Home() {
   usePageTitle("Início");
 
-  const { user } = useAuth();
+  const { user, isLoading } = useAuth();
   const {
     monthLabel,
     topOrders,
@@ -30,7 +31,11 @@ export function Home() {
 
   return (
     <div className="flex flex-col mx-auto w-[80%] h-full gap-16 py-16 md:gap-24 md:py-24">
-      <h1 className="text-3xl">Olá, {user?.firstName ?? ""}</h1>
+      {isLoading ? (
+        <Skeleton className="h-9 w-48 rounded-md" />
+      ) : (
+        <h1 className="text-3xl">Olá, {user?.firstName ?? ""}</h1>
+      )}
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pb-16 md:pb-0">
         <HomeBalanceCard
