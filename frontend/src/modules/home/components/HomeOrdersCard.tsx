@@ -31,9 +31,8 @@ export function HomeOrdersCard({ orders, loading, className }: Props) {
                 const label = order.product
                   ? order.product.name
                   : (order.service ?? "Serviço");
-                const quantity = order.m3Quantity
-                  ? `${order.m3Quantity} m³`
-                  : null;
+                const quantity =
+                  order.m3Quantity != null ? `${order.m3Quantity} m³` : null;
                 const neighborhood = order.orderAddress?.neighborhood ?? null;
 
                 return (
