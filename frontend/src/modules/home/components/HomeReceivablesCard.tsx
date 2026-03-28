@@ -1,4 +1,4 @@
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Receivable } from "@/modules/receivables/types";
 import { formatLocalCurrency, formatLocalDate } from "@/utils";
@@ -14,13 +14,10 @@ export function HomeReceivablesCard({
   loading,
   className,
 }: Props) {
-  const navigate = useNavigate();
-
   return (
     <Link to="/receivables" className="block">
       <Card
         className={`cursor-pointer hover:shadow-md transition-shadow h-full ${className ?? ""}`}
-        onClick={() => navigate("/receivables")}
       >
         <CardHeader>
           <CardTitle className="text-base font-medium">Cobranças</CardTitle>

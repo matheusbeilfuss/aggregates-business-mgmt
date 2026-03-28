@@ -1,4 +1,4 @@
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { StockItem } from "@/modules/stock/types";
@@ -12,13 +12,10 @@ type Props = {
 const LOW_STOCK_THRESHOLD = 5;
 
 export function HomeStockCard({ stocks, loading, className }: Props) {
-  const navigate = useNavigate();
-
   return (
-    <Link to="/stock" className="block">
+    <Link to="/stocks" className="block">
       <Card
         className={`cursor-pointer hover:shadow-md transition-shadow h-full ${className ?? ""}`}
-        onClick={() => navigate("/stocks")}
       >
         <CardHeader>
           <CardTitle className="text-base font-medium">Estoque</CardTitle>
