@@ -507,6 +507,7 @@ export function OrderForm({
                   <FormControl>
                     <Input
                       {...field}
+                      value={field.value ?? ""}
                       type="number"
                       onChange={(e) =>
                         field.onChange(
