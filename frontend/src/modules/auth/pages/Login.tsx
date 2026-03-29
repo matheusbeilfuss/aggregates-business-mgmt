@@ -16,7 +16,7 @@ import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
 import { LoginPayload } from "../types";
 import { useAuth } from "../hooks/useAuth";
-import { ApiError } from "@/lib/api";
+import { API_URL, ApiError } from "@/lib/api";
 import { useSettings } from "@/modules/settings/hooks/useSettings";
 import { usePageTitle } from "@/hooks/usePageTitle";
 
@@ -25,7 +25,7 @@ export function Login() {
 
   const navigate = useNavigate();
   const { login } = useAuth();
-  const { businessName } = useSettings();
+  const { businessName, businessImgName } = useSettings();
 
   const form = useForm<LoginPayload>({
     resolver: zodResolver(loginSchema),
@@ -53,9 +53,18 @@ export function Login() {
 
   return (
     <>
-      <div className="w-full h-[30vh] bg-blue-300 flex flex-col justify-center items-center gap-2">
-        <h1 className="font-bold text-xl text-blue-600">{businessName}</h1>
-        <h3 className="font-medium text-blue-600">Seja bem vindo!</h3>
+      <div className="w-full h-[30vh] flex flex-col justify-center items-center gap-2 bg-blue-300 relative overflow-hidden">
+        {businessImgName && (
+          <img
+            src={`${API_URL}/settings/business-image`}
+            alt="Foto do negócio"
+            className="absolute inset-0 w-full h-full object-cover opacity-40"
+          />
+        )}
+        <h1 className="relative font-bold text-xl text-blue-600">
+          {businessName}
+        </h1>
+        <h3 className="relative font-medium text-blue-600">Seja bem vindo!</h3>
       </div>
       <div className="w-full h-[55vh] flex flex-col justify-center items-center gap-4">
         <Form {...form}>

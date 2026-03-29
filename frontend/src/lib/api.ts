@@ -112,4 +112,11 @@ export const api = {
       method: "POST",
       body: formData,
     }).then(handleResponse<T>),
+
+  patchMultipart: <T>(endpoint: string, formData: FormData): Promise<T> =>
+    fetch(`${API_URL}${endpoint}`, {
+      ...defaultOptions,
+      method: "PATCH",
+      body: formData,
+    }).then(handleResponse<T>),
 };

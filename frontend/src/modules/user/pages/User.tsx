@@ -1,6 +1,6 @@
 import { PageContainer, LoadingState } from "@/components/shared";
 import { Button } from "@/components/ui/button";
-import { Users } from "lucide-react";
+import { Settings, Users } from "lucide-react";
 import { useState } from "react";
 import { userService } from "../services/user.service";
 import { toast } from "sonner";
@@ -10,7 +10,6 @@ import { UserForm } from "../components/UserForm";
 import { useNavigate } from "react-router-dom";
 import { ApiError } from "@/lib/api";
 import { useAuth } from "@/modules/auth/hooks/useAuth";
-import { UpdateBusinessNameDialog } from "@/modules/settings/components/UpdateBusinessNameDialog";
 import { usePageTitle } from "@/hooks/usePageTitle";
 import { useUserAvatar } from "../hooks";
 
@@ -22,8 +21,6 @@ export function User() {
   const avatar = useUserAvatar(user?.imgName);
 
   const [isUpdatePasswordDialogOpen, setIsUpdatePasswordDialogOpen] =
-    useState(false);
-  const [isUpdateBusinessNameDialogOpen, setIsUpdateBusinessNameDialogOpen] =
     useState(false);
 
   if (isLoading) {
@@ -84,10 +81,15 @@ export function User() {
                   Gerenciar acessos
                 </Button>
 
-                <UpdateBusinessNameDialog
-                  open={isUpdateBusinessNameDialogOpen}
-                  onOpenChange={setIsUpdateBusinessNameDialogOpen}
-                />
+                <Button
+                  type="button"
+                  variant="secondary"
+                  className="w-full cursor-pointer"
+                  onClick={() => navigate("/admin/settings")}
+                >
+                  <Settings className="w-4 h-4 mr-2" />
+                  Configurações
+                </Button>
               </>
             )}
           </>

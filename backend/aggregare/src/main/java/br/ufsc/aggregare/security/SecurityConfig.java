@@ -81,6 +81,7 @@ public class SecurityConfig {
 	public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity, AuthenticationEntryPoint authenticationEntryPoint, AccessDeniedHandler accessDeniedHandler) throws Exception {
 		String adminRole = "ADMIN";
 		String usersRoutes = "/users/**";
+		String businessImageRoute = "/settings/business-image";
 
 		return httpSecurity
 				.cors(Customizer.withDefaults())
@@ -98,6 +99,9 @@ public class SecurityConfig {
 						.requestMatchers("/favicon.ico").permitAll()
 						.requestMatchers(HttpMethod.GET, "/settings").permitAll()
 						.requestMatchers(HttpMethod.PUT, "/settings").hasRole(adminRole)
+						.requestMatchers(HttpMethod.GET, businessImageRoute).permitAll()
+						.requestMatchers(HttpMethod.PATCH, businessImageRoute).hasRole(adminRole)
+						.requestMatchers(HttpMethod.DELETE, businessImageRoute).hasRole(adminRole)
 						.requestMatchers(HttpMethod.GET, "/users/me").authenticated()
 						.requestMatchers(HttpMethod.GET, "/users/me/avatar").authenticated()
 						.requestMatchers(HttpMethod.PUT, usersRoutes).authenticated()

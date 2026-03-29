@@ -4,6 +4,7 @@ import { SettingsContext } from "./settings.context";
 
 export function SettingsProvider({ children }: { children: ReactNode }) {
   const [businessName, setBusinessName] = useState("Nome do Comércio");
+  const [businessImgName, setBusinessImgName] = useState<string | undefined>();
   const [isLoading, setIsLoading] = useState(true);
 
   const fetchSettings = useCallback(async () => {
@@ -11,8 +12,10 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
     try {
       const settings = await settingsService.get();
       setBusinessName(settings.businessName);
+      setBusinessImgName(settings.businessImgName);
     } catch {
       setBusinessName("Nome do Comércio");
+      setBusinessImgName(undefined);
     } finally {
       setIsLoading(false);
     }
@@ -24,7 +27,12 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
 
   return (
     <SettingsContext.Provider
-      value={{ businessName, isLoading, refetchSettings: fetchSettings }}
+      value={{
+        businessName,
+        businessImgName,
+        isLoading,
+        refetchSettings: fetchSettings,
+      }}
     >
       {children}
     </SettingsContext.Provider>

@@ -27,6 +27,7 @@ import { ClientAdd } from "./modules/client/pages/ClientAdd";
 import { ClientEdit } from "./modules/client/pages/ClientEdit";
 import { BalancePrint } from "./modules/balance/pages/BalancePrint";
 import Balance from "./modules/balance/pages/Balance";
+import { Settings } from "./modules/settings/pages/Settings";
 
 export const router = createBrowserRouter([
   {
@@ -80,6 +81,7 @@ export const router = createBrowserRouter([
             children: [
               { path: "admin/users", element: <UsersManage /> },
               { path: "admin/users/add", element: <UserAdd /> },
+              { path: "admin/settings", element: <Settings /> },
             ],
           },
           { path: "*", element: <NotFound /> },

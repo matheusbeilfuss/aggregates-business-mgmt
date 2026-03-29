@@ -19,6 +19,8 @@ public class Settings implements Serializable {
 	@Column(nullable = false)
 	private String businessName;
 
+	private String businessImgName;
+
 	public Settings() {
 	}
 
@@ -36,5 +38,13 @@ public class Settings implements Serializable {
 
 	public void setBusinessName(String businessName) {
 		this.businessName = businessName;
+	}
+
+	public String getBusinessImgName() {
+		return businessImgName;
+	}
+
+	public void setBusinessImgName(String businessImgName) {
+		this.businessImgName = businessImgName;
 	}
 }
