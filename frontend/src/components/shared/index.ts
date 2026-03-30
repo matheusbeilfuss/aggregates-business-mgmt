@@ -8,3 +8,4 @@ export { NotFound } from "./NotFound";
 export { PeriodPicker } from "./PeriodPicker";
 export { FinanceTotalBar } from "./FinanceTotalBar";
 export { PhoneTypeSelect } from "./PhoneTypeSelect";
+export { CurrencyInput } from "./CurrencyInput";

@@ -33,6 +33,7 @@ import {
   formatTime,
   toIsoDate,
 } from "@/utils";
+import { CurrencyInput } from "./CurrencyInput";
 
 type AddMode = { mode: "add"; order: OrderForPayment };
 type EditMode = { mode: "edit"; payment: Payment };
@@ -178,16 +179,9 @@ export function PaymentDialog({
                 <FormItem>
                   <FormLabel>Valor do pagamento</FormLabel>
                   <FormControl>
-                    <Input
-                      type="number"
-                      value={field.value ?? ""}
-                      onChange={(e) =>
-                        field.onChange(
-                          e.target.value === ""
-                            ? undefined
-                            : Number(e.target.value),
-                        )
-                      }
+                    <CurrencyInput
+                      value={field.value}
+                      onChange={field.onChange}
                     />
                   </FormControl>
                   <FormMessage />

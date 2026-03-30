@@ -1,0 +1,77 @@
+import { useState, useRef } from "react";
+import { Input } from "@/components/ui/input";
+import { formatLocalCurrency, parseLocalCurrency } from "@/utils";
+import { cn } from "@/lib/utils";
+
+interface CurrencyInputProps {
+  value?: number;
+  onChange: (value: number | undefined) => void;
+  disabled?: boolean;
+  className?: string;
+  placeholder?: string;
+}
+
+export function CurrencyInput({
+  value,
+  onChange,
+  disabled,
+  className,
+  placeholder = "R$ 0,00",
+}: CurrencyInputProps) {
+  const [displayValue, setDisplayValue] = useState<string>(
+    value != null ? formatLocalCurrency(value) : "",
+  );
+  const isFocused = useRef(false);
+
+  function handleFocus(e: React.FocusEvent<HTMLInputElement>) {
+    isFocused.current = true;
+    // Ao focar, mostra só o número para facilitar a edição
+    if (value != null) {
+      const raw = value.toFixed(2).replace(".", ",");
+      setDisplayValue(raw);
+    } else {
+      setDisplayValue("");
+    }
+    e.target.select();
+  }
+
+  function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const raw = e.target.value;
+    setDisplayValue(raw);
+    const parsed = parseLocalCurrency(raw);
+    onChange(parsed);
+  }
+
+  function handleBlur() {
+    isFocused.current = false;
+    const parsed = parseLocalCurrency(displayValue);
+    if (parsed != null) {
+      setDisplayValue(formatLocalCurrency(parsed));
+      onChange(parsed);
+    } else {
+      setDisplayValue("");
+      onChange(undefined);
+    }
+  }
+
+  // Sincroniza quando o valor muda externamente (ex: preço preenchido automaticamente)
+  if (!isFocused.current) {
+    const external = value != null ? formatLocalCurrency(value) : "";
+    if (external !== displayValue) {
+      setDisplayValue(external);
+    }
+  }
+
+  return (
+    <Input
+      inputMode="decimal"
+      value={displayValue}
+      placeholder={placeholder}
+      disabled={disabled}
+      className={cn(className)}
+      onFocus={handleFocus}
+      onChange={handleChange}
+      onBlur={handleBlur}
+    />
+  );
+}

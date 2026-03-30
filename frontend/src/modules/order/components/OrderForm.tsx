@@ -14,6 +14,7 @@ import {
   FormActions,
   LoadingState,
   PhoneTypeSelect,
+  CurrencyInput,
 } from "@/components/shared";
 import { DatePicker } from "@/components/shared/DatePicker";
 import { UseFormReturn, useWatch } from "react-hook-form";
@@ -564,17 +565,9 @@ export function OrderForm({
                       Valor <span className="text-destructive">*</span>
                     </FormLabel>
                     <FormControl>
-                      <Input
-                        {...field}
-                        value={field.value ?? ""}
-                        type="number"
-                        onChange={(e) =>
-                          field.onChange(
-                            e.target.value === ""
-                              ? undefined
-                              : Number(e.target.value),
-                          )
-                        }
+                      <CurrencyInput
+                        value={field.value}
+                        onChange={field.onChange}
                       />
                     </FormControl>
                     <FormMessage />
