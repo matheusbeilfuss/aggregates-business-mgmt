@@ -3,9 +3,7 @@ import { Navigate, useNavigate, useParams } from "react-router-dom";
 import { DefaultValues, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
-import { TriangleAlert } from "lucide-react";
-
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Package, Tag, TriangleAlert } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import {
   Form,
@@ -14,8 +12,12 @@ import {
   FormItem,
   FormLabel,
 } from "@/components/ui/form";
-
-import { PageContainer, LoadingState, FormActions } from "@/components/shared";
+import {
+  PageContainer,
+  LoadingState,
+  FormActions,
+  FormSection,
+} from "@/components/shared";
 import { CategorySelect } from "../components/CategorySelect";
 import { useStock } from "../hooks";
 import { stockService } from "../services/stock.service";
@@ -32,7 +34,6 @@ export function StockEdit() {
   usePageTitle("Editar produto");
 
   const navigate = useNavigate();
-
   const { id: rawStockId } = useParams<{ id: string }>();
   const stockId = Number(rawStockId);
   const validId = Number.isFinite(stockId) && stockId > 0;
@@ -83,34 +84,29 @@ export function StockEdit() {
     }
   }, [stockError, navigate]);
 
-  if (!validId) {
-    return <Navigate to="/stocks" replace />;
-  }
+  if (!validId) return <Navigate to="/stocks" replace />;
 
   async function onSubmit(data: EditStockFormData) {
     if (!productId || !stockId) return;
-
     try {
       await productService.update(productId, {
         name: data.productName,
         categoryId: data.categoryId,
       });
-
       await stockService.update(stockId, {
         tonQuantity: data.tonQuantity,
         m3Quantity: data.m3Quantity,
         density: data.density,
         productId,
       });
-
-      toast.success("Estoque atualizado com sucesso!");
+      toast.success("Estoque atualizado com sucesso.");
       navigate("/stocks");
     } catch (error) {
-      if (error instanceof ApiError) {
-        toast.error(error.message);
-      } else {
-        toast.error("Não foi possível atualizar o estoque.");
-      }
+      toast.error(
+        error instanceof ApiError
+          ? error.message
+          : "Não foi possível atualizar o estoque.",
+      );
     }
   }
 
@@ -125,102 +121,134 @@ export function StockEdit() {
   return (
     <PageContainer title="Editar produto">
       <Form {...form}>
-        <form
-          onSubmit={form.handleSubmit(onSubmit)}
-          className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto"
-        >
-          <FormField
-            name="productName"
-            control={form.control}
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Nome</FormLabel>
-                <FormControl>
-                  <Input {...field} value={field.value ?? ""} />
-                </FormControl>
-              </FormItem>
-            )}
-          />
+        <form onSubmit={form.handleSubmit(onSubmit)}>
+          <div className="max-w-3xl mx-auto space-y-8">
+            <FormSection icon={Tag} title="Produto">
+              <FormField
+                name="productName"
+                control={form.control}
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Nome</FormLabel>
+                    <FormControl>
+                      <Input
+                        {...field}
+                        value={field.value ?? ""}
+                        onFocus={(e) => e.target.select()}
+                      />
+                    </FormControl>
+                  </FormItem>
+                )}
+              />
 
-          <FormField
-            name="categoryId"
-            control={form.control}
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Categoria</FormLabel>
-                <CategorySelect
-                  value={field.value}
-                  onChange={field.onChange}
-                  categories={categories ?? []}
-                />
-              </FormItem>
-            )}
-          />
+              <FormField
+                name="categoryId"
+                control={form.control}
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Categoria</FormLabel>
+                    <CategorySelect
+                      value={field.value}
+                      onChange={field.onChange}
+                      categories={categories ?? []}
+                    />
+                  </FormItem>
+                )}
+              />
+            </FormSection>
 
-          <FormField
-            name="tonQuantity"
-            control={form.control}
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Toneladas</FormLabel>
-                <FormControl>
-                  <Input type="number" {...field} value={field.value ?? 0} />
-                </FormControl>
-              </FormItem>
-            )}
-          />
+            <FormSection icon={Package} title="Estoque">
+              <FormField
+                name="tonQuantity"
+                control={form.control}
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Toneladas</FormLabel>
+                    <FormControl>
+                      <Input
+                        type="number"
+                        {...field}
+                        value={field.value ?? 0}
+                        onFocus={(e) => e.target.select()}
+                      />
+                    </FormControl>
+                  </FormItem>
+                )}
+              />
 
-          <FormField
-            name="m3Quantity"
-            control={form.control}
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>M³</FormLabel>
-                <FormControl>
-                  <Input type="number" {...field} value={field.value ?? 0} />
-                </FormControl>
-              </FormItem>
-            )}
-          />
+              <FormField
+                name="m3Quantity"
+                control={form.control}
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Volume (m³)</FormLabel>
+                    <FormControl>
+                      <Input
+                        type="number"
+                        {...field}
+                        value={field.value ?? 0}
+                        onFocus={(e) => e.target.select()}
+                      />
+                    </FormControl>
+                  </FormItem>
+                )}
+              />
 
-          <FormField
-            name="density"
-            control={form.control}
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Densidade</FormLabel>
-                <FormControl>
-                  <Input type="number" {...field} value={field.value ?? 0} />
-                </FormControl>
-              </FormItem>
-            )}
-          />
+              <FormField
+                name="density"
+                control={form.control}
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Densidade (Ton/m³)</FormLabel>
+                    <FormControl>
+                      <Input
+                        type="number"
+                        {...field}
+                        value={field.value ?? 0}
+                        onFocus={(e) => e.target.select()}
+                      />
+                    </FormControl>
+                  </FormItem>
+                )}
+              />
+            </FormSection>
 
-          <Alert variant="destructive" className="md:col-span-2">
-            <TriangleAlert />
-            <AlertTitle>Atenção</AlertTitle>
-            <AlertDescription className="space-y-1 mt-1">
-              <p>
-                - A edição altera diretamente os dados do estoque e{" "}
-                <strong>não gera lançamentos financeiros</strong>. Para
-                registrar uma entrada com custo, use a opção <em>Adicionar</em>.
-              </p>
-              <p>
-                - Ao alterar a densidade, ela será usada para calcular a
-                conversão de m³ para toneladas nos{" "}
-                <strong>próximos pedidos criados</strong>. Pedidos já existentes
-                não são afetados por esta alteração.
-              </p>
-            </AlertDescription>
-          </Alert>
+            <div
+              className="flex items-start gap-3 rounded-xl px-4 py-3"
+              style={{ backgroundColor: "var(--color-error-container)" }}
+            >
+              <TriangleAlert
+                className="h-4 w-4 mt-0.5 shrink-0"
+                style={{ color: "var(--color-error)" }}
+              />
+              <div
+                className="space-y-1 text-sm"
+                style={{ color: "var(--color-on-error-container)" }}
+              >
+                <p className="font-semibold">Atenção</p>
+                <p>
+                  A edição altera diretamente os dados do estoque e{" "}
+                  <strong>não gera lançamentos financeiros</strong>. Para
+                  registrar uma entrada com custo, use a opção{" "}
+                  <em>Adicionar estoque</em>.
+                </p>
+                <p>
+                  Ao alterar a densidade, ela será usada para calcular a
+                  conversão de m³ para toneladas nos{" "}
+                  <strong>próximos pedidos criados</strong>. Pedidos já
+                  existentes não são afetados.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <FormActions
+            cancelPath="/stocks"
+            submitLabel="Salvar"
+            onSubmit={form.handleSubmit(onSubmit)}
+          />
         </form>
       </Form>
-
-      <FormActions
-        cancelPath="/stocks"
-        submitLabel="Salvar"
-        onSubmit={form.handleSubmit(onSubmit)}
-      />
     </PageContainer>
   );
 }

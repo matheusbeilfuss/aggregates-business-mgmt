@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { toast } from "sonner";
-
+import { Plus } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import {
   PageContainer,
   LoadingState,
@@ -26,16 +27,15 @@ export function Stock() {
 
   async function handleDeleteProduct() {
     if (!productToDelete) return;
-
     try {
       await productService.delete(productToDelete.id);
-      toast.success("O produto foi excluído com sucesso.");
+      toast.success("Produto excluído com sucesso.");
     } catch (error) {
-      if (error instanceof ApiError) {
-        toast.error(error.message);
-      } else {
-        toast.error("Não foi possível excluir o produto.");
-      }
+      toast.error(
+        error instanceof ApiError
+          ? error.message
+          : "Não foi possível excluir o produto.",
+      );
     } finally {
       setProductToDelete(null);
       refetch();
@@ -43,8 +43,23 @@ export function Stock() {
   }
 
   return (
-    <PageContainer title="Estoque">
-      {error && <p className="text-red-500 mb-4">{error.message}</p>}
+    <PageContainer
+      title="Estoque"
+      actions={
+        <Button
+          className="h-9 px-4 text-sm font-medium text-white gap-1.5
+                     hover:opacity-90 active:opacity-80 transition-opacity"
+          style={{ backgroundColor: "var(--color-primary-40)" }}
+          onClick={() => setIsAddProductDialogOpen(true)}
+        >
+          <Plus className="h-4 w-4" />
+          Novo produto
+        </Button>
+      }
+    >
+      {error && (
+        <p className="text-sm text-destructive mb-4">{error.message}</p>
+      )}
 
       {loading ? (
         <LoadingState rows={5} />
@@ -55,19 +70,17 @@ export function Stock() {
         />
       )}
 
-      <div className="mt-auto flex justify-end py-12">
-        <AddProductDialog
-          open={isAddProductDialogOpen}
-          onOpenChange={setIsAddProductDialogOpen}
-          categories={categories ?? []}
-          onSuccess={refetch}
-        />
-      </div>
+      <AddProductDialog
+        open={isAddProductDialogOpen}
+        onOpenChange={setIsAddProductDialogOpen}
+        categories={categories ?? []}
+        onSuccess={refetch}
+      />
 
       <ConfirmDialog
         open={!!productToDelete}
         onOpenChange={(open) => !open && setProductToDelete(null)}
-        title="Você tem certeza de que deseja excluir o registro abaixo?"
+        title="Excluir este produto?"
         description={productToDelete?.name ?? ""}
         onConfirm={handleDeleteProduct}
         confirmLabel="Excluir"

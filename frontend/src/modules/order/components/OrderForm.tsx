@@ -15,6 +15,7 @@ import {
   LoadingState,
   PhoneTypeSelect,
   CurrencyInput,
+  FormSection,
 } from "@/components/shared";
 import { DatePicker } from "@/components/shared/DatePicker";
 import { UseFormReturn, useWatch } from "react-hook-form";
@@ -43,36 +44,6 @@ interface OrderFormProps {
   loading?: boolean;
   onSubmit: (data: OrderFormData) => void;
   submitLabel: string;
-}
-
-interface SectionProps {
-  icon: React.ElementType;
-  title: string;
-  children: React.ReactNode;
-}
-
-function Section({ icon: Icon, title, children }: SectionProps) {
-  return (
-    <div className="space-y-4">
-      <div className="flex items-center gap-2">
-        <div
-          className="flex items-center justify-center w-7 h-7 rounded-lg shrink-0"
-          style={{ backgroundColor: "var(--color-primary-90)" }}
-        >
-          <Icon
-            className="h-3.5 w-3.5"
-            style={{ color: "var(--color-primary-40)" }}
-          />
-        </div>
-        <h2 className="text-sm font-semibold text-foreground">{title}</h2>
-        <div
-          className="flex-1 h-px"
-          style={{ backgroundColor: "var(--color-outline-variant)" }}
-        />
-      </div>
-      <div className="grid grid-cols-1 gap-5 md:grid-cols-2">{children}</div>
-    </div>
-  );
 }
 
 export function OrderForm({
@@ -249,7 +220,7 @@ export function OrderForm({
               />
             </div>
 
-            <Section icon={User} title="Cliente">
+            <FormSection icon={User} title="Cliente">
               <FormField
                 control={form.control}
                 name="clientName"
@@ -339,9 +310,9 @@ export function OrderForm({
                   )}
                 />
               </div>
-            </Section>
+            </FormSection>
 
-            <Section icon={MapPin} title="Endereço">
+            <FormSection icon={MapPin} title="Endereço">
               <FormField
                 control={form.control}
                 name="cep"
@@ -480,9 +451,9 @@ export function OrderForm({
                   </FormItem>
                 )}
               />
-            </Section>
+            </FormSection>
 
-            <Section icon={Package} title="Pedido">
+            <FormSection icon={Package} title="Pedido">
               {orderType === "MATERIAL" && (
                 <FormField
                   control={form.control}
@@ -574,9 +545,9 @@ export function OrderForm({
                   </FormItem>
                 )}
               />
-            </Section>
+            </FormSection>
 
-            <Section icon={Clock} title="Agendamento">
+            <FormSection icon={Clock} title="Agendamento">
               <FormField
                 control={form.control}
                 name="scheduledTime"
@@ -620,7 +591,7 @@ export function OrderForm({
                   </FormItem>
                 )}
               />
-            </Section>
+            </FormSection>
           </div>
 
           <FormActions
