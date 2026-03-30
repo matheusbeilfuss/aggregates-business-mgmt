@@ -7,7 +7,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import { TriangleAlert } from "lucide-react";
+import { TriangleAlert, CheckCircle } from "lucide-react";
 
 interface ConfirmDialogProps {
   open: boolean;
@@ -26,7 +26,7 @@ export function ConfirmDialog({
   onOpenChange,
   title = "Você tem certeza?",
   description,
-  descriptionAlign = "center",
+  descriptionAlign = "left",
   onConfirm,
   confirmLabel = "Confirmar",
   cancelLabel = "Cancelar",
@@ -42,39 +42,53 @@ export function ConfirmDialog({
 
   return (
     <AlertDialog open={open} onOpenChange={onOpenChange}>
-      <AlertDialogContent className="sm:max-w-[420px]">
+      <AlertDialogContent className="sm:max-w-[400px] gap-0">
         <AlertDialogHeader>
-          <div className="flex items-center gap-4">
-            {isDestructive && (
-              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-red-100">
-                <TriangleAlert className="h-5 w-5 text-red-600" />
-              </div>
-            )}
-            <div className="text-left">
-              <AlertDialogTitle className="leading-tight">
+          <div className="flex items-start gap-3">
+            <div
+              className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full mt-0.5"
+              style={{
+                backgroundColor: isDestructive
+                  ? "var(--color-error-container)"
+                  : "var(--color-primary-90)",
+              }}
+            >
+              {isDestructive ? (
+                <TriangleAlert
+                  className="h-4 w-4"
+                  style={{ color: "var(--color-error)" }}
+                />
+              ) : (
+                <CheckCircle
+                  className="h-4 w-4"
+                  style={{ color: "var(--color-primary-40)" }}
+                />
+              )}
+            </div>
+            <div>
+              <AlertDialogTitle className="leading-tight text-base">
                 {title}
               </AlertDialogTitle>
+              <AlertDialogDescription className={`mt-1 text-sm ${alignClass}`}>
+                {description}
+              </AlertDialogDescription>
             </div>
           </div>
         </AlertDialogHeader>
 
-        <AlertDialogDescription
-          className={`mt-4 text-base text-foreground ${alignClass}`}
-        >
-          {description}
-        </AlertDialogDescription>
-
-        <div className="mt-6 flex justify-end gap-4">
-          <AlertDialogCancel className="cursor-pointer">
+        <div className="mt-6 flex justify-end gap-2">
+          <AlertDialogCancel className="cursor-pointer h-9 px-4 text-sm">
             {cancelLabel}
           </AlertDialogCancel>
 
           <AlertDialogAction
-            className={
-              isDestructive
-                ? "bg-red-600 hover:bg-red-700 cursor-pointer"
-                : "cursor-pointer"
-            }
+            className="cursor-pointer h-9 px-4 text-sm font-medium text-white
+                       hover:opacity-90 active:opacity-80 transition-opacity"
+            style={{
+              backgroundColor: isDestructive
+                ? "var(--color-error)"
+                : "var(--color-primary-40)",
+            }}
             onClick={onConfirm}
           >
             {confirmLabel}
