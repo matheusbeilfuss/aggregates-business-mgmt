@@ -1,6 +1,16 @@
+import { Fragment } from "react";
+import { useNavigate, Link } from "react-router-dom";
 import { SidebarTrigger } from "@/components/ui/sidebar";
-import { LogOut, User, CircleUserRound } from "lucide-react";
+import { LogOut, User } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -8,16 +18,22 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
-import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/modules/auth/hooks/useAuth";
 import { useSettings } from "@/modules/settings/hooks/useSettings";
 import { useUserAvatar } from "@/modules/user/hooks";
+import { useBreadcrumbs } from "./breadcrumb";
 
 export function Navbar() {
   const navigate = useNavigate();
   const { logout, user } = useAuth();
   const { businessName } = useSettings();
   const avatar = useUserAvatar(user?.imgName);
+  const crumbs = useBreadcrumbs();
+
+  const initials = [user?.firstName, user?.lastName]
+    .filter(Boolean)
+    .map((s) => s!.charAt(0).toUpperCase())
+    .join("");
 
   const onLogout = async () => {
     try {
@@ -28,22 +44,90 @@ export function Navbar() {
   };
 
   return (
-    <nav className="w-full h-22 bg-gray-300 flex justify-between items-center px-4">
-      <SidebarTrigger className="hover:bg-gray-400 h-10 w-10" />
-      <h3>{businessName}</h3>
+    <nav
+      className="w-full h-14 flex items-center justify-between px-4
+                 border-b border-border bg-background shrink-0"
+    >
+      <div className="flex items-center gap-3 min-w-0">
+        <SidebarTrigger className="h-8 w-8 shrink-0 rounded-md text-muted-foreground hover:bg-accent" />
+
+        <Breadcrumb>
+          <BreadcrumbList>
+            <BreadcrumbItem>
+              {crumbs.length > 0 ? (
+                <BreadcrumbLink asChild>
+                  <Link to="/" className="text-sm">
+                    {businessName}
+                  </Link>
+                </BreadcrumbLink>
+              ) : (
+                <BreadcrumbPage className="text-sm font-medium">
+                  {businessName}
+                </BreadcrumbPage>
+              )}
+            </BreadcrumbItem>
+
+            {crumbs.map((crumb, i) => {
+              const isLast = i === crumbs.length - 1;
+              return (
+                <Fragment key={`${crumb.url}-${i}`}>
+                  <BreadcrumbSeparator />
+                  <BreadcrumbItem>
+                    {isLast ? (
+                      <BreadcrumbPage className="text-sm">
+                        {crumb.label}
+                      </BreadcrumbPage>
+                    ) : (
+                      <BreadcrumbLink asChild>
+                        <Link to={crumb.url} className="text-sm">
+                          {crumb.label}
+                        </Link>
+                      </BreadcrumbLink>
+                    )}
+                  </BreadcrumbItem>
+                </Fragment>
+              );
+            })}
+          </BreadcrumbList>
+        </Breadcrumb>
+      </div>
+
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <button className="rounded-full h-10 w-10 flex items-center justify-center hover:bg-gray-400 transition-colors">
-            <Avatar className="h-9 w-9 border-gray-400">
+          <button
+            className="rounded-full h-9 w-9 flex items-center justify-center
+                       shrink-0 hover:ring-2 hover:ring-border transition-all"
+          >
+            <Avatar className="h-8 w-8">
               <AvatarImage src={avatar} />
-              <AvatarFallback className="bg-gray-200">
-                <CircleUserRound className="h-5 w-5 text-gray-700" />
+              <AvatarFallback
+                className="text-xs font-medium"
+                style={{
+                  backgroundColor: "var(--color-primary-90)",
+                  color: "var(--color-primary-10)",
+                }}
+              >
+                {initials || "?"}
               </AvatarFallback>
             </Avatar>
           </button>
         </DropdownMenuTrigger>
 
         <DropdownMenuContent align="end" className="w-48">
+          {user?.firstName && (
+            <>
+              <div className="px-2 py-1.5">
+                <p className="text-sm font-medium leading-none">
+                  {user.firstName} {user.lastName}
+                </p>
+                <p className="text-xs text-muted-foreground mt-0.5">
+                  {user.username}
+                </p>
+              </div>
+              <DropdownMenuSeparator />
+            </>
+          )}
+
           <DropdownMenuItem onClick={() => navigate("/user")}>
             <User className="mr-2 h-4 w-4" />
             Meu perfil
@@ -53,9 +137,10 @@ export function Navbar() {
 
           <DropdownMenuItem
             onClick={onLogout}
-            className="text-red-600 focus:text-red-600"
+            className="text-destructive focus:text-destructive
+                       focus:bg-destructive/10 hover:bg-destructive/10"
           >
-            <LogOut className="text-red-600 mr-2 h-4 w-4" />
+            <LogOut className="mr-2 h-4 w-4" />
             Sair
           </DropdownMenuItem>
         </DropdownMenuContent>

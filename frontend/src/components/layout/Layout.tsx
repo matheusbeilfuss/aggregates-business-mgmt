@@ -10,7 +10,10 @@ export function Layout({ children }: { children: ReactNode }) {
         <AppSidebar />
         <div className="flex flex-col flex-1 min-w-0">
           <Navbar />
-          <main className="flex-1 overflow-y-auto overflow-x-hidden">
+          <main
+            className="flex-1 overflow-y-auto overflow-x-hidden"
+            style={{ backgroundColor: "var(--color-surface-container-low)" }}
+          >
             {children}
           </main>
         </div>

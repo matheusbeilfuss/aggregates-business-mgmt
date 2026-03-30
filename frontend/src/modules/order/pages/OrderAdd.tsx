@@ -15,7 +15,7 @@ import { CreateClientPayload } from "@/modules/client/types";
 import { stripNonDigits } from "@/utils";
 
 export function OrderAdd() {
-  usePageTitle("Adicionar pedido");
+  usePageTitle("Novo pedido");
 
   const navigate = useNavigate();
   const { data: products, loading: productsLoading } = useProducts();
@@ -91,12 +91,12 @@ export function OrderAdd() {
 
   return (
     <OrderForm
-      title="Adicionar pedido"
+      title="Novo pedido"
       form={form}
       products={products ?? []}
       loading={productsLoading}
       onSubmit={onSubmit}
-      submitLabel="Adicionar"
+      submitLabel="Salvar"
     />
   );
 }

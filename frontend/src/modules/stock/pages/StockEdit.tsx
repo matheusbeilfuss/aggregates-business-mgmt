@@ -29,7 +29,7 @@ import { useCategories } from "@/modules/category/hooks";
 import { productService } from "@/modules/product/services/product.service";
 
 export function StockEdit() {
-  usePageTitle("Editar estoque");
+  usePageTitle("Editar produto");
 
   const navigate = useNavigate();
 
@@ -116,14 +116,14 @@ export function StockEdit() {
 
   if (loading || !isFormReady) {
     return (
-      <PageContainer title="Editar estoque">
+      <PageContainer title="Editar produto">
         <LoadingState rows={4} variant="form" />
       </PageContainer>
     );
   }
 
   return (
-    <PageContainer title="Editar estoque">
+    <PageContainer title="Editar produto">
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
