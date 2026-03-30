@@ -1,20 +1,35 @@
 import { Navigate, Outlet } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
 import { Layout } from "@/components/layout/Layout";
-import { Loader } from "lucide-react";
+
+function LoadingScreen() {
+  return (
+    <div
+      className="flex items-center justify-center min-h-screen"
+      style={{ backgroundColor: "var(--color-surface)" }}
+    >
+      <div className="flex flex-col items-center gap-4">
+        <div
+          className="w-9 h-9 rounded-full animate-spin"
+          style={{
+            border: "3px solid var(--color-primary-90)",
+            borderTopColor: "var(--color-primary-40)",
+          }}
+        />
+        <span
+          className="text-sm"
+          style={{ color: "var(--color-on-surface-variant)" }}
+        >
+          Carregando...
+        </span>
+      </div>
+    </div>
+  );
+}
 
 export function PrivateRoute() {
   const { isAuthenticated, isLoading } = useAuth();
-
-  if (isLoading) {
-    return (
-      <div className="flex items-center justify-center h-screen">
-        <Loader className="animate-spin" />
-        <p className="mx-2">Carregando...</p>
-      </div>
-    );
-  }
-
+  if (isLoading) return <LoadingScreen />;
   return isAuthenticated ? (
     <Layout>
       <Outlet />

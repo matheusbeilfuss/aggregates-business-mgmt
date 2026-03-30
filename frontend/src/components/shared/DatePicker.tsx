@@ -15,9 +15,16 @@ interface DatePickerProps {
   onChange: (date: Date) => void;
   disabled?: boolean;
   id?: string;
+  align?: "start" | "center" | "end";
 }
 
-export function DatePicker({ value, onChange, disabled, id }: DatePickerProps) {
+export function DatePicker({
+  value,
+  onChange,
+  disabled,
+  id,
+  align = "center",
+}: DatePickerProps) {
   const [open, setOpen] = useState(false);
   const reactId = useId();
   const buttonId = id ?? reactId;
@@ -35,7 +42,7 @@ export function DatePicker({ value, onChange, disabled, id }: DatePickerProps) {
             {value.toLocaleDateString("pt-BR")}
           </Button>
         </PopoverTrigger>
-        <PopoverContent className="w-auto overflow-hidden p-0" align="center">
+        <PopoverContent className="w-auto overflow-hidden p-0" align={align}>
           <Calendar
             mode="single"
             selected={value}

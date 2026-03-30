@@ -6,7 +6,7 @@
 @custom-variant dark (&:is(.dark *));
 
 :root {
-  --background: var(--color-surface);
+  --background: var(--color-surface-container-lowest);
   --foreground: var(--color-on-surface);
   --card: var(--color-surface-container-lowest);
   --card-foreground: var(--color-on-surface);

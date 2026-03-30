@@ -13,11 +13,13 @@ import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { Client } from "../types";
 import { phoneTypeLabel } from "../utils/labels";
+import { getPhoneHref, getMapsHref } from "../utils";
 import {
   selectPrimaryPhone,
   formatCpfCnpj,
   formatPhone,
   formatCep,
+  stripNonDigits,
 } from "@/utils";
 import { PhoneTypeIcon } from "./PhoneTypeIcon";
 
@@ -100,7 +102,12 @@ export function ClientProfile({
               <Mail className="h-5 w-5 mt-0.5 text-muted-foreground shrink-0" />
               <div>
                 <p className="text-xs text-muted-foreground mb-0.5">E-mail</p>
-                <p className="text-sm font-medium break-all">{client.email}</p>
+                <a
+                  href={`mailto:${client.email}`}
+                  className="text-sm font-medium break-all hover:underline underline-offset-2"
+                >
+                  {client.email}
+                </a>
               </div>
             </div>
           )}
@@ -110,18 +117,26 @@ export function ClientProfile({
               <MapPin className="h-5 w-5 mt-0.5 text-muted-foreground shrink-0" />
               <div>
                 <p className="text-xs text-muted-foreground mb-0.5">Endereço</p>
-                <p className="text-sm font-medium">
-                  {client.address.street}, Nº {client.address.number}
-                  {client.address.complement &&
-                    `, ${client.address.complement}`}
-                </p>
-                <p className="text-sm text-muted-foreground">
-                  {client.address.neighborhood}
-                </p>
-                <p className="text-sm text-muted-foreground">
-                  {client.address.city}/{client.address.state}
-                  {client.address.cep && ` — ${formatCep(client.address.cep)}`}
-                </p>
+                <a
+                  href={getMapsHref(client.address)}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:underline underline-offset-2"
+                >
+                  <p className="text-sm font-medium">
+                    {client.address.street}, Nº {client.address.number}
+                    {client.address.complement &&
+                      `, ${client.address.complement}`}
+                  </p>
+                  <p className="text-sm text-muted-foreground">
+                    {client.address.neighborhood}
+                  </p>
+                  <p className="text-sm text-muted-foreground">
+                    {client.address.city}/{client.address.state}
+                    {client.address.cep &&
+                      ` — ${formatCep(client.address.cep)}`}
+                  </p>
+                </a>
               </div>
             </div>
           )}
@@ -137,7 +152,7 @@ export function ClientProfile({
             {whatsappPhone && (
               <Button variant="outline" size="sm" className="gap-2" asChild>
                 <a
-                  href={`https://wa.me/55${whatsappPhone.number.replace(/\D/g, "")}`}
+                  href={getPhoneHref(whatsappPhone)}
                   target="_blank"
                   rel="noopener noreferrer"
                 >
@@ -149,7 +164,7 @@ export function ClientProfile({
 
             {primaryPhone && (
               <Button variant="outline" size="sm" className="gap-2" asChild>
-                <a href={`tel:${primaryPhone.number.replace(/\D/g, "")}`}>
+                <a href={`tel:+55${stripNonDigits(primaryPhone.number)}`}>
                   <PhoneIcon className="h-4 w-4 text-blue-600" />
                   Ligar
                 </a>
