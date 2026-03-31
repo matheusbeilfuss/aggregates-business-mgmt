@@ -32,7 +32,7 @@ export function RenameSupplierDialog({
         if (!isOpen) onCancel();
       }}
     >
-      <DialogContent>
+      <DialogContent className="sm:max-w-[400px]">
         <DialogHeader>
           <DialogTitle>Renomear fornecedor</DialogTitle>
           <DialogDescription>
@@ -40,17 +40,28 @@ export function RenameSupplierDialog({
             <strong>{currentName}</strong>.
           </DialogDescription>
         </DialogHeader>
+
         <Input
           value={newName}
           onChange={(e) => onNewNameChange(e.target.value)}
-          onKeyDown={(e) => e.key === "Enter" && onConfirm()}
+          onKeyDown={(e) => e.key === "Enter" && newName.trim() && onConfirm()}
+          placeholder="Nome do fornecedor"
+          className="mt-1"
+          autoFocus
         />
-        <div className="flex justify-end gap-2 mt-4">
-          <Button variant="outline" onClick={onCancel}>
+
+        <div className="flex justify-end gap-2 mt-2">
+          <Button
+            variant="outline"
+            className="h-9 px-4 text-sm cursor-pointer"
+            onClick={onCancel}
+          >
             Cancelar
           </Button>
           <Button
-            className="bg-slate-500 hover:bg-slate-600 text-white"
+            className="h-9 px-4 text-sm font-medium text-white cursor-pointer
+                       hover:opacity-90 active:opacity-80 transition-opacity"
+            style={{ backgroundColor: "var(--color-primary-40)" }}
             onClick={onConfirm}
             disabled={!newName.trim()}
           >

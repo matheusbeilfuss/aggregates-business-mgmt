@@ -2,6 +2,7 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
@@ -24,33 +25,36 @@ export function CategoryActions({
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" className="h-8 w-8 p-0 cursor-pointer">
+        <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
           <MoreHorizontal className="h-4 w-4" />
         </Button>
       </DropdownMenuTrigger>
 
-      <DropdownMenuContent align="end">
+      <DropdownMenuContent align="end" className="w-44">
         <DropdownMenuItem
-          className="cursor-pointer"
+          className="gap-2 cursor-pointer"
           onSelect={(e) => {
             e.preventDefault();
             navigate(`/prices/categories/${categoryId}`);
           }}
         >
-          <Pencil className="mr-2 h-4 w-4" />
+          <Pencil className="h-4 w-4" />
           Editar preços
         </DropdownMenuItem>
 
-        <DropdownMenuItem className="cursor-pointer" onSelect={onRename}>
-          <Tag className="mr-2 h-4 w-4" />
+        <DropdownMenuItem className="gap-2 cursor-pointer" onSelect={onRename}>
+          <Tag className="h-4 w-4" />
           Renomear
         </DropdownMenuItem>
 
+        <DropdownMenuSeparator />
+
         <DropdownMenuItem
-          className="text-red-500 focus:text-red-500 cursor-pointer"
+          className="gap-2 cursor-pointer text-destructive
+                     focus:text-destructive focus:bg-destructive/10"
           onSelect={onDelete}
         >
-          <Trash2 className="mr-2 h-4 w-4 text-red-500" />
+          <Trash2 className="h-4 w-4 text-destructive" />
           Excluir
         </DropdownMenuItem>
       </DropdownMenuContent>

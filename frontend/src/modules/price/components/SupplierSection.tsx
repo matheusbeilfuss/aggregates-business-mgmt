@@ -1,6 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { useState, useRef } from "react";
 import { toast } from "sonner";
+import { Plus, Truck, UsersRound } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Table,
@@ -61,14 +62,13 @@ export function SupplierSection({
       toast.success("Fornecedor renomeado com sucesso.");
       onRefetch();
     } catch (error) {
-      if (error instanceof ApiError) {
-        toast.error(error.message);
-      } else {
-        toast.error("Não foi possível renomear o fornecedor.");
-      }
+      toast.error(
+        error instanceof ApiError
+          ? error.message
+          : "Não foi possível renomear o fornecedor.",
+      );
     } finally {
       setSupplierToRename(null);
-      setNewSupplierName("");
     }
   }
 
@@ -78,22 +78,51 @@ export function SupplierSection({
 
   return (
     <section className="space-y-4">
-      <div className="flex items-center justify-between">
-        <h3 className="text-lg font-medium">Fornecedores</h3>
+      <div className="flex items-center gap-2">
+        <div
+          className="flex items-center justify-center w-7 h-7 rounded-lg shrink-0"
+          style={{ backgroundColor: "var(--color-primary-90)" }}
+        >
+          <Truck
+            className="h-3.5 w-3.5"
+            style={{ color: "var(--color-primary-40)" }}
+          />
+        </div>
+        <h2 className="text-sm font-semibold text-foreground">Fornecedores</h2>
+        <div
+          className="flex-1 h-px"
+          style={{ backgroundColor: "var(--color-outline-variant)" }}
+        />
         <Button
-          className="bg-slate-500 hover:bg-slate-600 text-white"
+          className="h-9 px-4 text-sm font-medium text-white gap-1.5
+                     hover:opacity-90 active:opacity-80 transition-opacity"
+          style={{ backgroundColor: "var(--color-primary-40)" }}
           onClick={() =>
             navigate(`/prices/categories/${categoryId}/suppliers/add`)
           }
         >
-          Adicionar Fornecedor
+          <Plus className="h-4 w-4" />
+          Adicionar
         </Button>
       </div>
 
       {empty ? (
-        <p className="text-center text-muted-foreground py-8">
-          Nenhum fornecedor cadastrado para essa categoria.
-        </p>
+        <div
+          className="flex flex-col items-center justify-center gap-2 py-12
+                     rounded-xl border border-dashed"
+          style={{ borderColor: "var(--color-outline-variant)" }}
+        >
+          <UsersRound
+            className="h-6 w-6"
+            style={{ color: "var(--color-on-surface-variant)" }}
+          />
+          <p
+            className="text-sm"
+            style={{ color: "var(--color-on-surface-variant)" }}
+          >
+            Nenhum fornecedor cadastrado para essa categoria.
+          </p>
+        </div>
       ) : isMobile ? (
         <SupplierSectionMobile
           productSuppliers={productSuppliers}
@@ -104,27 +133,32 @@ export function SupplierSection({
           onDelete={onDeleteSupplier}
         />
       ) : (
-        <div className="mb-10">
+        <div className="rounded-xl border overflow-hidden">
           <Table>
             <TableHeader>
-              <TableRow>
-                <TableHead>Fornecedor</TableHead>
-                <TableHead>Material</TableHead>
-                <TableHead>Densidade</TableHead>
-                <TableHead>Custo Tonelada</TableHead>
-                <TableHead>
-                  Custo m<sup>3</sup>
-                </TableHead>
-                <TableHead>
-                  Lucro m<sup>3</sup>
-                </TableHead>
-                <TableHead>
-                  Custo 5m<sup>3</sup>
-                </TableHead>
-                <TableHead>
-                  Lucro 5m<sup>3</sup>
-                </TableHead>
-                <TableHead />
+              <TableRow className="hover:bg-transparent">
+                {[
+                  "Fornecedor",
+                  "Material",
+                  "Densidade",
+                  "Custo/Ton",
+                  "Custo m³",
+                  "Lucro m³",
+                  "Custo 5m³",
+                  "Lucro 5m³",
+                  "",
+                ].map((label, i) => (
+                  <TableHead
+                    key={i}
+                    className="text-xs font-semibold uppercase tracking-wide"
+                    style={{
+                      backgroundColor: "var(--color-primary-90)",
+                      color: "var(--color-primary-40)",
+                    }}
+                  >
+                    {label}
+                  </TableHead>
+                ))}
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -133,37 +167,53 @@ export function SupplierSection({
                 const fiveM3Profit =
                   fiveM3Price - (ps.costFor5CubicMeters ?? 0);
                 return (
-                  <TableRow key={ps.id}>
+                  <TableRow
+                    key={ps.id}
+                    className="hover:bg-accent/50 cursor-default bg-background"
+                  >
                     <TableCell>
-                      <span className="font-medium flex items-center gap-2">
+                      <span className="font-medium flex items-center gap-2 text-sm">
                         {ps.supplierName}
                         {ps.observations && (
-                          <Badge variant="secondary" className="font-normal">
+                          <Badge
+                            variant="secondary"
+                            className="font-normal text-xs"
+                          >
                             {ps.observations}
                           </Badge>
                         )}
                       </span>
                     </TableCell>
-                    <TableCell>{ps.productName}</TableCell>
-                    <TableCell>{ps.density.toLocaleString("pt-BR")}</TableCell>
-                    <TableCell>{formatLocalCurrency(ps.tonCost)}</TableCell>
-                    <TableCell>
+                    <TableCell className="text-sm text-muted-foreground">
+                      {ps.productName}
+                    </TableCell>
+                    <TableCell className="text-sm tabular-nums text-muted-foreground">
+                      {ps.density.toLocaleString("pt-BR")}
+                    </TableCell>
+                    <TableCell className="text-sm tabular-nums">
+                      {formatLocalCurrency(ps.tonCost)}
+                    </TableCell>
+                    <TableCell className="text-sm tabular-nums">
                       {formatLocalCurrency(ps.costPerCubicMeter)}
                     </TableCell>
                     <TableCell
-                      className={
-                        oneM3Profit >= 0 ? "text-green-600" : "text-red-500"
-                      }
+                      className="text-sm tabular-nums font-medium"
+                      style={{
+                        color:
+                          oneM3Profit >= 0 ? "#16a34a" : "var(--color-error)",
+                      }}
                     >
                       {formatLocalCurrency(oneM3Profit)}
                     </TableCell>
-                    <TableCell>
+                    <TableCell className="text-sm tabular-nums">
                       {formatLocalCurrency(ps.costFor5CubicMeters ?? 0)}
                     </TableCell>
                     <TableCell
-                      className={
-                        fiveM3Profit >= 0 ? "text-green-600" : "text-red-500"
-                      }
+                      className="text-sm tabular-nums font-medium"
+                      style={{
+                        color:
+                          fiveM3Profit >= 0 ? "#16a34a" : "var(--color-error)",
+                      }}
                     >
                       {formatLocalCurrency(fiveM3Profit)}
                     </TableCell>
@@ -189,10 +239,7 @@ export function SupplierSection({
         newName={newSupplierName}
         onNewNameChange={setNewSupplierName}
         onConfirm={handleRenameSupplier}
-        onCancel={() => {
-          setSupplierToRename(null);
-          setNewSupplierName("");
-        }}
+        onCancel={() => setSupplierToRename(null)}
       />
     </section>
   );

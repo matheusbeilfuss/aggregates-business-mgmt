@@ -65,23 +65,47 @@ export function StockTable({ stocks, onDeleteProduct }: StockTableProps) {
     <div className="rounded-xl border overflow-hidden">
       <Table className="w-full">
         <TableHeader>
-          <TableRow
-            className="hover:bg-transparent"
-            style={{ backgroundColor: "var(--color-surface-container-low)" }}
-          >
-            <TableHead className="px-4 text-xs font-semibold uppercase tracking-wide">
+          <TableRow className="hover:bg-transparent">
+            <TableHead
+              className="px-4 text-xs font-semibold uppercase tracking-wide"
+              style={{
+                backgroundColor: "var(--color-primary-90)",
+                color: "var(--color-primary-40)",
+              }}
+            >
               Material
             </TableHead>
-            <TableHead className="px-4 text-xs font-semibold uppercase tracking-wide text-right">
+            <TableHead
+              className="px-4 text-xs font-semibold uppercase tracking-wide text-right"
+              style={{
+                backgroundColor: "var(--color-primary-90)",
+                color: "var(--color-primary-40)",
+              }}
+            >
               Toneladas
             </TableHead>
-            <TableHead className="px-4 text-xs font-semibold uppercase tracking-wide text-right">
+            <TableHead
+              className="px-4 text-xs font-semibold uppercase tracking-wide text-right"
+              style={{
+                backgroundColor: "var(--color-primary-90)",
+                color: "var(--color-primary-40)",
+              }}
+            >
               M³
             </TableHead>
-            <TableHead className="px-4 text-xs font-semibold uppercase tracking-wide text-right">
+            <TableHead
+              className="px-4 text-xs font-semibold uppercase tracking-wide text-right"
+              style={{
+                backgroundColor: "var(--color-primary-90)",
+                color: "var(--color-primary-40)",
+              }}
+            >
               Densidade
             </TableHead>
-            <TableHead className="w-10" />
+            <TableHead
+              className="w-10"
+              style={{ backgroundColor: "var(--color-primary-90)" }}
+            />
           </TableRow>
         </TableHeader>
 
@@ -111,7 +135,7 @@ export function StockTable({ stocks, onDeleteProduct }: StockTableProps) {
                 {items.map((stock) => (
                   <TableRow
                     key={stock.id}
-                    className="transition-colors hover:bg-accent/50 cursor-default"
+                    className="hover:bg-accent/50 cursor-default bg-background"
                   >
                     <TableCell className="px-4">
                       <span className="text-sm font-medium text-foreground">

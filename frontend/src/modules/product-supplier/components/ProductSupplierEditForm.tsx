@@ -62,31 +62,29 @@ export function ProductSupplierEditForm({
       toast.success("Fornecedor atualizado com sucesso.");
       navigate(`/prices/categories/${categoryId}`);
     } catch (error) {
-      if (error instanceof ApiError) {
-        toast.error(error.message);
-      } else {
-        toast.error("Não foi possível atualizar o fornecedor.");
-      }
+      toast.error(
+        error instanceof ApiError
+          ? error.message
+          : "Não foi possível atualizar o fornecedor.",
+      );
     }
   }
 
   return (
-    <PageContainer title="Editar Fornecedor">
-      {category && (
-        <h2 className="text-xl font-semibold text-center mb-16">
-          {category.name}
-        </h2>
-      )}
+    <PageContainer title="Editar fornecedor" subtitle={category?.name}>
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-          <ProductSupplierForm
-            mode="edit"
-            control={form.control}
-            products={products}
-            suppliers={suppliers}
-          />
+        <form onSubmit={form.handleSubmit(onSubmit)}>
+          <div className="max-w-3xl mx-auto">
+            <ProductSupplierForm
+              mode="edit"
+              control={form.control}
+              products={products}
+              suppliers={suppliers}
+            />
+          </div>
         </form>
       </Form>
+
       <FormActions
         cancelPath={`/prices/categories/${categoryId}`}
         submitLabel="Salvar"

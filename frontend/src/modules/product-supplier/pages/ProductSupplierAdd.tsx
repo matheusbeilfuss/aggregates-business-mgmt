@@ -2,11 +2,9 @@ import { Navigate, useNavigate, useParams } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
-
 import { usePageTitle } from "@/hooks/usePageTitle";
 import { PageContainer, LoadingState, FormActions } from "@/components/shared";
 import { Form } from "@/components/ui/form";
-
 import {
   productSupplierAddSchema,
   type ProductSupplierAddFormData,
@@ -23,7 +21,6 @@ export function ProductSupplierAdd() {
   usePageTitle("Adicionar Fornecedor");
 
   const navigate = useNavigate();
-
   const { categoryId: rawCategoryId } = useParams<{ categoryId: string }>();
   const categoryId = Number(rawCategoryId);
   const validId = Number.isFinite(categoryId) && categoryId > 0;
@@ -55,9 +52,7 @@ export function ProductSupplierAdd() {
     },
   });
 
-  if (!validId) {
-    return <Navigate to="/prices" replace />;
-  }
+  if (!validId) return <Navigate to="/prices" replace />;
 
   async function onSubmit(data: ProductSupplierAddFormData) {
     try {
@@ -86,11 +81,11 @@ export function ProductSupplierAdd() {
       toast.success("Fornecedor adicionado com sucesso.");
       navigate(`/prices/categories/${categoryId}`);
     } catch (error) {
-      if (error instanceof ApiError) {
-        toast.error(error.message);
-      } else {
-        toast.error("Não foi possível adicionar o fornecedor.");
-      }
+      toast.error(
+        error instanceof ApiError
+          ? error.message
+          : "Não foi possível adicionar o fornecedor.",
+      );
     }
   }
 
@@ -98,29 +93,26 @@ export function ProductSupplierAdd() {
 
   if (loading) {
     return (
-      <PageContainer title="Adicionar Fornecedor">
+      <PageContainer title="Adicionar fornecedor">
         <LoadingState rows={4} variant="form" />
       </PageContainer>
     );
   }
 
   return (
-    <PageContainer title="Adicionar Fornecedor">
-      {category && (
-        <h2 className="text-xl font-semibold text-center mb-16">
-          {category.name}
-        </h2>
-      )}
+    <PageContainer title="Adicionar fornecedor" subtitle={category?.name}>
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-          <ProductSupplierForm
-            mode="add"
-            control={form.control}
-            setValue={form.setValue}
-            supplierId={form.watch("supplierId")}
-            suppliers={suppliers ?? []}
-            products={products}
-          />
+        <form onSubmit={form.handleSubmit(onSubmit)}>
+          <div className="max-w-3xl mx-auto">
+            <ProductSupplierForm
+              mode="add"
+              control={form.control}
+              setValue={form.setValue}
+              supplierId={form.watch("supplierId")}
+              suppliers={suppliers ?? []}
+              products={products}
+            />
+          </div>
         </form>
       </Form>
 

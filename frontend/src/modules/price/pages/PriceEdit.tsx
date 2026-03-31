@@ -3,14 +3,16 @@ import { Navigate, useNavigate, useParams } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
+import { DollarSign } from "lucide-react";
 import { usePageTitle } from "@/hooks/usePageTitle";
 import {
   PageContainer,
   LoadingState,
   ConfirmDialog,
+  FormSection,
+  CurrencyInput,
 } from "@/components/shared";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import {
   Form,
   FormControl,
@@ -19,7 +21,6 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { Separator } from "@/components/ui/separator";
 import { useCategoryPrices } from "../hooks/useCategoryPrices";
 import { useCategoryProductSuppliers } from "@/modules/product-supplier/hooks/useCategoryProductSuppliers";
 import { useCategory } from "@/modules/category/hooks";
@@ -49,7 +50,6 @@ export function PriceEdit() {
   usePageTitle("Editar Preços");
 
   const navigate = useNavigate();
-
   const { categoryId: rawCategoryId } = useParams<{ categoryId: string }>();
   const categoryId = Number(rawCategoryId);
   const validId = Number.isFinite(categoryId) && categoryId > 0;
@@ -60,14 +60,12 @@ export function PriceEdit() {
     error: pricesError,
     refetch: refetchPrices,
   } = useCategoryPrices(categoryId, { enabled: validId });
-
   const {
     data: productSuppliers,
     loading: suppliersLoading,
     error: suppliersError,
     refetch: refetchSuppliers,
   } = useCategoryProductSuppliers(categoryId, { enabled: validId });
-
   const {
     data: category,
     loading: categoryLoading,
@@ -76,14 +74,7 @@ export function PriceEdit() {
 
   const form = useForm<PriceUpdateFormData>({
     resolver: zodResolver(priceUpdateSchema),
-    defaultValues: {
-      deposito: 0,
-      m3_1: 0,
-      m3_2: 0,
-      m3_3: 0,
-      m3_4: 0,
-      m3_5: 0,
-    },
+    defaultValues: { deposito: 0, m3_1: 0, m3_2: 0, m3_3: 0, m3_4: 0, m3_5: 0 },
   });
 
   const error = pricesError || suppliersError || categoryError;
@@ -97,11 +88,9 @@ export function PriceEdit() {
 
   useEffect(() => {
     if ((prices ?? []).length === 0) return;
-
     const byVolume = Object.fromEntries(
       (prices ?? []).map((p) => [p.m3Volume, p.price]),
     );
-
     form.reset({
       deposito: byVolume[0] ?? 0,
       m3_1: byVolume[1] ?? 0,
@@ -117,17 +106,16 @@ export function PriceEdit() {
       const field = VOLUME_FIELDS.find((f) => f.volume === p.m3Volume);
       return { ...p, price: field ? data[field.name] : p.price };
     });
-
     try {
       await priceService.updateByCategory(categoryId, updated);
       await refetchPrices();
       toast.success("Preços atualizados com sucesso.");
     } catch (error) {
-      if (error instanceof ApiError) {
-        toast.error(error.message);
-      } else {
-        toast.error("Não foi possível salvar os preços.");
-      }
+      toast.error(
+        error instanceof ApiError
+          ? error.message
+          : "Não foi possível salvar os preços.",
+      );
     }
   }
 
@@ -140,41 +128,33 @@ export function PriceEdit() {
       await refetchSuppliers();
       toast.success("Fornecedor removido com sucesso.");
     } catch (error) {
-      if (error instanceof ApiError) {
-        toast.error(error.message);
-      } else {
-        toast.error("Erro ao remover fornecedor.");
-      }
+      toast.error(
+        error instanceof ApiError
+          ? error.message
+          : "Erro ao remover fornecedor.",
+      );
     } finally {
       setSupplierToDelete(null);
     }
   }
 
-  if (!validId) {
-    return <Navigate to="/prices" replace />;
-  }
+  if (!validId) return <Navigate to="/prices" replace />;
 
   const loading = pricesLoading || suppliersLoading || categoryLoading;
 
   return (
-    <PageContainer title="Editar preços">
+    <PageContainer title="Editar preços" subtitle={category?.name}>
       {loading ? (
         <LoadingState rows={5} />
       ) : (
-        <div className="space-y-10">
-          <h2 className="text-xl font-semibold text-center">
-            {category?.name}
-          </h2>
-
-          <section className="space-y-4">
-            <h3 className="text-lg font-medium">Valores</h3>
-
+        <div className="max-w-5xl mx-auto space-y-8">
+          <FormSection icon={DollarSign} title="Valores">
             <Form {...form}>
               <form
                 onSubmit={form.handleSubmit(onSubmitPrices)}
-                className="space-y-4"
+                className="md:col-span-2 space-y-4"
               >
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
+                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-3">
                   {VOLUME_FIELDS.map((f) => (
                     <FormField
                       key={f.name}
@@ -182,23 +162,18 @@ export function PriceEdit() {
                       name={f.name}
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel className="text-muted-foreground">
+                          <FormLabel
+                            className="text-xs font-medium"
+                            style={{ color: "var(--color-on-surface-variant)" }}
+                          >
                             {f.label}
                           </FormLabel>
-                          <div className="flex items-center rounded-md border bg-background ring-offset-background focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2">
-                            <span className="pl-3 text-sm text-muted-foreground select-none">
-                              R$
-                            </span>
-                            <FormControl>
-                              <Input
-                                type="number"
-                                step="0.01"
-                                inputMode="decimal"
-                                className="text-right border-0 shadow-none focus-visible:ring-0 focus-visible:ring-offset-0"
-                                {...field}
-                              />
-                            </FormControl>
-                          </div>
+                          <FormControl>
+                            <CurrencyInput
+                              value={field.value}
+                              onChange={field.onChange}
+                            />
+                          </FormControl>
                           <FormMessage />
                         </FormItem>
                       )}
@@ -206,26 +181,27 @@ export function PriceEdit() {
                   ))}
                 </div>
 
-                <div className="flex justify-end gap-2">
+                <div className="flex justify-end gap-2 pt-2">
                   <Button
                     variant="outline"
                     type="button"
+                    className="h-9 px-4 text-sm cursor-pointer"
                     onClick={() => navigate("/prices")}
                   >
                     Cancelar
                   </Button>
                   <Button
                     type="submit"
-                    className="bg-slate-500 hover:bg-slate-600 text-white"
+                    className="h-9 px-4 text-sm font-medium text-white cursor-pointer
+                               hover:opacity-90 active:opacity-80 transition-opacity"
+                    style={{ backgroundColor: "var(--color-primary-40)" }}
                   >
-                    Salvar
+                    Salvar preços
                   </Button>
                 </div>
               </form>
             </Form>
-          </section>
-
-          <Separator />
+          </FormSection>
 
           <SupplierSection
             categoryId={categoryId}
@@ -242,12 +218,12 @@ export function PriceEdit() {
         onOpenChange={(open) => {
           if (!open) setSupplierToDelete(null);
         }}
-        title="Você tem certeza que deseja excluir este fornecedor?"
+        title="Excluir este fornecedor?"
         description={(() => {
           const ps = (productSuppliers ?? []).find(
             (ps) => ps.id === supplierToDelete,
           );
-          return ps ? `${ps.supplierName} - ${ps.productName}` : "";
+          return ps ? `${ps.supplierName} — ${ps.productName}` : "";
         })()}
         onConfirm={handleDeleteSupplier}
         confirmLabel="Excluir"

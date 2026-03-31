@@ -1,10 +1,8 @@
 import { useEffect } from "react";
 import { Navigate, useNavigate, useParams } from "react-router-dom";
 import { toast } from "sonner";
-
 import { usePageTitle } from "@/hooks/usePageTitle";
 import { PageContainer, LoadingState } from "@/components/shared";
-
 import { useProductSupplier } from "../hooks/useProductSupplier";
 import { useCategory } from "@/modules/category/hooks";
 import { useProducts } from "@/modules/product/hooks/useProducts";
@@ -12,15 +10,12 @@ import { ProductSupplierEditForm } from "../components/ProductSupplierEditForm";
 import { useSuppliers } from "@/modules/supplier/hooks";
 
 export function ProductSupplierEdit() {
-  usePageTitle("Editar Fornecedor");
+  usePageTitle("Editar fornecedor");
 
   const navigate = useNavigate();
-
   const { categoryId: rawCategoryId, productSupplierId: rawProductSupplierId } =
-    useParams<{
-      categoryId: string;
-      productSupplierId: string;
-    }>();
+    useParams<{ categoryId: string; productSupplierId: string }>();
+
   const categoryId = Number(rawCategoryId);
   const productSupplierId = Number(rawProductSupplierId);
   const validIds =
@@ -53,9 +48,7 @@ export function ProductSupplierEdit() {
     }
   }, [error, navigate, categoryId]);
 
-  if (!validIds) {
-    return <Navigate to="/prices" replace />;
-  }
+  if (!validIds) return <Navigate to="/prices" replace />;
 
   if (
     productSupplierLoading ||
@@ -64,7 +57,7 @@ export function ProductSupplierEdit() {
     !productSupplier
   ) {
     return (
-      <PageContainer title="Editar Fornecedor">
+      <PageContainer title="Editar fornecedor">
         <LoadingState rows={4} variant="form" />
       </PageContainer>
     );
