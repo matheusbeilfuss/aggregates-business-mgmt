@@ -15,9 +15,3 @@ export const paymentStatusLabel: Record<PaymentStatusEnum, string> = {
   [PaymentStatusEnum.PARTIAL]: "Parcial",
   [PaymentStatusEnum.PAID]: "Pago",
 };
-
-export const paymentStatusColor: Record<PaymentStatusEnum, string> = {
-  [PaymentStatusEnum.PENDING]: "text-orange-500",
-  [PaymentStatusEnum.PARTIAL]: "text-amber-500",
-  [PaymentStatusEnum.PAID]: "text-green-500",
-};
