@@ -11,22 +11,35 @@ type Props = {
 
 export function HomeOrdersCard({ orders, loading, className }: Props) {
   return (
-    <Link to="/orders" className="block">
+    <Link to="/orders" className="block h-full">
       <Card
         className={`cursor-pointer hover:shadow-md transition-shadow h-full ${className ?? ""}`}
       >
-        <CardHeader>
-          <CardTitle className="text-base font-medium">Pedidos</CardTitle>
+        <CardHeader className="pb-2">
+          <CardTitle className="text-sm font-semibold text-foreground">
+            Pedidos de hoje
+          </CardTitle>
         </CardHeader>
         <CardContent>
           {loading ? (
-            <p className="text-muted-foreground text-sm">Carregando...</p>
+            <p
+              className="text-sm"
+              style={{ color: "var(--color-on-surface-variant)" }}
+            >
+              Carregando...
+            </p>
           ) : orders.length === 0 ? (
-            <p className="text-muted-foreground text-sm">
+            <p
+              className="text-sm"
+              style={{ color: "var(--color-on-surface-variant)" }}
+            >
               Nenhum pedido para hoje.
             </p>
           ) : (
-            <ul className="flex flex-col gap-3">
+            <ul
+              className="flex flex-col divide-y"
+              style={{ borderColor: "var(--color-outline-variant)" }}
+            >
               {orders.map((order) => {
                 const label = order.product
                   ? order.product.name
@@ -38,22 +51,30 @@ export function HomeOrdersCard({ orders, loading, className }: Props) {
                 return (
                   <li
                     key={order.id}
-                    className="flex flex-col gap-0.5 md:flex-row md:items-center md:justify-between md:gap-4"
+                    className="flex flex-col gap-0.5 py-2.5 first:pt-0 last:pb-0"
                   >
-                    <span className="font-semibold text-base truncate">
-                      {order.client.name}
-                    </span>
-                    <div className="flex items-center justify-between gap-2 text-base text-muted-foreground md:justify-start md:shrink-0">
-                      <span className="truncate">
-                        {[label, quantity, neighborhood]
-                          .filter(Boolean)
-                          .join(" · ")}
+                    <div className="flex items-center justify-between gap-2">
+                      <span
+                        className="font-semibold text-sm truncate"
+                        style={{ color: "var(--color-on-surface)" }}
+                      >
+                        {order.client.name}
                       </span>
-                      <span className="hidden md:inline text-border">·</span>
-                      <span className="font-medium text-foreground shrink-0">
+                      <span
+                        className="text-sm font-medium shrink-0 tabular-nums"
+                        style={{ color: "var(--color-primary-40)" }}
+                      >
                         {formatTime(order.scheduledTime)}
                       </span>
                     </div>
+                    <span
+                      className="text-xs truncate"
+                      style={{ color: "var(--color-on-surface-variant)" }}
+                    >
+                      {[label, quantity, neighborhood]
+                        .filter(Boolean)
+                        .join(" · ")}
+                    </span>
                   </li>
                 );
               })}
