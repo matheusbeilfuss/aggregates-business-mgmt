@@ -20,6 +20,8 @@ import type { StockItem } from "../types";
 import { Product } from "@/modules/product/types";
 import { Fragment } from "react";
 
+const LOW_STOCK_THRESHOLD = 5;
+
 interface StockTableProps {
   stocks: StockItem[];
   onDeleteProduct: (product: Product) => void;
@@ -138,9 +140,23 @@ export function StockTable({ stocks, onDeleteProduct }: StockTableProps) {
                     className="hover:bg-accent/50 cursor-default bg-background"
                   >
                     <TableCell className="px-4">
-                      <span className="text-sm font-medium text-foreground">
-                        {stock.product.name}
-                      </span>
+                      <div className="flex flex-col items-start gap-0.5 sm:flex-row sm:items-center sm:gap-2">
+                        <span className="text-sm font-medium text-foreground">
+                          {stock.product.name}
+                        </span>
+                        {stock.m3Quantity != null &&
+                          stock.m3Quantity <= LOW_STOCK_THRESHOLD && (
+                            <span
+                              className="text-[10px] font-semibold px-1.5 py-0.5 rounded-full shrink-0"
+                              style={{
+                                backgroundColor: "var(--color-secondary-90)",
+                                color: "var(--color-secondary-40)",
+                              }}
+                            >
+                              Estoque baixo
+                            </span>
+                          )}
+                      </div>
                     </TableCell>
                     <TableCell className="px-4 text-right">
                       {stock.tonQuantity != null ? (
