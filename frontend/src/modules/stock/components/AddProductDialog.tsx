@@ -109,7 +109,7 @@ export function AddProductDialog({
             <FormField
               control={form.control}
               name="isNewCategory"
-              render={({ field }) => (
+              render={({ field, fieldState }) => (
                 <FormItem>
                   <FormLabel>Categoria</FormLabel>
                   <div className="flex gap-2">
@@ -117,11 +117,14 @@ export function AddProductDialog({
                       <FormField
                         control={form.control}
                         name="categoryName"
-                        render={({ field }) => (
+                        render={({ field: categoryNameField }) => (
                           <FormControl>
                             <Input
                               placeholder="Nome da nova categoria"
-                              {...field}
+                              {...categoryNameField}
+                              className={
+                                fieldState.error ? "!border-destructive" : ""
+                              }
                             />
                           </FormControl>
                         )}
@@ -130,12 +133,17 @@ export function AddProductDialog({
                       <FormField
                         control={form.control}
                         name="categoryId"
-                        render={({ field }) => (
-                          <CategorySelect
-                            value={field.value}
-                            onChange={field.onChange}
-                            categories={categories}
-                          />
+                        render={({ field: categoryField }) => (
+                          <div className="flex-1">
+                            <CategorySelect
+                              value={categoryField.value}
+                              onChange={categoryField.onChange}
+                              categories={categories}
+                              className={
+                                fieldState.error ? "!border-destructive" : ""
+                              }
+                            />
+                          </div>
                         )}
                       />
                     )}

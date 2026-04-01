@@ -1,9 +1,4 @@
 import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
-import {
   Combobox,
   ComboboxContent,
   ComboboxInput,
@@ -27,7 +22,7 @@ export function QuantityCombobox({
   className,
   onChange,
 }: QuantityComboboxProps) {
-  const quantityCombobox = (
+  return (
     <Combobox
       value={value !== undefined ? String(value) : ""}
       onValueChange={(val) => onChange(Number(val))}
@@ -56,21 +51,5 @@ export function QuantityCombobox({
         </ComboboxList>
       </ComboboxContent>
     </Combobox>
-  );
-
-  if (!disabled) {
-    return quantityCombobox;
-  }
-
-  return (
-    <Tooltip>
-      <TooltipTrigger asChild>
-        <div className="w-full cursor-not-allowed">{quantityCombobox}</div>
-      </TooltipTrigger>
-
-      <TooltipContent side="top" align="start">
-        Selecione um material primeiro
-      </TooltipContent>
-    </Tooltip>
   );
 }

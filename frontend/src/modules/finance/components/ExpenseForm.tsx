@@ -274,7 +274,9 @@ export function ExpenseForm({
                 name="vehicle"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Veículo</FormLabel>
+                    <FormLabel>
+                      Veículo <span className="text-destructive">*</span>
+                    </FormLabel>
                     <FormControl>
                       <EditableCombobox
                         options={vehicles}
@@ -402,7 +404,9 @@ export function ExpenseForm({
                 name="category"
                 render={({ field }) => (
                   <FormItem className="md:col-span-2">
-                    <FormLabel>Categoria</FormLabel>
+                    <FormLabel>
+                      Categoria <span className="text-destructive">*</span>
+                    </FormLabel>
                     <FormControl>
                       <EditableCombobox
                         options={categories}

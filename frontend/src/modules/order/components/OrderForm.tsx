@@ -258,7 +258,12 @@ export function OrderForm({
                 name="cpfCnpj"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>CPF / CNPJ</FormLabel>
+                    <FormLabel>
+                      CPF / CNPJ{" "}
+                      <span className="text-muted-foreground font-normal text-xs">
+                        (opcional)
+                      </span>
+                    </FormLabel>
                     <FormControl>
                       <Input
                         {...field}

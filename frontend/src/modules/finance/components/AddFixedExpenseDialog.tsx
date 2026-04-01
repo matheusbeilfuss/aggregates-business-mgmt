@@ -148,7 +148,7 @@ export function AddFixedExpenseDialog({
             <FormField
               control={form.control}
               name="category"
-              render={({ field }) => (
+              render={({ field, fieldState }) => (
                 <FormItem>
                   <FormLabel>Categoria</FormLabel>
                   <FormControl>
@@ -157,6 +157,7 @@ export function AddFixedExpenseDialog({
                       value={field.value ?? ""}
                       onChange={field.onChange}
                       placeholder="Selecionar ou digitar..."
+                      className={fieldState.error ? "border-destructive" : ""}
                     />
                   </FormControl>
                   <FormMessage />

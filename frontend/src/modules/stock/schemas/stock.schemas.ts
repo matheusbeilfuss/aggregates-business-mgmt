@@ -33,7 +33,9 @@ export const editStockSchema = z.object({
 export type EditStockFormData = z.infer<typeof editStockSchema>;
 
 export const replenishSchema = z.object({
-  supplierId: z.number().min(1, "Selecione um fornecedor"),
+  supplierId: z
+    .number({ required_error: "Selecione um fornecedor" })
+    .min(1, "Selecione um fornecedor"),
   density: z.coerce.number().nonnegative("Densidade inválida"),
   tonQuantity: z.coerce.number().min(0.01, "Quantidade inválida"),
   m3Quantity: z.coerce.number().min(0.01, "Quantidade inválida"),

@@ -9,6 +9,7 @@ interface CurrencyInputProps {
   disabled?: boolean;
   className?: string;
   placeholder?: string;
+  "aria-invalid"?: boolean;
 }
 
 export function CurrencyInput({
@@ -17,6 +18,7 @@ export function CurrencyInput({
   disabled,
   className,
   placeholder = "R$ 0,00",
+  "aria-invalid": ariaInvalid,
 }: CurrencyInputProps) {
   const [displayValue, setDisplayValue] = useState<string>(
     value != null ? formatLocalCurrency(value) : "",
@@ -68,6 +70,7 @@ export function CurrencyInput({
       placeholder={placeholder}
       disabled={disabled}
       className={cn(className)}
+      aria-invalid={ariaInvalid}
       onFocus={handleFocus}
       onChange={handleChange}
       onBlur={handleBlur}
