@@ -11,8 +11,8 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { ConfirmDialog, FormActions } from "@/components/shared";
-import { ImagePlus, Trash2 } from "lucide-react";
+import { ConfirmDialog, FormActions, FormSection } from "@/components/shared";
+import { ImagePlus, Store, Trash2 } from "lucide-react";
 import { settingsSchema, SettingsFormData } from "../schemas/settings.schemas";
 import { API_URL } from "@/lib/api";
 
@@ -53,9 +53,7 @@ export function SettingsForm({
   function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
     if (!file) return;
-
     if (previewUrlRef.current) URL.revokeObjectURL(previewUrlRef.current);
-
     const url = URL.createObjectURL(file);
     previewUrlRef.current = url;
     setPreviewUrl(url);
@@ -84,85 +82,108 @@ export function SettingsForm({
   const hasImage = !!displayedImage;
 
   return (
-    <div className="flex flex-col flex-1">
+    <div className="flex flex-col flex-1 max-w-3xl mx-auto w-full space-y-8">
       <Form {...form}>
         <form
           id={FORM_ID}
           onSubmit={form.handleSubmit((data) => onSubmit(data, selectedImage))}
-          className="space-y-8"
         >
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 items-start">
-            <div className="flex flex-col items-center gap-4">
-              <div className="w-full aspect-video rounded-lg overflow-hidden border bg-muted flex items-center justify-center">
-                {hasImage ? (
-                  <img
-                    src={displayedImage}
-                    alt="Foto do negócio"
-                    className="w-full h-full object-cover"
-                  />
-                ) : (
-                  <ImagePlus className="w-12 h-12 text-muted-foreground" />
-                )}
-              </div>
-
-              <input
-                ref={fileInputRef}
-                type="file"
-                accept="image/*"
-                hidden
-                onChange={handleFileChange}
-              />
-
-              <Button
-                type="button"
-                variant="outline"
-                className="w-full cursor-pointer"
-                onClick={() => fileInputRef.current?.click()}
-              >
-                <ImagePlus className="w-4 h-4 mr-2" />
-                {hasImage ? "Alterar foto" : "Adicionar foto"}
-              </Button>
-
-              {currentImgName && !selectedImage && (
-                <>
-                  <Button
-                    type="button"
-                    variant="destructive"
-                    className="w-full cursor-pointer"
-                    onClick={() => setIsConfirmRemoveOpen(true)}
-                  >
-                    <Trash2 className="w-4 h-4 mr-2" />
-                    Remover foto
-                  </Button>
-
-                  <ConfirmDialog
-                    open={isConfirmRemoveOpen}
-                    onOpenChange={setIsConfirmRemoveOpen}
-                    title="Você tem certeza que deseja remover a foto do negócio?"
-                    description="A foto será removida permanentemente da tela de login."
-                    onConfirm={handleRemoveImage}
-                    confirmLabel="Remover"
-                    variant="destructive"
-                  />
-                </>
-              )}
-            </div>
-
-            <div className="space-y-4">
+          <div className="space-y-8">
+            {/* Identidade */}
+            <FormSection icon={Store} title="Identidade do negócio">
+              {/* Nome — span completo */}
               <FormField
                 control={form.control}
                 name="businessName"
                 render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Nome do comércio</FormLabel>
+                  <FormItem className="md:col-span-2">
+                    <FormLabel>
+                      Nome do comércio{" "}
+                      <span className="text-destructive">*</span>
+                    </FormLabel>
                     <FormControl>
-                      <Input className="h-9" {...field} />
+                      <Input {...field} onFocus={(e) => e.target.select()} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
               />
-            </div>
+
+              {/* Imagem — span completo */}
+              <div className="md:col-span-2 space-y-3">
+                <p
+                  className="text-sm font-medium"
+                  style={{ color: "var(--color-on-surface)" }}
+                >
+                  Foto do negócio
+                </p>
+
+                {/* Preview */}
+                <div
+                  className="w-full aspect-video rounded-xl overflow-hidden
+                             flex items-center justify-center"
+                  style={{
+                    border: "1px solid var(--color-outline-variant)",
+                    backgroundColor: "var(--color-surface-container-low)",
+                  }}
+                >
+                  {hasImage ? (
+                    <img
+                      src={displayedImage}
+                      alt="Foto do negócio"
+                      className="w-full h-full object-cover"
+                    />
+                  ) : (
+                    <div className="flex flex-col items-center gap-2">
+                      <ImagePlus
+                        className="w-10 h-10"
+                        style={{ color: "var(--color-on-surface-variant)" }}
+                      />
+                      <p
+                        className="text-xs"
+                        style={{ color: "var(--color-on-surface-variant)" }}
+                      >
+                        Nenhuma foto adicionada
+                      </p>
+                    </div>
+                  )}
+                </div>
+
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept="image/*"
+                  hidden
+                  onChange={handleFileChange}
+                />
+
+                {/* Botões de imagem */}
+                <div className="flex gap-2">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    className="gap-2 cursor-pointer"
+                    onClick={() => fileInputRef.current?.click()}
+                  >
+                    <ImagePlus className="w-4 h-4" />
+                    {hasImage ? "Alterar foto" : "Adicionar foto"}
+                  </Button>
+
+                  {currentImgName && !selectedImage && (
+                    <Button
+                      type="button"
+                      variant="outline"
+                      className="gap-2 cursor-pointer text-destructive
+                                 hover:text-destructive hover:bg-destructive/10"
+                      onClick={() => setIsConfirmRemoveOpen(true)}
+                    >
+                      <Trash2 className="w-4 h-4 text-destructive" />
+                      Remover foto
+                    </Button>
+                  )}
+                </div>
+              </div>
+            </FormSection>
           </div>
         </form>
       </Form>
@@ -171,6 +192,16 @@ export function SettingsForm({
         cancelPath={cancelPath}
         submitLabel="Salvar"
         formId={FORM_ID}
+      />
+
+      <ConfirmDialog
+        open={isConfirmRemoveOpen}
+        onOpenChange={setIsConfirmRemoveOpen}
+        title="Remover foto do negócio?"
+        description="A foto será removida permanentemente da tela de login."
+        onConfirm={handleRemoveImage}
+        confirmLabel="Remover"
+        variant="destructive"
       />
     </div>
   );
