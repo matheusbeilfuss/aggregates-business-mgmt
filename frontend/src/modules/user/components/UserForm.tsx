@@ -8,13 +8,12 @@ import {
   FormControl,
   FormMessage,
 } from "@/components/ui/form";
-import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Checkbox } from "@/components/ui/checkbox";
 import { FormActions } from "@/components/shared";
-import { User as UserIcon, Pencil } from "lucide-react";
+import { User as UserIcon, Pencil, ShieldCheck } from "lucide-react";
 import { useRef, useState, ReactNode, useEffect } from "react";
 import {
   createUserSchema,
@@ -102,26 +101,19 @@ export function UserForm({
         URL.revokeObjectURL(previewUrlRef.current);
         previewUrlRef.current = undefined;
       }
-
       form.setValue(
         "imgName",
         mode === "edit" ? defaultValues?.imgName : undefined,
       );
       setSelectedImage(undefined);
-
-      if (fileInputRef.current) {
-        fileInputRef.current.value = "";
-      }
-
+      if (fileInputRef.current) fileInputRef.current.value = "";
       throw error;
     }
   };
 
   useEffect(() => {
     return () => {
-      if (previewUrlRef.current) {
-        URL.revokeObjectURL(previewUrlRef.current);
-      }
+      if (previewUrlRef.current) URL.revokeObjectURL(previewUrlRef.current);
     };
   }, []);
 
@@ -132,47 +124,39 @@ export function UserForm({
   }, [defaultValues?.imgName, form, mode, selectedImage]);
 
   return (
-    <div className="flex flex-col flex-1">
+    <div className="flex flex-col flex-1 max-w-3xl mx-auto w-full space-y-8">
+      <input
+        ref={fileInputRef}
+        type="file"
+        accept="image/*"
+        hidden
+        onChange={(e) => {
+          const file = e.target.files?.[0];
+          if (file) {
+            if (previewUrlRef.current)
+              URL.revokeObjectURL(previewUrlRef.current);
+            const newUrl = URL.createObjectURL(file);
+            previewUrlRef.current = newUrl;
+            setSelectedImage(file);
+            form.setValue("imgName", newUrl);
+          }
+        }}
+      />
+
       <Form {...form}>
-        <form
-          id={FORM_ID}
-          onSubmit={form.handleSubmit(handleSubmit)}
-          className="space-y-8"
-        >
-          <input
-            ref={fileInputRef}
-            type="file"
-            accept="image/*"
-            hidden
-            onChange={(e) => {
-              const file = e.target.files?.[0];
-              if (file) {
-                if (previewUrlRef.current) {
-                  URL.revokeObjectURL(previewUrlRef.current);
-                }
-
-                const newUrl = URL.createObjectURL(file);
-                previewUrlRef.current = newUrl;
-
-                setSelectedImage(file);
-                form.setValue("imgName", newUrl);
-              }
-            }}
-          />
-
-          {mode === "edit" && isAdmin && (
-            <div className="flex justify-center">
-              <Badge variant="secondary">Administrador</Badge>
-            </div>
-          )}
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 items-center">
-            <div className="flex justify-center">
-              <div className="relative w-56 h-56 md:w-80 md:h-80">
-                <Avatar className="w-full h-full">
+        <form id={FORM_ID} onSubmit={form.handleSubmit(handleSubmit)}>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
+            <div className="flex flex-col items-center gap-4">
+              <div className="relative">
+                <Avatar className="w-48 h-48 md:w-64 md:h-64">
                   <AvatarImage src={form.watch("imgName")} />
-                  <AvatarFallback>
-                    <UserIcon className="w-24 h-24 md:w-40 md:h-40 text-muted-foreground" />
+                  <AvatarFallback
+                    style={{ backgroundColor: "var(--color-primary-90)" }}
+                  >
+                    <UserIcon
+                      className="w-20 h-20 md:w-28 md:h-28"
+                      style={{ color: "var(--color-primary-40)" }}
+                    />
                   </AvatarFallback>
                 </Avatar>
 
@@ -180,12 +164,27 @@ export function UserForm({
                   type="button"
                   size="icon"
                   variant="outline"
-                  className="absolute bottom-3 right-3 md:bottom-5 md:right-5 rounded-full"
+                  className="absolute bottom-4 right-4 rounded-full h-9 w-9
+             shadow-sm cursor-pointer"
                   onClick={() => fileInputRef.current?.click()}
                 >
                   <Pencil className="w-4 h-4" />
                 </Button>
               </div>
+
+              {mode === "edit" && isAdmin && (
+                <span
+                  className="flex items-center gap-1.5 text-xs font-semibold
+                             px-3 py-1 rounded-full"
+                  style={{
+                    backgroundColor: "var(--color-primary-90)",
+                    color: "var(--color-primary-40)",
+                  }}
+                >
+                  <ShieldCheck className="h-3.5 w-3.5" />
+                  Administrador
+                </span>
+              )}
             </div>
 
             <div className="space-y-4">
@@ -194,9 +193,11 @@ export function UserForm({
                 name="firstName"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Nome</FormLabel>
+                    <FormLabel>
+                      Nome <span className="text-destructive">*</span>
+                    </FormLabel>
                     <FormControl>
-                      <Input className="h-9" {...field} />
+                      <Input {...field} onFocus={(e) => e.target.select()} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -208,9 +209,11 @@ export function UserForm({
                 name="lastName"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Sobrenome</FormLabel>
+                    <FormLabel>
+                      Sobrenome <span className="text-destructive">*</span>
+                    </FormLabel>
                     <FormControl>
-                      <Input className="h-9" {...field} />
+                      <Input {...field} onFocus={(e) => e.target.select()} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -222,9 +225,11 @@ export function UserForm({
                 name="username"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Usuário</FormLabel>
+                    <FormLabel>
+                      Usuário <span className="text-destructive">*</span>
+                    </FormLabel>
                     <FormControl>
-                      <Input className="h-9" {...field} />
+                      <Input {...field} onFocus={(e) => e.target.select()} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -236,9 +241,18 @@ export function UserForm({
                 name="email"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>E-mail</FormLabel>
+                    <FormLabel>
+                      E-mail{" "}
+                      <span className="text-muted-foreground font-normal text-xs">
+                        (opcional)
+                      </span>
+                    </FormLabel>
                     <FormControl>
-                      <Input type="email" className="h-9" {...field} />
+                      <Input
+                        type="email"
+                        {...field}
+                        onFocus={(e) => e.target.select()}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -252,9 +266,11 @@ export function UserForm({
                     name="password"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Senha</FormLabel>
+                        <FormLabel>
+                          Senha <span className="text-destructive">*</span>
+                        </FormLabel>
                         <FormControl>
-                          <Input type="password" className="h-9" {...field} />
+                          <Input type="password" {...field} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -265,8 +281,11 @@ export function UserForm({
                     control={form.control}
                     name="admin"
                     render={({ field }) => (
-                      <FormItem className="flex items-center justify-between rounded-lg border p-3">
-                        <FormLabel className="cursor-pointer">
+                      <FormItem
+                        className="flex items-center justify-between rounded-xl border px-4 py-3 cursor-pointer"
+                        style={{ borderColor: "var(--color-outline-variant)" }}
+                      >
+                        <FormLabel className="cursor-pointer text-sm font-medium">
                           Administrador
                         </FormLabel>
                         <FormControl>
@@ -280,17 +299,14 @@ export function UserForm({
                   />
                 </>
               )}
+
+              {extraActions && (
+                <div className="space-y-2 pt-2">{extraActions}</div>
+              )}
             </div>
           </div>
         </form>
       </Form>
-
-      {extraActions && (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 items-start mt-4">
-          <div />
-          <div className="space-y-4">{extraActions}</div>
-        </div>
-      )}
 
       <FormActions
         cancelPath={cancelPath}

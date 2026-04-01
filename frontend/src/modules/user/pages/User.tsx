@@ -39,11 +39,11 @@ export function User() {
       await refetchUser();
       toast.success("Perfil atualizado com sucesso!");
     } catch (error) {
-      if (error instanceof ApiError) {
-        toast.error(error.message);
-      } else {
-        toast.error("Não foi possível atualizar o perfil. Tente novamente.");
-      }
+      toast.error(
+        error instanceof ApiError
+          ? error.message
+          : "Não foi possível atualizar o perfil.",
+      );
       throw error;
     }
   };
@@ -73,21 +73,21 @@ export function User() {
               <>
                 <Button
                   type="button"
-                  variant="secondary"
-                  className="w-full cursor-pointer"
+                  variant="outline"
+                  className="w-full gap-2 cursor-pointer"
                   onClick={() => navigate("/admin/users")}
                 >
-                  <Users className="w-4 h-4 mr-2" />
+                  <Users className="w-4 h-4" />
                   Gerenciar acessos
                 </Button>
 
                 <Button
                   type="button"
-                  variant="secondary"
-                  className="w-full cursor-pointer"
+                  variant="outline"
+                  className="w-full gap-2 cursor-pointer"
                   onClick={() => navigate("/admin/settings")}
                 >
-                  <Settings className="w-4 h-4 mr-2" />
+                  <Settings className="w-4 h-4" />
                   Configurações
                 </Button>
               </>
