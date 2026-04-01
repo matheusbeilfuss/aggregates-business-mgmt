@@ -1,11 +1,12 @@
+// ExpenseRowActions.tsx
 import { useState } from "react";
 import { MoreHorizontal, Pencil, DollarSign, Trash2 } from "lucide-react";
 import { toast } from "sonner";
-
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
@@ -28,21 +29,20 @@ export function ExpenseRowActions({
   showMarkAsPaid,
 }: Props) {
   const navigate = useNavigate();
-
   const [confirmDeleteOpen, setConfirmDeleteOpen] = useState(false);
   const [confirmPaidOpen, setConfirmPaidOpen] = useState(false);
 
   const handleDelete = async () => {
     try {
       await api.delete(`/expenses/${expense.id}`);
-      toast.success("A saída foi excluída com sucesso.");
+      toast.success("Saída excluída com sucesso.");
       onSuccess();
     } catch (error) {
-      if (error instanceof ApiError) {
-        toast.error(error.message);
-      } else {
-        toast.error("Não foi possível excluir a saída.");
-      }
+      toast.error(
+        error instanceof ApiError
+          ? error.message
+          : "Não foi possível excluir a saída.",
+      );
     }
   };
 
@@ -52,11 +52,11 @@ export function ExpenseRowActions({
       toast.success("Despesa marcada como paga.");
       onSuccess();
     } catch (error) {
-      if (error instanceof ApiError) {
-        toast.error(error.message);
-      } else {
-        toast.error("Não foi possível marcar a despesa como paga.");
-      }
+      toast.error(
+        error instanceof ApiError
+          ? error.message
+          : "Não foi possível marcar a despesa como paga.",
+      );
     }
   };
 
@@ -64,30 +64,33 @@ export function ExpenseRowActions({
     <>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Button variant="ghost" size="icon" className="h-7 w-7">
+          <Button variant="ghost" size="sm" className="h-7 w-7 p-0">
             <MoreHorizontal className="h-4 w-4" />
           </Button>
         </DropdownMenuTrigger>
-        <DropdownMenuContent align="end">
+        <DropdownMenuContent align="end" className="w-44">
           {showMarkAsPaid && (
-            <DropdownMenuItem onSelect={() => setConfirmPaidOpen(true)}>
-              <DollarSign className="mr-2 h-4 w-4" />
+            <DropdownMenuItem
+              className="gap-2 cursor-pointer"
+              onSelect={() => setConfirmPaidOpen(true)}
+            >
+              <DollarSign className="h-4 w-4" />
               Marcar como paga
             </DropdownMenuItem>
           )}
           <DropdownMenuItem
-            onSelect={() => {
-              navigate(`/finance/expenses/${expense.id}/edit`);
-            }}
+            className="gap-2 cursor-pointer"
+            onSelect={() => navigate(`/finance/expenses/${expense.id}/edit`)}
           >
-            <Pencil className="mr-2 h-4 w-4" />
+            <Pencil className="h-4 w-4" />
             Editar
           </DropdownMenuItem>
+          <DropdownMenuSeparator />
           <DropdownMenuItem
-            className="text-destructive"
+            className="gap-2 cursor-pointer text-destructive focus:text-destructive focus:bg-destructive/10"
             onSelect={() => setConfirmDeleteOpen(true)}
           >
-            <Trash2 className="mr-2 h-4 w-4" />
+            <Trash2 className="h-4 w-4 text-destructive" />
             Excluir
           </DropdownMenuItem>
         </DropdownMenuContent>
@@ -96,7 +99,7 @@ export function ExpenseRowActions({
       <ConfirmDialog
         open={confirmDeleteOpen}
         onOpenChange={setConfirmDeleteOpen}
-        title="Você tem certeza de que deseja excluir a saída abaixo?"
+        title="Excluir esta saída?"
         description={`${expense.name} · ${formatLocalCurrency(expense.expenseValue)}`}
         onConfirm={handleDelete}
       />
@@ -104,7 +107,7 @@ export function ExpenseRowActions({
       <ConfirmDialog
         open={confirmPaidOpen}
         onOpenChange={setConfirmPaidOpen}
-        title="Você tem certeza de que deseja marcar a saída abaixo como paga?"
+        title="Marcar esta saída como paga?"
         description={`${expense.name} · ${formatLocalCurrency(expense.expenseValue)}`}
         onConfirm={handleMarkAsPaid}
         variant="default"

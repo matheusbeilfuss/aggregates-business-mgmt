@@ -11,23 +11,31 @@ export function ExpenseRowLabel({ expense }: ExpenseRowLabelProps) {
 
   return (
     <div className="flex flex-col gap-1 w-full text-sm md:grid md:grid-cols-[1fr_1fr_1fr_1fr_auto] md:gap-x-4 md:items-center">
-      <span className="font-medium">{expense.name}</span>
+      <span className="font-medium text-foreground">{expense.name}</span>
 
-      <span className="text-muted-foreground">{expense.category ?? "—"}</span>
+      <span className="text-muted-foreground text-xs">
+        {expense.category ?? "—"}
+      </span>
 
-      <span className="text-muted-foreground">
+      <span className="text-muted-foreground text-xs">
         Criada em {formatLocalDate(expense.date)}
       </span>
 
-      <span className="text-muted-foreground">
+      <span className="text-muted-foreground text-xs">
         {expense.paymentDate
           ? `Paga em ${formatLocalDate(expense.paymentDate)}`
-          : "-"}
+          : "—"}
       </span>
 
-      <span className="text-xs font-medium md:w-32 md:text-right">
+      <span className="text-xs font-medium md:text-right shrink-0">
         {isPending && expense.dueDate && (
-          <span className="text-orange-500">
+          <span
+            className="px-2 py-0.5 rounded-full"
+            style={{
+              backgroundColor: "var(--color-secondary-90)",
+              color: "var(--color-secondary-40)",
+            }}
+          >
             Vence em {formatLocalDate(expense.dueDate)}
           </span>
         )}

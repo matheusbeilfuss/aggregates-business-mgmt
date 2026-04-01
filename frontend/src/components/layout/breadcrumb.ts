@@ -35,7 +35,7 @@ const routes: RouteEntry[] = [
 
   {
     pattern: /^\/stocks\/[^/]+\/replenish$/,
-    crumbs: [r.stocks, { label: "Repor estoque", url: "" }],
+    crumbs: [r.stocks, { label: "Adicionar estoque", url: "" }],
   },
   {
     pattern: /^\/stocks\/[^/]+$/,
@@ -45,14 +45,11 @@ const routes: RouteEntry[] = [
 
   {
     pattern: "/finance/expenses/add",
-    crumbs: [
-      r.finance,
-      { label: "Nova despesa", url: "/finance/expenses/add" },
-    ],
+    crumbs: [r.finance, { label: "Nova saída", url: "/finance/expenses/add" }],
   },
   {
     pattern: /^\/finance\/expenses\/[^/]+\/edit$/,
-    crumbs: [r.finance, { label: "Editar despesa", url: "" }],
+    crumbs: [r.finance, { label: "Editar saída", url: "" }],
   },
   { pattern: "/finance", crumbs: [r.finance] },
 

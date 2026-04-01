@@ -18,8 +18,9 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { api, ApiError } from "@/lib/api";
 import { Button } from "@/components/ui/button";
+import { CurrencyInput } from "@/components/shared";
+import { api, ApiError } from "@/lib/api";
 import { useExpenseOptions } from "../hooks/useExpenseOptions";
 import { FixedExpense } from "../types";
 import { DialogCombobox } from "./DialogCombobox";
@@ -69,49 +70,49 @@ export function AddFixedExpenseDialog({
     try {
       if (isEditing) {
         await api.put(`/fixed-expenses/${initialValues!.id}`, values);
-        toast.success("A despesa fixa foi atualizada.");
+        toast.success("Despesa fixa atualizada.");
       } else {
         await api.post("/fixed-expenses", values);
-        toast.success("A despesa fixa foi cadastrada.");
+        toast.success("Despesa fixa cadastrada.");
       }
       onSuccess();
       onOpenChange(false);
     } catch (error) {
-      if (error instanceof ApiError) {
-        toast.error(error.message);
-      } else {
-        toast.error(
-          isEditing
+      toast.error(
+        error instanceof ApiError
+          ? error.message
+          : isEditing
             ? "Não foi possível atualizar a despesa fixa."
             : "Não foi possível cadastrar a despesa fixa.",
-        );
-      }
+      );
     }
   };
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent
+        className="sm:max-w-[400px]"
         onPointerDownOutside={(e) => e.preventDefault()}
         onInteractOutside={(e) => e.preventDefault()}
       >
         <DialogHeader>
           <DialogTitle>
-            {isEditing ? "Editar despesa fixa" : "Adicionar despesa fixa"}
+            {isEditing ? "Editar despesa fixa" : "Nova despesa fixa"}
           </DialogTitle>
           <DialogDescription>
             {isEditing
               ? "Edite os detalhes da despesa fixa."
-              : "Insira os detalhes da despesa fixa que deseja adicionar. O valor padrão pode ser usado para facilitar o cadastro de despesas recorrentes, mas pode ser alterado no momento do lançamento."}
+              : "O valor padrão pode ser alterado no momento do lançamento."}
           </DialogDescription>
         </DialogHeader>
+
         <Form {...form}>
           <form
             onSubmit={(e) => {
               e.stopPropagation();
               form.handleSubmit(onSubmit)(e);
             }}
-            className="space-y-4"
+            className="space-y-4 pt-1"
           >
             <FormField
               control={form.control}
@@ -120,12 +121,13 @@ export function AddFixedExpenseDialog({
                 <FormItem>
                   <FormLabel>Nome</FormLabel>
                   <FormControl>
-                    <Input {...field} />
+                    <Input {...field} onFocus={(e) => e.target.select()} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
+
             <FormField
               control={form.control}
               name="defaultValue"
@@ -133,12 +135,16 @@ export function AddFixedExpenseDialog({
                 <FormItem>
                   <FormLabel>Valor padrão</FormLabel>
                   <FormControl>
-                    <Input type="number" step="0.01" {...field} />
+                    <CurrencyInput
+                      value={field.value}
+                      onChange={field.onChange}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
+
             <FormField
               control={form.control}
               name="category"
@@ -157,17 +163,21 @@ export function AddFixedExpenseDialog({
                 </FormItem>
               )}
             />
-            <div className="flex justify-end gap-2 mt-4">
+
+            <div className="flex justify-end gap-2 pt-2">
               <Button
                 type="button"
                 variant="outline"
+                className="h-9 px-4 text-sm cursor-pointer"
                 onClick={() => onOpenChange(false)}
               >
                 Cancelar
               </Button>
               <Button
                 type="submit"
-                className="bg-slate-500 hover:bg-slate-600 text-white"
+                className="h-9 px-4 text-sm font-medium text-white cursor-pointer
+                           hover:opacity-90 active:opacity-80 transition-opacity"
+                style={{ backgroundColor: "var(--color-primary-40)" }}
               >
                 Salvar
               </Button>

@@ -1,11 +1,11 @@
 import { useState } from "react";
 import { MoreHorizontal, Pencil, Trash2 } from "lucide-react";
 import { toast } from "sonner";
-
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
@@ -27,14 +27,14 @@ export function PaymentRowActions({ payment, onSuccess }: Props) {
   const handleDelete = async () => {
     try {
       await api.delete(`/payments/${payment.id}`);
-      toast.success("A entrada foi excluída com sucesso.");
+      toast.success("Entrada excluída com sucesso.");
       onSuccess();
     } catch (error) {
-      if (error instanceof ApiError) {
-        toast.error(error.message);
-      } else {
-        toast.error("Não foi possível excluir a entrada.");
-      }
+      toast.error(
+        error instanceof ApiError
+          ? error.message
+          : "Não foi possível excluir a entrada.",
+      );
     }
   };
 
@@ -42,20 +42,24 @@ export function PaymentRowActions({ payment, onSuccess }: Props) {
     <>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Button variant="ghost" size="icon" className="h-7 w-7">
+          <Button variant="ghost" size="sm" className="h-7 w-7 p-0">
             <MoreHorizontal className="h-4 w-4" />
           </Button>
         </DropdownMenuTrigger>
-        <DropdownMenuContent align="end">
-          <DropdownMenuItem onSelect={() => setEditOpen(true)}>
-            <Pencil className="mr-2 h-4 w-4" />
+        <DropdownMenuContent align="end" className="w-40">
+          <DropdownMenuItem
+            className="gap-2 cursor-pointer"
+            onSelect={() => setEditOpen(true)}
+          >
+            <Pencil className="h-4 w-4" />
             Editar
           </DropdownMenuItem>
+          <DropdownMenuSeparator />
           <DropdownMenuItem
-            className="text-destructive"
+            className="gap-2 cursor-pointer text-destructive focus:text-destructive focus:bg-destructive/10"
             onSelect={() => setConfirmOpen(true)}
           >
-            <Trash2 className="mr-2 h-4 w-4" />
+            <Trash2 className="h-4 w-4 text-destructive" />
             Excluir
           </DropdownMenuItem>
         </DropdownMenuContent>
@@ -72,7 +76,7 @@ export function PaymentRowActions({ payment, onSuccess }: Props) {
       <ConfirmDialog
         open={confirmOpen}
         onOpenChange={setConfirmOpen}
-        title="Você tem certeza de que deseja excluir a entrada abaixo?"
+        title="Excluir esta entrada?"
         description={`${payment.order.client.name} · ${formatLocalCurrency(payment.paymentValue)} · ${formatLocalDate(payment.date)}`}
         onConfirm={handleDelete}
       />

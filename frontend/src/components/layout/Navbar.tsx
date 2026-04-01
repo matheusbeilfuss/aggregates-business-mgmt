@@ -5,6 +5,7 @@ import { LogOut, User } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   Breadcrumb,
+  BreadcrumbEllipsis,
   BreadcrumbItem,
   BreadcrumbLink,
   BreadcrumbList,
@@ -43,6 +44,9 @@ export function Navbar() {
     }
   };
 
+  const lastCrumb = crumbs[crumbs.length - 1];
+  const middleCrumbs = crumbs.slice(0, -1);
+
   return (
     <nav
       className="w-full h-14 flex items-center justify-between px-4
@@ -67,27 +71,39 @@ export function Navbar() {
               )}
             </BreadcrumbItem>
 
-            {crumbs.map((crumb, i) => {
-              const isLast = i === crumbs.length - 1;
-              return (
-                <Fragment key={`${crumb.url}-${i}`}>
-                  <BreadcrumbSeparator />
-                  <BreadcrumbItem>
-                    {isLast ? (
-                      <BreadcrumbPage className="text-sm">
-                        {crumb.label}
-                      </BreadcrumbPage>
-                    ) : (
+            {crumbs.length > 0 && (
+              <>
+                <BreadcrumbSeparator />
+
+                {crumbs.length > 1 && (
+                  <>
+                    <BreadcrumbItem className="sm:hidden">
+                      <BreadcrumbEllipsis className="h-4 w-4" />
+                    </BreadcrumbItem>
+                    <BreadcrumbSeparator className="sm:hidden" />
+                  </>
+                )}
+
+                {middleCrumbs.map((crumb, i) => (
+                  <Fragment key={`${crumb.url}-${i}`}>
+                    <BreadcrumbItem className="hidden sm:flex">
                       <BreadcrumbLink asChild>
                         <Link to={crumb.url} className="text-sm">
                           {crumb.label}
                         </Link>
                       </BreadcrumbLink>
-                    )}
-                  </BreadcrumbItem>
-                </Fragment>
-              );
-            })}
+                    </BreadcrumbItem>
+                    <BreadcrumbSeparator className="hidden sm:flex" />
+                  </Fragment>
+                ))}
+
+                <BreadcrumbItem>
+                  <BreadcrumbPage className="text-sm">
+                    {lastCrumb.label}
+                  </BreadcrumbPage>
+                </BreadcrumbItem>
+              </>
+            )}
           </BreadcrumbList>
         </Breadcrumb>
       </div>
@@ -140,7 +156,7 @@ export function Navbar() {
             className="text-destructive focus:text-destructive
                        focus:bg-destructive/10 hover:bg-destructive/10"
           >
-            <LogOut className="mr-2 h-4 w-4" />
+            <LogOut className="mr-2 h-4 w-4 text-destructive" />
             Sair
           </DropdownMenuItem>
         </DropdownMenuContent>

@@ -40,7 +40,7 @@ import { useProductSuppliersByProductId } from "@/modules/product-supplier/hooks
 import type { ProductSupplier } from "@/modules/product-supplier/types";
 
 export function StockReplenish() {
-  usePageTitle("Reabastecer estoque");
+  usePageTitle("Adicionar estoque");
 
   const navigate = useNavigate();
   const { id: rawStockId } = useParams<{ id: string }>();

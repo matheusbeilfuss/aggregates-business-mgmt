@@ -11,7 +11,7 @@ import { ExpenseInputDTO } from "../types";
 import { toExpenseInputDTO } from "../utils/expenseDTO";
 
 export default function ExpenseAdd() {
-  usePageTitle("Adicionar saída");
+  usePageTitle("Nova saída");
   const navigate = useNavigate();
   const { data: templates, refetch } = useFixedExpenses();
 
@@ -32,7 +32,7 @@ export default function ExpenseAdd() {
   };
 
   return (
-    <PageContainer title="Adicionar saída">
+    <PageContainer title="Nova saída">
       <ExpenseForm
         templates={templates ?? []}
         onTemplatesRefetch={refetch}

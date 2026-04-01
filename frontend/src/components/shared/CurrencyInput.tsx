@@ -25,14 +25,14 @@ export function CurrencyInput({
 
   function handleFocus(e: React.FocusEvent<HTMLInputElement>) {
     isFocused.current = true;
-    // Ao focar, mostra só o número para facilitar a edição
     if (value != null) {
       const raw = value.toFixed(2).replace(".", ",");
       setDisplayValue(raw);
     } else {
       setDisplayValue("");
     }
-    e.target.select();
+    const target = e.target;
+    setTimeout(() => target.select(), 0);
   }
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
@@ -54,7 +54,6 @@ export function CurrencyInput({
     }
   }
 
-  // Sincroniza quando o valor muda externamente (ex: preço preenchido automaticamente)
   if (!isFocused.current) {
     const external = value != null ? formatLocalCurrency(value) : "";
     if (external !== displayValue) {

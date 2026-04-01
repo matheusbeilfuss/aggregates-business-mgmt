@@ -1,18 +1,18 @@
 import { useMemo, useState } from "react";
 import { startOfMonth, endOfMonth } from "date-fns";
-
 import { PageContainer } from "@/components/shared/PageContainer";
 import { LoadingState } from "@/components/shared/LoadingState";
+import { SummaryCard } from "@/components/shared";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { formatLocalCurrency } from "@/utils";
 import { usePageTitle } from "@/hooks/usePageTitle";
-
 import { PeriodPicker } from "@/components/shared/PeriodPicker";
 import { PaymentsTab } from "../components/PaymentsTab";
 import { ExpensesTab } from "../components/ExpensesTab";
 import { useFinanceExpenses, useFinancePayments } from "../hooks";
 import { DatePeriod, PaymentStatusEnum } from "@/types";
 import { useSearchParams } from "react-router-dom";
+import { TrendingUp, TrendingDown } from "lucide-react";
 
 export default function Finance() {
   usePageTitle("Financeiro");
@@ -23,9 +23,8 @@ export default function Finance() {
   type Tab = (typeof VALID_TABS)[number];
 
   function parseTab(value: string | null): Tab {
-    if (value && (VALID_TABS as readonly string[]).includes(value)) {
+    if (value && (VALID_TABS as readonly string[]).includes(value))
       return value as Tab;
-    }
     return "incomes";
   }
 
@@ -64,25 +63,57 @@ export default function Finance() {
   );
 
   const balance = totalIncome - totalExpenses;
-
   const error = paymentsError || expensesError;
-
   const loading = loadingPayments || loadingExpenses;
 
   return (
-    <PageContainer title="Financeiro">
-      <div className="flex flex-col items-center gap-2 pb-7 px-4 mb-4">
-        <PeriodPicker period={period} onChange={setPeriod} />
-        {!loading && (
-          <span
-            className={`text-3xl font-bold pt-7 ${balance >= 0 ? "text-blue-500" : "text-orange-500"}`}
-          >
-            {formatLocalCurrency(balance)}
-          </span>
-        )}
-      </div>
+    <PageContainer
+      title="Financeiro"
+      actions={<PeriodPicker period={period} onChange={setPeriod} />}
+    >
+      {error && (
+        <p className="text-sm text-destructive mb-4">{error.message}</p>
+      )}
 
-      {error && <p className="text-red-500 mb-4">{error.message}</p>}
+      {!loading && (
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-2 md:gap-3 mb-6">
+          <SummaryCard
+            label="Entradas"
+            value={formatLocalCurrency(totalIncome)}
+            icon={TrendingUp}
+            iconBg="#dcfce7"
+            iconColor="#15803d"
+            valueColor="#15803d"
+          />
+
+          <SummaryCard
+            label="Saídas"
+            value={formatLocalCurrency(totalExpenses)}
+            icon={TrendingDown}
+            iconBg="var(--color-secondary-90)"
+            iconColor="var(--color-secondary-40)"
+            valueColor="var(--color-secondary-40)"
+          />
+
+          <SummaryCard
+            label="Saldo"
+            value={formatLocalCurrency(balance)}
+            icon="="
+            iconBg={
+              balance >= 0
+                ? "var(--color-primary-90)"
+                : "var(--color-error-container)"
+            }
+            iconColor={
+              balance >= 0 ? "var(--color-primary-40)" : "var(--color-error)"
+            }
+            valueColor={
+              balance >= 0 ? "var(--color-primary-40)" : "var(--color-error)"
+            }
+            className="col-span-2 md:col-span-1"
+          />
+        </div>
+      )}
 
       {loading ? (
         <LoadingState />
@@ -91,11 +122,19 @@ export default function Finance() {
           value={activeTab}
           onValueChange={(v) => setSearchParams({ tab: v })}
         >
-          <TabsList className="w-full">
-            <TabsTrigger value="incomes" className="flex-1">
+          <TabsList className="w-full border border-border p-0.5 rounded-lg">
+            <TabsTrigger
+              value="incomes"
+              className="flex-1 data-[state=inactive]:text-muted-foreground
+                         data-[state=active]:shadow-sm"
+            >
               Entradas
             </TabsTrigger>
-            <TabsTrigger value="expenses" className="flex-1">
+            <TabsTrigger
+              value="expenses"
+              className="flex-1 data-[state=inactive]:text-muted-foreground
+                         data-[state=active]:shadow-sm"
+            >
               Saídas
             </TabsTrigger>
           </TabsList>

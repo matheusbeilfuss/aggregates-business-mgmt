@@ -7,6 +7,7 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { FixedExpense } from "../types";
@@ -37,93 +38,124 @@ export function FixedExpenseTemplateList({
     if (!toDelete) return;
     try {
       await api.delete(`/fixed-expenses/${toDelete.id}`);
-      toast.success("A despesa fixa foi excluída com sucesso.");
+      toast.success("Despesa fixa excluída com sucesso.");
       onRefetch();
     } catch (error) {
-      if (error instanceof ApiError) {
-        toast.error(error.message);
-      } else {
-        toast.error("Não foi possível excluir a despesa fixa.");
-      }
+      toast.error(
+        error instanceof ApiError
+          ? error.message
+          : "Não foi possível excluir a despesa fixa.",
+      );
     } finally {
       setToDelete(null);
     }
   };
 
-  const deleteDescription = lastToDelete.current
-    ? `${lastToDelete.current.name} · ${formatLocalCurrency(lastToDelete.current.defaultValue)} · ${lastToDelete.current.category}`
-    : "";
-
   return (
     <div className="flex flex-col gap-2 h-full">
-      <span className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-        Despesas fixas cadastradas
-      </span>
-      <div className="flex-1 border rounded-md divide-y overflow-y-auto min-h-0">
-        {templates.length === 0 && (
-          <p className="text-sm text-muted-foreground p-3">
+      <div className="flex-1 rounded-xl border overflow-y-auto min-h-0 bg-background">
+        {templates.length === 0 ? (
+          <p
+            className="text-sm p-4 text-center"
+            style={{ color: "var(--color-on-surface-variant)" }}
+          >
             Nenhuma despesa fixa cadastrada.
           </p>
-        )}
-        {templates.map((t) => (
-          <div
-            key={t.id}
-            className={`flex items-center justify-between px-3 py-2 cursor-pointer hover:bg-muted/50 transition-colors ${
-              selectedId === t.id ? "bg-muted" : ""
-            }`}
-            onClick={() => onSelect(t)}
-          >
-            <span className="text-sm">
-              {t.name}
-              {t.category && (
-                <span className="ml-2 text-xs text-muted-foreground">
-                  {t.category}
-                </span>
-              )}
-            </span>
-            <div className="flex items-center gap-3">
-              <span className="text-sm text-muted-foreground">
-                {formatLocalCurrency(t.defaultValue)}
-              </span>
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button
-                    type="button"
-                    variant="ghost"
-                    size="icon"
-                    className="h-7 w-7"
-                    onClick={(e) => e.stopPropagation()}
-                  >
-                    <MoreHorizontal className="h-4 w-4" />
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end">
-                  <DropdownMenuItem
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      lastToEdit.current = t;
-                      setToEdit(t);
+        ) : (
+          <div className="divide-y">
+            {templates.map((t) => (
+              <div
+                key={t.id}
+                className="flex items-center justify-between px-3 py-2.5
+                           cursor-pointer transition-colors"
+                style={{
+                  backgroundColor:
+                    selectedId === t.id ? "var(--color-primary-90)" : undefined,
+                }}
+                onClick={() => onSelect(t)}
+              >
+                <div className="flex items-center gap-2 min-w-0">
+                  <span
+                    className="text-sm font-medium truncate"
+                    style={{
+                      color:
+                        selectedId === t.id
+                          ? "var(--color-primary-10)"
+                          : undefined,
                     }}
                   >
-                    <Pencil className="mr-2 h-4 w-4" />
-                    Editar
-                  </DropdownMenuItem>
-                  <DropdownMenuItem
-                    className="text-destructive"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      lastToDelete.current = t;
-                      setToDelete(t);
-                    }}
+                    {t.name}
+                  </span>
+                  {t.category && (
+                    <span
+                      className="text-[10px] px-1.5 py-0.5 rounded shrink-0"
+                      style={{
+                        backgroundColor:
+                          selectedId === t.id
+                            ? "var(--color-primary-40)"
+                            : "var(--color-surface-container-high)",
+                        color:
+                          selectedId === t.id
+                            ? "#fff"
+                            : "var(--color-on-surface-variant)",
+                      }}
+                    >
+                      {t.category}
+                    </span>
+                  )}
+                </div>
+
+                <div className="flex items-center gap-2 shrink-0">
+                  <span
+                    className="text-xs tabular-nums"
+                    style={{ color: "var(--color-on-surface-variant)" }}
                   >
-                    <Trash2 className="mr-2 h-4 w-4" />
-                    Excluir
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-            </div>
+                    {formatLocalCurrency(t.defaultValue)}
+                  </span>
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="sm"
+                        className="h-6 w-6 p-0"
+                        onClick={(e) => e.stopPropagation()}
+                      >
+                        <MoreHorizontal className="h-3.5 w-3.5" />
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end" className="w-40">
+                      <DropdownMenuItem
+                        className="gap-2 cursor-pointer"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          lastToEdit.current = t;
+                          setToEdit(t);
+                        }}
+                      >
+                        <Pencil className="h-4 w-4" />
+                        Editar
+                      </DropdownMenuItem>
+                      <DropdownMenuSeparator />
+                      <DropdownMenuItem
+                        className="gap-2 cursor-pointer text-destructive
+                                   focus:text-destructive focus:bg-destructive/10"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          lastToDelete.current = t;
+                          setToDelete(t);
+                        }}
+                      >
+                        <Trash2 className="h-4 w-4 text-destructive" />
+                        Excluir
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                </div>
+              </div>
+            ))}
           </div>
-        ))}
+        )}
       </div>
 
       <div className="flex justify-end">
@@ -131,9 +163,10 @@ export function FixedExpenseTemplateList({
           type="button"
           variant="outline"
           size="sm"
+          className="h-8 gap-1.5 text-xs cursor-pointer"
           onClick={() => setAddOpen(true)}
         >
-          <Plus className="h-4 w-4 mr-1" />
+          <Plus className="h-3.5 w-3.5" />
           Nova despesa fixa
         </Button>
       </div>
@@ -156,8 +189,12 @@ export function FixedExpenseTemplateList({
       <ConfirmDialog
         open={!!toDelete}
         onOpenChange={(open) => !open && setToDelete(null)}
-        title="Tem certeza que deseja remover a despesa fixa abaixo?"
-        description={deleteDescription}
+        title="Remover esta despesa fixa?"
+        description={
+          lastToDelete.current
+            ? `${lastToDelete.current.name} · ${formatLocalCurrency(lastToDelete.current.defaultValue)}`
+            : ""
+        }
         onConfirm={handleDelete}
         variant="destructive"
         confirmLabel="Remover"

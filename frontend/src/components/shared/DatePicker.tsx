@@ -30,7 +30,7 @@ export function DatePicker({
   const buttonId = id ?? reactId;
 
   return (
-    <Field className="mx-auto w-min">
+    <Field className="w-min">
       <Popover open={open} onOpenChange={setOpen}>
         <PopoverTrigger asChild>
           <Button
