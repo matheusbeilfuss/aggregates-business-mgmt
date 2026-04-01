@@ -89,9 +89,7 @@ export function SettingsForm({
           onSubmit={form.handleSubmit((data) => onSubmit(data, selectedImage))}
         >
           <div className="space-y-8">
-            {/* Identidade */}
             <FormSection icon={Store} title="Identidade do negócio">
-              {/* Nome — span completo */}
               <FormField
                 control={form.control}
                 name="businessName"
@@ -109,7 +107,6 @@ export function SettingsForm({
                 )}
               />
 
-              {/* Imagem — span completo */}
               <div className="md:col-span-2 space-y-3">
                 <p
                   className="text-sm font-medium"
@@ -118,7 +115,6 @@ export function SettingsForm({
                   Foto do negócio
                 </p>
 
-                {/* Preview */}
                 <div
                   className="w-full aspect-video rounded-xl overflow-hidden
                              flex items-center justify-center"
@@ -157,7 +153,6 @@ export function SettingsForm({
                   onChange={handleFileChange}
                 />
 
-                {/* Botões de imagem */}
                 <div className="flex gap-2">
                   <Button
                     type="button"
