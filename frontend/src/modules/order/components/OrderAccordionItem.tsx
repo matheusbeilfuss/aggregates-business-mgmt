@@ -43,7 +43,8 @@ export function OrderAccordionItem({
     <AccordionItem value={String(order.id)} className="border-0">
       <AccordionTrigger
         className="w-full px-4 py-3 text-left hover:no-underline
-                   hover:bg-accent/50 transition-colors [&[data-state=open]]:bg-accent/30"
+             hover:bg-accent/50 transition-colors [&[data-state=open]]:bg-accent/30
+             [&>svg]:self-center"
       >
         <div className="flex w-full items-center justify-between gap-3 min-w-0">
           <div className="flex items-center gap-2 min-w-0 flex-1">

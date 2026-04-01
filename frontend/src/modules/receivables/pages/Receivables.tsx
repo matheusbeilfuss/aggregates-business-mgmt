@@ -1,16 +1,17 @@
 import { useMemo, useState } from "react";
 import { startOfMonth, endOfMonth } from "date-fns";
 import { usePageTitle } from "@/hooks/usePageTitle";
-import { PageContainer, LoadingState } from "@/components/shared";
+import { PageContainer, LoadingState, SummaryCard } from "@/components/shared";
 import { PaymentDialog } from "@/components/shared/PaymentDialog";
 import { PeriodPicker } from "@/components/shared/PeriodPicker";
-import { FinanceTotalBar } from "@/components/shared/FinanceTotalBar";
 import { Button } from "@/components/ui/button";
 import { ReceivableGroup } from "../components/ReceivableGroup";
 import { useReceivables } from "../hooks/useReceivables";
 import { Receivable, ReceivableGroup as ReceivableGroupType } from "../types";
 import { DatePeriod } from "@/types";
 import { OrderForPayment } from "@/modules/order/types";
+import { ClipboardList, Wallet } from "lucide-react";
+import { formatLocalCurrency } from "@/utils";
 
 export default function Receivables() {
   usePageTitle("Cobranças");
@@ -39,11 +40,8 @@ export default function Receivables() {
     const map = new Map<number, Receivable[]>();
     for (const r of receivables) {
       const existing = map.get(r.clientId);
-      if (existing) {
-        existing.push(r);
-      } else {
-        map.set(r.clientId, [r]);
-      }
+      if (existing) existing.push(r);
+      else map.set(r.clientId, [r]);
     }
 
     return Array.from(map.entries())
@@ -90,36 +88,108 @@ export default function Receivables() {
     : null;
 
   return (
-    <PageContainer title="Cobranças">
-      {error && <p className="text-red-500 mb-4">{error.message}</p>}
+    <PageContainer
+      title="Cobranças"
+      actions={
+        <PeriodPicker
+          period={period}
+          onChange={(p) => {
+            setPeriod(p);
+            setShowAll(false);
+          }}
+          disabled={showAll}
+        />
+      }
+    >
+      {error && (
+        <p className="text-sm text-destructive mb-4">{error.message}</p>
+      )}
 
-      <div className="flex flex-col gap-7">
-        <div className="flex flex-col items-center gap-7">
-          <PeriodPicker
-            period={period}
-            onChange={(p) => {
-              setPeriod(p);
-              setShowAll(false);
-            }}
-            disabled={showAll}
-          />
-          <Button
-            variant={showAll ? "default" : "outline"}
-            size="sm"
-            onClick={() => setShowAll((v) => !v)}
-          >
-            {showAll ? "Exibindo todas as pendentes" : "Ver todas as pendentes"}
-          </Button>
+      <div className="flex flex-col gap-6">
+        <div className="flex flex-col gap-3">
+          <div className="flex flex-col sm:flex-row sm:items-center gap-3">
+            <div className="flex-1 sm:flex-none sm:min-w-[520px]">
+              {loading ? (
+                <div
+                  className="flex items-center gap-2 rounded-xl px-3 py-2.5 animate-pulse"
+                  style={{ backgroundColor: "var(--color-surface-container)" }}
+                >
+                  <div
+                    className="w-7 h-7 rounded-lg shrink-0"
+                    style={{
+                      backgroundColor: "var(--color-surface-container-high)",
+                    }}
+                  />
+                  <div className="flex flex-col gap-1.5">
+                    <div
+                      className="h-2.5 w-16 rounded"
+                      style={{
+                        backgroundColor: "var(--color-surface-container-high)",
+                      }}
+                    />
+                    <div
+                      className="h-3.5 w-24 rounded"
+                      style={{
+                        backgroundColor: "var(--color-surface-container-high)",
+                      }}
+                    />
+                  </div>
+                </div>
+              ) : groups.length > 0 ? (
+                <SummaryCard
+                  label="Total a receber"
+                  value={formatLocalCurrency(grandTotal)}
+                  icon={Wallet}
+                  iconBg="var(--color-tertiary-90)"
+                  iconColor="var(--color-tertiary-40)"
+                  valueColor="var(--color-tertiary-40)"
+                />
+              ) : null}
+            </div>
+
+            <Button
+              variant={showAll ? "default" : "outline"}
+              size="sm"
+              className="h-9 px-4 text-sm whitespace-nowrap ml-auto shrink-0"
+              style={
+                showAll
+                  ? {
+                      backgroundColor: "var(--color-primary-40)",
+                      color: "#fff",
+                    }
+                  : {}
+              }
+              onClick={() => setShowAll((v) => !v)}
+            >
+              {showAll
+                ? "Exibindo todas as pendentes"
+                : "Ver todas as pendentes"}
+            </Button>
+          </div>
         </div>
 
         {loading ? (
           <LoadingState />
         ) : groups.length === 0 ? (
-          <p className="text-center text-muted-foreground py-8">
-            Nenhuma cobrança pendente{showAll ? "" : " no período selecionado"}.
-          </p>
+          <div
+            className="flex flex-col items-center justify-center gap-2 py-16
+                       rounded-xl border border-dashed"
+            style={{ borderColor: "var(--color-outline-variant)" }}
+          >
+            <ClipboardList
+              className="h-6 w-6"
+              style={{ color: "var(--color-on-surface-variant)" }}
+            />
+            <p
+              className="text-sm"
+              style={{ color: "var(--color-on-surface-variant)" }}
+            >
+              Nenhuma cobrança pendente
+              {!showAll && " no período selecionado"}.
+            </p>
+          </div>
         ) : (
-          <div className="flex flex-col gap-2 pb-4">
+          <div className="flex flex-col gap-2">
             {groups.map((group) => (
               <ReceivableGroup
                 key={group.clientId}
@@ -127,12 +197,6 @@ export default function Receivables() {
                 onAddPayment={setReceivableForPayment}
               />
             ))}
-
-            <FinanceTotalBar
-              label="Total a receber"
-              value={grandTotal}
-              variant="receivable"
-            />
           </div>
         )}
       </div>
