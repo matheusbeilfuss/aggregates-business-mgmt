@@ -17,9 +17,17 @@ type Props = {
 export function ExpenseCategoryChart({ data }: Props) {
   if (data.length === 0) {
     return (
-      <p className="text-center text-muted-foreground py-8 text-sm">
-        Nenhuma despesa paga no período.
-      </p>
+      <div
+        className="flex items-center justify-center py-16 rounded-xl border border-dashed"
+        style={{ borderColor: "var(--color-outline-variant)" }}
+      >
+        <p
+          className="text-sm"
+          style={{ color: "var(--color-on-surface-variant)" }}
+        >
+          Nenhuma despesa paga no período.
+        </p>
+      </div>
     );
   }
 

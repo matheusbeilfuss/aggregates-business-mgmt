@@ -2,8 +2,7 @@ import { useMemo, useState, useEffect } from "react";
 import { usePageTitle } from "@/hooks/usePageTitle";
 import { PageContainer, LoadingState } from "@/components/shared";
 import { Button } from "@/components/ui/button";
-import { Printer } from "lucide-react";
-import { Separator } from "@/components/ui/separator";
+import { Printer, BarChart3 } from "lucide-react";
 import { YearPicker } from "../components/YearPicker";
 import { BalanceChart } from "../components/BalanceChart";
 import { BalanceSummaryTable } from "../components/BalanceSummaryTable";
@@ -34,17 +33,12 @@ export default function Balance() {
     data: productBalance,
     loading: loadingProducts,
     error: productBalanceError,
-  } = useProductBalance({
-    startDate,
-    endDate,
-  });
+  } = useProductBalance({ startDate, endDate });
 
   const error = balanceError || productBalanceError;
 
   useEffect(() => {
-    if (error) {
-      toast.error("Não foi possível carregar os dados de balanço.");
-    }
+    if (error) toast.error("Não foi possível carregar os dados de balanço.");
   }, [error]);
 
   const hasData =
@@ -52,14 +46,31 @@ export default function Balance() {
   const isLoading = loading || loadingProducts;
 
   return (
-    <PageContainer title="Balanços">
-      <div className="flex flex-col gap-8 pb-8">
-        <div className="flex justify-center">
+    <PageContainer
+      title="Balanços"
+      actions={
+        <div className="flex items-center gap-2">
           <YearPicker year={year} onChange={setYear} />
+          <Button
+            variant="outline"
+            className="h-9 px-4 text-sm gap-1.5"
+            onClick={() =>
+              window.open(
+                `/balance/print?year=${year}`,
+                "_blank",
+                "noopener,noreferrer",
+              )
+            }
+          >
+            <Printer className="h-4 w-4" />
+            Exportar
+          </Button>
         </div>
-
+      }
+    >
+      <div className="flex flex-col gap-8 pb-8">
         {error && (
-          <p className="text-red-500 text-sm text-center">
+          <p className="text-sm text-destructive text-center">
             Não foi possível carregar todos os dados. Tente novamente.
           </p>
         )}
@@ -67,45 +78,78 @@ export default function Balance() {
         {isLoading ? (
           <LoadingState />
         ) : !hasData ? (
-          <p className="text-center text-muted-foreground py-8">
-            Nenhum dado financeiro encontrado para {year}.
-          </p>
+          <div
+            className="flex flex-col items-center justify-center gap-2 py-16
+                       rounded-xl border border-dashed"
+            style={{ borderColor: "var(--color-outline-variant)" }}
+          >
+            <BarChart3
+              className="h-6 w-6"
+              style={{ color: "var(--color-on-surface-variant)" }}
+            />
+            <p
+              className="text-sm"
+              style={{ color: "var(--color-on-surface-variant)" }}
+            >
+              Nenhum dado financeiro encontrado para {year}.
+            </p>
+          </div>
         ) : (
           <>
-            <section className="flex flex-col gap-4">
-              <h2 className="text-base font-semibold">Visão geral</h2>
-              <BalanceChart data={monthlyData} />
-            </section>
+            <section className="flex flex-col gap-3">
+              <div className="flex items-center gap-2">
+                <h2
+                  className="text-sm font-semibold"
+                  style={{ color: "var(--color-on-surface)" }}
+                >
+                  Visão geral
+                </h2>
+                <div
+                  className="flex-1 h-px"
+                  style={{ backgroundColor: "var(--color-outline-variant)" }}
+                />
+              </div>
 
-            <section className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
-              <BalanceSummaryTable summary={summary} />
-              <Button
-                variant="outline"
-                onClick={() =>
-                  window.open(
-                    `/balance/print?year=${year}`,
-                    "_blank",
-                    "noopener,noreferrer",
-                  )
-                }
-              >
-                <Printer className="mr-2 h-4 w-4" />
-                Exportar balanço
-              </Button>
+              <div className="flex flex-col gap-6 md:flex-row md:items-start md:gap-8">
+                <div className="flex-1 min-w-0">
+                  <BalanceChart data={monthlyData} />
+                </div>
+                <div className="shrink-0">
+                  <BalanceSummaryTable summary={summary} />
+                </div>
+              </div>
             </section>
-
-            <Separator />
 
             <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
-              <section className="flex flex-col gap-4">
-                <h2 className="text-base font-semibold">
-                  Despesas por categoria
-                </h2>
+              <section className="flex flex-col gap-3">
+                <div className="flex items-center gap-2">
+                  <h2
+                    className="text-sm font-semibold"
+                    style={{ color: "var(--color-on-surface)" }}
+                  >
+                    Despesas por categoria
+                  </h2>
+                  <div
+                    className="flex-1 h-px"
+                    style={{ backgroundColor: "var(--color-outline-variant)" }}
+                  />
+                </div>
                 <ExpenseCategoryChart data={expensesByCategory} />
               </section>
 
-              <section className="flex flex-col gap-4">
-                <h2 className="text-base font-semibold">Vendas por produto</h2>
+              <section className="flex flex-col gap-3">
+                <div className="flex items-center gap-2">
+                  <h2
+                    className="text-sm font-semibold"
+                    style={{ color: "var(--color-on-surface)" }}
+                  >
+                    Vendas por produto
+                  </h2>
+                  <div
+                    className="flex-1 h-px"
+                    style={{ backgroundColor: "var(--color-outline-variant)" }}
+                  />
+                </div>
                 <ProductBalanceChart data={productBalance ?? []} />
               </section>
             </div>

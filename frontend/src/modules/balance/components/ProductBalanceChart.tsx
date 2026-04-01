@@ -19,9 +19,17 @@ type Props = {
 export function ProductBalanceChart({ data }: Props) {
   if (data.length === 0) {
     return (
-      <p className="text-center text-muted-foreground py-8 text-sm">
-        Nenhuma venda registrada no período.
-      </p>
+      <div
+        className="flex items-center justify-center py-16 rounded-xl border border-dashed"
+        style={{ borderColor: "var(--color-outline-variant)" }}
+      >
+        <p
+          className="text-sm"
+          style={{ color: "var(--color-on-surface-variant)" }}
+        >
+          Nenhuma venda registrada no período.
+        </p>
+      </div>
     );
   }
 

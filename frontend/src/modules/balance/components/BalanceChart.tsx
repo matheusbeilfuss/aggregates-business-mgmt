@@ -13,21 +13,15 @@ import {
 } from "recharts";
 import { MonthlyBalance } from "../types";
 import { formatLocalCurrency } from "@/utils";
-import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { BarChart2, TrendingUp } from "lucide-react";
 
-type Props = {
-  data: MonthlyBalance[];
-};
+type Props = { data: MonthlyBalance[] };
 
 const SERIES = [
-  { key: "expenses", name: "Gastos", color: "#f97316" },
-  { key: "income", name: "Recebimentos", color: "#22c55e" },
-  { key: "profit", name: "Líquido", color: "#3b82f6" },
+  { key: "expenses", name: "Gastos", color: "#c25000" },
+  { key: "income", name: "Recebimentos", color: "#16a34a" },
+  { key: "profit", name: "Líquido", color: "#2563eb" },
 ] as const;
-
-const tooltipFormatter = (value: number) => formatLocalCurrency(value);
-const labelFormatter = (label: string) => `Mês: ${label}`;
 
 export function BalanceChart({ data }: Props) {
   const [chartType, setChartType] = useState<"line" | "bar">("line");
@@ -49,33 +43,52 @@ export function BalanceChart({ data }: Props) {
   };
 
   return (
-    <div className="flex flex-col gap-4">
-      <div className="flex justify-end">
-        <ToggleGroup
-          type="single"
-          value={chartType}
-          onValueChange={(v) => v && setChartType(v as "line" | "bar")}
-        >
-          <ToggleGroupItem value="line">
-            <TrendingUp className="h-4 w-4 mr-1" />
-            Linhas
-          </ToggleGroupItem>
-          <ToggleGroupItem value="bar">
-            <BarChart2 className="h-4 w-4 mr-1" />
-            Barras
-          </ToggleGroupItem>
-        </ToggleGroup>
+    <div className="flex flex-col gap-3">
+      <div className="flex justify-end gap-2">
+        {(["line", "bar"] as const).map((type) => (
+          <button
+            key={type}
+            onClick={() => setChartType(type)}
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border
+                       text-xs font-medium transition-colors select-none cursor-pointer"
+            style={{
+              borderColor:
+                chartType === type
+                  ? "var(--color-primary-40)"
+                  : "var(--color-outline-variant)",
+              backgroundColor:
+                chartType === type ? "var(--color-primary-90)" : "transparent",
+              color:
+                chartType === type
+                  ? "var(--color-primary-10)"
+                  : "var(--color-on-surface-variant)",
+            }}
+          >
+            {type === "line" ? (
+              <>
+                <TrendingUp className="h-3.5 w-3.5" /> Linhas
+              </>
+            ) : (
+              <>
+                <BarChart2 className="h-3.5 w-3.5" /> Barras
+              </>
+            )}
+          </button>
+        ))}
       </div>
 
       <ResponsiveContainer width="100%" height={320}>
         {chartType === "line" ? (
           <LineChart {...commonProps}>
-            <CartesianGrid strokeDasharray="3 3" />
+            <CartesianGrid
+              strokeDasharray="3 3"
+              stroke="var(--color-outline-variant)"
+            />
             <XAxis dataKey="monthLabel" tick={{ fontSize: 12 }} />
             <YAxis {...yAxisProps} />
             <Tooltip
-              formatter={tooltipFormatter}
-              labelFormatter={labelFormatter}
+              formatter={(value: number) => formatLocalCurrency(value)}
+              labelFormatter={(label) => `Mês: ${label}`}
             />
             <Legend />
             {SERIES.map((s) => (
@@ -85,7 +98,7 @@ export function BalanceChart({ data }: Props) {
                 dataKey={s.key}
                 name={s.name}
                 stroke={s.color}
-                strokeWidth={2}
+                strokeWidth={2.5}
                 dot={false}
                 activeDot={{ r: 4 }}
               />
@@ -93,12 +106,15 @@ export function BalanceChart({ data }: Props) {
           </LineChart>
         ) : (
           <BarChart {...commonProps}>
-            <CartesianGrid strokeDasharray="3 3" />
+            <CartesianGrid
+              strokeDasharray="3 3"
+              stroke="var(--color-outline-variant)"
+            />
             <XAxis dataKey="monthLabel" tick={{ fontSize: 12 }} />
             <YAxis {...yAxisProps} />
             <Tooltip
-              formatter={tooltipFormatter}
-              labelFormatter={labelFormatter}
+              formatter={(value: number) => formatLocalCurrency(value)}
+              labelFormatter={(label) => `Mês: ${label}`}
             />
             <Legend />
             {SERIES.map((s) => (
