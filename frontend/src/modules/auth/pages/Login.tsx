@@ -29,8 +29,11 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { useState } from "react";
+import { useFavicon } from "@/hooks/useFavicon";
+import { getBusinessInitials } from "@/utils";
 
 export function Login() {
+  useFavicon();
   usePageTitle("Login");
 
   const navigate = useNavigate();
@@ -58,7 +61,15 @@ export function Login() {
     }
   }
 
-  const initial = businessName.charAt(0).toUpperCase();
+  const initials = getBusinessInitials(businessName);
+  const initialsSize =
+    initials.length <= 1
+      ? "text-8xl"
+      : initials.length <= 2
+        ? "text-7xl"
+        : initials.length <= 4
+          ? "text-5xl"
+          : "text-3xl";
 
   return (
     <>
@@ -112,18 +123,32 @@ export function Login() {
                        ring-4 ring-white/20"
             >
               {businessImgName ? (
-                <img
-                  src={`${API_URL}/settings/business-image`}
-                  alt={businessName}
-                  className="w-full h-full object-contain p-3"
-                />
-              ) : (
-                <span
-                  className="text-5xl md:text-8xl font-black select-none"
-                  style={{ color: "var(--color-primary-40)" }}
+                <div
+                  className="w-28 h-28 md:w-56 md:h-56 rounded-3xl bg-white
+             shadow-2xl flex items-center justify-center
+             ring-4 ring-white/20 p-3"
                 >
-                  {initial}
-                </span>
+                  <div className="w-full h-full rounded-2xl overflow-hidden">
+                    <img
+                      src={`${API_URL}/settings/business-image`}
+                      alt={businessName}
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                </div>
+              ) : (
+                <div
+                  className="w-28 h-28 md:w-56 md:h-56 rounded-3xl bg-white
+               shadow-2xl overflow-hidden flex items-center justify-center
+               ring-4 ring-white/20"
+                >
+                  <span
+                    className={`${initialsSize} font-black select-none`}
+                    style={{ color: "var(--color-primary-40)" }}
+                  >
+                    {initials}
+                  </span>
+                </div>
               )}
             </div>
 

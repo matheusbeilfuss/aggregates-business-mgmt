@@ -17,13 +17,20 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { getBusinessInitials } from "@/utils";
 
 export function AppSidebar() {
   const { pathname } = useLocation();
   const { businessName, businessImgName } = useSettings();
   const { isMobile, setOpenMobile } = useSidebar();
 
-  const initial = businessName.charAt(0).toUpperCase();
+  const initials = getBusinessInitials(businessName);
+  const initialsSize =
+    initials.length <= 2
+      ? "text-sm"
+      : initials.length <= 4
+        ? "text-xs"
+        : "text-[9px]";
 
   const isActive = (url: string) =>
     url === "/" ? pathname === "/" : pathname.startsWith(url);
@@ -42,13 +49,25 @@ export function AppSidebar() {
             style={{ backgroundColor: "var(--color-primary-40)" }}
           >
             {businessImgName ? (
-              <img
-                src={`${API_URL}/settings/business-image`}
-                alt={businessName}
-                className="w-full h-full object-contain p-0.5"
-              />
+              <div
+                className="w-9 h-9 rounded-lg overflow-hidden flex-shrink-0 p-0.5"
+                style={{ backgroundColor: "var(--color-primary-40)" }}
+              >
+                <img
+                  src={`${API_URL}/settings/business-image`}
+                  alt={businessName}
+                  className="w-full h-full object-cover rounded-md"
+                />
+              </div>
             ) : (
-              <span className="text-sm font-bold text-white">{initial}</span>
+              <div
+                className="w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0"
+                style={{ backgroundColor: "var(--color-primary-40)" }}
+              >
+                <span className={`${initialsSize} font-bold text-white`}>
+                  {initials}
+                </span>
+              </div>
             )}
           </div>
           <div className="flex flex-col min-w-0">

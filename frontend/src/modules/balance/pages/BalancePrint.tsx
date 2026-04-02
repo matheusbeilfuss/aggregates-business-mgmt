@@ -5,6 +5,7 @@ import { useBalanceData } from "../hooks/useBalanceData";
 import { formatLocalCurrency } from "@/utils";
 import { usePageTitle } from "@/hooks/usePageTitle";
 import { useSettings } from "@/modules/settings/hooks/useSettings";
+import { useFavicon } from "@/hooks/useFavicon";
 
 const MONTH_LABELS = [
   "Janeiro",
@@ -22,6 +23,7 @@ const MONTH_LABELS = [
 ];
 
 export function BalancePrint() {
+  useFavicon();
   usePageTitle("Balanço - Impressão");
 
   const [searchParams] = useSearchParams();

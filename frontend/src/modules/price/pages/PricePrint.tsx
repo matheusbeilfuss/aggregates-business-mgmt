@@ -6,8 +6,10 @@ import { usePageTitle } from "@/hooks/usePageTitle";
 import { useAuth } from "@/modules/auth/hooks/useAuth";
 import { useSettings } from "@/modules/settings/hooks/useSettings";
 import { Navigate } from "react-router-dom";
+import { useFavicon } from "@/hooks/useFavicon";
 
 export function PricePrint() {
+  useFavicon();
   usePageTitle("Tabela de Preços");
 
   const { isAuthenticated, isLoading: authLoading } = useAuth();
