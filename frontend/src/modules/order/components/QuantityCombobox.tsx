@@ -1,3 +1,4 @@
+import { useState } from "react";
 import {
   Combobox,
   ComboboxContent,
@@ -22,17 +23,36 @@ export function QuantityCombobox({
   className,
   onChange,
 }: QuantityComboboxProps) {
+  const [inputValue, setInputValue] = useState(
+    value !== undefined ? String(value).replace(".", ",") : "",
+  );
+
   return (
     <Combobox
       value={value !== undefined ? String(value) : ""}
-      onValueChange={(val) => onChange(Number(val))}
+      onValueChange={(val) => {
+        setInputValue(val ?? "");
+        onChange(Number(val));
+      }}
       disabled={disabled}
     >
       <ComboboxInput
         disabled={disabled}
         className={className}
-        value={value !== undefined ? String(value) : ""}
-        onChange={(e) => onChange(Number(e.target.value))}
+        value={inputValue}
+        onChange={(e) => {
+          const raw = e.target.value;
+          setInputValue(raw);
+          const num = Number(raw.replace(",", "."));
+          if (!isNaN(num)) onChange(num);
+        }}
+        onBlur={() => {
+          const num = Number(inputValue.replace(",", "."));
+          if (!isNaN(num)) {
+            setInputValue(String(num).replace(".", ","));
+            onChange(num);
+          }
+        }}
         placeholder={
           disabled ? "Selecione um material primeiro" : "Selecione ou digite..."
         }

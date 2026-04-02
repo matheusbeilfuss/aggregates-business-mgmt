@@ -1,6 +1,7 @@
 package br.ufsc.aggregare.service;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.List;
 import java.util.Optional;
 
@@ -97,7 +98,10 @@ public class StockService {
 		double availableM3 = stock.getM3Quantity() != null ? stock.getM3Quantity() : 0.0;
 		double availableTon = stock.getTonQuantity() != null ? stock.getTonQuantity() : 0.0;
 		double density = stock.getDensity() != null ? stock.getDensity() : 0.0;
-		double tonToDeduct = m3Quantity * density;
+
+		BigDecimal tonToDeduct = BigDecimal.valueOf(m3Quantity)
+				.multiply(BigDecimal.valueOf(density))
+				.setScale(10, RoundingMode.HALF_UP);
 
 		if (availableM3 < m3Quantity) {
 			throw new ValidationException(
@@ -105,17 +109,28 @@ public class StockService {
 							availableM3, m3Quantity));
 		}
 
-		if (availableTon < tonToDeduct) {
+		if (availableTon < tonToDeduct.doubleValue()) {
 			throw new ValidationException(
 					String.format("Estoque insuficiente em toneladas. Disponível: %.2f ton, necessário: %.2f ton.",
-							availableTon, tonToDeduct));
+							availableTon, tonToDeduct.doubleValue()));
 		}
 
-		stock.setM3Quantity(availableM3 - m3Quantity);
-		stock.setTonQuantity(availableTon - tonToDeduct);
+		stock.setM3Quantity(
+				BigDecimal.valueOf(availableM3)
+						.subtract(BigDecimal.valueOf(m3Quantity))
+						.setScale(4, RoundingMode.HALF_UP)
+						.doubleValue()
+		);
+
+		stock.setTonQuantity(
+				BigDecimal.valueOf(availableTon)
+						.subtract(tonToDeduct)
+						.setScale(4, RoundingMode.HALF_UP)
+						.doubleValue()
+		);
 
 		repository.save(stock);
-		return tonToDeduct;
+		return tonToDeduct.setScale(4, RoundingMode.HALF_UP).doubleValue();
 	}
 
 	@Transactional
