@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Input } from "@/components/ui/input";
 import { formatLocalCurrency, parseLocalCurrency } from "@/utils";
 import { cn } from "@/lib/utils";
@@ -56,12 +56,12 @@ export function CurrencyInput({
     }
   }
 
-  if (!isFocused.current) {
-    const external = value != null ? formatLocalCurrency(value) : "";
-    if (external !== displayValue) {
+  useEffect(() => {
+    if (!isFocused.current) {
+      const external = value != null ? formatLocalCurrency(value) : "";
       setDisplayValue(external);
     }
-  }
+  }, [value]);
 
   return (
     <Input
