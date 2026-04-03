@@ -1,6 +1,7 @@
 package br.ufsc.aggregare.config;
 
 import java.math.BigDecimal;
+import java.text.Normalizer;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Arrays;
@@ -248,20 +249,31 @@ public class TestConfig implements CommandLineRunner {
 	// Clientes, telefones e endereços
 
 	private List<Client> seedClients() {
-		return clientRepository.saveAll(Arrays.asList(
-				new Client(null, "Ana Paula",         "12345678900", "ana@gmail.com"),        // c[0]
-				new Client(null, "Bruno Costa",       "98765432100", "bruno@gmail.com"),      // c[1]
-				new Client(null, "Carla Silva",       "45678912300", "carla@gmail.com"),      // c[2]
-				new Client(null, "Daniel Martins",    "11122233344", "daniel@gmail.com"),     // c[3]
-				new Client(null, "Eduarda Lopes",     "22233344455", "eduarda@gmail.com"),    // c[4]
-				new Client(null, "Felipe Rocha",      "33344455566", "felipe@gmail.com"),     // c[5]
-				new Client(null, "Gabriela Souza",    "44455566677", "gabriela@gmail.com"),   // c[6]
-				new Client(null, "Henrique Alves",    "55566677788", "henrique@gmail.com"),   // c[7]
-				new Client(null, "Isabela Fernandes", "66677788899", "isabela@gmail.com"),    // c[8]
-				new Client(null, "João Pedro",        "77788899900", "joaopedro@gmail.com"),  // c[9]
-				new Client(null, "Karen Lima",        "88899900011", "karen@gmail.com"),      // c[10]
-				new Client(null, "Lucas Pereira",     "99900011122", "lucas@gmail.com")       // c[11]
-		));
+		List<Client> clients = Arrays.asList(
+				new Client(null, "Ana Paula",         normalizeName("Ana Paula"),         "12345678900", "ana@gmail.com"),
+				new Client(null, "Bruno Costa",       normalizeName("Bruno Costa"),       "98765432100", "bruno@gmail.com"),
+				new Client(null, "Carla Silva",       normalizeName("Carla Silva"),       "45678912300", "carla@gmail.com"),
+				new Client(null, "Daniel Martins",    normalizeName("Daniel Martins"),    "11122233344", "daniel@gmail.com"),
+				new Client(null, "Eduarda Lopes",     normalizeName("Eduarda Lopes"),     "22233344455", "eduarda@gmail.com"),
+				new Client(null, "Felipe Rocha",      normalizeName("Felipe Rocha"),      "33344455566", "felipe@gmail.com"),
+				new Client(null, "Gabriela Souza",    normalizeName("Gabriela Souza"),    "44455566677", "gabriela@gmail.com"),
+				new Client(null, "Henrique Alves",    normalizeName("Henrique Alves"),    "55566677788", "henrique@gmail.com"),
+				new Client(null, "Isabela Fernandes", normalizeName("Isabela Fernandes"), "66677788899", "isabela@gmail.com"),
+				new Client(null, "João Pedro",        normalizeName("João Pedro"),        "77788899900", "joaopedro@gmail.com"),
+				new Client(null, "Karen Lima",        normalizeName("Karen Lima"),        "88899900011", "karen@gmail.com"),
+				new Client(null, "Lucas Pereira",     normalizeName("Lucas Pereira"),     "99900011122", "lucas@gmail.com")
+		);
+
+		clients.forEach(c -> c.setNameNormalized(normalizeName(c.getName())));
+
+		return clientRepository.saveAll(clients);
+	}
+
+	private String normalizeName(String name) {
+		return Normalizer
+				.normalize(name, Normalizer.Form.NFD)
+				.replaceAll("[\\p{InCombiningDiacriticalMarks}]", "")
+				.toLowerCase();
 	}
 
 	private void seedPhonesAndAddresses(List<Client> c) {

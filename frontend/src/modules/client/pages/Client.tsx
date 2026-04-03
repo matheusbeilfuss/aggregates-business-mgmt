@@ -37,9 +37,13 @@ export function Client() {
 
   const filtered = useMemo(() => {
     if (!clients) return [];
-    const q = search.trim().toLowerCase();
+    const q = search
+      .trim()
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .toLowerCase();
     if (!q) return clients;
-    return clients.filter((c) => c.name.toLowerCase().includes(q));
+    return clients.filter((c) => c.nameNormalized.includes(q));
   }, [clients, search]);
 
   const sorted = useMemo(

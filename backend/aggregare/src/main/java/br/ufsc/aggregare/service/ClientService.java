@@ -1,5 +1,6 @@
 package br.ufsc.aggregare.service;
 
+import java.text.Normalizer;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -67,6 +68,7 @@ public class ClientService {
 				.orElseThrow(() -> new ResourceNotFoundException(id));
 
 		existingClient.setName(dto.getName());
+		existingClient.setNameNormalized(normalizeName(dto.getName()));
 		existingClient.setEmail(dto.getEmail());
 		existingClient.setCpfCnpj(dto.getCpfCnpj());
 
@@ -104,12 +106,13 @@ public class ClientService {
 	}
 
 	public List<Client> searchByName(String search) {
-		return repository.findByNameContainingIgnoreCase(search);
+		return repository.findByNameNormalized(normalizeName(search));
 	}
 
 	public Client clientFromDTO(ClientInputDTO dto) {
 		Client client = new Client();
 		client.setName(dto.getName());
+		client.setNameNormalized(normalizeName(dto.getName()));
 		client.setEmail(dto.getEmail());
 		client.setCpfCnpj(dto.getCpfCnpj());
 		return client;
@@ -138,5 +141,12 @@ public class ClientService {
 			phones.add(phone);
 		}
 		return phones;
+	}
+
+	private String normalizeName(String name) {
+		return Normalizer
+				.normalize(name, Normalizer.Form.NFD)
+				.replaceAll("[\\p{InCombiningDiacriticalMarks}]", "")
+				.toLowerCase();
 	}
 }

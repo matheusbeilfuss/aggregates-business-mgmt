@@ -29,6 +29,9 @@ public class Client implements Serializable {
 	@Column(nullable = false)
 	private String name;
 
+	@Column(nullable = false)
+	private String nameNormalized;
+
 	private String cpfCnpj;
 	private String email;
 
@@ -41,9 +44,10 @@ public class Client implements Serializable {
 	public Client() {
 	}
 
-	public Client(Long id, String name, String cpfCnpj, String email) {
+	public Client(Long id, String name, String nameNormalized, String cpfCnpj, String email) {
 		this.id = id;
 		this.name = name;
+		this.nameNormalized = nameNormalized;
 		this.cpfCnpj = cpfCnpj;
 		this.email = email;
 	}
@@ -62,6 +66,18 @@ public class Client implements Serializable {
 
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	public String getNameNormalized() {
+		return nameNormalized;
+	}
+
+	public void setNameNormalized(String nameNormalized) {
+		this.nameNormalized = nameNormalized;
+	}
+
+	public void setPhones(List<Phone> phones) {
+		this.phones = phones;
 	}
 
 	public String getCpfCnpj() {

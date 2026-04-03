@@ -4,6 +4,7 @@ export type PhoneType = (typeof PHONE_TYPES)[number];
 export interface Client {
   id: number;
   name: string;
+  nameNormalized: string;
   cpfCnpj: string;
   email: string;
   address?: Address;
