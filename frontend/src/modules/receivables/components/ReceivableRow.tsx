@@ -1,5 +1,5 @@
 import { Receivable } from "../types";
-import { OrderTypeEnum } from "@/types";
+import { OrderTypeEnum, PaymentStatusEnum } from "@/types";
 import {
   formatLocalCurrency,
   formatLocalDate,
@@ -13,17 +13,25 @@ type Props = {
   onAddPayment: (receivable: Receivable) => void;
 };
 
-function getStatusStyle(status: string) {
-  if (status === "PARTIAL") {
-    return {
-      bg: "var(--color-secondary-90)",
-      color: "var(--color-secondary-40)",
-    };
+function getStatusStyle(status: PaymentStatusEnum) {
+  switch (status) {
+    case PaymentStatusEnum.PARTIAL:
+      return {
+        bg: "var(--color-secondary-90)",
+        color: "var(--color-secondary-40)",
+      };
+    case PaymentStatusEnum.PAID:
+      return {
+        bg: "#dcfce7",
+        color: "#15803d",
+      };
+    case PaymentStatusEnum.PENDING:
+    default:
+      return {
+        bg: "var(--color-tertiary-90)",
+        color: "var(--color-tertiary-40)",
+      };
   }
-  return {
-    bg: "var(--color-tertiary-90)",
-    color: "var(--color-tertiary-40)",
-  };
 }
 
 export function ReceivableRow({ receivable, onAddPayment }: Props) {
