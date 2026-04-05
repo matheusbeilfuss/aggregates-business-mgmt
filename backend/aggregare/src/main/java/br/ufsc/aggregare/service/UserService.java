@@ -4,6 +4,8 @@ import java.nio.file.Path;
 import java.util.List;
 import java.util.Optional;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -20,6 +22,7 @@ import br.ufsc.aggregare.model.dto.UserInsertDTO;
 import br.ufsc.aggregare.model.dto.PasswordUpdateDTO;
 import br.ufsc.aggregare.model.dto.UserUpdateDTO;
 import br.ufsc.aggregare.repository.UserRepository;
+import br.ufsc.aggregare.service.exception.FileStorageException;
 import br.ufsc.aggregare.service.exception.ForbiddenException;
 import br.ufsc.aggregare.service.exception.ResourceNotFoundException;
 import br.ufsc.aggregare.validator.UserValidator;
@@ -28,6 +31,8 @@ import jakarta.persistence.EntityNotFoundException;
 
 @Service
 public class UserService implements UserDetailsService {
+
+	private static final Logger LOGGER = LoggerFactory.getLogger(UserService.class);
 
 	private final UserRepository repository;
 	private final UserValidator userValidator;
@@ -116,7 +121,11 @@ public class UserService implements UserDetailsService {
 				existingUser.setImgName(newImgName);
 
 				if (oldImgName != null && !oldImgName.isEmpty()) {
-					fileService.deleteImage(oldImgName);
+					try {
+						fileService.deleteImage(oldImgName);
+					} catch (FileStorageException e) {
+						LOGGER.warn("Não foi possível deletar imagem antiga do usuário: {}", oldImgName);
+					}
 				}
 			}
 

@@ -1,5 +1,7 @@
 package br.ufsc.aggregare.service;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -7,9 +9,12 @@ import org.springframework.web.multipart.MultipartFile;
 import br.ufsc.aggregare.model.Settings;
 import br.ufsc.aggregare.model.dto.SettingsDTO;
 import br.ufsc.aggregare.repository.SettingsRepository;
+import br.ufsc.aggregare.service.exception.FileStorageException;
 
 @Service
 public class SettingsService {
+
+	private static final Logger LOGGER = LoggerFactory.getLogger(SettingsService.class);
 
 	private final SettingsRepository repository;
 	private final FileService fileService;
@@ -43,7 +48,11 @@ public class SettingsService {
 			repository.save(settings);
 
 			if (oldImg != null && !oldImg.isEmpty()) {
-				fileService.deleteImage(oldImg);
+				try {
+					fileService.deleteImage(oldImg);
+				} catch (FileStorageException e) {
+					LOGGER.warn("Não foi possível deletar imagem antiga: {}", oldImg, e);
+				}
 			}
 		}
 
@@ -55,9 +64,14 @@ public class SettingsService {
 		String oldImg = settings.getBusinessImgName();
 
 		if (oldImg != null && !oldImg.isEmpty()) {
-			fileService.deleteImage(oldImg);
 			settings.setBusinessImgName(null);
 			repository.save(settings);
+
+			try {
+				fileService.deleteImage(oldImg);
+			} catch (FileStorageException e) {
+				LOGGER.warn("Não foi possível deletar imagem: {}", oldImg, e);
+			}
 		}
 
 		return settings;
