@@ -130,7 +130,7 @@ export function Login() {
                 >
                   <div className="w-full h-full rounded-2xl overflow-hidden">
                     <img
-                      src={`${API_URL}/settings/business-image`}
+                      src={`${API_URL}/settings/business-image?v=${businessImgName}`}
                       alt={businessName}
                       className="w-full h-full object-cover"
                     />

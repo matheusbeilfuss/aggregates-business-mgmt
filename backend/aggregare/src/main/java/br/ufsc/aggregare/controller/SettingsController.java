@@ -4,6 +4,7 @@ import java.nio.file.Path;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
+import org.springframework.http.CacheControl;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -59,10 +60,13 @@ public class SettingsController {
 
 		Path filePath = fileService.getFilePath(imgName);
 		Resource resource = fileService.loadFileAsResource(filePath);
+		long lastModified = filePath.toFile().lastModified();
 
 		return ResponseEntity.ok()
 				.contentType(fileService.getFileMediaType(filePath))
-				.header("Cache-Control", "public, max-age=86400")
+				.cacheControl(CacheControl.noCache().mustRevalidate())
+				.lastModified(lastModified)
+				.eTag("\"" + imgName + "\"")
 				.body(resource);
 	}
 

@@ -77,7 +77,9 @@ export function SettingsForm({
 
   const displayedImage =
     previewUrl ??
-    (currentImgName ? `${API_URL}/settings/business-image` : undefined);
+    (currentImgName
+      ? `${API_URL}/settings/business-image?v=${currentImgName}`
+      : undefined);
 
   const hasImage = !!displayedImage;
 

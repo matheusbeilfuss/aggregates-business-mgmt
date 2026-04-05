@@ -54,7 +54,7 @@ export function AppSidebar() {
                 style={{ backgroundColor: "var(--color-primary-40)" }}
               >
                 <img
-                  src={`${API_URL}/settings/business-image`}
+                  src={`${API_URL}/settings/business-image?v=${businessImgName}`}
                   alt={businessName}
                   className="w-full h-full object-cover rounded-md"
                 />
