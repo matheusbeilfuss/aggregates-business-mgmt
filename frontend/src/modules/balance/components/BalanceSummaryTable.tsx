@@ -54,8 +54,7 @@ export function BalanceSummaryTable({ summary }: Props) {
           {data.map((row) => (
             <tr
               key={row.label}
-              className="border-t transition-colors hover:bg-accent/50"
-              style={{ backgroundColor: "var(--color-background)" }}
+              className="border-t transition-colors hover:bg-accent/50 bg-background"
             >
               <td
                 className="px-4 py-2.5 font-semibold text-sm"
