@@ -76,10 +76,6 @@ public class Client implements Serializable {
 		this.nameNormalized = nameNormalized;
 	}
 
-	public void setPhones(List<Phone> phones) {
-		this.phones = phones;
-	}
-
 	public String getCpfCnpj() {
 		return cpfCnpj;
 	}
