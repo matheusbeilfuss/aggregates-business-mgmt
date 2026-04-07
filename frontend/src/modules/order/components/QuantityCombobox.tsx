@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   Combobox,
   ComboboxContent,
@@ -26,12 +26,19 @@ export function QuantityCombobox({
   const [inputValue, setInputValue] = useState(
     value !== undefined ? String(value).replace(".", ",") : "",
   );
+  const isFocused = useRef(false);
+
+  useEffect(() => {
+    if (!isFocused.current) {
+      setInputValue(value !== undefined ? String(value).replace(".", ",") : "");
+    }
+  }, [value]);
 
   return (
     <Combobox
       value={value !== undefined ? String(value) : ""}
       onValueChange={(val) => {
-        setInputValue(val ?? "");
+        setInputValue(val !== undefined ? String(val).replace(".", ",") : "");
         onChange(Number(val));
       }}
       disabled={disabled}
@@ -46,7 +53,11 @@ export function QuantityCombobox({
           const num = Number(raw.replace(",", "."));
           if (!isNaN(num)) onChange(num);
         }}
+        onFocus={() => {
+          isFocused.current = true;
+        }}
         onBlur={() => {
+          isFocused.current = false;
           const num = Number(inputValue.replace(",", "."));
           if (!isNaN(num)) {
             setInputValue(String(num).replace(".", ","));
