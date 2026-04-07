@@ -145,8 +145,9 @@ public class ClientService {
 
 	private String normalizeName(String name) {
 		return Normalizer
-				.normalize(name, Normalizer.Form.NFD)
+				.normalize(name.trim(), Normalizer.Form.NFD)
 				.replaceAll("[\\p{InCombiningDiacriticalMarks}]", "")
+				.replaceAll("\\s+", " ")
 				.toLowerCase();
 	}
 }
