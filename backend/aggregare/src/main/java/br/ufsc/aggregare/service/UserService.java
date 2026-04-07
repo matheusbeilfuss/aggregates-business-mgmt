@@ -124,7 +124,7 @@ public class UserService implements UserDetailsService {
 					try {
 						fileService.deleteImage(oldImgName);
 					} catch (FileStorageException e) {
-						LOGGER.warn("Não foi possível deletar imagem antiga do usuário: {}", oldImgName);
+						LOGGER.warn("Não foi possível deletar imagem antiga do usuário: {}", oldImgName, e);
 					}
 				}
 			}
