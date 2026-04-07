@@ -4,13 +4,25 @@ import { API_URL } from "@/lib/api";
 import { getBusinessInitials } from "@/utils";
 
 function buildSvgFavicon(initials: string): string {
-  const len = initials.length;
+  const safe = initials.replace(
+    /[&<>"']/g,
+    (c) =>
+      ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&apos;",
+      })[c]!,
+  );
+
+  const len = safe.length;
   const fontSize = len <= 1 ? 18 : len <= 2 ? 16 : len <= 4 ? 12 : 9;
   const y = len <= 2 ? 23 : 22;
 
   const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
   <rect width="32" height="32" rx="8" fill="#0061a4"/>
-  <text x="16" y="${y}" font-family="system-ui, sans-serif" font-size="${fontSize}" font-weight="700" fill="white" text-anchor="middle">${initials}</text>
+  <text x="16" y="${y}" font-family="system-ui, sans-serif" font-size="${fontSize}" font-weight="700" fill="white" text-anchor="middle">${safe}</text>
 </svg>`.trim();
 
   const encoded = new TextEncoder().encode(svg);
