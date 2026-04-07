@@ -30,7 +30,6 @@ export function Home() {
 
   return (
     <div className="flex flex-col mx-auto w-full max-w-5xl h-full gap-16 py-12 px-6 md:py-16">
-      {" "}
       {isLoading ? (
         <Skeleton className="h-9 w-48 rounded-md" />
       ) : (
