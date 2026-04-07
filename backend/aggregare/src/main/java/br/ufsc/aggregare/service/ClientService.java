@@ -1,6 +1,7 @@
 package br.ufsc.aggregare.service;
 
-import java.text.Normalizer;
+import static br.ufsc.aggregare.util.StringUtils.normalizeName;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -141,13 +142,5 @@ public class ClientService {
 			phones.add(phone);
 		}
 		return phones;
-	}
-
-	private String normalizeName(String name) {
-		return Normalizer
-				.normalize(name.trim(), Normalizer.Form.NFD)
-				.replaceAll("[\\p{InCombiningDiacriticalMarks}]", "")
-				.replaceAll("\\s+", " ")
-				.toLowerCase();
 	}
 }

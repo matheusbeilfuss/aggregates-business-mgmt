@@ -1,7 +1,8 @@
 package br.ufsc.aggregare.config;
 
+import static br.ufsc.aggregare.util.StringUtils.normalizeName;
+
 import java.math.BigDecimal;
-import java.text.Normalizer;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Arrays;
@@ -264,16 +265,7 @@ public class TestConfig implements CommandLineRunner {
 				new Client(null, "Lucas Pereira",     normalizeName("Lucas Pereira"),     "99900011122", "lucas@gmail.com")
 		);
 
-		clients.forEach(c -> c.setNameNormalized(normalizeName(c.getName())));
-
 		return clientRepository.saveAll(clients);
-	}
-
-	private String normalizeName(String name) {
-		return Normalizer
-				.normalize(name, Normalizer.Form.NFD)
-				.replaceAll("[\\p{InCombiningDiacriticalMarks}]", "")
-				.toLowerCase();
 	}
 
 	private void seedPhonesAndAddresses(List<Client> c) {
