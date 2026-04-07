@@ -27,6 +27,7 @@ import br.ufsc.aggregare.model.dto.PasswordUpdateDTO;
 import br.ufsc.aggregare.model.dto.UserUpdateDTO;
 import br.ufsc.aggregare.model.dto.UserResponseDTO;
 import br.ufsc.aggregare.service.UserService;
+import br.ufsc.aggregare.service.exception.FileStorageException;
 
 import jakarta.validation.Valid;
 
@@ -100,12 +101,16 @@ public class UserController {
 			return ResponseEntity.notFound().build();
 		}
 
-		MediaType mediaType = service.getUserAvatarMediaType(user);
+		try {
+			MediaType mediaType = service.getUserAvatarMediaType(user);
 
-		return ResponseEntity.ok()
-				.contentType(mediaType)
-				.header("Cache-Control", "private, max-age=86400")
-				.body(resource);
+			return ResponseEntity.ok()
+					.contentType(mediaType)
+					.header("Cache-Control", "private, max-age=86400")
+					.body(resource);
+		} catch (FileStorageException e) {
+			return ResponseEntity.notFound().build();
+		}
 	}
 
 	@GetMapping("/{id}/avatar")
@@ -115,9 +120,13 @@ public class UserController {
 
 		if (resource == null) return ResponseEntity.notFound().build();
 
-		return ResponseEntity.ok()
-				.contentType(service.getUserAvatarMediaType(user))
-				.header("Cache-Control", "private, max-age=86400")
-				.body(resource);
+		try {
+			return ResponseEntity.ok()
+					.contentType(service.getUserAvatarMediaType(user))
+					.header("Cache-Control", "private, max-age=86400")
+					.body(resource);
+		} catch (FileStorageException e) {
+			return ResponseEntity.notFound().build();
+		}
 	}
 }

@@ -21,6 +21,7 @@ import br.ufsc.aggregare.model.Settings;
 import br.ufsc.aggregare.model.dto.SettingsDTO;
 import br.ufsc.aggregare.service.FileService;
 import br.ufsc.aggregare.service.SettingsService;
+import br.ufsc.aggregare.service.exception.FileStorageException;
 
 import jakarta.validation.Valid;
 
@@ -59,15 +60,20 @@ public class SettingsController {
 		}
 
 		Path filePath = fileService.getFilePath(imgName);
-		Resource resource = fileService.loadFileAsResource(filePath);
-		long lastModified = filePath.toFile().lastModified();
 
-		return ResponseEntity.ok()
-				.contentType(fileService.getFileMediaType(filePath))
-				.cacheControl(CacheControl.noCache().mustRevalidate())
-				.lastModified(lastModified)
-				.eTag("\"" + imgName + "\"")
-				.body(resource);
+		try {
+			Resource resource = fileService.loadFileAsResource(filePath);
+			long lastModified = filePath.toFile().lastModified();
+
+			return ResponseEntity.ok()
+					.contentType(fileService.getFileMediaType(filePath))
+					.cacheControl(CacheControl.noCache().mustRevalidate())
+					.lastModified(lastModified)
+					.eTag("\"" + imgName + "\"")
+					.body(resource);
+		} catch (FileStorageException e) {
+			return ResponseEntity.notFound().build();
+		}
 	}
 
 	@PatchMapping(value = "/business-image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
