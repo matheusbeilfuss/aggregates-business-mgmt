@@ -30,6 +30,9 @@
   --color-error: #ba1a1a;
   --color-error-container: #ffdad6;
   --color-on-error-container: #410002;
+
+  --color-success: #15803d;
+  --color-success-container: #dcfce7;
 }
 
 .dark {

@@ -1,10 +1,11 @@
 import { Receivable } from "../types";
-import { OrderTypeEnum, PaymentStatusEnum } from "@/types";
+import { OrderTypeEnum } from "@/types";
 import {
   formatLocalCurrency,
   formatLocalDate,
   formatTime,
   paymentStatusLabel,
+  paymentStatusStyle,
 } from "@/utils";
 import { ReceivableRowActions } from "./ReceivableRowActions";
 
@@ -13,34 +14,13 @@ type Props = {
   onAddPayment: (receivable: Receivable) => void;
 };
 
-function getStatusStyle(status: PaymentStatusEnum) {
-  switch (status) {
-    case PaymentStatusEnum.PARTIAL:
-      return {
-        bg: "var(--color-secondary-90)",
-        color: "var(--color-secondary-40)",
-      };
-    case PaymentStatusEnum.PAID:
-      return {
-        bg: "#dcfce7",
-        color: "#15803d",
-      };
-    case PaymentStatusEnum.PENDING:
-    default:
-      return {
-        bg: "var(--color-tertiary-90)",
-        color: "var(--color-tertiary-40)",
-      };
-  }
-}
-
 export function ReceivableRow({ receivable, onAddPayment }: Props) {
   const label =
     receivable.type === OrderTypeEnum.SERVICE
       ? (receivable.service ?? `Pedido #${receivable.id}`)
       : (receivable.productName ?? `Pedido #${receivable.id}`);
 
-  const statusStyle = getStatusStyle(receivable.paymentStatus);
+  const statusStyle = paymentStatusStyle[receivable.paymentStatus];
 
   return (
     <div

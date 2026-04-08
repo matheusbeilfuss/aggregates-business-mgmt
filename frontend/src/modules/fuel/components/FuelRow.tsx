@@ -9,28 +9,12 @@ import {
   formatLocalCurrency,
   formatLocalDate,
   paymentStatusLabel,
+  paymentStatusStyle,
 } from "@/utils";
-import { PaymentStatusEnum } from "@/types";
 
 type Props = {
   expense: FuelExpense;
 };
-
-function getStatusStyle(status: string) {
-  if (status === PaymentStatusEnum.PAID) {
-    return { bg: "#dcfce7", color: "#15803d" };
-  }
-  if (status === PaymentStatusEnum.PARTIAL) {
-    return {
-      bg: "var(--color-secondary-90)",
-      color: "var(--color-secondary-40)",
-    };
-  }
-  return {
-    bg: "var(--color-tertiary-90)",
-    color: "var(--color-tertiary-40)",
-  };
-}
 
 type MetricProps = {
   label: string;
@@ -55,7 +39,7 @@ function Metric({ label, value }: MetricProps) {
 
 export function FuelRow({ expense }: Props) {
   const litersLabel = expense.liters != null ? `${expense.liters} L` : null;
-  const statusStyle = getStatusStyle(expense.paymentStatus);
+  const statusStyle = paymentStatusStyle[expense.paymentStatus];
 
   return (
     <Accordion
