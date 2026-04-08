@@ -38,7 +38,8 @@ export function QuantityCombobox({
     <Combobox
       value={value !== undefined ? String(value) : ""}
       onValueChange={(val) => {
-        setInputValue(val !== undefined ? String(val).replace(".", ",") : "");
+        if (!val) return;
+        setInputValue(String(val).replace(".", ","));
         onChange(Number(val));
       }}
       disabled={disabled}
@@ -50,6 +51,7 @@ export function QuantityCombobox({
         onChange={(e) => {
           const raw = e.target.value;
           setInputValue(raw);
+          if (raw === "") return;
           const num = Number(raw.replace(",", "."));
           if (!isNaN(num)) onChange(num);
         }}
@@ -58,6 +60,7 @@ export function QuantityCombobox({
         }}
         onBlur={() => {
           isFocused.current = false;
+          if (inputValue === "") return;
           const num = Number(inputValue.replace(",", "."));
           if (!isNaN(num)) {
             setInputValue(String(num).replace(".", ","));
