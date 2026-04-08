@@ -95,36 +95,35 @@ public class StockService {
 		Stock stock = repository.findByProductId(product.getId())
 				.orElseThrow(() -> new ResourceNotFoundException(product.getId()));
 
-		double availableM3 = stock.getM3Quantity() != null ? stock.getM3Quantity() : 0.0;
-		double availableTon = stock.getTonQuantity() != null ? stock.getTonQuantity() : 0.0;
-		double density = stock.getDensity() != null ? stock.getDensity() : 0.0;
+		BigDecimal availableM3 = BigDecimal.valueOf(stock.getM3Quantity() != null ? stock.getM3Quantity() : 0.0);
+		BigDecimal availableTon = BigDecimal.valueOf(stock.getTonQuantity() != null ? stock.getTonQuantity() : 0.0);
+		BigDecimal density = BigDecimal.valueOf(stock.getDensity() != null ? stock.getDensity() : 0.0);
+		BigDecimal m3 = BigDecimal.valueOf(m3Quantity);
 
-		BigDecimal tonToDeduct = BigDecimal.valueOf(m3Quantity)
-				.multiply(BigDecimal.valueOf(density))
+		BigDecimal tonToDeduct = m3
+				.multiply(density)
 				.setScale(10, RoundingMode.HALF_UP);
 
-		if (availableM3 < m3Quantity) {
+		if (availableM3.compareTo(m3) < 0) {
 			throw new ValidationException(
 					String.format("Estoque insuficiente. Disponível: %.2f m³, solicitado: %.2f m³.",
-							availableM3, m3Quantity));
+							availableM3.doubleValue(), m3Quantity));
 		}
 
-		if (availableTon < tonToDeduct.doubleValue()) {
+		if (availableTon.compareTo(tonToDeduct) < 0) {
 			throw new ValidationException(
 					String.format("Estoque insuficiente em toneladas. Disponível: %.2f ton, necessário: %.2f ton.",
-							availableTon, tonToDeduct.doubleValue()));
+							availableTon.doubleValue(), tonToDeduct.doubleValue()));
 		}
 
 		stock.setM3Quantity(
-				BigDecimal.valueOf(availableM3)
-						.subtract(BigDecimal.valueOf(m3Quantity))
+				availableM3.subtract(m3)
 						.setScale(4, RoundingMode.HALF_UP)
 						.doubleValue()
 		);
 
 		stock.setTonQuantity(
-				BigDecimal.valueOf(availableTon)
-						.subtract(tonToDeduct)
+				availableTon.subtract(tonToDeduct)
 						.setScale(4, RoundingMode.HALF_UP)
 						.doubleValue()
 		);
