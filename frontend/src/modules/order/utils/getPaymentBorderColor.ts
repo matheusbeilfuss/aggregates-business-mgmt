@@ -6,7 +6,7 @@ export function getPaymentBorderColor(status: PaymentStatusEnum): string {
       return "#22c55e";
     case PaymentStatusEnum.PARTIAL:
       return "#f59e0b";
-    case PaymentStatusEnum.PENDING:
+    default:
       return "var(--color-primary-40)";
   }
 }
