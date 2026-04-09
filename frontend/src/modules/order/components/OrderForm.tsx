@@ -31,7 +31,7 @@ import {
   formatCpfCnpj,
   formatCep,
 } from "@/utils";
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import { Product } from "@/modules/product/types";
 import { useClient } from "@/modules/client/hooks";
 import { useCategoryPrices } from "@/modules/price/hooks";
@@ -42,6 +42,7 @@ interface OrderFormProps {
   form: UseFormReturn<OrderFormData>;
   products: Product[];
   loading?: boolean;
+  isEditing?: boolean;
   onSubmit: (data: OrderFormData) => void;
   submitLabel: string;
 }
@@ -51,6 +52,7 @@ export function OrderForm({
   form,
   products,
   loading = false,
+  isEditing = false,
   onSubmit,
   submitLabel,
 }: OrderFormProps) {
@@ -74,6 +76,8 @@ export function OrderForm({
     loading: cepLoading,
     error: cepError,
   } = useCepLookup(cep ?? "");
+
+  const quantityChangedByUser = useRef(!isEditing);
 
   useEffect(() => {
     if (!client) return;
@@ -119,6 +123,7 @@ export function OrderForm({
   }, [orderType, form]);
 
   useEffect(() => {
+    if (!quantityChangedByUser.current) return;
     if (orderType !== "MATERIAL") return;
     if (m3Quantity == null) {
       form.setValue("orderValue", undefined);
@@ -517,7 +522,10 @@ export function OrderForm({
                         <QuantityCombobox
                           value={field.value}
                           prices={categoryPrices ?? []}
-                          onChange={field.onChange}
+                          onChange={(val) => {
+                            quantityChangedByUser.current = true;
+                            field.onChange(val);
+                          }}
                           disabled={!productId}
                           className={
                             fieldState.error
