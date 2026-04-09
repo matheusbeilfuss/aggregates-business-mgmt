@@ -20,6 +20,7 @@ import {
 } from "@/modules/client/utils";
 import { MapPin, PhoneCall, Truck, Shovel } from "lucide-react";
 import { PaymentBadge } from "./PaymentBadge";
+import { PaymentStatusEnum } from "@/types";
 
 interface OrderAccordionItemProps {
   order: OrderItem;
@@ -204,9 +205,14 @@ export function OrderAccordionItem({
               >
                 Valor
               </p>
-              <p className="text-sm font-semibold text-foreground">
-                R$ {order.orderValue.toFixed(2)}
-              </p>
+              <div className="flex items-center gap-2">
+                <p className="text-sm font-semibold text-foreground">
+                  R$ {order.orderValue.toFixed(2)}
+                </p>
+                <PaymentBadge
+                  status={order.paymentStatus as PaymentStatusEnum}
+                />
+              </div>
             </div>
 
             {isMaterial && order.tonQuantity != null && (
@@ -236,8 +242,7 @@ export function OrderAccordionItem({
             </div>
           )}
 
-          <div className="flex items-center justify-between pt-1">
-            <PaymentBadge status={order.paymentStatus} />
+          <div className="flex justify-end pt-1">
             <OrderActions
               order={order}
               onMarkAsDelivered={onMarkAsDelivered}
