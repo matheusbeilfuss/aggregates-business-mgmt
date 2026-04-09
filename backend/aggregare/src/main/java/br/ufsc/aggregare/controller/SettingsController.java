@@ -1,6 +1,7 @@
 package br.ufsc.aggregare.controller;
 
 import java.nio.file.Path;
+import java.util.concurrent.TimeUnit;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
@@ -67,7 +68,7 @@ public class SettingsController {
 
 			return ResponseEntity.ok()
 					.contentType(fileService.getFileMediaType(filePath))
-					.cacheControl(CacheControl.noCache().mustRevalidate())
+					.cacheControl(CacheControl.maxAge(365, TimeUnit.DAYS).cachePublic())
 					.lastModified(lastModified)
 					.eTag("\"" + imgName + "\"")
 					.body(resource);
