@@ -37,43 +37,47 @@ async function buildImageFavicon(imageUrl: string): Promise<string> {
     const img = new Image();
     img.crossOrigin = "anonymous";
     img.onload = () => {
-      const canvas = document.createElement("canvas");
-      canvas.width = 32;
-      canvas.height = 32;
-      const ctx = canvas.getContext("2d")!;
+      try {
+        const canvas = document.createElement("canvas");
+        canvas.width = 32;
+        canvas.height = 32;
+        const ctx = canvas.getContext("2d")!;
 
-      const radius = 8;
-      ctx.beginPath();
-      ctx.moveTo(radius, 0);
-      ctx.lineTo(32 - radius, 0);
-      ctx.quadraticCurveTo(32, 0, 32, radius);
-      ctx.lineTo(32, 32 - radius);
-      ctx.quadraticCurveTo(32, 32, 32 - radius, 32);
-      ctx.lineTo(radius, 32);
-      ctx.quadraticCurveTo(0, 32, 0, 32 - radius);
-      ctx.lineTo(0, radius);
-      ctx.quadraticCurveTo(0, 0, radius, 0);
-      ctx.closePath();
-      ctx.clip();
+        const radius = 8;
+        ctx.beginPath();
+        ctx.moveTo(radius, 0);
+        ctx.lineTo(32 - radius, 0);
+        ctx.quadraticCurveTo(32, 0, 32, radius);
+        ctx.lineTo(32, 32 - radius);
+        ctx.quadraticCurveTo(32, 32, 32 - radius, 32);
+        ctx.lineTo(radius, 32);
+        ctx.quadraticCurveTo(0, 32, 0, 32 - radius);
+        ctx.lineTo(0, radius);
+        ctx.quadraticCurveTo(0, 0, radius, 0);
+        ctx.closePath();
+        ctx.clip();
 
-      ctx.drawImage(img, 0, 0, 32, 32);
+        ctx.drawImage(img, 0, 0, 32, 32);
 
-      ctx.strokeStyle = "#0061a4";
-      ctx.lineWidth = 5;
-      ctx.beginPath();
-      ctx.moveTo(radius, 0);
-      ctx.lineTo(32 - radius, 0);
-      ctx.quadraticCurveTo(32, 0, 32, radius);
-      ctx.lineTo(32, 32 - radius);
-      ctx.quadraticCurveTo(32, 32, 32 - radius, 32);
-      ctx.lineTo(radius, 32);
-      ctx.quadraticCurveTo(0, 32, 0, 32 - radius);
-      ctx.lineTo(0, radius);
-      ctx.quadraticCurveTo(0, 0, radius, 0);
-      ctx.closePath();
-      ctx.stroke();
+        ctx.strokeStyle = "#0061a4";
+        ctx.lineWidth = 5;
+        ctx.beginPath();
+        ctx.moveTo(radius, 0);
+        ctx.lineTo(32 - radius, 0);
+        ctx.quadraticCurveTo(32, 0, 32, radius);
+        ctx.lineTo(32, 32 - radius);
+        ctx.quadraticCurveTo(32, 32, 32 - radius, 32);
+        ctx.lineTo(radius, 32);
+        ctx.quadraticCurveTo(0, 32, 0, 32 - radius);
+        ctx.lineTo(0, radius);
+        ctx.quadraticCurveTo(0, 0, radius, 0);
+        ctx.closePath();
+        ctx.stroke();
 
-      resolve(canvas.toDataURL("image/png"));
+        resolve(canvas.toDataURL("image/png"));
+      } catch {
+        resolve("");
+      }
     };
     img.onerror = () => resolve("");
     img.src = imageUrl;
@@ -95,15 +99,23 @@ export function useFavicon() {
   const { businessName, businessImgName } = useSettings();
 
   useEffect(() => {
-    if (businessImgName) {
-      buildImageFavicon(`${API_URL}/settings/business-image`).then(
-        (dataUrl) => {
-          if (dataUrl) setFavicon(dataUrl, "image/png");
-        },
-      );
-    } else if (businessName) {
+    const svgFallback = () => {
       const initials = getBusinessInitials(businessName);
       setFavicon(buildSvgFavicon(initials), "image/svg+xml");
+    };
+
+    if (businessImgName) {
+      buildImageFavicon(
+        `${API_URL}/settings/business-image?v=${businessImgName}`,
+      ).then((dataUrl) => {
+        if (dataUrl) {
+          setFavicon(dataUrl, "image/png");
+        } else {
+          svgFallback();
+        }
+      });
+    } else if (businessName) {
+      svgFallback();
     }
   }, [businessName, businessImgName]);
 }
