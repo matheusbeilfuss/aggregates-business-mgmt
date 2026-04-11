@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 import { useNavigate } from "react-router-dom";
-import { Plus } from "lucide-react";
+import { Plus, TrendingDown } from "lucide-react";
 import { Expense } from "../types";
 import { ExpenseTypeEnum, PaymentStatusEnum } from "@/types";
 import { Button } from "@/components/ui/button";
@@ -107,7 +107,7 @@ export function ExpensesTab({ expenses, onRefetch }: Props) {
         <Button
           onClick={() => navigate("expenses/add")}
           className="h-9 px-4 text-sm font-medium text-white gap-1.5
-                   hover:opacity-90 active:opacity-80 transition-opacity"
+                     hover:opacity-90 active:opacity-80 transition-opacity"
           style={{ backgroundColor: "var(--color-primary-40)" }}
         >
           <Plus className="h-4 w-4" />
@@ -115,15 +115,33 @@ export function ExpensesTab({ expenses, onRefetch }: Props) {
         </Button>
       </div>
 
-      <FinanceAccordionGroup groups={paidGroups} />
-
-      {pendingGroups.length > 0 && (
-        <div>
-          <FinanceAccordionGroup
-            groups={pendingGroups}
-            defaultOpen={["PENDING"]}
+      {paidGroups.length === 0 && pendingGroups.length === 0 ? (
+        <div
+          className="flex flex-col items-center justify-center gap-2 py-16
+                     rounded-xl border border-dashed"
+          style={{ borderColor: "var(--color-outline-variant)" }}
+        >
+          <TrendingDown
+            className="h-6 w-6"
+            style={{ color: "var(--color-on-surface-variant)" }}
           />
+          <p
+            className="text-sm"
+            style={{ color: "var(--color-on-surface-variant)" }}
+          >
+            Nenhuma saída registrada no período.
+          </p>
         </div>
+      ) : (
+        <>
+          <FinanceAccordionGroup groups={paidGroups} />
+          {pendingGroups.length > 0 && (
+            <FinanceAccordionGroup
+              groups={pendingGroups}
+              defaultOpen={["PENDING"]}
+            />
+          )}
+        </>
       )}
     </div>
   );

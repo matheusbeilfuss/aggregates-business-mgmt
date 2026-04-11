@@ -5,6 +5,7 @@ import { FinanceAccordionGroup, AccordionGroup } from "./FinanceAccordionGroup";
 import { PaymentRowActions } from "./PaymentRowActions";
 import { paymentMethodLabel } from "@/utils";
 import { PaymentRowLabel } from "./PaymentRowLabel";
+import { TrendingUp } from "lucide-react";
 
 type PaymentsTabProps = {
   payments: Payment[];
@@ -51,7 +52,26 @@ export function PaymentsTab({ payments, onRefetch }: PaymentsTabProps) {
 
   return (
     <div className="flex flex-col gap-2 py-4">
-      <FinanceAccordionGroup groups={groups} />
+      {groups.length === 0 ? (
+        <div
+          className="flex flex-col items-center justify-center gap-2 py-16
+                     rounded-xl border border-dashed"
+          style={{ borderColor: "var(--color-outline-variant)" }}
+        >
+          <TrendingUp
+            className="h-6 w-6"
+            style={{ color: "var(--color-on-surface-variant)" }}
+          />
+          <p
+            className="text-sm"
+            style={{ color: "var(--color-on-surface-variant)" }}
+          >
+            Nenhuma entrada registrada no período.
+          </p>
+        </div>
+      ) : (
+        <FinanceAccordionGroup groups={groups} />
+      )}
     </div>
   );
 }
