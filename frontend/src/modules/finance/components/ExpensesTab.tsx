@@ -19,14 +19,23 @@ const PAID_TYPE_ORDER = [ExpenseTypeEnum.VARIABLE, ExpenseTypeEnum.FIXED];
 export function ExpensesTab({ expenses, onRefetch }: Props) {
   const navigate = useNavigate();
 
-  const paidExpenses = useMemo(
-    () => expenses.filter((e) => e.paymentStatus === PaymentStatusEnum.PAID),
+  const sortedExpenses = useMemo(
+    () => [...expenses].sort((a, b) => a.date.localeCompare(b.date)),
     [expenses],
   );
 
+  const paidExpenses = useMemo(
+    () =>
+      sortedExpenses.filter((e) => e.paymentStatus === PaymentStatusEnum.PAID),
+    [sortedExpenses],
+  );
+
   const pendingExpenses = useMemo(
-    () => expenses.filter((e) => e.paymentStatus === PaymentStatusEnum.PENDING),
-    [expenses],
+    () =>
+      sortedExpenses.filter(
+        (e) => e.paymentStatus === PaymentStatusEnum.PENDING,
+      ),
+    [sortedExpenses],
   );
 
   const paidGroups = useMemo<AccordionGroup[]>(() => {

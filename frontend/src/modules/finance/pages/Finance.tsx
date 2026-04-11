@@ -126,14 +126,14 @@ export default function Finance() {
             <TabsTrigger
               value="incomes"
               className="flex-1 data-[state=inactive]:text-muted-foreground
-                         data-[state=active]:shadow-sm"
+                         data-[state=active]:shadow-sm cursor-pointer"
             >
               Entradas
             </TabsTrigger>
             <TabsTrigger
               value="expenses"
               className="flex-1 data-[state=inactive]:text-muted-foreground
-                         data-[state=active]:shadow-sm"
+                         data-[state=active]:shadow-sm cursor-pointer"
             >
               Saídas
             </TabsTrigger>
