@@ -14,11 +14,12 @@ import {
   FormActions,
   LoadingState,
   PhoneTypeSelect,
+  CurrencyInput,
+  FormSection,
 } from "@/components/shared";
 import { DatePicker } from "@/components/shared/DatePicker";
 import { UseFormReturn, useWatch } from "react-hook-form";
-import { Loader2 } from "lucide-react";
-
+import { Loader2, User, MapPin, Package, Clock } from "lucide-react";
 import { OrderFormData } from "../schemas/order.schemas";
 import { ProductSelect } from "./ProductSelect";
 import { QuantityCombobox } from "./QuantityCombobox";
@@ -30,8 +31,7 @@ import {
   formatCpfCnpj,
   formatCep,
 } from "@/utils";
-import { useEffect, useMemo } from "react";
-
+import { useEffect, useMemo, useRef } from "react";
 import { Product } from "@/modules/product/types";
 import { useClient } from "@/modules/client/hooks";
 import { useCategoryPrices } from "@/modules/price/hooks";
@@ -42,6 +42,7 @@ interface OrderFormProps {
   form: UseFormReturn<OrderFormData>;
   products: Product[];
   loading?: boolean;
+  isEditing?: boolean;
   onSubmit: (data: OrderFormData) => void;
   submitLabel: string;
 }
@@ -51,6 +52,7 @@ export function OrderForm({
   form,
   products,
   loading = false,
+  isEditing = false,
   onSubmit,
   submitLabel,
 }: OrderFormProps) {
@@ -75,12 +77,12 @@ export function OrderForm({
     error: cepError,
   } = useCepLookup(cep ?? "");
 
+  const quantityChangedByUser = useRef(!isEditing);
+
   useEffect(() => {
     if (!client) return;
-
     form.setValue("clientName", client.name);
     form.setValue("cpfCnpj", formatCpfCnpj(client.cpfCnpj ?? ""));
-
     if (client.address) {
       form.setValue("cep", formatCep(client.address.cep ?? ""));
       form.setValue("street", client.address.street);
@@ -90,7 +92,6 @@ export function OrderForm({
       form.setValue("city", client.address.city);
       form.setValue("state", client.address.state);
     }
-
     if (client.phones?.length) {
       const primaryPhone = selectPrimaryPhone(client.phones);
       if (primaryPhone) {
@@ -116,24 +117,21 @@ export function OrderForm({
       form.setValue("m3Quantity", undefined);
       form.setValue("orderValue", undefined);
     }
-
     if (orderType === "MATERIAL") {
       form.setValue("service", "");
     }
   }, [orderType, form]);
 
   useEffect(() => {
+    if (!quantityChangedByUser.current) return;
     if (orderType !== "MATERIAL") return;
-
     if (m3Quantity == null) {
       form.setValue("orderValue", undefined);
       return;
     }
-
     const price = (categoryPrices ?? []).find(
       (p) => p.m3Volume === m3Quantity,
     )?.price;
-
     form.setValue("orderValue", price);
   }, [orderType, m3Quantity, categoryPrices, form]);
 
@@ -149,302 +147,108 @@ export function OrderForm({
     <PageContainer title={title}>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)}>
-          <div className="mb-10">
-            <FormField
-              control={form.control}
-              name="scheduledDate"
-              render={({ field }) => (
-                <FormItem>
-                  <FormControl>
-                    <DatePicker
-                      value={
-                        field.value
-                          ? new Date(`${field.value}T00:00:00`)
-                          : new Date()
-                      }
-                      onChange={(date: Date) => field.onChange(toIsoDate(date))}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </div>
-          <div className="mb-6">
-            <FormField
-              control={form.control}
-              name="type"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Tipo do pedido</FormLabel>
-                  <FormControl>
-                    <RadioGroup
-                      value={field.value}
-                      onValueChange={field.onChange}
-                      className="flex gap-6"
-                    >
-                      <FormItem className="flex items-center gap-2 space-y-0">
-                        <FormControl>
-                          <RadioGroupItem value="MATERIAL" />
-                        </FormControl>
-                        <FormLabel className="font-normal">Material</FormLabel>
-                      </FormItem>
-                      <FormItem className="flex items-center gap-2 space-y-0">
-                        <FormControl>
-                          <RadioGroupItem value="SERVICE" />
-                        </FormControl>
-                        <FormLabel className="font-normal">Serviço</FormLabel>
-                      </FormItem>
-                    </RadioGroup>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </div>
-
-          <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-            <FormField
-              control={form.control}
-              name="clientName"
-              render={({ field, fieldState }) => (
-                <FormItem>
-                  <FormLabel>Cliente</FormLabel>
-                  <FormControl>
-                    <ClientCombobox
-                      value={field.value ?? ""}
-                      clientId={form.watch("clientId")}
-                      onChange={(value) => {
-                        field.onChange(value);
-                        form.setValue("clientId", undefined);
-                      }}
-                      onClientSelect={(client) => {
-                        field.onChange(client.name);
-                        form.setValue("clientId", client.id);
-                      }}
-                      className={
-                        fieldState.error
-                          ? "border border-red-500 rounded-md"
-                          : ""
-                      }
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <div className="flex gap-4 w-full">
+          <div className="max-w-3xl mx-auto space-y-8">
+            <div className="flex flex-col gap-5 sm:flex-row sm:items-end">
               <FormField
                 control={form.control}
-                name="phone"
+                name="type"
                 render={({ field }) => (
-                  <FormItem className="w-full">
-                    <FormLabel>Telefone</FormLabel>
+                  <FormItem className="flex-1">
+                    <FormLabel className="text-sm font-medium">
+                      Tipo do pedido
+                    </FormLabel>
                     <FormControl>
-                      <Input
-                        {...field}
-                        type="text"
-                        onFocus={(e) => e.target.select()}
-                        onChange={(e) =>
-                          field.onChange(formatPhone(e.target.value))
-                        }
-                      />
+                      <RadioGroup
+                        value={field.value}
+                        onValueChange={field.onChange}
+                        className="flex gap-3 mt-1"
+                      >
+                        {[
+                          { value: "MATERIAL", label: "Material" },
+                          { value: "SERVICE", label: "Serviço" },
+                        ].map((opt) => (
+                          <label
+                            key={opt.value}
+                            className="flex items-center gap-2 px-4 py-2 rounded-lg border
+                                       cursor-pointer transition-colors text-sm select-none"
+                            style={{
+                              borderColor:
+                                field.value === opt.value
+                                  ? "var(--color-primary-40)"
+                                  : "var(--color-outline-variant)",
+                              backgroundColor:
+                                field.value === opt.value
+                                  ? "var(--color-primary-90)"
+                                  : "transparent",
+                              color:
+                                field.value === opt.value
+                                  ? "var(--color-primary-10)"
+                                  : "var(--color-on-surface-variant)",
+                            }}
+                          >
+                            <RadioGroupItem
+                              value={opt.value}
+                              className="sr-only"
+                            />
+                            {opt.label}
+                          </label>
+                        ))}
+                      </RadioGroup>
                     </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
               />
+
               <FormField
                 control={form.control}
-                name="phoneType"
+                name="scheduledDate"
                 render={({ field }) => (
-                  <FormItem className="w-full">
-                    <FormLabel>Tipo</FormLabel>
-                    <PhoneTypeSelect
-                      value={field.value}
-                      onChange={field.onChange}
-                    />
+                  <FormItem className="shrink-0">
+                    <FormLabel className="text-sm font-medium">Data</FormLabel>
+                    <FormControl>
+                      <DatePicker
+                        value={
+                          field.value
+                            ? new Date(`${field.value}T00:00:00`)
+                            : new Date()
+                        }
+                        onChange={(date: Date) =>
+                          field.onChange(toIsoDate(date))
+                        }
+                        align="end"
+                      />
+                    </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
               />
             </div>
-            <FormField
-              control={form.control}
-              name="cpfCnpj"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>CPF/CNPJ</FormLabel>
-                  <FormControl>
-                    <Input
-                      {...field}
-                      type="text"
-                      onFocus={(e) => e.target.select()}
-                      onChange={(e) =>
-                        field.onChange(formatCpfCnpj(e.target.value))
-                      }
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="cep"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>
-                    CEP{" "}
-                    <span className="text-muted-foreground font-normal">
-                      (opcional)
-                    </span>
-                  </FormLabel>
-                  <FormControl>
-                    <div className="relative">
-                      <Input
-                        {...field}
-                        type="text"
-                        placeholder="00000-000"
-                        onChange={(e) =>
-                          field.onChange(formatCep(e.target.value))
-                        }
-                      />
-                      {cepLoading && (
-                        <Loader2 className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 animate-spin text-muted-foreground" />
-                      )}
-                    </div>
-                  </FormControl>
-                  {cepError && (
-                    <p className="text-sm text-destructive">{cepError}</p>
-                  )}
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="street"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Rua</FormLabel>
-                  <FormControl>
-                    <Input
-                      {...field}
-                      type="text"
-                      onFocus={(e) => e.target.select()}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="number"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Número</FormLabel>
-                  <FormControl>
-                    <Input
-                      {...field}
-                      type="text"
-                      onFocus={(e) => e.target.select()}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="complement"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>
-                    Complemento{" "}
-                    <span className="text-muted-foreground font-normal">
-                      (opcional)
-                    </span>
-                  </FormLabel>
-                  <FormControl>
-                    <Input
-                      {...field}
-                      type="text"
-                      placeholder="Apto, bloco, sala..."
-                      onFocus={(e) => e.target.select()}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="neighborhood"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Bairro</FormLabel>
-                  <FormControl>
-                    <Input
-                      {...field}
-                      type="text"
-                      onFocus={(e) => e.target.select()}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="city"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Cidade</FormLabel>
-                  <FormControl>
-                    <Input
-                      {...field}
-                      type="text"
-                      onFocus={(e) => e.target.select()}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="state"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Estado</FormLabel>
-                  <FormControl>
-                    <Input
-                      {...field}
-                      type="text"
-                      onFocus={(e) => e.target.select()}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            {orderType === "MATERIAL" && (
+
+            <FormSection icon={User} title="Cliente">
               <FormField
                 control={form.control}
-                name="productId"
+                name="clientName"
                 render={({ field, fieldState }) => (
-                  <FormItem>
-                    <FormLabel>Material</FormLabel>
+                  <FormItem className="md:col-span-2">
+                    <FormLabel>
+                      Nome <span className="text-destructive">*</span>
+                    </FormLabel>
                     <FormControl>
-                      <ProductSelect
-                        value={field.value}
-                        onChange={field.onChange}
-                        products={products ?? []}
+                      <ClientCombobox
+                        value={field.value ?? ""}
+                        clientId={form.watch("clientId")}
+                        onChange={(value) => {
+                          field.onChange(value);
+                          form.setValue("clientId", undefined);
+                        }}
+                        onClientSelect={(client) => {
+                          field.onChange(client.name);
+                          form.setValue("clientId", client.id);
+                        }}
                         className={
                           fieldState.error
-                            ? "border border-red-500 rounded-md"
+                            ? "border border-destructive rounded-md"
                             : ""
                         }
                       />
@@ -453,18 +257,155 @@ export function OrderForm({
                   </FormItem>
                 )}
               />
-            )}
-            {orderType === "SERVICE" && (
+
               <FormField
                 control={form.control}
-                name="service"
+                name="cpfCnpj"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Serviço</FormLabel>
+                    <FormLabel>
+                      CPF / CNPJ{" "}
+                      <span className="text-muted-foreground font-normal text-xs">
+                        (opcional)
+                      </span>
+                    </FormLabel>
                     <FormControl>
                       <Input
                         {...field}
-                        type="text"
+                        onFocus={(e) => e.target.select()}
+                        onChange={(e) =>
+                          field.onChange(formatCpfCnpj(e.target.value))
+                        }
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <div className="flex gap-3">
+                <FormField
+                  control={form.control}
+                  name="phone"
+                  render={({ field }) => (
+                    <FormItem className="flex-1">
+                      <FormLabel>
+                        Telefone <span className="text-destructive">*</span>
+                      </FormLabel>
+                      <FormControl>
+                        <Input
+                          {...field}
+                          onFocus={(e) => e.target.select()}
+                          onChange={(e) =>
+                            field.onChange(formatPhone(e.target.value))
+                          }
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="phoneType"
+                  render={({ field }) => (
+                    <FormItem className="w-32 shrink-0">
+                      <FormLabel>Tipo</FormLabel>
+                      <PhoneTypeSelect
+                        value={field.value}
+                        onChange={field.onChange}
+                      />
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+            </FormSection>
+
+            <FormSection icon={MapPin} title="Endereço">
+              <FormField
+                control={form.control}
+                name="cep"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>
+                      CEP{" "}
+                      <span className="text-muted-foreground font-normal text-xs">
+                        (opcional)
+                      </span>
+                    </FormLabel>
+                    <FormControl>
+                      <div className="relative">
+                        <Input
+                          {...field}
+                          placeholder="00000-000"
+                          onChange={(e) =>
+                            field.onChange(formatCep(e.target.value))
+                          }
+                        />
+                        {cepLoading && (
+                          <Loader2
+                            className="absolute right-3 top-1/2 -translate-y-1/2
+                                       h-4 w-4 animate-spin text-muted-foreground"
+                          />
+                        )}
+                      </div>
+                    </FormControl>
+                    {cepError && (
+                      <p className="text-xs text-destructive">{cepError}</p>
+                    )}
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="street"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>
+                      Rua <span className="text-destructive">*</span>
+                    </FormLabel>
+                    <FormControl>
+                      <Input {...field} onFocus={(e) => e.target.select()} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="number"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>
+                      Número <span className="text-destructive">*</span>
+                    </FormLabel>
+                    <FormControl>
+                      <Input {...field} onFocus={(e) => e.target.select()} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="complement"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>
+                      Complemento{" "}
+                      <span className="text-muted-foreground font-normal text-xs">
+                        (opcional)
+                      </span>
+                    </FormLabel>
+                    <FormControl>
+                      <Input
+                        {...field}
+                        placeholder="Apto, bloco, sala..."
                         onFocus={(e) => e.target.select()}
                       />
                     </FormControl>
@@ -472,94 +413,200 @@ export function OrderForm({
                   </FormItem>
                 )}
               />
-            )}
-            {orderType === "MATERIAL" && (
+
               <FormField
                 control={form.control}
-                name="m3Quantity"
-                render={({ field, fieldState }) => (
+                name="neighborhood"
+                render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Quantidade</FormLabel>
+                    <FormLabel>
+                      Bairro <span className="text-destructive">*</span>
+                    </FormLabel>
                     <FormControl>
-                      <QuantityCombobox
+                      <Input {...field} onFocus={(e) => e.target.select()} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="city"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>
+                      Cidade <span className="text-destructive">*</span>
+                    </FormLabel>
+                    <FormControl>
+                      <Input {...field} onFocus={(e) => e.target.select()} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="state"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>
+                      Estado <span className="text-destructive">*</span>
+                    </FormLabel>
+                    <FormControl>
+                      <Input {...field} onFocus={(e) => e.target.select()} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </FormSection>
+
+            <FormSection icon={Package} title="Pedido">
+              {orderType === "MATERIAL" && (
+                <FormField
+                  control={form.control}
+                  name="productId"
+                  render={({ field, fieldState }) => (
+                    <FormItem>
+                      <FormLabel>
+                        Material <span className="text-destructive">*</span>
+                      </FormLabel>
+                      <FormControl>
+                        <ProductSelect
+                          value={field.value}
+                          onChange={field.onChange}
+                          products={products ?? []}
+                          className={
+                            fieldState.error
+                              ? "border border-destructive rounded-md"
+                              : ""
+                          }
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              )}
+
+              {orderType === "SERVICE" && (
+                <FormField
+                  control={form.control}
+                  name="service"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>
+                        Serviço <span className="text-destructive">*</span>
+                      </FormLabel>
+                      <FormControl>
+                        <Input {...field} onFocus={(e) => e.target.select()} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              )}
+
+              {orderType === "MATERIAL" && (
+                <FormField
+                  control={form.control}
+                  name="m3Quantity"
+                  render={({ field, fieldState }) => (
+                    <FormItem>
+                      <FormLabel>
+                        Quantidade <span className="text-destructive">*</span>
+                      </FormLabel>
+                      <FormControl>
+                        <QuantityCombobox
+                          value={field.value}
+                          prices={categoryPrices ?? []}
+                          onChange={(val) => {
+                            quantityChangedByUser.current = true;
+                            field.onChange(val);
+                          }}
+                          disabled={!productId}
+                          className={
+                            fieldState.error
+                              ? "border border-destructive rounded-md"
+                              : ""
+                          }
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              )}
+
+              <FormField
+                control={form.control}
+                name="orderValue"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>
+                      Valor <span className="text-destructive">*</span>
+                    </FormLabel>
+                    <FormControl>
+                      <CurrencyInput
                         value={field.value}
-                        prices={categoryPrices ?? []}
                         onChange={field.onChange}
-                        disabled={!productId}
-                        className={
-                          fieldState.error
-                            ? "border border-red-500 rounded-md"
-                            : ""
-                        }
                       />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
               />
-            )}
-            <FormField
-              control={form.control}
-              name="orderValue"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Valor</FormLabel>
-                  <FormControl>
-                    <Input
-                      {...field}
-                      value={field.value ?? ""}
-                      type="number"
-                      onChange={(e) =>
-                        field.onChange(
-                          e.target.value === ""
-                            ? undefined
-                            : Number(e.target.value),
-                        )
-                      }
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="scheduledTime"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Horário</FormLabel>
-                  <FormControl>
-                    <Input
-                      {...field}
-                      type="time"
-                      onFocus={(e) => e.target.select()}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+            </FormSection>
+
+            <FormSection icon={Clock} title="Agendamento">
+              <FormField
+                control={form.control}
+                name="scheduledTime"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>
+                      Horário <span className="text-destructive">*</span>
+                    </FormLabel>
+                    <FormControl>
+                      <Input
+                        {...field}
+                        type="time"
+                        onFocus={(e) => e.target.select()}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="observations"
+                render={({ field }) => (
+                  <FormItem className="md:col-span-2">
+                    <FormLabel>
+                      Informações adicionais{" "}
+                      <span className="text-muted-foreground font-normal text-xs">
+                        (opcional)
+                      </span>
+                    </FormLabel>
+                    <FormControl>
+                      <Textarea
+                        {...field}
+                        onFocus={(e) => e.target.select()}
+                        className="resize-none"
+                        rows={3}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </FormSection>
           </div>
-          <div className="w-full mt-6">
-            <FormField
-              control={form.control}
-              name="observations"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>
-                    Informações adicionais{" "}
-                    <span className="text-muted-foreground font-normal">
-                      (opcional)
-                    </span>
-                  </FormLabel>
-                  <FormControl>
-                    <Textarea {...field} onFocus={(e) => e.target.select()} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </div>
+
           <FormActions
             cancelPath="/orders"
             submitLabel={submitLabel}

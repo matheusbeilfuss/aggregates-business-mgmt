@@ -1,9 +1,7 @@
 import { BalanceSummary } from "../types";
 import { formatLocalCurrency } from "@/utils";
 
-type Props = {
-  summary: BalanceSummary;
-};
+type Props = { summary: BalanceSummary };
 
 export function BalanceSummaryTable({ summary }: Props) {
   const data = [
@@ -11,42 +9,42 @@ export function BalanceSummaryTable({ summary }: Props) {
       label: "Gastos",
       total: summary.totalExpenses,
       avg: summary.avgExpenses,
-      colorClass: "text-orange-500",
+      color: "#c25000",
     },
     {
       label: "Recebimentos",
       total: summary.totalIncome,
       avg: summary.avgIncome,
-      colorClass: "text-green-500",
+      color: "#16a34a",
     },
     {
       label: "Lucro",
       total: summary.totalProfit,
       avg: summary.avgProfit,
-      colorClass: summary.totalProfit >= 0 ? "text-blue-500" : "text-red-500",
+      color: summary.totalProfit >= 0 ? "#2563eb" : "var(--color-error)",
     },
   ];
 
   return (
-    <div className="rounded-md border overflow-hidden">
-      <table className="w-full text-sm">
+    <div className="rounded-xl border overflow-hidden w-fit">
+      <table className="text-sm">
         <thead>
-          <tr className="bg-muted/50">
+          <tr style={{ backgroundColor: "var(--color-primary-90)" }}>
             <th
-              scope="col"
-              className="px-4 py-3 text-left font-medium text-muted-foreground"
+              className="px-4 py-2.5 text-left text-xs font-semibold uppercase tracking-wide"
+              style={{ color: "var(--color-primary-40)" }}
             >
-              <span className="sr-only">Tipo</span>
+              Tipo
             </th>
             <th
-              scope="col"
-              className="px-4 py-3 text-right font-medium text-muted-foreground"
+              className="px-4 py-2.5 text-right text-xs font-semibold uppercase tracking-wide"
+              style={{ color: "var(--color-primary-40)" }}
             >
               Total
             </th>
             <th
-              scope="col"
-              className="px-4 py-3 text-right font-medium text-muted-foreground"
+              className="px-4 py-2.5 text-right text-xs font-semibold uppercase tracking-wide"
+              style={{ color: "var(--color-primary-40)" }}
             >
               Média/mês
             </th>
@@ -54,14 +52,20 @@ export function BalanceSummaryTable({ summary }: Props) {
         </thead>
         <tbody>
           {data.map((row) => (
-            <tr key={row.label} className="border-t">
-              <td className={`px-4 py-3 font-medium ${row.colorClass}`}>
+            <tr
+              key={row.label}
+              className="border-t transition-colors hover:bg-accent/50 bg-background"
+            >
+              <td
+                className="px-4 py-2.5 font-semibold text-sm"
+                style={{ color: row.color }}
+              >
                 {row.label}
               </td>
-              <td className="px-4 py-3 text-right">
+              <td className="px-4 py-2.5 text-right tabular-nums text-sm text-foreground">
                 {formatLocalCurrency(row.total)}
               </td>
-              <td className="px-4 py-3 text-right">
+              <td className="px-4 py-2.5 text-right tabular-nums text-sm text-muted-foreground">
                 {formatLocalCurrency(row.avg)}
               </td>
             </tr>

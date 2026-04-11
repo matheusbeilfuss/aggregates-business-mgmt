@@ -24,20 +24,31 @@ export function Home() {
   } = useHomeData();
 
   useEffect(() => {
-    if (error) {
+    if (error)
       toast.error("Não foi possível carregar os dados da página inicial.");
-    }
   }, [error]);
 
   return (
-    <div className="flex flex-col mx-auto w-[80%] h-full gap-16 py-16 md:gap-24 md:py-24">
+    <div className="flex flex-col mx-auto w-full max-w-5xl h-full gap-16 py-12 px-6 md:py-16">
       {isLoading ? (
         <Skeleton className="h-9 w-48 rounded-md" />
       ) : (
-        <h1 className="text-3xl">Olá, {user?.firstName ?? ""}</h1>
+        <div>
+          <p
+            className="text-sm font-medium uppercase tracking-widest mb-1"
+            style={{ color: "var(--color-on-surface-variant)" }}
+          >
+            Bem-vindo de volta
+          </p>
+          <h1
+            className="text-3xl font-bold"
+            style={{ color: "var(--color-on-surface)" }}
+          >
+            {user?.firstName ?? ""}
+          </h1>
+        </div>
       )}
-
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pb-16 md:pb-0">
+      <div className="flex flex-col gap-4 pb-8 md:pb-0">
         <HomeBalanceCard
           monthLabel={monthLabel}
           income={balance.income}
@@ -46,14 +57,14 @@ export function Home() {
           loading={loading.balance}
         />
 
-        <HomeOrdersCard orders={topOrders} loading={loading.orders} />
-
-        <HomeStockCard stocks={lowStocks} loading={loading.stocks} />
-
-        <HomeReceivablesCard
-          receivables={topReceivables}
-          loading={loading.receivables}
-        />
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <HomeOrdersCard orders={topOrders} loading={loading.orders} />
+          <HomeStockCard stocks={lowStocks} loading={loading.stocks} />
+          <HomeReceivablesCard
+            receivables={topReceivables}
+            loading={loading.receivables}
+          />
+        </div>
       </div>
     </div>
   );

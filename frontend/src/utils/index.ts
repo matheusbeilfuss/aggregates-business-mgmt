@@ -8,4 +8,6 @@ export { formatCpfCnpj } from "./formatCpfCnpj";
 export { formatPhone } from "./formatPhone";
 export { formatCep } from "./formatCep";
 export { stripNonDigits } from "./stripNonDigits";
+export { getBusinessInitials } from "./getBusinessInitials";
+export { paymentStatusStyle } from "./paymentStatusStyle";
 export * from "./labels";

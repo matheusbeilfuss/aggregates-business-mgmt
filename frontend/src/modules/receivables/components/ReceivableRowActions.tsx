@@ -19,15 +19,18 @@ export function ReceivableRowActions({ receivable, onAddPayment }: Props) {
       <DropdownMenuTrigger asChild>
         <Button
           variant="ghost"
-          size="icon"
-          className="h-7 w-7"
+          size="sm"
+          className="h-7 w-7 p-0 shrink-0"
           aria-label="Mais ações"
         >
           <MoreHorizontal className="h-4 w-4" />
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end">
-        <DropdownMenuItem onSelect={() => onAddPayment(receivable)}>
+      <DropdownMenuContent align="end" className="w-48">
+        <DropdownMenuItem
+          className="gap-2 cursor-pointer"
+          onSelect={() => onAddPayment(receivable)}
+        >
           <DollarSign className="h-4 w-4" />
           Adicionar pagamento
         </DropdownMenuItem>

@@ -25,31 +25,51 @@ export function PaymentRowLabel({ payment }: PaymentRowLabelProps) {
 
   return (
     <div className="flex flex-col gap-1 w-full text-sm md:grid md:grid-cols-[1fr_1fr_1fr_1fr_auto] md:gap-x-4 md:items-center">
-      <span className="font-medium">{payment.order.client.name}</span>
+      <span className="font-medium text-foreground">
+        {payment.order.client.name}
+      </span>
 
-      <span className="text-muted-foreground flex items-center gap-2">
+      <span className="text-muted-foreground flex items-center gap-1.5 flex-wrap">
         {description}
-
-        <span className="text-xs rounded bg-muted px-2 py-0.5 shrink-0">
+        <span
+          className="text-[10px] font-medium px-1.5 py-0.5 rounded shrink-0"
+          style={{
+            backgroundColor: "var(--color-surface-container-high)",
+            color: "var(--color-on-surface-variant)",
+          }}
+        >
           #{payment.order.id}
         </span>
       </span>
 
-      <span className="text-muted-foreground md:block">
+      <span className="text-muted-foreground text-xs">
         Recebido em {formatLocalDate(payment.date)}
       </span>
 
-      <span className="text-muted-foreground md:block">
+      <span className="text-muted-foreground text-xs">
         Agendado para {formatLocalDate(payment.order.scheduledDate)}
       </span>
 
-      <span className="text-xs font-medium md:w-32 md:text-right">
+      <span className="text-xs font-medium md:text-right shrink-0">
         {isPartial && (
-          <span className="text-orange-500">
+          <span
+            className="px-2 py-0.5 rounded-full"
+            style={{
+              backgroundColor: "var(--color-secondary-90)",
+              color: "var(--color-secondary-40)",
+            }}
+          >
             Parcial · {formatLocalCurrency(payment.order.orderValue)}
           </span>
         )}
-        {isPaid && <span className="text-green-500">Pedido quitado</span>}
+        {isPaid && (
+          <span
+            className="px-2 py-0.5 rounded-full"
+            style={{ backgroundColor: "#dcfce7", color: "#15803d" }}
+          >
+            Quitado
+          </span>
+        )}
       </span>
     </div>
   );

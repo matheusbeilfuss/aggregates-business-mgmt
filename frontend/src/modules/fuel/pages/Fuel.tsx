@@ -1,13 +1,14 @@
 import { useState, useEffect } from "react";
 import { startOfMonth, endOfMonth } from "date-fns";
 import { usePageTitle } from "@/hooks/usePageTitle";
-import { PageContainer, LoadingState } from "@/components/shared";
+import { PageContainer, LoadingState, SummaryCard } from "@/components/shared";
 import { PeriodPicker } from "@/components/shared/PeriodPicker";
-import { FinanceTotalBar } from "@/components/shared/FinanceTotalBar";
 import { FuelRow } from "../components/FuelRow";
 import { useFuelExpenses } from "../hooks/useFuelExpenses";
 import { DatePeriod } from "@/types";
 import { toast } from "sonner";
+import { Fuel as FuelIcon } from "lucide-react";
+import { formatLocalCurrency } from "@/utils";
 
 export default function Fuel() {
   usePageTitle("Combustível");
@@ -27,40 +28,57 @@ export default function Fuel() {
   });
 
   useEffect(() => {
-    if (error) {
+    if (error)
       toast.error("Não foi possível carregar os registros de combustível.");
-    }
   }, [error]);
 
   const total =
     expenses?.reduce((acc, e) => acc + Number(e.expenseValue), 0) ?? 0;
 
   return (
-    <PageContainer title="Combustível">
-      <div className="flex flex-col gap-10">
-        <div className="flex justify-center">
-          <PeriodPicker period={period} onChange={setPeriod} />
-        </div>
-
-        {loading ? (
-          <LoadingState />
-        ) : !expenses?.length ? (
-          <p className="text-center text-muted-foreground py-8">
+    <PageContainer
+      title="Combustível"
+      actions={<PeriodPicker period={period} onChange={setPeriod} />}
+    >
+      {loading ? (
+        <LoadingState />
+      ) : !expenses?.length ? (
+        <div
+          className="flex flex-col items-center justify-center gap-2 py-16
+                     rounded-xl border border-dashed"
+          style={{ borderColor: "var(--color-outline-variant)" }}
+        >
+          <FuelIcon
+            className="h-6 w-6"
+            style={{ color: "var(--color-on-surface-variant)" }}
+          />
+          <p
+            className="text-sm"
+            style={{ color: "var(--color-on-surface-variant)" }}
+          >
             Nenhum registro de combustível no período selecionado.
           </p>
-        ) : (
-          <div className="flex flex-col gap-2 pb-4">
+        </div>
+      ) : (
+        <div className="flex flex-col gap-6">
+          <div className="sm:w-[520px]">
+            <SummaryCard
+              label="Total gasto"
+              value={formatLocalCurrency(total)}
+              icon={FuelIcon}
+              iconBg="var(--color-secondary-90)"
+              iconColor="var(--color-secondary-40)"
+              valueColor="var(--color-secondary-40)"
+            />
+          </div>
+
+          <div className="flex flex-col gap-2">
             {expenses.map((e) => (
               <FuelRow key={e.id} expense={e} />
             ))}
-            <FinanceTotalBar
-              label="Total gasto"
-              value={total}
-              variant="expense"
-            />
           </div>
-        )}
-      </div>
+        </div>
+      )}
     </PageContainer>
   );
 }

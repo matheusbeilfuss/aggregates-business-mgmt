@@ -40,10 +40,7 @@ export function UpdatePasswordDialog({
 }: UpdatePasswordDialogProps) {
   const form = useForm<UpdatePasswordFormData>({
     resolver: zodResolver(updatePasswordSchema),
-    defaultValues: {
-      newPassword: "",
-      confirmPassword: "",
-    },
+    defaultValues: { newPassword: "", confirmPassword: "" },
   });
 
   async function onSubmit(data: UpdatePasswordFormData) {
@@ -54,11 +51,11 @@ export function UpdatePasswordDialog({
       form.reset();
       onSuccess();
     } catch (error) {
-      if (error instanceof ApiError) {
-        toast.error(error.message);
-      } else {
-        toast.error("Não foi possível atualizar a senha. Tente novamente.");
-      }
+      toast.error(
+        error instanceof ApiError
+          ? error.message
+          : "Não foi possível atualizar a senha.",
+      );
     }
   }
 
@@ -67,15 +64,15 @@ export function UpdatePasswordDialog({
       <DialogTrigger asChild>
         <Button
           type="button"
-          variant="secondary"
-          className="w-full cursor-pointer"
+          variant="outline"
+          className="w-full gap-2 cursor-pointer"
         >
-          <Lock className="w-4 h-4 mr-2" />
+          <Lock className="w-4 h-4" />
           Trocar senha
         </Button>
       </DialogTrigger>
 
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent className="sm:max-w-[400px]">
         <DialogHeader>
           <DialogTitle>Trocar senha</DialogTitle>
           <DialogDescription>
@@ -84,49 +81,64 @@ export function UpdatePasswordDialog({
         </DialogHeader>
 
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-            <div className="space-y-2">
-              <FormField
-                control={form.control}
-                name="newPassword"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Nova senha</FormLabel>
-                    <FormControl>
-                      <Input
-                        type="password"
-                        placeholder="Digite sua nova senha"
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
+          <form
+            onSubmit={(e) => {
+              e.stopPropagation();
+              form.handleSubmit(onSubmit)(e);
+            }}
+            className="space-y-4 pt-1"
+          >
+            <FormField
+              control={form.control}
+              name="newPassword"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Nova senha</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="password"
+                      placeholder="Digite sua nova senha"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
-            <div className="space-y-2">
-              <FormField
-                control={form.control}
-                name="confirmPassword"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Confirmar nova senha</FormLabel>
-                    <FormControl>
-                      <Input
-                        type="password"
-                        placeholder="Confirme sua nova senha"
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
+            <FormField
+              control={form.control}
+              name="confirmPassword"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Confirmar nova senha</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="password"
+                      placeholder="Confirme sua nova senha"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
-            <div className="flex justify-end">
-              <Button type="submit" className="cursor-pointer">
+            <div className="flex justify-end gap-2 pt-2">
+              <Button
+                type="button"
+                variant="outline"
+                className="h-9 px-4 text-sm cursor-pointer"
+                onClick={() => onOpenChange(false)}
+              >
+                Cancelar
+              </Button>
+              <Button
+                type="submit"
+                className="h-9 px-4 text-sm font-medium text-white cursor-pointer
+                           hover:opacity-90 active:opacity-80 transition-opacity"
+                style={{ backgroundColor: "var(--color-primary-40)" }}
+              >
                 Salvar senha
               </Button>
             </div>

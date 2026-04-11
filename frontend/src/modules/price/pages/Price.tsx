@@ -1,5 +1,7 @@
 import { useRef, useState } from "react";
 import { toast } from "sonner";
+import { Printer } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import { usePageTitle } from "@/hooks/usePageTitle";
 import { usePrices } from "../hooks/usePrices";
 import {
@@ -11,14 +13,11 @@ import { PriceTable } from "../components/PriceTable";
 import { ApiError } from "@/lib/api";
 import { categoryService } from "@/modules/category/services/category.service";
 import { RenameCategoryDialog } from "../components/RenameCategoryDialog";
-import { Button } from "@/components/ui/button";
-import { Printer } from "lucide-react";
 
 export function Price() {
   usePageTitle("Preços");
 
   const { data: prices, loading, error, refetch } = usePrices();
-
   const [categoryToDelete, setCategoryToDelete] = useState<{
     id: number;
     name: string;
@@ -28,12 +27,24 @@ export function Price() {
     name: string;
   } | null>(null);
   const [newName, setNewName] = useState("");
-
   const lastCategoryName = useRef<string>("");
+  const lastCategoryToRename = useRef<{ id: number; name: string } | null>(
+    null,
+  );
 
   function openDeleteDialog(id: number, name: string) {
     lastCategoryName.current = name;
     setCategoryToDelete({ id, name });
+  }
+
+  function openRenameDialog(id: number, name: string) {
+    lastCategoryToRename.current = { id, name };
+    setCategoryToRename({ id, name });
+    setNewName(name);
+  }
+
+  function cancelRename() {
+    setCategoryToRename(null);
   }
 
   async function handleDeleteCategory() {
@@ -43,11 +54,11 @@ export function Price() {
       toast.success("Categoria excluída com sucesso.");
       refetch();
     } catch (error) {
-      if (error instanceof ApiError) {
-        toast.error(error.message);
-      } else {
-        toast.error("Não foi possível excluir a categoria.");
-      }
+      toast.error(
+        error instanceof ApiError
+          ? error.message
+          : "Não foi possível excluir a categoria.",
+      );
     } finally {
       setCategoryToDelete(null);
     }
@@ -62,11 +73,11 @@ export function Price() {
       toast.success("Categoria renomeada com sucesso.");
       refetch();
     } catch (error) {
-      if (error instanceof ApiError) {
-        toast.error(error.message);
-      } else {
-        toast.error("Não foi possível renomear a categoria.");
-      }
+      toast.error(
+        error instanceof ApiError
+          ? error.message
+          : "Não foi possível renomear a categoria.",
+      );
     } finally {
       setCategoryToRename(null);
       setNewName("");
@@ -74,44 +85,42 @@ export function Price() {
   }
 
   return (
-    <PageContainer title="Preços">
-      {error && <p className="text-red-500 mb-4">{error.message}</p>}
+    <PageContainer
+      title="Preços"
+      actions={
+        <Button
+          variant="outline"
+          className="h-9 px-4 text-sm gap-1.5"
+          onClick={() =>
+            window.open("/prices/print", "_blank", "noopener,noreferrer")
+          }
+        >
+          <Printer className="h-4 w-4" />
+          Imprimir tabela
+        </Button>
+      }
+    >
+      {error && (
+        <p className="text-sm text-destructive mb-4">{error.message}</p>
+      )}
 
       {loading ? (
         <LoadingState rows={5} />
       ) : (
         <PriceTable
           prices={prices ?? []}
-          onRenameCategory={(id, name) => {
-            setCategoryToRename({ id, name });
-            setNewName(name);
-          }}
+          onRenameCategory={openRenameDialog}
           onDeleteCategory={openDeleteDialog}
         />
       )}
 
-      <div className="mt-auto flex justify-end py-12">
-        <Button
-          className="bg-slate-500 hover:bg-slate-600 text-white px-6 py-6 text-base cursor-pointer"
-          onClick={() =>
-            window.open("/prices/print", "_blank", "noopener,noreferrer")
-          }
-        >
-          <Printer className="mr-2 h-4 w-4" />
-          Imprimir Tabela
-        </Button>
-      </div>
-
       <RenameCategoryDialog
         open={!!categoryToRename}
-        currentName={categoryToRename?.name ?? ""}
+        currentName={lastCategoryToRename.current?.name ?? ""}
         newName={newName}
         onNewNameChange={setNewName}
         onConfirm={handleRenameCategory}
-        onCancel={() => {
-          setCategoryToRename(null);
-          setNewName("");
-        }}
+        onCancel={cancelRename}
       />
 
       <ConfirmDialog

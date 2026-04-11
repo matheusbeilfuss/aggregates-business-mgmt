@@ -3,6 +3,7 @@ import {
   DropdownMenuTrigger,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
 import {
   Check,
@@ -34,17 +35,15 @@ export function OrderActions({
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button type="button" variant="ghost">
-          <MoreHorizontal className="h-4 w-4 cursor-pointer" />
+        <Button type="button" variant="ghost" size="sm" className="h-8 w-8 p-0">
+          <MoreHorizontal className="h-4 w-4" />
         </Button>
       </DropdownMenuTrigger>
 
-      <DropdownMenuContent align="end">
+      <DropdownMenuContent align="end" className="w-52">
         <DropdownMenuItem
-          className="flex items-center gap-2 cursor-pointer"
-          onSelect={() => {
-            navigate(`/orders/${order.id}`);
-          }}
+          className="gap-2 cursor-pointer"
+          onSelect={() => navigate(`/orders/${order.id}`)}
         >
           <Pencil className="h-4 w-4" />
           Editar
@@ -52,7 +51,7 @@ export function OrderActions({
 
         {order.status === "PENDING" && onMarkAsDelivered && (
           <DropdownMenuItem
-            className="flex items-center gap-2 cursor-pointer"
+            className="gap-2 cursor-pointer"
             onSelect={() => onMarkAsDelivered(order)}
           >
             <Check className="h-4 w-4" />
@@ -64,7 +63,7 @@ export function OrderActions({
           (order.paymentStatus === "PENDING" ||
             order.paymentStatus === "PARTIAL") && (
             <DropdownMenuItem
-              className="flex items-center gap-2 cursor-pointer"
+              className="gap-2 cursor-pointer"
               onSelect={() => onAddPayment(order)}
             >
               <DollarSign className="h-4 w-4" />
@@ -73,18 +72,20 @@ export function OrderActions({
           )}
 
         <DropdownMenuItem
-          className="flex items-center gap-2"
+          className="gap-2 cursor-pointer"
           onSelect={() => navigate(`/clients?id=${order.client.id}`)}
         >
           <User className="h-4 w-4" />
-          Cliente
+          Ver cliente
         </DropdownMenuItem>
 
+        <DropdownMenuSeparator />
+
         <DropdownMenuItem
-          className="flex items-center gap-2 text-destructive"
+          className="gap-2 cursor-pointer text-destructive focus:text-destructive focus:bg-destructive/10"
           onSelect={() => onDeleteOrder && onDeleteOrder(order)}
         >
-          <Trash2 className="h-4 w-4 text-destructive" />
+          <Trash2 className="text-destructive h-4 w-4" />
           Excluir
         </DropdownMenuItem>
       </DropdownMenuContent>

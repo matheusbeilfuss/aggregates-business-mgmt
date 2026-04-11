@@ -7,6 +7,7 @@ import {
 } from "@/components/ui/select";
 import { FormControl } from "@/components/ui/form";
 import { Category } from "@/modules/category/types";
+import { cn } from "@/lib/utils";
 
 interface CategorySelectProps {
   value?: number;
@@ -14,6 +15,7 @@ interface CategorySelectProps {
   categories: Category[];
   placeholder?: string;
   disabled?: boolean;
+  className?: string;
 }
 
 export function CategorySelect({
@@ -22,6 +24,7 @@ export function CategorySelect({
   categories,
   placeholder = "Selecione...",
   disabled = false,
+  className,
 }: CategorySelectProps) {
   return (
     <Select
@@ -30,7 +33,7 @@ export function CategorySelect({
       disabled={disabled}
     >
       <FormControl>
-        <SelectTrigger className="w-full cursor-pointer">
+        <SelectTrigger className={cn("w-full cursor-pointer", className)}>
           <SelectValue placeholder={placeholder} />
         </SelectTrigger>
       </FormControl>

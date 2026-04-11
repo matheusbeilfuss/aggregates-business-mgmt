@@ -20,6 +20,7 @@ type Props = {
   value: string;
   options: string[];
   placeholder?: string;
+  className?: string;
   onChange: (value: string) => void;
 };
 
@@ -27,6 +28,7 @@ export function DialogCombobox({
   value,
   options,
   placeholder,
+  className,
   onChange,
 }: Props) {
   const [open, setOpen] = useState(false);
@@ -38,7 +40,7 @@ export function DialogCombobox({
           type="button"
           variant="outline"
           role="combobox"
-          className="w-full justify-between font-normal"
+          className={cn("w-full justify-between font-normal", className)}
         >
           {value || placeholder || "Selecionar..."}
           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />

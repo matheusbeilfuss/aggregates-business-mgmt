@@ -2,7 +2,6 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
 import { List, Plus } from "lucide-react";
-
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -10,7 +9,6 @@ import {
   DialogDescription,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import {
@@ -21,7 +19,6 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-
 import { CategorySelect } from "./CategorySelect";
 import { productSchema, type ProductFormData } from "../schemas/stock.schemas";
 import { ApiError } from "@/lib/api";
@@ -61,37 +58,40 @@ export function AddProductDialog({
 
     try {
       await productService.insert(payload);
-      toast.success("O produto foi criado com sucesso.");
+      toast.success("Produto criado com sucesso.");
       onOpenChange(false);
       form.reset();
       onSuccess();
     } catch (error) {
-      if (error instanceof ApiError) {
-        toast.error(error.message);
-      } else {
-        toast.error("Não foi possível salvar o produto.");
-      }
+      toast.error(
+        error instanceof ApiError
+          ? error.message
+          : "Não foi possível salvar o produto.",
+      );
     }
   }
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogTrigger asChild>
-        <Button className="bg-slate-500 hover:bg-slate-600 text-white px-6 py-6 text-base cursor-pointer">
-          Adicionar Produto
-        </Button>
-      </DialogTrigger>
-
-      <DialogContent className="sm:max-w-[425px]">
+    <Dialog
+      open={open}
+      onOpenChange={(o) => {
+        onOpenChange(o);
+        if (!o) form.reset();
+      }}
+    >
+      <DialogContent className="sm:max-w-[400px]">
         <DialogHeader>
           <DialogTitle>Novo produto</DialogTitle>
           <DialogDescription>
-            Preencha as informações do novo item que será inserido no estoque.
+            Preencha as informações do produto a ser inserido no estoque.
           </DialogDescription>
         </DialogHeader>
 
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+          <form
+            onSubmit={form.handleSubmit(onSubmit)}
+            className="space-y-4 pt-1"
+          >
             <FormField
               control={form.control}
               name="name"
@@ -109,7 +109,7 @@ export function AddProductDialog({
             <FormField
               control={form.control}
               name="isNewCategory"
-              render={({ field }) => (
+              render={({ field, fieldState }) => (
                 <FormItem>
                   <FormLabel>Categoria</FormLabel>
                   <div className="flex gap-2">
@@ -117,9 +117,15 @@ export function AddProductDialog({
                       <FormField
                         control={form.control}
                         name="categoryName"
-                        render={({ field }) => (
+                        render={({ field: categoryNameField }) => (
                           <FormControl>
-                            <Input placeholder="Nova categoria" {...field} />
+                            <Input
+                              placeholder="Nome da nova categoria"
+                              {...categoryNameField}
+                              className={
+                                fieldState.error ? "!border-destructive" : ""
+                              }
+                            />
                           </FormControl>
                         )}
                       />
@@ -127,12 +133,17 @@ export function AddProductDialog({
                       <FormField
                         control={form.control}
                         name="categoryId"
-                        render={({ field }) => (
-                          <CategorySelect
-                            value={field.value}
-                            onChange={field.onChange}
-                            categories={categories}
-                          />
+                        render={({ field: categoryField }) => (
+                          <div className="flex-1">
+                            <CategorySelect
+                              value={categoryField.value}
+                              onChange={categoryField.onChange}
+                              categories={categories}
+                              className={
+                                fieldState.error ? "!border-destructive" : ""
+                              }
+                            />
+                          </div>
                         )}
                       />
                     )}
@@ -141,7 +152,7 @@ export function AddProductDialog({
                       type="button"
                       variant="outline"
                       size="icon"
-                      className="cursor-pointer"
+                      className="shrink-0 cursor-pointer"
                       onClick={() =>
                         form.setValue("isNewCategory", !field.value)
                       }
@@ -158,8 +169,21 @@ export function AddProductDialog({
               )}
             />
 
-            <div className="flex justify-end">
-              <Button type="submit" className="cursor-pointer">
+            <div className="flex justify-end gap-2 pt-2">
+              <Button
+                type="button"
+                variant="outline"
+                className="h-9 px-4 text-sm cursor-pointer"
+                onClick={() => onOpenChange(false)}
+              >
+                Cancelar
+              </Button>
+              <Button
+                type="submit"
+                className="h-9 px-4 text-sm font-medium text-white cursor-pointer
+                           hover:opacity-90 active:opacity-80 transition-opacity"
+                style={{ backgroundColor: "var(--color-primary-40)" }}
+              >
                 Salvar
               </Button>
             </div>

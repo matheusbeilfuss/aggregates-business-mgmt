@@ -5,7 +5,6 @@ import { FinanceAccordionGroup, AccordionGroup } from "./FinanceAccordionGroup";
 import { PaymentRowActions } from "./PaymentRowActions";
 import { paymentMethodLabel } from "@/utils";
 import { PaymentRowLabel } from "./PaymentRowLabel";
-import { FinanceTotalBar } from "@/components/shared";
 
 type PaymentsTabProps = {
   payments: Payment[];
@@ -28,17 +27,13 @@ export function PaymentsTab({ payments, onRefetch }: PaymentsTabProps) {
 
     for (const payment of payments) {
       const existing = map.get(payment.paymentMethod);
-      if (existing) {
-        existing.push(payment);
-      } else {
-        map.set(payment.paymentMethod, [payment]);
-      }
+      if (existing) existing.push(payment);
+      else map.set(payment.paymentMethod, [payment]);
     }
 
     return PAYMENT_GROUP_ORDER.filter((key) => map.has(key)).map((key) => {
       const rows = map.get(key)!;
       const total = rows.reduce((acc, p) => acc + Number(p.paymentValue), 0);
-
       return {
         key,
         label: paymentMethodLabel[key],
@@ -53,18 +48,9 @@ export function PaymentsTab({ payments, onRefetch }: PaymentsTabProps) {
     });
   }, [payments, onRefetch]);
 
-  const total = useMemo(
-    () => payments.reduce((acc, p) => acc + Number(p.paymentValue), 0),
-    [payments],
-  );
-
   return (
     <div className="flex flex-col gap-2 py-4">
-      <FinanceAccordionGroup
-        groups={groups}
-        defaultOpen={groups.map((g) => g.key)}
-      />
-      <FinanceTotalBar label="Total" value={total} variant="income" />
+      <FinanceAccordionGroup groups={groups} />
     </div>
   );
 }

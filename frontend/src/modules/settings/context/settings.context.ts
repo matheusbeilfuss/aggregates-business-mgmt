@@ -2,6 +2,7 @@ import { createContext } from "react";
 
 export interface SettingsContextData {
   businessName: string;
+  businessImgName?: string;
   isLoading: boolean;
   refetchSettings: () => Promise<void>;
 }

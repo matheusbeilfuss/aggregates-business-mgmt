@@ -2,13 +2,13 @@ import { useState, useMemo, useRef, useEffect } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { Plus, Search, Users } from "lucide-react";
 import { toast } from "sonner";
-
-import { PageContainer } from "@/components/shared";
-import { ConfirmDialog } from "@/components/shared";
-import { LoadingState } from "@/components/shared";
+import {
+  PageContainer,
+  ConfirmDialog,
+  LoadingState,
+} from "@/components/shared";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-
 import { useClients } from "../hooks";
 import { clientService } from "../services/client.service";
 import type { Client } from "../types";
@@ -20,7 +20,6 @@ import { formatCpfCnpj } from "@/utils";
 export function Client() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-
   const { data: clients, loading, refetch } = useClients();
 
   const [search, setSearch] = useState("");
@@ -30,7 +29,6 @@ export function Client() {
   useEffect(() => {
     const idParam = searchParams.get("id");
     if (!idParam || !clients) return;
-
     const found = clients.find((c) => c.id === Number(idParam));
     if (found) setSelectedClient(found);
   }, [clients, searchParams]);
@@ -39,9 +37,13 @@ export function Client() {
 
   const filtered = useMemo(() => {
     if (!clients) return [];
-    const q = search.trim().toLowerCase();
+    const q = search
+      .trim()
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .toLowerCase();
     if (!q) return clients;
-    return clients.filter((c) => c.name.toLowerCase().includes(q));
+    return clients.filter((c) => c.nameNormalized.includes(q));
   }, [clients, search]);
 
   const sorted = useMemo(
@@ -68,11 +70,11 @@ export function Client() {
       if (selectedClient?.id === clientToDelete.id) setSelectedClient(null);
       refetch();
     } catch (error) {
-      if (error instanceof ApiError) {
-        toast.error(error.message);
-      } else {
-        toast.error("Não foi possível excluir o cliente.");
-      }
+      toast.error(
+        error instanceof ApiError
+          ? error.message
+          : "Não foi possível excluir o cliente.",
+      );
     } finally {
       setClientToDelete(null);
     }
@@ -81,17 +83,41 @@ export function Client() {
   const showProfile = !!selectedClient;
 
   return (
-    <PageContainer title="Clientes">
+    <PageContainer
+      title="Clientes"
+      actions={
+        <Button
+          className="h-9 px-4 text-sm font-medium text-white gap-1.5
+                     hover:opacity-90 active:opacity-80 transition-opacity"
+          style={{ backgroundColor: "var(--color-primary-40)" }}
+          onClick={() => navigate("/clients/add")}
+        >
+          <Plus className="h-4 w-4" />
+          Novo cliente
+        </Button>
+      }
+    >
       {loading ? (
         <LoadingState />
       ) : (
-        <div className="flex h-[calc(100vh-10rem)] overflow-hidden border rounded-lg bg-background">
+        <div
+          className="flex h-[calc(100vh-12rem)] overflow-hidden rounded-xl bg-background"
+          style={{ border: "1px solid var(--color-outline-variant)" }}
+        >
           <div
-            className={`flex flex-col w-full md:w-80 lg:w-96 border-r shrink-0 ${showProfile ? "hidden md:flex" : "flex"}`}
+            className={`flex flex-col shrink-0 w-full md:w-80 lg:w-96
+                        border-r ${showProfile ? "hidden md:flex" : "flex"}`}
+            style={{ borderColor: "var(--color-outline-variant)" }}
           >
-            <div className="flex items-center gap-2 px-3 py-3 border-b">
+            <div
+              className="flex items-center gap-2 px-3 py-3 border-b"
+              style={{ borderColor: "var(--color-outline-variant)" }}
+            >
               <div className="relative flex-1">
-                <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
+                <Search
+                  className="absolute left-2.5 top-1/2 -translate-y-1/2 h-4 w-4 pointer-events-none"
+                  style={{ color: "var(--color-on-surface-variant)" }}
+                />
                 <Input
                   placeholder="Pesquise pelo nome"
                   className="pl-8"
@@ -99,22 +125,20 @@ export function Client() {
                   onChange={(e) => setSearch(e.target.value)}
                 />
               </div>
-              <Button
-                size="icon"
-                variant="outline"
-                onClick={() => navigate("/clients/add")}
-                title="Adicionar cliente"
-              >
-                <Plus className="h-4 w-4" />
-              </Button>
             </div>
 
             <div className="flex flex-1 overflow-hidden">
               <div className="flex-1 overflow-y-auto py-2">
                 {sorted.length === 0 ? (
-                  <div className="flex flex-col items-center justify-center h-full gap-2 text-muted-foreground px-4 text-center">
-                    <Users className="h-8 w-8" />
-                    <p className="text-sm">
+                  <div className="flex flex-col items-center justify-center h-full gap-2 px-4 text-center">
+                    <Users
+                      className="h-8 w-8"
+                      style={{ color: "var(--color-on-surface-variant)" }}
+                    />
+                    <p
+                      className="text-sm"
+                      style={{ color: "var(--color-on-surface-variant)" }}
+                    >
                       {search
                         ? "Nenhum cliente encontrado."
                         : "Nenhum cliente cadastrado ainda."}
@@ -128,43 +152,88 @@ export function Client() {
                         sectionRefs.current[letter] = el;
                       }}
                     >
-                      <p className="px-4 py-1 text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+                      <p
+                        className="px-4 py-1 text-[10px] font-semibold uppercase tracking-widest"
+                        style={{ color: "var(--color-on-surface-variant)" }}
+                      >
                         {letter}
                       </p>
-                      {grouped[letter].map((client) => (
-                        <button
-                          key={client.id}
-                          onClick={() => setSelectedClient(client)}
-                          className={`
-                            w-full text-left px-4 py-2.5 text-sm transition-colors
-                            hover:bg-muted/60 focus-visible:outline-none focus-visible:bg-muted/60
-                            ${selectedClient?.id === client.id ? "bg-muted font-medium" : ""}
-                          `}
-                        >
-                          <span className="block truncate">{client.name}</span>
-                          {client.address?.city && (
-                            <span className="block text-xs text-muted-foreground truncate">
-                              {client.address.city}/{client.address.state}
+                      {grouped[letter].map((client) => {
+                        const isSelected = selectedClient?.id === client.id;
+                        return (
+                          <button
+                            key={client.id}
+                            onClick={() => setSelectedClient(client)}
+                            className="w-full text-left px-4 py-2.5 text-sm
+                                       transition-colors focus-visible:outline-none"
+                            style={{
+                              backgroundColor: isSelected
+                                ? "var(--color-primary-90)"
+                                : undefined,
+                            }}
+                            onMouseEnter={(e) => {
+                              if (!isSelected)
+                                (
+                                  e.currentTarget as HTMLElement
+                                ).style.backgroundColor =
+                                  "var(--color-surface-container-low)";
+                            }}
+                            onMouseLeave={(e) => {
+                              if (!isSelected)
+                                (
+                                  e.currentTarget as HTMLElement
+                                ).style.backgroundColor = "";
+                            }}
+                          >
+                            <span
+                              className="block truncate font-medium text-sm"
+                              style={{
+                                color: isSelected
+                                  ? "var(--color-primary-10)"
+                                  : "var(--color-on-surface)",
+                              }}
+                            >
+                              {client.name}
                             </span>
-                          )}
-                        </button>
-                      ))}
+                            {client.address?.city && (
+                              <span
+                                className="block text-xs truncate"
+                                style={{
+                                  color: isSelected
+                                    ? "var(--color-primary-40)"
+                                    : "var(--color-on-surface-variant)",
+                                }}
+                              >
+                                {client.address.city}/{client.address.state}
+                              </span>
+                            )}
+                          </button>
+                        );
+                      })}
                     </div>
                   ))
                 )}
               </div>
 
               {sorted.length > 0 && (
-                <div className="flex flex-col items-center justify-center py-2 px-1 text-[10px] text-muted-foreground select-none">
+                <div
+                  className="flex flex-col items-center justify-center py-2 px-1
+                             text-[10px] select-none border-l"
+                  style={{ borderColor: "var(--color-outline-variant)" }}
+                >
                   {allLetters.map((l) => (
                     <button
                       key={l}
                       onClick={() => scrollToLetter(l)}
                       disabled={!grouped[l]}
-                      className={`
-                        leading-tight py-px w-4 text-center transition-colors
-                        ${grouped[l] ? "text-foreground hover:text-primary font-medium cursor-pointer" : "opacity-30 cursor-default"}
-                      `}
+                      className="leading-tight py-px w-4 text-center transition-colors"
+                      style={{
+                        color: grouped[l]
+                          ? "var(--color-primary-40)"
+                          : "var(--color-outline-variant)",
+                        fontWeight: grouped[l] ? 600 : 400,
+                        cursor: grouped[l] ? "pointer" : "default",
+                      }}
                     >
                       {l}
                     </button>
@@ -175,11 +244,8 @@ export function Client() {
           </div>
 
           <div
-            className={`
-              flex-1 overflow-hidden
-              ${showProfile ? "flex" : "hidden md:flex"}
-              flex-col
-            `}
+            className={`flex-1 overflow-hidden flex-col
+                        ${showProfile ? "flex" : "hidden md:flex"}`}
           >
             {selectedClient ? (
               <ClientProfile
@@ -189,9 +255,15 @@ export function Client() {
                 onBack={() => setSelectedClient(null)}
               />
             ) : (
-              <div className="flex flex-col items-center justify-center h-full gap-3 text-muted-foreground">
-                <Users className="h-12 w-12 opacity-30" />
-                <p className="text-sm">
+              <div className="flex flex-col items-center justify-center h-full gap-3">
+                <Users
+                  className="h-12 w-12"
+                  style={{ color: "var(--color-outline-variant)" }}
+                />
+                <p
+                  className="text-sm"
+                  style={{ color: "var(--color-on-surface-variant)" }}
+                >
                   Selecione um cliente para ver os detalhes
                 </p>
               </div>
@@ -203,7 +275,7 @@ export function Client() {
       <ConfirmDialog
         open={!!clientToDelete}
         onOpenChange={(open) => !open && setClientToDelete(null)}
-        title="Você tem certeza de que deseja excluir o cliente abaixo?"
+        title="Excluir este cliente?"
         description={
           clientToDelete
             ? [clientToDelete.name, formatCpfCnpj(clientToDelete.cpfCnpj)]

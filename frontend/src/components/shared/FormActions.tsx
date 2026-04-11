@@ -27,11 +27,11 @@ export function FormActions({
   };
 
   return (
-    <div className="mt-auto flex justify-end gap-4 py-12">
+    <div className="max-w-3xl mx-auto w-full mt-auto flex justify-end gap-3 pt-8 pb-4">
       <Button
         type="button"
         variant="outline"
-        className="px-6 py-6 text-base cursor-pointer"
+        className="px-6 h-10 text-sm cursor-pointer"
         onClick={handleCancel}
         disabled={isSubmitting}
       >
@@ -41,7 +41,9 @@ export function FormActions({
       <Button
         type={onSubmit ? "button" : "submit"}
         form={!onSubmit ? formId : undefined}
-        className="bg-slate-500 hover:bg-slate-600 text-white px-6 py-6 text-base cursor-pointer"
+        className="px-6 h-10 text-sm font-medium text-white cursor-pointer
+                 hover:opacity-90 active:opacity-80 transition-opacity"
+        style={{ backgroundColor: "var(--color-primary-40)" }}
         onClick={onSubmit}
         disabled={isSubmitting}
       >

@@ -1,0 +1,65 @@
+package br.ufsc.abm.controller;
+
+import java.net.URI;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+
+import br.ufsc.abm.model.Product;
+import br.ufsc.abm.model.dto.ProductInputDTO;
+import br.ufsc.abm.service.ProductService;
+
+import jakarta.validation.Valid;
+
+@RestController
+@RequestMapping(value = "/products")
+public class ProductController {
+
+	private final ProductService service;
+
+	@Autowired
+	public ProductController(ProductService service) {
+		this.service = service;
+	}
+
+	@PostMapping
+	public ResponseEntity<Product> insert(@RequestBody @Valid ProductInputDTO dto) {
+		Product product = service.insert(dto);
+		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(product.getId()).toUri();
+		return ResponseEntity.created(uri).body(product);
+	}
+
+	@DeleteMapping(value = "/{id}")
+	public ResponseEntity<Void> delete(@PathVariable Long id) {
+		service.delete(id);
+		return ResponseEntity.noContent().build();
+	}
+
+	@PutMapping(value = "/{id}")
+	public ResponseEntity<Product> update(@PathVariable Long id, @RequestBody @Valid ProductInputDTO dto) {
+		Product product = service.update(id, dto);
+		return ResponseEntity.ok().body(product);
+	}
+
+	@GetMapping(value = "/{id}")
+	public ResponseEntity<Product> findById(@PathVariable Long id) {
+		Product product = service.findById(id);
+		return ResponseEntity.ok().body(product);
+	}
+
+	@GetMapping
+	public ResponseEntity<List<Product>> findAll() {
+		List<Product> products = service.findAll();
+		return ResponseEntity.ok().body(products);
+	}
+}

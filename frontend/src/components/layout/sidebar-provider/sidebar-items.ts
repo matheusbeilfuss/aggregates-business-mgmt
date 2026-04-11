@@ -9,57 +9,49 @@ import {
   Warehouse,
   Fuel,
   UserRound,
+  LucideIcon,
 } from "lucide-react";
 
-export const items = [
+export type NavItem = {
+  title: string;
+  url: string;
+  icon: LucideIcon;
+};
+
+export type NavGroup = {
+  label: string;
+  items: NavItem[];
+};
+
+export const navGroups: NavGroup[] = [
   {
-    title: "Home",
-    url: "/",
-    icon: Home,
+    label: "Principal",
+    items: [
+      { title: "Home", url: "/", icon: Home },
+      { title: "Pedidos", url: "/orders", icon: Truck },
+      { title: "Estoque", url: "/stocks", icon: Warehouse },
+    ],
   },
   {
-    title: "Pedidos",
-    url: "/orders",
-    icon: Truck,
+    label: "Financeiro",
+    items: [
+      { title: "Financeiro", url: "/finance", icon: Banknote },
+      { title: "Balanços", url: "/balance", icon: Scale },
+      { title: "Cobranças", url: "/receivables", icon: HandCoins },
+    ],
   },
   {
-    title: "Estoque",
-    url: `/stocks`,
-    icon: Warehouse,
-  },
-  {
-    title: "Financeiro",
-    url: "/finance",
-    icon: Banknote,
-  },
-  {
-    title: "Balanços",
-    url: "/balance",
-    icon: Scale,
-  },
-  {
-    title: "Preços",
-    url: "/prices",
-    icon: Tags,
-  },
-  {
-    title: "Clientes",
-    url: "/clients",
-    icon: BookUser,
-  },
-  {
-    title: "Cobranças",
-    url: "/receivables",
-    icon: HandCoins,
-  },
-  {
-    title: "Combustível",
-    url: "/fuel",
-    icon: Fuel,
-  },
-  {
-    title: "Meu perfil",
-    url: "/user",
-    icon: UserRound,
+    label: "Cadastros",
+    items: [
+      { title: "Preços", url: "/prices", icon: Tags },
+      { title: "Clientes", url: "/clients", icon: BookUser },
+      { title: "Combustível", url: "/fuel", icon: Fuel },
+    ],
   },
 ];
+
+export const profileItem: NavItem = {
+  title: "Meu perfil",
+  url: "/user",
+  icon: UserRound,
+};

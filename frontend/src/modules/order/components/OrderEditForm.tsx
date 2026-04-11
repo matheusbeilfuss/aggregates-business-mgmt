@@ -109,6 +109,7 @@ export function OrderEditForm({ orderId }: OrderEditFormProps) {
       form={form}
       products={products ?? []}
       loading={orderLoading}
+      isEditing={true}
       onSubmit={onSubmit}
       submitLabel="Salvar alterações"
     />

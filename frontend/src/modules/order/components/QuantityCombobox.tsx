@@ -1,8 +1,4 @@
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
+import { useEffect, useRef, useState } from "react";
 import {
   Combobox,
   ComboboxContent,
@@ -27,17 +23,50 @@ export function QuantityCombobox({
   className,
   onChange,
 }: QuantityComboboxProps) {
-  const quantityCombobox = (
+  const [inputValue, setInputValue] = useState(
+    value !== undefined ? String(value).replace(".", ",") : "",
+  );
+  const isFocused = useRef(false);
+
+  useEffect(() => {
+    if (!isFocused.current) {
+      setInputValue(value !== undefined ? String(value).replace(".", ",") : "");
+    }
+  }, [value]);
+
+  return (
     <Combobox
       value={value !== undefined ? String(value) : ""}
-      onValueChange={(val) => onChange(Number(val))}
+      onValueChange={(val) => {
+        if (!val) return;
+        setInputValue(String(val).replace(".", ","));
+        onChange(Number(val));
+      }}
       disabled={disabled}
     >
       <ComboboxInput
         disabled={disabled}
         className={className}
-        value={value !== undefined ? String(value) : ""}
-        onChange={(e) => onChange(Number(e.target.value))}
+        value={inputValue}
+        onChange={(e) => {
+          const raw = e.target.value;
+          setInputValue(raw);
+          if (raw === "") return;
+          const num = Number(raw.replace(",", "."));
+          if (!isNaN(num)) onChange(num);
+        }}
+        onFocus={() => {
+          isFocused.current = true;
+        }}
+        onBlur={() => {
+          isFocused.current = false;
+          if (inputValue === "") return;
+          const num = Number(inputValue.replace(",", "."));
+          if (!isNaN(num)) {
+            setInputValue(String(num).replace(".", ","));
+            onChange(num);
+          }
+        }}
         placeholder={
           disabled ? "Selecione um material primeiro" : "Selecione ou digite..."
         }
@@ -56,21 +85,5 @@ export function QuantityCombobox({
         </ComboboxList>
       </ComboboxContent>
     </Combobox>
-  );
-
-  if (!disabled) {
-    return quantityCombobox;
-  }
-
-  return (
-    <Tooltip>
-      <TooltipTrigger asChild>
-        <div className="w-full cursor-not-allowed">{quantityCombobox}</div>
-      </TooltipTrigger>
-
-      <TooltipContent side="top" align="start">
-        Selecione um material primeiro
-      </TooltipContent>
-    </Tooltip>
   );
 }

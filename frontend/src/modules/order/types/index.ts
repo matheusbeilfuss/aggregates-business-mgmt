@@ -1,9 +1,9 @@
 import { Client } from "@/modules/client/types";
 import { Product } from "@/modules/product/types";
+import { PaymentStatusEnum } from "@/types";
 
 export type OrderType = "MATERIAL" | "SERVICE";
 export type OrderStatus = "PENDING" | "DELIVERED";
-export type PaymentStatus = "PENDING" | "PARTIAL" | "PAID";
 
 export interface OrderAddress {
   id: number;
@@ -26,7 +26,7 @@ interface BaseOrderItem {
 
   observations: string;
   status: OrderStatus;
-  paymentStatus: PaymentStatus;
+  paymentStatus: PaymentStatusEnum;
   orderValue: number;
   remainingValue: number;
 }

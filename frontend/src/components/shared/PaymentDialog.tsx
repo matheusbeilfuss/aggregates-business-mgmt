@@ -1,6 +1,3 @@
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { toast } from "sonner";
 import {
   Dialog,
   DialogContent,
@@ -19,6 +16,9 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Loader2 } from "lucide-react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { toast } from "sonner";
 import { api, ApiError } from "@/lib/api";
 import { OrderForPayment } from "@/modules/order/types";
 import { Payment } from "@/modules/finance/types";
@@ -33,6 +33,7 @@ import {
   formatTime,
   toIsoDate,
 } from "@/utils";
+import { CurrencyInput } from "./CurrencyInput";
 
 type AddMode = { mode: "add"; order: OrderForPayment };
 type EditMode = { mode: "edit"; payment: Payment };
@@ -85,15 +86,13 @@ export function PaymentDialog({
       onSuccess();
       onOpenChange(false);
     } catch (error) {
-      if (error instanceof ApiError) {
-        toast.error(error.message);
-      } else {
-        toast.error(
-          isEdit
+      toast.error(
+        error instanceof ApiError
+          ? error.message
+          : isEdit
             ? "Não foi possível atualizar a entrada."
             : "Não foi possível adicionar o pagamento.",
-        );
-      }
+      );
     }
   };
 
@@ -105,40 +104,62 @@ export function PaymentDialog({
         if (!o) form.reset();
       }}
     >
-      <DialogContent>
+      <DialogContent className="sm:max-w-[440px]">
         <DialogHeader>
           <DialogTitle>
             {isEdit ? "Editar entrada" : "Adicionar pagamento"}
           </DialogTitle>
           <DialogDescription>
             {isEdit
-              ? "Edite os detalhes do pagamento para o pedido abaixo"
-              : "Insira os detalhes do pagamento para o pedido abaixo"}
+              ? "Edite os detalhes do pagamento para o pedido abaixo."
+              : "Insira os detalhes do pagamento para o pedido abaixo."}
           </DialogDescription>
         </DialogHeader>
 
-        <div className="flex items-start justify-between gap-6 rounded-lg border bg-muted/40 p-4">
-          <div className="space-y-1">
-            <p className="text-sm font-medium">Pedido #{order.id}</p>
-            <p className="text-sm text-muted-foreground">
-              {order.client.name} - {orderLabel}
+        <div
+          className="flex items-start justify-between gap-4 rounded-xl p-4"
+          style={{ backgroundColor: "var(--color-surface-container-low)" }}
+        >
+          <div className="space-y-0.5 min-w-0">
+            <p className="text-sm font-semibold text-foreground">
+              Pedido #{order.id}
             </p>
-            <p className="text-sm text-muted-foreground">
+            <p className="text-xs text-muted-foreground truncate">
+              {order.client.name} · {orderLabel}
+            </p>
+            <p className="text-xs text-muted-foreground">
               {formatLocalDate(order.scheduledDate)} às{" "}
               {formatTime(order.scheduledTime)}
             </p>
           </div>
-          <div className="text-right space-y-1">
+
+          <div className="text-right shrink-0 space-y-2">
             <div>
-              <p className="text-xs text-muted-foreground">Valor total</p>
-              <p className="text-lg font-semibold">
+              <p
+                className="text-[10px] font-medium uppercase tracking-wide"
+                style={{ color: "var(--color-on-surface-variant)" }}
+              >
+                Total
+              </p>
+              <p className="text-sm font-semibold text-foreground">
                 {formatLocalCurrency(order.orderValue)}
               </p>
             </div>
             <div>
-              <p className="text-xs text-muted-foreground">Falta pagar</p>
               <p
-                className={`text-sm font-medium ${order.remainingValue <= 0 ? "text-green-500" : "text-orange-500"}`}
+                className="text-[10px] font-medium uppercase tracking-wide"
+                style={{ color: "var(--color-on-surface-variant)" }}
+              >
+                Falta pagar
+              </p>
+              <p
+                className="text-sm font-semibold"
+                style={{
+                  color:
+                    order.remainingValue <= 0
+                      ? "#16a34a"
+                      : "var(--color-secondary-40)",
+                }}
               >
                 {formatLocalCurrency(order.remainingValue)}
               </p>
@@ -149,7 +170,7 @@ export function PaymentDialog({
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit(onSubmit)}
-            className="grid gap-4 pt-4"
+            className="space-y-4 pt-1"
           >
             <FormField
               control={form.control}
@@ -158,16 +179,9 @@ export function PaymentDialog({
                 <FormItem>
                   <FormLabel>Valor do pagamento</FormLabel>
                   <FormControl>
-                    <Input
-                      type="number"
-                      value={field.value ?? ""}
-                      onChange={(e) =>
-                        field.onChange(
-                          e.target.value === ""
-                            ? undefined
-                            : Number(e.target.value),
-                        )
-                      }
+                    <CurrencyInput
+                      value={field.value}
+                      onChange={field.onChange}
                     />
                   </FormControl>
                   <FormMessage />
@@ -206,15 +220,22 @@ export function PaymentDialog({
               )}
             />
 
-            <div className="flex justify-end gap-2 pt-4">
+            <div className="flex justify-end gap-2 pt-2">
               <Button
                 type="button"
                 variant="outline"
+                className="h-9 px-4 text-sm cursor-pointer"
                 onClick={() => onOpenChange(false)}
               >
                 Cancelar
               </Button>
-              <Button type="submit" disabled={form.formState.isSubmitting}>
+              <Button
+                type="submit"
+                disabled={form.formState.isSubmitting}
+                className="h-9 px-4 text-sm font-medium text-white cursor-pointer
+                           hover:opacity-90 active:opacity-80 transition-opacity"
+                style={{ backgroundColor: "var(--color-primary-40)" }}
+              >
                 {form.formState.isSubmitting && (
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                 )}

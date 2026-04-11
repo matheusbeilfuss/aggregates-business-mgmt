@@ -1,14 +1,14 @@
 const PALETTE = [
-  "#3b82f6",
-  "#f97316",
-  "#22c55e",
-  "#a855f7",
-  "#ec4899",
-  "#eab308",
-  "#14b8a6",
-  "#ef4444",
-  "#6366f1",
-  "#f59e0b",
+  "#0061a4",
+  "#9e4300",
+  "#4e43e4",
+  "#15803d",
+  "#ba1a1a",
+  "#0891b2",
+  "#7c3aed",
+  "#b45309",
+  "#0f766e",
+  "#be185d",
 ];
 
 export function generateColors(count: number): string[] {

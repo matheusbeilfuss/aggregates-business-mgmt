@@ -3,7 +3,7 @@ import { Navigate, useNavigate, useParams } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
-
+import { Truck, Package, TriangleAlert } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import {
   Select,
@@ -20,8 +20,13 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-
-import { PageContainer, LoadingState, FormActions } from "@/components/shared";
+import {
+  PageContainer,
+  LoadingState,
+  FormActions,
+  FormSection,
+  CurrencyInput,
+} from "@/components/shared";
 import { useStock } from "../hooks";
 import { stockService } from "../services/stock.service";
 import {
@@ -31,16 +36,13 @@ import {
 import { tonToM3, m3ToTon, calculateExpenseValue } from "../utils/calculations";
 import { ApiError } from "@/lib/api";
 import { usePageTitle } from "@/hooks/usePageTitle";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { TriangleAlert } from "lucide-react";
 import { useProductSuppliersByProductId } from "@/modules/product-supplier/hooks";
 import type { ProductSupplier } from "@/modules/product-supplier/types";
 
 export function StockReplenish() {
-  usePageTitle("Reabastecer estoque");
+  usePageTitle("Adicionar estoque");
 
   const navigate = useNavigate();
-
   const { id: rawStockId } = useParams<{ id: string }>();
   const stockId = Number(rawStockId);
   const validId = Number.isFinite(stockId) && stockId > 0;
@@ -80,9 +82,7 @@ export function StockReplenish() {
     }
   }, [stockError, navigate]);
 
-  if (!validId) {
-    return <Navigate to="/stocks" replace />;
-  }
+  if (!validId) return <Navigate to="/stocks" replace />;
 
   const getSelectedSupplier = (): ProductSupplier | undefined => {
     const supplierId = form.getValues("supplierId");
@@ -93,8 +93,10 @@ export function StockReplenish() {
     if (userEditedExpenseValue) return;
     const supplier = getSelectedSupplier();
     if (supplier) {
-      const value = calculateExpenseValue(tonQty, m3Qty, supplier);
-      form.setValue("expenseValue", value);
+      form.setValue(
+        "expenseValue",
+        calculateExpenseValue(tonQty, m3Qty, supplier),
+      );
     }
   };
 
@@ -102,11 +104,9 @@ export function StockReplenish() {
     const selected = productSuppliers?.find(
       (ps) => ps.supplierId === supplierId,
     );
-
     setUserEditedExpenseValue(false);
     setUserEditedM3(false);
     setUserEditedTon(false);
-
     form.reset({
       supplierId,
       density: selected?.density ?? 0,
@@ -122,7 +122,6 @@ export function StockReplenish() {
     form.setValue("tonQuantity", tonQuantity);
     setUserEditedTon(true);
     setUserEditedM3(false);
-
     const density = form.getValues("density");
     if (density > 0) {
       const m3Quantity = tonToM3(tonQuantity, density);
@@ -136,7 +135,6 @@ export function StockReplenish() {
     form.setValue("m3Quantity", m3Quantity);
     setUserEditedM3(true);
     setUserEditedTon(false);
-
     const density = form.getValues("density");
     if (density > 0) {
       const tonQuantity = m3ToTon(m3Quantity, density);
@@ -148,10 +146,8 @@ export function StockReplenish() {
   const handleDensityChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const density = parseFloat(e.target.value) || 0;
     form.setValue("density", density);
-
     const currentTon = form.getValues("tonQuantity");
     const currentM3 = form.getValues("m3Quantity");
-
     if (density > 0) {
       if (userEditedM3 && !userEditedTon) {
         const newTon = m3ToTon(currentM3, density);
@@ -167,7 +163,6 @@ export function StockReplenish() {
 
   const onSubmit = async (data: ReplenishFormData) => {
     if (!stock || !stockId) return;
-
     try {
       await stockService.replenish(stockId, {
         tonQuantity: data.tonQuantity,
@@ -176,15 +171,14 @@ export function StockReplenish() {
         expenseValue: data.expenseValue,
         paymentStatus: data.paymentStatus,
       });
-
-      toast.success("Estoque reabastecido com sucesso!");
+      toast.success("Estoque reabastecido com sucesso.");
       navigate("/stocks");
     } catch (error) {
-      if (error instanceof ApiError) {
-        toast.error(error.message);
-      } else {
-        toast.error("Não foi possível reabastecer o estoque.");
-      }
+      toast.error(
+        error instanceof ApiError
+          ? error.message
+          : "Não foi possível reabastecer o estoque.",
+      );
     }
   };
 
@@ -199,176 +193,191 @@ export function StockReplenish() {
   return (
     <PageContainer title="Adicionar estoque" subtitle={stock?.product.name}>
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-          <FormField
-            control={form.control}
-            name="supplierId"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Fornecedor</FormLabel>
-                <Select
-                  value={field.value?.toString() ?? ""}
-                  onValueChange={(value) => {
-                    field.onChange(Number(value));
-                    handleSupplierChange(Number(value));
-                  }}
-                >
-                  <FormControl>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Selecione o fornecedor..." />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    {productSuppliers?.map((ps) => (
-                      <SelectItem key={ps.id} value={ps.supplierId.toString()}>
-                        {ps.supplierName}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-            <FormField
-              control={form.control}
-              name="density"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Densidade (Ton/m³)</FormLabel>
-                  <FormControl>
-                    <Input
-                      type="number"
-                      value={field.value ?? ""}
-                      onFocus={(e) => e.target.select()}
-                      onChange={(e) => {
-                        field.onChange(e);
-                        handleDensityChange(e);
+        <form onSubmit={form.handleSubmit(onSubmit)}>
+          <div className="max-w-3xl mx-auto space-y-8">
+            <FormSection icon={Truck} title="Fornecedor">
+              <FormField
+                control={form.control}
+                name="supplierId"
+                render={({ field }) => (
+                  <FormItem className="md:col-span-2">
+                    <FormLabel>Fornecedor</FormLabel>
+                    <Select
+                      value={field.value?.toString() ?? ""}
+                      onValueChange={(value) => {
+                        field.onChange(Number(value));
+                        handleSupplierChange(Number(value));
                       }}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+                    >
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Selecione o fornecedor..." />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        {productSuppliers?.map((ps) => (
+                          <SelectItem
+                            key={ps.id}
+                            value={ps.supplierId.toString()}
+                          >
+                            {ps.supplierName}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </FormSection>
 
-            <FormField
-              control={form.control}
-              name="tonQuantity"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Toneladas</FormLabel>
-                  <FormControl>
-                    <Input
-                      type="number"
-                      value={field.value ?? ""}
-                      onFocus={(e) => e.target.select()}
-                      onChange={(e) => {
-                        field.onChange(e);
-                        handleTonChange(e);
-                      }}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="m3Quantity"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Volume (m³)</FormLabel>
-                  <FormControl>
-                    <Input
-                      type="number"
-                      value={field.value ?? ""}
-                      onFocus={(e) => e.target.select()}
-                      onChange={(e) => {
-                        field.onChange(e);
-                        handleM3Change(e);
-                      }}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="expenseValue"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Valor Total (R$)</FormLabel>
-                  <FormControl>
-                    <Input
-                      type="number"
-                      value={field.value ?? ""}
-                      onFocus={(e) => e.target.select()}
-                      onChange={(e) => {
-                        field.onChange(e);
-                        setUserEditedExpenseValue(true);
-                      }}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="paymentStatus"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Status do Pagamento</FormLabel>
-                  <Select
-                    onValueChange={field.onChange}
-                    defaultValue={field.value}
-                  >
+            <FormSection icon={Package} title="Quantidades">
+              <FormField
+                control={form.control}
+                name="density"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Densidade (Ton/m³)</FormLabel>
                     <FormControl>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Selecione..." />
-                      </SelectTrigger>
+                      <Input
+                        type="number"
+                        value={field.value ?? ""}
+                        onFocus={(e) => e.target.select()}
+                        onChange={(e) => {
+                          field.onChange(e);
+                          handleDensityChange(e);
+                        }}
+                      />
                     </FormControl>
-                    <SelectContent>
-                      <SelectItem value="PENDING">Pendente</SelectItem>
-                      <SelectItem value="PAID">Pago</SelectItem>
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="tonQuantity"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Toneladas</FormLabel>
+                    <FormControl>
+                      <Input
+                        type="number"
+                        value={field.value ?? ""}
+                        onFocus={(e) => e.target.select()}
+                        onChange={(e) => {
+                          field.onChange(e);
+                          handleTonChange(e);
+                        }}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="m3Quantity"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Volume (m³)</FormLabel>
+                    <FormControl>
+                      <Input
+                        type="number"
+                        value={field.value ?? ""}
+                        onFocus={(e) => e.target.select()}
+                        onChange={(e) => {
+                          field.onChange(e);
+                          handleM3Change(e);
+                        }}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="expenseValue"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Valor total</FormLabel>
+                    <FormControl>
+                      <CurrencyInput
+                        value={field.value}
+                        onChange={(val) => {
+                          field.onChange(val);
+                          setUserEditedExpenseValue(true);
+                        }}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="paymentStatus"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Status do pagamento</FormLabel>
+                    <Select
+                      onValueChange={field.onChange}
+                      defaultValue={field.value}
+                    >
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Selecione..." />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        <SelectItem value="PENDING">Pendente</SelectItem>
+                        <SelectItem value="PAID">Pago</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </FormSection>
+
+            <div
+              className="flex items-start gap-3 rounded-xl px-4 py-3"
+              style={{ backgroundColor: "var(--color-error-container)" }}
+            >
+              <TriangleAlert
+                className="h-4 w-4 mt-0.5 shrink-0"
+                style={{ color: "var(--color-error)" }}
+              />
+              <div
+                className="space-y-1 text-sm"
+                style={{ color: "var(--color-on-error-container)" }}
+              >
+                <p className="font-semibold">Atenção</p>
+                <p>
+                  Uma{" "}
+                  <strong>saída financeira será criada automaticamente</strong>{" "}
+                  com o valor informado nesta tela.
+                </p>
+                <p>
+                  A densidade informada aqui será salva no estoque e usada para
+                  calcular a conversão entre toneladas e m³ nos{" "}
+                  <strong>próximos pedidos criados</strong>.
+                </p>
+              </div>
+            </div>
           </div>
 
-          <Alert variant="destructive" className="md:col-span-2">
-            <TriangleAlert />
-            <AlertTitle>Atenção</AlertTitle>
-            <AlertDescription className="space-y-1 mt-1">
-              <p>
-                - Uma{" "}
-                <strong>saída financeira será criada automaticamente</strong>{" "}
-                com o valor informado nesta tela.
-              </p>
-              <p>
-                - A densidade informada aqui será salva no estoque e usada para
-                calcular a conversão entre toneladas e m³ nos próximos pedidos.
-              </p>
-            </AlertDescription>
-          </Alert>
+          <FormActions
+            cancelPath="/stocks"
+            submitLabel="Adicionar"
+            onSubmit={form.handleSubmit(onSubmit)}
+          />
         </form>
       </Form>
-
-      <FormActions
-        cancelPath="/stocks"
-        submitLabel="Adicionar"
-        onSubmit={form.handleSubmit(onSubmit)}
-      />
     </PageContainer>
   );
 }
