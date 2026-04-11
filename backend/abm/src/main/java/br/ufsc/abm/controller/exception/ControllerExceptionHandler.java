@@ -1,0 +1,141 @@
+package br.ufsc.abm.controller.exception;
+
+import static java.util.stream.Collectors.joining;
+
+import java.time.Instant;
+
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.annotation.ControllerAdvice;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.multipart.MaxUploadSizeExceededException;
+
+import br.ufsc.abm.security.exception.LoginException;
+import br.ufsc.abm.security.exception.TokenException;
+import br.ufsc.abm.service.exception.DatabaseException;
+import br.ufsc.abm.service.exception.FileStorageException;
+import br.ufsc.abm.service.exception.ForbiddenException;
+import br.ufsc.abm.service.exception.ResourceNotFoundException;
+import br.ufsc.abm.validator.exception.ValidationException;
+
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.ConstraintViolationException;
+
+@ControllerAdvice
+public class ControllerExceptionHandler {
+
+	@ExceptionHandler(ResourceNotFoundException.class)
+	public ResponseEntity<StandardError> resourceNotFound(ResourceNotFoundException e, HttpServletRequest request) {
+		String error = "Resource not found";
+		HttpStatus status = HttpStatus.NOT_FOUND;
+		StandardError err = new StandardError(Instant.now(), status.value(), error, e.getMessage(), request.getRequestURI());
+		return ResponseEntity.status(status).body(err);
+	}
+
+	@ExceptionHandler(FileStorageException.class)
+	public ResponseEntity<StandardError> emptyUploadedFile(FileStorageException e, HttpServletRequest request) {
+		String error = "Empty uploaded file";
+		HttpStatus status = HttpStatus.BAD_REQUEST;
+		StandardError err = new StandardError(Instant.now(), status.value(), error, e.getMessage(), request.getRequestURI());
+		return ResponseEntity.status(status).body(err);
+	}
+
+	@ExceptionHandler(MaxUploadSizeExceededException.class)
+	public ResponseEntity<StandardError> maxUploadSizeExceeded(MaxUploadSizeExceededException e, HttpServletRequest request) {
+		String error = "File size exceeds limit";
+		String message = "O arquivo enviado excede o limite máximo permitido. Por favor, envie um arquivo menor.";
+		HttpStatus status = HttpStatus.BAD_REQUEST;
+		StandardError err = new StandardError(Instant.now(), status.value(), error, message, request.getRequestURI());
+		return ResponseEntity.status(status).body(err);
+	}
+
+	@ExceptionHandler(TokenException.class)
+	public ResponseEntity<StandardError> tokenError(TokenException e, HttpServletRequest request) {
+		String error = "Authentication error";
+		HttpStatus status = HttpStatus.UNAUTHORIZED;
+		StandardError err = new StandardError(Instant.now(), status.value(), error, e.getMessage(), request.getRequestURI());
+		return ResponseEntity.status(status).body(err);
+	}
+
+	@ExceptionHandler(LoginException.class)
+	public ResponseEntity<StandardError> loginError(LoginException e, HttpServletRequest request) {
+		String error = "Login error";
+		HttpStatus status = HttpStatus.UNAUTHORIZED;
+		StandardError err = new StandardError(Instant.now(), status.value(), error, e.getMessage(), request.getRequestURI());
+		return ResponseEntity.status(status).body(err);
+	}
+
+	@ExceptionHandler(DatabaseException.class)
+	public ResponseEntity<StandardError> databaseError(DatabaseException e, HttpServletRequest request) {
+		String error = "Database error";
+		HttpStatus status = HttpStatus.CONFLICT;
+		StandardError err = new StandardError(Instant.now(), status.value(), error, e.getMessage(), request.getRequestURI());
+		return ResponseEntity.status(status).body(err);
+	}
+
+	@ExceptionHandler(DataIntegrityViolationException.class)
+	public ResponseEntity<StandardError> dataIntegrityViolation(DataIntegrityViolationException e, HttpServletRequest request) {
+		String error = "Database integrity error";
+		String message = "Não é possível excluir este registro pois ele está sendo utilizado por outros dados do sistema.";
+		HttpStatus status = HttpStatus.CONFLICT;
+		StandardError err = new StandardError(Instant.now(), status.value(), error, message, request.getRequestURI());
+		return ResponseEntity.status(status).body(err);
+	}
+
+	@ExceptionHandler(IllegalStateException.class)
+	public ResponseEntity<StandardError> illegalState(IllegalStateException e, HttpServletRequest request) {
+		String error = "Conflict";
+		HttpStatus status = HttpStatus.CONFLICT;
+		StandardError err = new StandardError(Instant.now(), status.value(), error, e.getMessage(), request.getRequestURI());
+		return ResponseEntity.status(status).body(err);
+	}
+
+	@ExceptionHandler(ForbiddenException.class)
+	public ResponseEntity<StandardError> forbidden(ForbiddenException e, HttpServletRequest request) {
+		String error = "Forbidden";
+		HttpStatus status = HttpStatus.FORBIDDEN;
+		StandardError err = new StandardError(Instant.now(), status.value(), error, e.getMessage(), request.getRequestURI());
+		return ResponseEntity.status(status).body(err);
+	}
+
+	@ExceptionHandler(IllegalArgumentException.class)
+	public ResponseEntity<StandardError> illegalArgument(IllegalArgumentException e, HttpServletRequest request) {
+		String error = "Illegal argument";
+		HttpStatus status = HttpStatus.BAD_REQUEST;
+		StandardError err = new StandardError(Instant.now(), status.value(), error, e.getMessage(), request.getRequestURI());
+		return ResponseEntity.status(status).body(err);
+	}
+
+	@ExceptionHandler(MethodArgumentNotValidException.class)
+	public ResponseEntity<StandardError> methodArgumentNotValid(MethodArgumentNotValidException e, HttpServletRequest request) {
+		String error = "Validation error";
+		HttpStatus status = HttpStatus.BAD_REQUEST;
+		String message = e.getBindingResult().getFieldErrors().stream()
+				.map(fieldError -> fieldError.getField() + ": " + fieldError.getDefaultMessage())
+				.collect(joining(", "));
+		StandardError err = new StandardError(Instant.now(), status.value(), error, message, request.getRequestURI());
+		return ResponseEntity.status(status).body(err);
+	}
+
+	@ExceptionHandler(ValidationException.class)
+	public ResponseEntity<StandardError> validationError(ValidationException e, HttpServletRequest request) {
+		String error = "Validation error";
+		HttpStatus status = HttpStatus.BAD_REQUEST;
+		StandardError err = new StandardError(Instant.now(), status.value(), error, e.getMessage(), request.getRequestURI());
+		return ResponseEntity.status(status).body(err);
+	}
+
+	@ExceptionHandler(ConstraintViolationException.class)
+	public ResponseEntity<StandardError> constraintViolation(ConstraintViolationException e, HttpServletRequest request) {
+		String error = "Validation error";
+		HttpStatus status = HttpStatus.BAD_REQUEST;
+		String message = e.getConstraintViolations().stream()
+				.map(ConstraintViolation::getMessage)
+				.collect(joining(", "));
+		StandardError err = new StandardError(Instant.now(), status.value(), error, message, request.getRequestURI());
+		return ResponseEntity.status(status).body(err);
+	}
+}
