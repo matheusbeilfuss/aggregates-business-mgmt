@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { startOfMonth, endOfMonth } from "date-fns";
 import { usePageTitle } from "@/hooks/usePageTitle";
 import { PageContainer, LoadingState, SummaryCard } from "@/components/shared";
@@ -32,8 +32,15 @@ export default function Fuel() {
       toast.error("Não foi possível carregar os registros de combustível.");
   }, [error]);
 
-  const total =
-    expenses?.reduce((acc, e) => acc + Number(e.expenseValue), 0) ?? 0;
+  const sortedExpenses = useMemo(
+    () => [...(expenses ?? [])].sort((a, b) => a.date.localeCompare(b.date)),
+    [expenses],
+  );
+
+  const total = sortedExpenses.reduce(
+    (acc, e) => acc + Number(e.expenseValue),
+    0,
+  );
 
   return (
     <PageContainer
@@ -42,7 +49,7 @@ export default function Fuel() {
     >
       {loading ? (
         <LoadingState />
-      ) : !expenses?.length ? (
+      ) : !sortedExpenses.length ? (
         <div
           className="flex flex-col items-center justify-center gap-2 py-16
                      rounded-xl border border-dashed"
@@ -73,7 +80,7 @@ export default function Fuel() {
           </div>
 
           <div className="flex flex-col gap-2">
-            {expenses.map((e) => (
+            {sortedExpenses.map((e) => (
               <FuelRow key={e.id} expense={e} />
             ))}
           </div>

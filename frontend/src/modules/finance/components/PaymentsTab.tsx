@@ -23,9 +23,10 @@ const PAYMENT_GROUP_ORDER: PaymentMethodEnum[] = [
 
 export function PaymentsTab({ payments, onRefetch }: PaymentsTabProps) {
   const groups = useMemo<AccordionGroup[]>(() => {
+    const sorted = [...payments].sort((a, b) => a.date.localeCompare(b.date));
     const map = new Map<PaymentMethodEnum, Payment[]>();
 
-    for (const payment of payments) {
+    for (const payment of sorted) {
       const existing = map.get(payment.paymentMethod);
       if (existing) existing.push(payment);
       else map.set(payment.paymentMethod, [payment]);
