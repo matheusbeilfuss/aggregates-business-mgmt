@@ -36,7 +36,7 @@ public class ProductSupplier implements Serializable {
 	@Column(nullable = false)
 	private Double costPerCubicMeter;
 
-	@Column(nullable = false)
+	@Column(name = "cost_for_5_cubic_meters", nullable = false)
 	private Double costFor5CubicMeters;
 
 	@Column(nullable = false)

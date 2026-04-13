@@ -44,11 +44,13 @@ public class Order implements Serializable {
 	@JoinColumn(name = "address_id", nullable = false, unique = true)
 	private OrderAddress orderAddress;
 
+	@Column(name = "m3_quantity")
 	private Double m3Quantity;
+
 	private Double tonQuantity;
 	private String service;
 
-	@Column(nullable = false)
+	@Column(nullable = false, length = 20)
 	@Enumerated(EnumType.STRING)
 	private OrderTypeEnum type;
 
@@ -60,11 +62,11 @@ public class Order implements Serializable {
 
 	private String observations;
 
-	@Column(nullable = false)
+	@Column(nullable = false, length = 20)
 	@Enumerated(EnumType.STRING)
 	private OrderStatusEnum status;
 
-	@Column(nullable = false)
+	@Column(nullable = false, length = 20)
 	@Enumerated(EnumType.STRING)
 	private PaymentStatusEnum paymentStatus;
 

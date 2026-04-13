@@ -29,7 +29,7 @@ public class Payment implements Serializable {
 	private Long id;
 
 	@ManyToOne
-	@JoinColumn(name = "order_id")
+	@JoinColumn(name = "order_id", nullable = false)
 	private Order order;
 
 	@Column(nullable = false)
@@ -38,7 +38,7 @@ public class Payment implements Serializable {
 	@Column(nullable = false)
 	private LocalDate date;
 
-	@Column(nullable = false)
+	@Column(nullable = false, length = 30)
 	@Enumerated(EnumType.STRING)
 	private PaymentMethodEnum paymentMethod;
 

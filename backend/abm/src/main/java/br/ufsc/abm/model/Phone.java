@@ -36,7 +36,7 @@ public class Phone implements Serializable {
 	@Column(nullable = false)
 	private String number;
 
-	@Column(nullable = false)
+	@Column(nullable = false, length = 20)
 	@Enumerated(EnumType.STRING)
 	private PhoneTypeEnum type;
 

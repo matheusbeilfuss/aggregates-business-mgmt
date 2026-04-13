@@ -29,7 +29,7 @@ public class Stock implements Serializable {
 	@Column(nullable = false)
 	private Double tonQuantity;
 
-	@Column(nullable = false)
+	@Column(name = "m3_quantity", nullable = false)
 	private Double m3Quantity;
 
 	private Double density;

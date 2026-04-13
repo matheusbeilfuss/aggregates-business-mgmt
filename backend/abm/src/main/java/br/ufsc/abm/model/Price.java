@@ -22,7 +22,7 @@ public class Price implements Serializable {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	@Column(nullable = false)
+	@Column(name = "m3_volume", nullable = false)
 	private Integer m3Volume;
 
 	@Column(nullable = false)

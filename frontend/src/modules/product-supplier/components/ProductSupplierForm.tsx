@@ -267,10 +267,7 @@ export function ProductSupplierForm(props: ProductSupplierFormProps) {
           render={({ field }) => (
             <FormItem>
               <FormLabel>
-                Custo por 5m³{" "}
-                <span className="text-muted-foreground font-normal text-xs">
-                  (opcional)
-                </span>
+                Custo por 5m³ <span className="text-destructive">*</span>
               </FormLabel>
               <FormControl>
                 <CurrencyInput value={field.value} onChange={field.onChange} />
