@@ -8,6 +8,7 @@ COPY .mvn .mvn
 RUN chmod +x mvnw && ./mvnw dependency:go-offline -B
 
 COPY src src
+# Tests are run in CI before building; skipped here to keep the image build fast
 RUN ./mvnw package -DskipTests -B
 
 # Runtime stage
