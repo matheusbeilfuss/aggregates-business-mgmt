@@ -1,0 +1,63 @@
+services:
+  # Database
+  db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: abm
+      POSTGRES_USER: ${DATABASE_USER}
+      POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    ports:
+      - "5432:5432" # expose for local debugging; remove in production if desired
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DATABASE_USER} -d abm"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  # Backend
+  backend:
+    build: ./backend/abm
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      SPRING_PROFILES_ACTIVE: prod
+
+      # Database
+      DATABASE_URL: jdbc:postgresql://db:5432/abm
+      DATABASE_USER: ${DATABASE_USER}
+      DATABASE_PASSWORD: ${DATABASE_PASSWORD}
+
+      # Security
+      JWT_SECRET: ${JWT_SECRET}
+      JWT_EXPIRATION: ${JWT_EXPIRATION:-2h}
+      COOKIE_SECURE: ${COOKIE_SECURE:-true}
+      CORS_ALLOWED_ORIGINS: ${CORS_ALLOWED_ORIGINS}
+
+      # Initial admin
+      ADMIN_INITIAL_USERNAME: ${ADMIN_INITIAL_USERNAME}
+      ADMIN_INITIAL_PASSWORD: ${ADMIN_INITIAL_PASSWORD}
+    volumes:
+      - uploads:/app/uploads
+    expose:
+      - "8080" # only visible to other containers (Nginx)
+
+  # Frontend
+  frontend:
+    build:
+      context: ./frontend
+      args:
+        VITE_API_URL: /api # baked into the JS bundle at build time
+    restart: unless-stopped
+    depends_on:
+      - backend
+    ports:
+      - "80:80" # entry point for users
+
+volumes:
+  pgdata:
+  uploads:
