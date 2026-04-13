@@ -116,7 +116,7 @@ CREATE TABLE tb_order (
 
 CREATE TABLE tb_payment (
     id BIGSERIAL PRIMARY KEY,
-    order_id BIGINT REFERENCES tb_order(id),
+    order_id BIGINT NOT NULL REFERENCES tb_order(id),
     payment_method VARCHAR(30) NOT NULL CHECK (payment_method IN ('CASH', 'PIX', 'CREDIT_CARD', 'DEBIT_CARD', 'BANK_TRANSFER', 'BANK_SLIP', 'CHECK')),
     payment_value NUMERIC(38,2) NOT NULL,
     date DATE NOT NULL
