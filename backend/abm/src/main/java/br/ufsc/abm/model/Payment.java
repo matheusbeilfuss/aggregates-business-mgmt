@@ -29,7 +29,7 @@ public class Payment implements Serializable {
 	private Long id;
 
 	@ManyToOne
-	@JoinColumn(name = "order_id")
+	@JoinColumn(name = "order_id", nullable = false)
 	private Order order;
 
 	@Column(nullable = false)
