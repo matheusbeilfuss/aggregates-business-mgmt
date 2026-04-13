@@ -39,11 +39,11 @@ public class Expense implements Serializable {
 	private LocalDate dueDate;
 	private LocalDate paymentDate;
 
-	@Column(nullable = false)
+	@Column(nullable = false, length = 20)
 	@Enumerated(EnumType.STRING)
 	private ExpenseTypeEnum type;
 
-	@Column(nullable = false)
+	@Column(nullable = false, length = 20)
 	@Enumerated(EnumType.STRING)
 	private PaymentStatusEnum paymentStatus;
 

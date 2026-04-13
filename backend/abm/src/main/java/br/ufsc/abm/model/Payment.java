@@ -38,7 +38,7 @@ public class Payment implements Serializable {
 	@Column(nullable = false)
 	private LocalDate date;
 
-	@Column(nullable = false)
+	@Column(nullable = false, length = 30)
 	@Enumerated(EnumType.STRING)
 	private PaymentMethodEnum paymentMethod;
 

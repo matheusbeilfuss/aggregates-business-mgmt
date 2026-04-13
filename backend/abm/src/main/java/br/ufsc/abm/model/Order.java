@@ -50,7 +50,7 @@ public class Order implements Serializable {
 	private Double tonQuantity;
 	private String service;
 
-	@Column(nullable = false)
+	@Column(nullable = false, length = 20)
 	@Enumerated(EnumType.STRING)
 	private OrderTypeEnum type;
 
@@ -62,11 +62,11 @@ public class Order implements Serializable {
 
 	private String observations;
 
-	@Column(nullable = false)
+	@Column(nullable = false, length = 20)
 	@Enumerated(EnumType.STRING)
 	private OrderStatusEnum status;
 
-	@Column(nullable = false)
+	@Column(nullable = false, length = 20)
 	@Enumerated(EnumType.STRING)
 	private PaymentStatusEnum paymentStatus;
 
