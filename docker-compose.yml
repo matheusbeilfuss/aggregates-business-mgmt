@@ -25,6 +25,12 @@ services:
     depends_on:
       db:
         condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "curl -sf http://localhost:8080/login || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 30s
     environment:
       SPRING_PROFILES_ACTIVE: prod
 
@@ -55,7 +61,8 @@ services:
         VITE_API_URL: /api # baked into the JS bundle at build time
     restart: unless-stopped
     depends_on:
-      - backend
+      backend:
+        condition: service_healthy
     ports:
       - "80:80" # entry point for users
 
