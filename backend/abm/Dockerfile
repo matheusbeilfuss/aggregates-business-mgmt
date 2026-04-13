@@ -19,7 +19,7 @@ WORKDIR /app
 RUN groupadd -r appuser && useradd -r -g appuser appuser
 
 # Copy the built JAR and entrypoint
-COPY --from=build /app/target/*.jar app.jar
+COPY --from=build /app/target/app.jar app.jar
 COPY entrypoint.sh .
 RUN chmod +x entrypoint.sh
 
