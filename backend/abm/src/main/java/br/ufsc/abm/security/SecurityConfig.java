@@ -97,6 +97,7 @@ public class SecurityConfig {
 						.requestMatchers("/logout").permitAll()
 						.requestMatchers("/h2-console/**").permitAll()
 						.requestMatchers("/favicon.ico").permitAll()
+						.requestMatchers("/actuator/health").permitAll()
 						.requestMatchers(HttpMethod.GET, "/settings").permitAll()
 						.requestMatchers(HttpMethod.PUT, "/settings").hasRole(adminRole)
 						.requestMatchers(HttpMethod.GET, businessImageRoute).permitAll()
