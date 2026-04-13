@@ -63,7 +63,7 @@ CREATE TABLE tb_product_supplier (
     product_id BIGINT REFERENCES tb_product(id),
     supplier_id BIGINT REFERENCES tb_supplier(id),
     cost_per_cubic_meter DOUBLE PRECISION NOT NULL,
-    cost_for5cubic_meters DOUBLE PRECISION NOT NULL,
+    cost_for_5_cubic_meters DOUBLE PRECISION NOT NULL,
     ton_cost DOUBLE PRECISION NOT NULL,
     density DOUBLE PRECISION NOT NULL,
     observations VARCHAR(255)
@@ -72,14 +72,14 @@ CREATE TABLE tb_product_supplier (
 CREATE TABLE tb_price (
     id BIGSERIAL PRIMARY KEY,
     category_id BIGINT REFERENCES tb_category(id),
-    m3volume INTEGER NOT NULL,
+    m3_volume INTEGER NOT NULL,
     price DOUBLE PRECISION NOT NULL
 );
 
 CREATE TABLE tb_stock (
     id BIGSERIAL PRIMARY KEY,
     product_id BIGINT UNIQUE REFERENCES tb_product(id),
-    m3quantity DOUBLE PRECISION NOT NULL,
+    m3_quantity DOUBLE PRECISION NOT NULL,
     ton_quantity DOUBLE PRECISION NOT NULL,
     density DOUBLE PRECISION,
     version BIGINT
@@ -108,7 +108,7 @@ CREATE TABLE tb_order (
     scheduled_time TIME NOT NULL,
     order_value NUMERIC(38,2) NOT NULL,
     remaining_value NUMERIC(38,2) NOT NULL,
-    m3quantity DOUBLE PRECISION,
+    m3_quantity DOUBLE PRECISION,
     ton_quantity DOUBLE PRECISION,
     service VARCHAR(255),
     observations VARCHAR(255)
