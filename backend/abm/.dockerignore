@@ -1,0 +1,6 @@
+target/
+*.iml
+.idea/
+uploads/
+*.class
+dependency-check-report.html
