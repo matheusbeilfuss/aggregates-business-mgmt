@@ -22,8 +22,9 @@ export function OrderAdd() {
   const navigate = useNavigate();
   const { data: products, loading: productsLoading } = useProducts();
 
-  const [pendingPayload, setPendingPayload] =
-    useState<CreateOrderPayload | null>(null);
+  const [pendingFormData, setPendingFormData] = useState<OrderFormData | null>(
+    null,
+  );
   const [openReceivablesDialogOpen, setOpenReceivablesDialogOpen] =
     useState(false);
 
@@ -33,21 +34,7 @@ export function OrderAdd() {
     defaultValues: orderFormDefaults,
   });
 
-  async function proceedWithInsert(payload: CreateOrderPayload) {
-    try {
-      await orderService.insert(payload);
-      toast.success("O pedido foi criado com sucesso.");
-      navigate("/orders");
-    } catch (error) {
-      if (error instanceof ApiError) {
-        toast.error(error.message);
-      } else {
-        toast.error("Não foi possível salvar o pedido.");
-      }
-    }
-  }
-
-  const onSubmit = async (data: OrderFormData) => {
+  async function proceedWithOrder(data: OrderFormData) {
     try {
       let clientId = data.clientId;
 
@@ -69,7 +56,7 @@ export function OrderAdd() {
 
         const newClient = await clientService.insert(newClientPayload);
 
-        if (newClient && newClient.id) {
+        if (newClient?.id) {
           clientId = newClient.id;
           toast.success(
             `Cliente "${newClient.name}" cadastrado automaticamente.`,
@@ -98,17 +85,33 @@ export function OrderAdd() {
         service: data.type === "SERVICE" ? (data.service ?? null) : null,
       };
 
-      const hasOpenReceivables = await orderService.hasOpenReceivables(
-        clientId!,
-      );
+      await orderService.insert(payload);
+      toast.success("O pedido foi criado com sucesso.");
+      navigate("/orders");
+    } catch (error) {
+      if (error instanceof ApiError) {
+        toast.error(error.message);
+      } else {
+        toast.error("Não foi possível salvar o pedido.");
+      }
+    }
+  }
 
-      if (hasOpenReceivables) {
-        setPendingPayload(payload);
-        setOpenReceivablesDialogOpen(true);
-        return;
+  const onSubmit = async (data: OrderFormData) => {
+    try {
+      if (data.clientId) {
+        const hasOpenReceivables = await orderService.hasOpenReceivables(
+          data.clientId,
+        );
+
+        if (hasOpenReceivables) {
+          setPendingFormData(data);
+          setOpenReceivablesDialogOpen(true);
+          return;
+        }
       }
 
-      await proceedWithInsert(payload);
+      await proceedWithOrder(data);
     } catch (error) {
       if (error instanceof ApiError) {
         toast.error(error.message);
@@ -133,14 +136,14 @@ export function OrderAdd() {
         open={openReceivablesDialogOpen}
         onOpenChange={(open) => {
           setOpenReceivablesDialogOpen(open);
-          if (!open) setPendingPayload(null);
+          if (!open) setPendingFormData(null);
         }}
         title="Cliente com cobrança em aberto"
         description="Este cliente possui cobranças em aberto. Deseja cadastrar o pedido mesmo assim?"
         onConfirm={async () => {
           setOpenReceivablesDialogOpen(false);
-          if (pendingPayload) await proceedWithInsert(pendingPayload);
-          setPendingPayload(null);
+          if (pendingFormData) await proceedWithOrder(pendingFormData);
+          setPendingFormData(null);
         }}
         confirmLabel="Continuar assim mesmo"
         variant="default"
