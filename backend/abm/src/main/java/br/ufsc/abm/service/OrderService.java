@@ -265,7 +265,7 @@ public class OrderService {
 				PaymentStatusEnum.PENDING,
 				PaymentStatusEnum.PARTIAL
 		);
-		return !orderRepository.findByClientIdAndPaymentStatusIn(clientId, openStatuses).isEmpty();
+		return orderRepository.existsByClientIdAndPaymentStatusIn(clientId, openStatuses);
 	}
 
 	public boolean hasOrderAtSameDateTime(LocalDate scheduledDate, LocalTime scheduledTime) {
