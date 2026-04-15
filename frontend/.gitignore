@@ -23,3 +23,6 @@ dist-ssr
 *.sln
 *.sw?
 .env
+
+# Production config (copy from nginx.example.conf)
+nginx.conf
