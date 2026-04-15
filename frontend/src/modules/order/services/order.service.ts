@@ -23,6 +23,6 @@ export const orderService = {
 
   hasConflict: (scheduledDate: string, scheduledTime: string) =>
     api.get<boolean>(
-      `/orders/has-conflict?scheduledDate=${scheduledDate}&scheduledTime=${scheduledTime}`,
+      `/orders/has-conflict?scheduledDate=${encodeURIComponent(scheduledDate)}&scheduledTime=${encodeURIComponent(scheduledTime)}`,
     ),
 };
