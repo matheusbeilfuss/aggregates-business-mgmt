@@ -58,7 +58,9 @@ export function AddProductDialog({
 
     try {
       await productService.insert(payload);
-      toast.success("Produto criado com sucesso.");
+      toast.success(
+        "Produto criado com sucesso. Lembre-se de atualizar o estoque e os preços do produto.",
+      );
       onOpenChange(false);
       form.reset();
       onSuccess();
