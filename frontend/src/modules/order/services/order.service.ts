@@ -20,4 +20,9 @@ export const orderService = {
 
   hasOpenReceivables: (clientId: number) =>
     api.get<boolean>(`/orders/has-open-receivables?clientId=${clientId}`),
+
+  hasConflict: (scheduledDate: string, scheduledTime: string) =>
+    api.get<boolean>(
+      `/orders/has-conflict?scheduledDate=${scheduledDate}&scheduledTime=${scheduledTime}`,
+    ),
 };

@@ -2,6 +2,7 @@ package br.ufsc.abm.controller;
 
 import java.net.URI;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -101,5 +102,10 @@ public class OrderController {
 	@GetMapping("/has-open-receivables")
 	public ResponseEntity<Boolean> hasOpenReceivables(@RequestParam Long clientId) {
 		return ResponseEntity.ok(service.hasOpenReceivables(clientId));
+	}
+
+	@GetMapping("/has-conflict")
+	public ResponseEntity<Boolean> hasConflict(@RequestParam LocalDate scheduledDate, @RequestParam LocalTime scheduledTime) {
+		return ResponseEntity.ok(service.hasOrderAtSameDateTime(scheduledDate, scheduledTime));
 	}
 }

@@ -27,6 +27,7 @@ export function OrderAdd() {
   );
   const [openReceivablesDialogOpen, setOpenReceivablesDialogOpen] =
     useState(false);
+  const [conflictDialogOpen, setConflictDialogOpen] = useState(false);
 
   const form = useForm<OrderFormData>({
     resolver: zodResolver(orderSchema),
@@ -97,6 +98,29 @@ export function OrderAdd() {
     }
   }
 
+  async function checkConflictAndProceed(data: OrderFormData) {
+    try {
+      const hasConflict = await orderService.hasConflict(
+        data.scheduledDate,
+        data.scheduledTime,
+      );
+
+      if (hasConflict) {
+        setPendingFormData(data);
+        setConflictDialogOpen(true);
+        return;
+      }
+
+      await proceedWithOrder(data);
+    } catch (error) {
+      if (error instanceof ApiError) {
+        toast.error(error.message);
+      } else {
+        toast.error("Não foi possível salvar o pedido.");
+      }
+    }
+  }
+
   const onSubmit = async (data: OrderFormData) => {
     try {
       if (data.clientId) {
@@ -111,7 +135,7 @@ export function OrderAdd() {
         }
       }
 
-      await proceedWithOrder(data);
+      await checkConflictAndProceed(data);
     } catch (error) {
       if (error instanceof ApiError) {
         toast.error(error.message);
@@ -142,11 +166,27 @@ export function OrderAdd() {
         description="Este cliente possui cobranças em aberto. Deseja cadastrar o pedido mesmo assim?"
         onConfirm={async () => {
           setOpenReceivablesDialogOpen(false);
+          if (pendingFormData) await checkConflictAndProceed(pendingFormData);
+        }}
+        confirmLabel="Continuar mesmo assim"
+        variant="destructive"
+      />
+
+      <ConfirmDialog
+        open={conflictDialogOpen}
+        onOpenChange={(open) => {
+          setConflictDialogOpen(open);
+          if (!open) setPendingFormData(null);
+        }}
+        title="Conflito de horário"
+        description="Já existe um pedido agendado para este dia e horário. Deseja cadastrar o pedido mesmo assim?"
+        onConfirm={async () => {
+          setConflictDialogOpen(false);
           if (pendingFormData) await proceedWithOrder(pendingFormData);
           setPendingFormData(null);
         }}
-        confirmLabel="Continuar assim mesmo"
-        variant="default"
+        confirmLabel="Continuar mesmo assim"
+        variant="destructive"
       />
     </>
   );
