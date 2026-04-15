@@ -13,6 +13,8 @@ import { useProducts } from "@/modules/product/hooks";
 import { clientService } from "@/modules/client/services/client.service";
 import { CreateClientPayload } from "@/modules/client/types";
 import { stripNonDigits } from "@/utils";
+import { ConfirmDialog } from "@/components/shared";
+import { useState } from "react";
 
 export function OrderAdd() {
   usePageTitle("Novo pedido");
@@ -20,11 +22,30 @@ export function OrderAdd() {
   const navigate = useNavigate();
   const { data: products, loading: productsLoading } = useProducts();
 
+  const [pendingPayload, setPendingPayload] =
+    useState<CreateOrderPayload | null>(null);
+  const [openReceivablesDialogOpen, setOpenReceivablesDialogOpen] =
+    useState(false);
+
   const form = useForm<OrderFormData>({
     resolver: zodResolver(orderSchema),
     mode: "onSubmit",
     defaultValues: orderFormDefaults,
   });
+
+  async function proceedWithInsert(payload: CreateOrderPayload) {
+    try {
+      await orderService.insert(payload);
+      toast.success("O pedido foi criado com sucesso.");
+      navigate("/orders");
+    } catch (error) {
+      if (error instanceof ApiError) {
+        toast.error(error.message);
+      } else {
+        toast.error("Não foi possível salvar o pedido.");
+      }
+    }
+  }
 
   const onSubmit = async (data: OrderFormData) => {
     try {
@@ -77,9 +98,17 @@ export function OrderAdd() {
         service: data.type === "SERVICE" ? (data.service ?? null) : null,
       };
 
-      await orderService.insert(payload);
-      toast.success("O pedido foi criado com sucesso.");
-      navigate("/orders");
+      const hasOpenReceivables = await orderService.hasOpenReceivables(
+        clientId!,
+      );
+
+      if (hasOpenReceivables) {
+        setPendingPayload(payload);
+        setOpenReceivablesDialogOpen(true);
+        return;
+      }
+
+      await proceedWithInsert(payload);
     } catch (error) {
       if (error instanceof ApiError) {
         toast.error(error.message);
@@ -90,13 +119,32 @@ export function OrderAdd() {
   };
 
   return (
-    <OrderForm
-      title="Novo pedido"
-      form={form}
-      products={products ?? []}
-      loading={productsLoading}
-      onSubmit={onSubmit}
-      submitLabel="Salvar"
-    />
+    <>
+      <OrderForm
+        title="Novo pedido"
+        form={form}
+        products={products ?? []}
+        loading={productsLoading}
+        onSubmit={onSubmit}
+        submitLabel="Salvar"
+      />
+
+      <ConfirmDialog
+        open={openReceivablesDialogOpen}
+        onOpenChange={(open) => {
+          setOpenReceivablesDialogOpen(open);
+          if (!open) setPendingPayload(null);
+        }}
+        title="Cliente com cobrança em aberto"
+        description="Este cliente possui cobranças em aberto. Deseja cadastrar o pedido mesmo assim?"
+        onConfirm={async () => {
+          setOpenReceivablesDialogOpen(false);
+          if (pendingPayload) await proceedWithInsert(pendingPayload);
+          setPendingPayload(null);
+        }}
+        confirmLabel="Continuar assim mesmo"
+        variant="default"
+      />
+    </>
   );
 }

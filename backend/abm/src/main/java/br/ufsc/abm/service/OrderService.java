@@ -259,6 +259,14 @@ public class OrderService {
 				&& order.getM3Quantity() > 0;
 	}
 
+	public boolean hasOpenReceivables(Long clientId) {
+		List<PaymentStatusEnum> openStatuses = List.of(
+				PaymentStatusEnum.PENDING,
+				PaymentStatusEnum.PARTIAL
+		);
+		return !orderRepository.findByClientIdAndPaymentStatusIn(clientId, openStatuses).isEmpty();
+	}
+
 	public List<ProductBalanceDTO> getBalanceByProduct(LocalDate startDate, LocalDate endDate) {
 		return orderRepository.findProductBalanceSummary(startDate, endDate);
 	}

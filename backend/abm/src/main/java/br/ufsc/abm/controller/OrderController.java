@@ -97,4 +97,9 @@ public class OrderController {
 	) {
 		return ResponseEntity.ok(service.getBalanceByProduct(startDate, endDate));
 	}
+
+	@GetMapping("/has-open-receivables")
+	public ResponseEntity<Boolean> hasOpenReceivables(@RequestParam Long clientId) {
+		return ResponseEntity.ok(service.hasOpenReceivables(clientId));
+	}
 }

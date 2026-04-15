@@ -25,6 +25,8 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
 
 	List<Order> findByPaymentStatusIn(List<PaymentStatusEnum> statuses);
 
+	List<Order> findByClientIdAndPaymentStatusIn(Long clientId, List<PaymentStatusEnum> statuses);
+
 	@Query("""
        SELECT new br.ufsc.abm.model.dto.ProductBalanceDTO(
            p.name,
