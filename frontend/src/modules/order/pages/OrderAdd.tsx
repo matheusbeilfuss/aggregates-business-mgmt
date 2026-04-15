@@ -165,8 +165,10 @@ export function OrderAdd() {
         title="Cliente com cobrança em aberto"
         description="Este cliente possui cobranças em aberto. Deseja cadastrar o pedido mesmo assim?"
         onConfirm={async () => {
+          const formData = pendingFormData;
           setOpenReceivablesDialogOpen(false);
-          if (pendingFormData) await checkConflictAndProceed(pendingFormData);
+          setPendingFormData(null);
+          if (formData) await checkConflictAndProceed(formData);
         }}
         confirmLabel="Continuar mesmo assim"
         variant="destructive"
