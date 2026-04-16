@@ -74,10 +74,10 @@ services:
     ports:
       - "80:80" # entry point for users
       # In production, also expose: "443:443"
-    # In production, copy nginx.example.conf to nginx.conf, customize, and add:
+    # In production, copy nginx.prod.example.conf to nginx.prod.conf, customize, and add:
     # volumes:
     #   - /etc/letsencrypt:/etc/letsencrypt:ro
-    #   - ./frontend/nginx.conf:/etc/nginx/conf.d/default.conf:ro
+    #   - ./frontend/nginx.prod.conf:/etc/nginx/conf.d/default.conf:ro
 
 volumes:
   pgdata:
