@@ -19,6 +19,7 @@ services:
       retries: 10
 
   # Backend
+  # In production, replace 'build' with: image: ghcr.io/YOUR_GITHUB_USERNAME/abm-backend:latest
   backend:
     build: ./backend/abm
     restart: unless-stopped
@@ -58,6 +59,8 @@ services:
       - "8080" # only visible to other containers (Nginx)
 
   # Frontend
+  # In production, replace 'build' with: image: ghcr.io/YOUR_GITHUB_USERNAME/abm-frontend:latest
+  # and add to volumes: ./frontend/nginx.conf:/etc/nginx/conf.d/default.conf:ro
   frontend:
     build:
       context: ./frontend
@@ -69,6 +72,11 @@ services:
         condition: service_healthy
     ports:
       - "80:80" # entry point for users
+      # In production, also expose: "443:443"
+    # In production, add:
+    # volumes:
+    #   - /etc/letsencrypt:/etc/letsencrypt:ro
+    #   - ./frontend/nginx.conf:/etc/nginx/conf.d/default.conf:ro
 
 volumes:
   pgdata:
