@@ -22,7 +22,7 @@ jobs:
 
       - name: Run backend tests
         working-directory: backend/abm
-        run: ./mvnw test -B
+        run: ./mvnw test -B -Dspring.profiles.active=test
 
       - name: Set up Node 22
         uses: actions/setup-node@v4
