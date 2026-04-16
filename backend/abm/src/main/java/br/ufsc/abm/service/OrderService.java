@@ -1,6 +1,7 @@
 package br.ufsc.abm.service;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -257,6 +258,18 @@ public class OrderService {
 				&& order.getProduct() != null
 				&& order.getM3Quantity() != null
 				&& order.getM3Quantity() > 0;
+	}
+
+	public boolean hasOpenReceivables(Long clientId) {
+		List<PaymentStatusEnum> openStatuses = List.of(
+				PaymentStatusEnum.PENDING,
+				PaymentStatusEnum.PARTIAL
+		);
+		return orderRepository.existsByClientIdAndPaymentStatusIn(clientId, openStatuses);
+	}
+
+	public boolean hasOrderAtSameDateTime(LocalDate scheduledDate, LocalTime scheduledTime) {
+		return orderRepository.existsByScheduledDateAndScheduledTime(scheduledDate, scheduledTime);
 	}
 
 	public List<ProductBalanceDTO> getBalanceByProduct(LocalDate startDate, LocalDate endDate) {

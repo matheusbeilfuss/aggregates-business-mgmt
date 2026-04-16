@@ -13,6 +13,8 @@ import { useProducts } from "@/modules/product/hooks";
 import { clientService } from "@/modules/client/services/client.service";
 import { CreateClientPayload } from "@/modules/client/types";
 import { stripNonDigits } from "@/utils";
+import { ConfirmDialog } from "@/components/shared";
+import { useState } from "react";
 
 export function OrderAdd() {
   usePageTitle("Novo pedido");
@@ -20,13 +22,20 @@ export function OrderAdd() {
   const navigate = useNavigate();
   const { data: products, loading: productsLoading } = useProducts();
 
+  const [pendingFormData, setPendingFormData] = useState<OrderFormData | null>(
+    null,
+  );
+  const [openReceivablesDialogOpen, setOpenReceivablesDialogOpen] =
+    useState(false);
+  const [conflictDialogOpen, setConflictDialogOpen] = useState(false);
+
   const form = useForm<OrderFormData>({
     resolver: zodResolver(orderSchema),
     mode: "onSubmit",
     defaultValues: orderFormDefaults,
   });
 
-  const onSubmit = async (data: OrderFormData) => {
+  async function proceedWithOrder(data: OrderFormData) {
     try {
       let clientId = data.clientId;
 
@@ -48,7 +57,7 @@ export function OrderAdd() {
 
         const newClient = await clientService.insert(newClientPayload);
 
-        if (newClient && newClient.id) {
+        if (newClient?.id) {
           clientId = newClient.id;
           toast.success(
             `Cliente "${newClient.name}" cadastrado automaticamente.`,
@@ -87,16 +96,100 @@ export function OrderAdd() {
         toast.error("Não foi possível salvar o pedido.");
       }
     }
+  }
+
+  async function checkConflictAndProceed(data: OrderFormData) {
+    try {
+      const hasConflict = await orderService.hasConflict(
+        data.scheduledDate,
+        data.scheduledTime,
+      );
+
+      if (hasConflict) {
+        setPendingFormData(data);
+        setConflictDialogOpen(true);
+        return;
+      }
+
+      await proceedWithOrder(data);
+    } catch (error) {
+      if (error instanceof ApiError) {
+        toast.error(error.message);
+      } else {
+        toast.error("Não foi possível salvar o pedido.");
+      }
+    }
+  }
+
+  const onSubmit = async (data: OrderFormData) => {
+    try {
+      if (data.clientId) {
+        const hasOpenReceivables = await orderService.hasOpenReceivables(
+          data.clientId,
+        );
+
+        if (hasOpenReceivables) {
+          setPendingFormData(data);
+          setOpenReceivablesDialogOpen(true);
+          return;
+        }
+      }
+
+      await checkConflictAndProceed(data);
+    } catch (error) {
+      if (error instanceof ApiError) {
+        toast.error(error.message);
+      } else {
+        toast.error("Não foi possível salvar o pedido.");
+      }
+    }
   };
 
   return (
-    <OrderForm
-      title="Novo pedido"
-      form={form}
-      products={products ?? []}
-      loading={productsLoading}
-      onSubmit={onSubmit}
-      submitLabel="Salvar"
-    />
+    <>
+      <OrderForm
+        title="Novo pedido"
+        form={form}
+        products={products ?? []}
+        loading={productsLoading}
+        onSubmit={onSubmit}
+        submitLabel="Salvar"
+      />
+
+      <ConfirmDialog
+        open={openReceivablesDialogOpen}
+        onOpenChange={(open) => {
+          setOpenReceivablesDialogOpen(open);
+          if (!open) setPendingFormData(null);
+        }}
+        title="Cliente com cobrança em aberto"
+        description="Este cliente possui cobranças em aberto. Deseja cadastrar o pedido mesmo assim?"
+        onConfirm={async () => {
+          const formData = pendingFormData;
+          setOpenReceivablesDialogOpen(false);
+          setPendingFormData(null);
+          if (formData) await checkConflictAndProceed(formData);
+        }}
+        confirmLabel="Continuar mesmo assim"
+        variant="destructive"
+      />
+
+      <ConfirmDialog
+        open={conflictDialogOpen}
+        onOpenChange={(open) => {
+          setConflictDialogOpen(open);
+          if (!open) setPendingFormData(null);
+        }}
+        title="Conflito de horário"
+        description="Já existe um pedido agendado para este dia e horário. Deseja cadastrar o pedido mesmo assim?"
+        onConfirm={async () => {
+          setConflictDialogOpen(false);
+          if (pendingFormData) await proceedWithOrder(pendingFormData);
+          setPendingFormData(null);
+        }}
+        confirmLabel="Continuar mesmo assim"
+        variant="destructive"
+      />
+    </>
   );
 }

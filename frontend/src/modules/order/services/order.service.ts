@@ -17,4 +17,12 @@ export const orderService = {
   markAsDelivered: (id: number) => api.patch(`/orders/${id}/delivered`, {}),
 
   delete: (id: number) => api.delete(`/orders/${id}`),
+
+  hasOpenReceivables: (clientId: number) =>
+    api.get<boolean>(`/orders/has-open-receivables?clientId=${clientId}`),
+
+  hasConflict: (scheduledDate: string, scheduledTime: string) =>
+    api.get<boolean>(
+      `/orders/has-conflict?scheduledDate=${encodeURIComponent(scheduledDate)}&scheduledTime=${encodeURIComponent(scheduledTime)}`,
+    ),
 };

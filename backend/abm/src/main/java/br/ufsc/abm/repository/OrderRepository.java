@@ -1,6 +1,7 @@
 package br.ufsc.abm.repository;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -16,6 +17,11 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
 	List<Order> findByScheduledDate(LocalDate scheduledDate);
 
 	boolean existsByProductId(Long productId);
+
+	boolean existsByScheduledDateAndScheduledTime(
+			LocalDate scheduledDate, LocalTime scheduledTime);
+
+	boolean existsByClientIdAndPaymentStatusIn(Long clientId, List<PaymentStatusEnum> statuses);
 
 	List<Order> findByPaymentStatusInAndScheduledDateBetween(
 			List<PaymentStatusEnum> statuses,
