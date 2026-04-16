@@ -24,5 +24,5 @@ dist-ssr
 *.sw?
 .env
 
-# Production config (copy from nginx.example.conf)
-nginx.conf
+# Production config (copy from nginx.prod.example.conf)
+nginx.prod.conf
