@@ -39,7 +39,6 @@ jobs:
 
   # Validate Docker builds on PRs (without pushing)
   build:
-    if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest
     needs: test
     steps:
