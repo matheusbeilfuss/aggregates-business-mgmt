@@ -41,10 +41,10 @@ export interface CreateClientPayload {
   email?: string;
   phones: CreatePhonePayload[];
   cep?: string;
-  street: string;
-  number: string;
+  street?: string;
+  number?: string;
   complement?: string;
-  neighborhood: string;
-  city: string;
-  state: string;
+  neighborhood?: string;
+  city?: string;
+  state?: string;
 }

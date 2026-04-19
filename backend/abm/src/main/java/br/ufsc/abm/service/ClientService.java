@@ -1,5 +1,6 @@
 package br.ufsc.abm.service;
 
+import static br.ufsc.abm.util.StringUtils.isNotBlank;
 import static br.ufsc.abm.util.StringUtils.normalizeName;
 
 import java.util.ArrayList;
@@ -38,8 +39,10 @@ public class ClientService {
 
 		Client client = clientFromDTO(dto);
 
-		Address address = addressFromDTO(dto, client);
-		client.setAddress(address);
+		if (hasAddressData(dto)) {
+			Address address = addressFromDTO(dto, client);
+			client.setAddress(address);
+		}
 
 		List<Phone> phones = phonesFromDTO(client, dto);
 		for (Phone phone : phones) {
@@ -73,18 +76,22 @@ public class ClientService {
 		existingClient.setEmail(dto.getEmail());
 		existingClient.setCpfCnpj(dto.getCpfCnpj());
 
-		Address newAddressData = addressFromDTO(dto, existingClient);
-		if (existingClient.getAddress() == null) {
-			existingClient.setAddress(newAddressData);
+		if (hasAddressData(dto)) {
+			Address newAddressData = addressFromDTO(dto, existingClient);
+			if (existingClient.getAddress() == null) {
+				existingClient.setAddress(newAddressData);
+			} else {
+				Address addr = existingClient.getAddress();
+				addr.setStreet(newAddressData.getStreet());
+				addr.setNumber(newAddressData.getNumber());
+				addr.setCity(newAddressData.getCity());
+				addr.setState(newAddressData.getState());
+				addr.setNeighborhood(newAddressData.getNeighborhood());
+				addr.setComplement(newAddressData.getComplement());
+				addr.setCep(newAddressData.getCep());
+			}
 		} else {
-			Address addr = existingClient.getAddress();
-			addr.setStreet(newAddressData.getStreet());
-			addr.setNumber(newAddressData.getNumber());
-			addr.setCity(newAddressData.getCity());
-			addr.setState(newAddressData.getState());
-			addr.setNeighborhood(newAddressData.getNeighborhood());
-			addr.setComplement(newAddressData.getComplement());
-			addr.setCep(newAddressData.getCep());
+			existingClient.setAddress(null);
 		}
 
 		new ArrayList<>(existingClient.getPhones()).forEach(existingClient::removePhone);
@@ -108,6 +115,12 @@ public class ClientService {
 
 	public List<Client> searchByName(String search) {
 		return repository.findByNameNormalized(normalizeName(search));
+	}
+
+	private boolean hasAddressData(ClientInputDTO dto) {
+		return isNotBlank(dto.getStreet()) || isNotBlank(dto.getNumber())
+				|| isNotBlank(dto.getNeighborhood()) || isNotBlank(dto.getCity())
+				|| isNotBlank(dto.getState());
 	}
 
 	public Client clientFromDTO(ClientInputDTO dto) {

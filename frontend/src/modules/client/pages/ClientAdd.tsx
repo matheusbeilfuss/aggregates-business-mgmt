@@ -35,6 +35,14 @@ export function ClientAdd() {
 
   const onSubmit = async (data: ClientFormData) => {
     try {
+      const hasAddress = !!(
+        data.street?.trim() ||
+        data.number?.trim() ||
+        data.neighborhood?.trim() ||
+        data.city?.trim() ||
+        data.state?.trim()
+      );
+
       await clientService.insert({
         name: data.name,
         cpfCnpj: data.cpfCnpj ? stripNonDigits(data.cpfCnpj) : undefined,
@@ -43,13 +51,17 @@ export function ClientAdd() {
           number: stripNonDigits(p.number),
           type: p.type,
         })),
-        cep: data.cep ? stripNonDigits(data.cep) : undefined,
-        street: data.street,
-        number: data.number,
-        complement: data.complement || undefined,
-        neighborhood: data.neighborhood,
-        city: data.city,
-        state: data.state,
+        ...(hasAddress
+          ? {
+              cep: data.cep ? stripNonDigits(data.cep) : undefined,
+              street: data.street,
+              number: data.number,
+              complement: data.complement || undefined,
+              neighborhood: data.neighborhood,
+              city: data.city,
+              state: data.state,
+            }
+          : {}),
       });
 
       toast.success("Cliente cadastrado com sucesso.");

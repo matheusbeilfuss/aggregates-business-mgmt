@@ -46,13 +46,6 @@ export function OrderAdd() {
             { number: stripNonDigits(data.phone), type: data.phoneType },
           ],
           cpfCnpj: data.cpfCnpj ? stripNonDigits(data.cpfCnpj) : undefined,
-          street: data.street,
-          number: data.number,
-          neighborhood: data.neighborhood,
-          city: data.city,
-          state: data.state,
-          cep: data.cep ? stripNonDigits(data.cep) : undefined,
-          complement: data.complement || undefined,
         };
 
         const newClient = await clientService.insert(newClientPayload);

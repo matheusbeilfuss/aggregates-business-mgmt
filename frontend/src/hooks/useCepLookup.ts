@@ -15,12 +15,14 @@ interface UseCepLookupResult {
   error: string | null;
 }
 
-export function useCepLookup(cep: string): UseCepLookupResult {
+export function useCepLookup(cep: string, enabled = true): UseCepLookupResult {
   const [address, setAddress] = useState<CepAddress | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
+    if (!enabled) return;
+
     const digits = cep.replace(/\D/g, "").slice(0, 8);
 
     if (digits.length < 8) {
@@ -78,7 +80,7 @@ export function useCepLookup(cep: string): UseCepLookupResult {
       clearTimeout(timer);
       controller.abort();
     };
-  }, [cep]);
+  }, [cep, enabled]);
 
   return { address, loading, error };
 }

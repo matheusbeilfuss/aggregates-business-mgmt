@@ -20,24 +20,12 @@ public class ClientInputDTO {
 	@Valid
 	private List<PhoneDTO> phones = new ArrayList<>();
 
-	@NotBlank(message = "A rua é obrigatória.")
 	private String street;
-
-	@NotBlank(message = "O número é obrigatório.")
 	private String number;
-
 	private String complement;
-
-	@NotBlank(message = "O bairro é obrigatório.")
 	private String neighborhood;
-
-	@NotBlank(message = "A cidade é obrigatória.")
 	private String city;
-
-	@NotBlank(message = "O estado é obrigatório.")
-	@Size(min = 2, message = "O estado deve ter pelo menos 2 caracteres.")
 	private String state;
-
 	private String cep;
 
 	public ClientInputDTO() {
