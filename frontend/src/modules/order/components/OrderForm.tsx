@@ -36,6 +36,13 @@ import { Product } from "@/modules/product/types";
 import { useClient } from "@/modules/client/hooks";
 import { useCategoryPrices } from "@/modules/price/hooks";
 import { useCepLookup } from "@/hooks/useCepLookup";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 interface OrderFormProps {
   title: string;
@@ -202,22 +209,25 @@ export function OrderForm({
 
               <FormField
                 control={form.control}
-                name="scheduledDate"
+                name="status"
                 render={({ field }) => (
                   <FormItem className="shrink-0">
-                    <FormLabel className="text-sm font-medium">Data</FormLabel>
+                    <FormLabel className="text-sm font-medium">
+                      Status
+                    </FormLabel>
                     <FormControl>
-                      <DatePicker
-                        value={
-                          field.value
-                            ? new Date(`${field.value}T00:00:00`)
-                            : new Date()
-                        }
-                        onChange={(date: Date) =>
-                          field.onChange(toIsoDate(date))
-                        }
-                        align="end"
-                      />
+                      <Select
+                        value={field.value}
+                        onValueChange={field.onChange}
+                      >
+                        <SelectTrigger>
+                          <SelectValue placeholder="Selecione o status" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="PENDING">Pendente</SelectItem>
+                          <SelectItem value="DELIVERED">Entregue</SelectItem>
+                        </SelectContent>
+                      </Select>
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -563,9 +573,34 @@ export function OrderForm({
             <FormSection icon={Clock} title="Agendamento">
               <FormField
                 control={form.control}
+                name="scheduledDate"
+                render={({ field }) => (
+                  <FormItem className="flex-1">
+                    <FormLabel>
+                      Data <span className="text-destructive">*</span>
+                    </FormLabel>
+                    <FormControl>
+                      <DatePicker
+                        value={
+                          field.value
+                            ? new Date(`${field.value}T00:00:00`)
+                            : new Date()
+                        }
+                        onChange={(date: Date) =>
+                          field.onChange(toIsoDate(date))
+                        }
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
                 name="scheduledTime"
                 render={({ field }) => (
-                  <FormItem>
+                  <FormItem className="flex-1">
                     <FormLabel>
                       Horário <span className="text-destructive">*</span>
                     </FormLabel>

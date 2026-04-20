@@ -84,4 +84,5 @@ export interface CreateOrderPayload {
 
   observations: string | null;
   orderValue: number;
+  status?: OrderStatus;
 }
