@@ -102,6 +102,9 @@ public class Client implements Serializable {
 		}
 		this.address = address;
 		if (address != null && address.getClient() != this) {
+			if (address.getClient() != null) {
+				address.getClient().setAddress(null);
+			}
 			address.setClient(this);
 		}
 	}
