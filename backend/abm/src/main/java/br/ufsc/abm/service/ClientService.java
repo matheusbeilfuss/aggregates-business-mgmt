@@ -1,6 +1,5 @@
 package br.ufsc.abm.service;
 
-import static br.ufsc.abm.util.StringUtils.isNotBlank;
 import static br.ufsc.abm.util.StringUtils.normalizeName;
 
 import java.util.ArrayList;
