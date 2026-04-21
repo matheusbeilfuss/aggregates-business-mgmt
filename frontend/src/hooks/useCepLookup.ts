@@ -21,7 +21,12 @@ export function useCepLookup(cep: string, enabled = true): UseCepLookupResult {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    if (!enabled) return;
+    if (!enabled) {
+      setAddress(null);
+      setError(null);
+      setLoading(false);
+      return;
+    }
 
     const digits = cep.replace(/\D/g, "").slice(0, 8);
 
