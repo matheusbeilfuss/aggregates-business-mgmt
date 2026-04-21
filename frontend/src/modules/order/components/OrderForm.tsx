@@ -71,21 +71,11 @@ export function OrderForm({
   const { data: client } = useClient(clientId);
 
   const cep = useWatch({ control: form.control, name: "cep" });
-  const street = useWatch({ control: form.control, name: "street" });
-  const neighborhood = useWatch({
-    control: form.control,
-    name: "neighborhood",
-  });
-  const city = useWatch({ control: form.control, name: "city" });
-  const state = useWatch({ control: form.control, name: "state" });
-
-  const hasFullAddress = !!(street && neighborhood && city && state);
-
   const {
     address: cepAddress,
     loading: cepLoading,
     error: cepError,
-  } = useCepLookup(cep ?? "", !hasFullAddress);
+  } = useCepLookup(cep ?? "");
 
   const quantityChangedByUser = useRef(!isEditing);
 
@@ -113,16 +103,15 @@ export function OrderForm({
 
   useEffect(() => {
     if (!cepAddress) return;
-
-    if (cepAddress.street && !form.getValues("street"))
+    if (cepAddress.street)
       form.setValue("street", cepAddress.street, { shouldValidate: true });
-    if (cepAddress.neighborhood && !form.getValues("neighborhood"))
+    if (cepAddress.neighborhood)
       form.setValue("neighborhood", cepAddress.neighborhood, {
         shouldValidate: true,
       });
-    if (cepAddress.city && !form.getValues("city"))
+    if (cepAddress.city)
       form.setValue("city", cepAddress.city, { shouldValidate: true });
-    if (cepAddress.state && !form.getValues("state"))
+    if (cepAddress.state)
       form.setValue("state", cepAddress.state, { shouldValidate: true });
   }, [cepAddress, form]);
 

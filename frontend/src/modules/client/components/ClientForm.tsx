@@ -43,34 +43,24 @@ export function ClientForm({
   });
 
   const cep = useWatch({ control: form.control, name: "cep" });
-  const street = useWatch({ control: form.control, name: "street" });
-  const neighborhood = useWatch({
-    control: form.control,
-    name: "neighborhood",
-  });
-  const city = useWatch({ control: form.control, name: "city" });
-  const state = useWatch({ control: form.control, name: "state" });
-
-  const hasFullAddress = !!(street && neighborhood && city && state);
 
   const {
     address,
     loading: cepLoading,
     error: cepError,
-  } = useCepLookup(cep ?? "", !hasFullAddress);
+  } = useCepLookup(cep ?? "");
 
   useEffect(() => {
     if (!address) return;
-
-    if (address.street && !form.getValues("street"))
+    if (address.street)
       form.setValue("street", address.street, { shouldValidate: true });
-    if (address.neighborhood && !form.getValues("neighborhood"))
+    if (address.neighborhood)
       form.setValue("neighborhood", address.neighborhood, {
         shouldValidate: true,
       });
-    if (address.city && !form.getValues("city"))
+    if (address.city)
       form.setValue("city", address.city, { shouldValidate: true });
-    if (address.state && !form.getValues("state"))
+    if (address.state)
       form.setValue("state", address.state, { shouldValidate: true });
   }, [address, form]);
 
