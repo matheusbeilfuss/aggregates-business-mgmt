@@ -54,7 +54,7 @@ public class ClientValidator {
 			throw new ValidationException("O bairro é obrigatório quando o endereço é informado.");
 		if (!isNotBlank(dto.getCity()))
 			throw new ValidationException("A cidade é obrigatória quando o endereço é informado.");
-		if (!isNotBlank(dto.getState()) || dto.getState().length() < 2)
+		if (!isNotBlank(dto.getState()) || dto.getState().trim().length() < 2)
 			throw new ValidationException("O estado é obrigatório quando o endereço é informado.");
 	}
 }
