@@ -83,6 +83,7 @@ export function OrderForm({
     if (!client) return;
     form.setValue("clientName", client.name);
     form.setValue("cpfCnpj", formatCpfCnpj(client.cpfCnpj ?? ""));
+
     if (client.address) {
       form.setValue("cep", formatCep(client.address.cep ?? ""));
       form.setValue("street", client.address.street);
@@ -91,7 +92,16 @@ export function OrderForm({
       form.setValue("neighborhood", client.address.neighborhood);
       form.setValue("city", client.address.city);
       form.setValue("state", client.address.state);
+    } else {
+      form.setValue("cep", "");
+      form.setValue("street", "");
+      form.setValue("number", "");
+      form.setValue("complement", "");
+      form.setValue("neighborhood", "");
+      form.setValue("city", "");
+      form.setValue("state", "");
     }
+
     if (client.phones?.length) {
       const primaryPhone = selectPrimaryPhone(client.phones);
       if (primaryPhone) {
