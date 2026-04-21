@@ -120,7 +120,8 @@ public class ClientService {
 	private boolean hasAddressData(ClientInputDTO dto) {
 		return isNotBlank(dto.getStreet()) || isNotBlank(dto.getNumber())
 				|| isNotBlank(dto.getNeighborhood()) || isNotBlank(dto.getCity())
-				|| isNotBlank(dto.getState());
+				|| isNotBlank(dto.getState()) || isNotBlank(dto.getCep())
+				|| isNotBlank(dto.getComplement());
 	}
 
 	public Client clientFromDTO(ClientInputDTO dto) {

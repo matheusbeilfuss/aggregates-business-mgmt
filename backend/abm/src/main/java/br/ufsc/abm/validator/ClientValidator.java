@@ -42,7 +42,8 @@ public class ClientValidator {
 	private void validateAddress(ClientInputDTO dto) {
 		boolean hasAny = isNotBlank(dto.getStreet()) || isNotBlank(dto.getNumber())
 				|| isNotBlank(dto.getNeighborhood()) || isNotBlank(dto.getCity())
-				|| isNotBlank(dto.getState());
+				|| isNotBlank(dto.getState()) || isNotBlank(dto.getCep())
+				|| isNotBlank(dto.getComplement());
 
 		if (!hasAny) return;
 

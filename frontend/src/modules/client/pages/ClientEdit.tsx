@@ -73,7 +73,9 @@ export function ClientEdit() {
         data.number?.trim() ||
         data.neighborhood?.trim() ||
         data.city?.trim() ||
-        data.state?.trim()
+        data.state?.trim() ||
+        data.cep?.trim() ||
+        data.complement?.trim()
       );
 
       await clientService.update(clientId, {

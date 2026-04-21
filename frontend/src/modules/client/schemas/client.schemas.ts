@@ -27,6 +27,8 @@ export const clientSchema = z
       data.neighborhood,
       data.city,
       data.state,
+      data.cep,
+      data.complement,
     ];
     const hasAny = fields.some((f) => f && f.trim().length > 0);
     if (!hasAny) return;
