@@ -92,7 +92,7 @@ export function ClientEdit() {
               city: data.city,
               state: data.state,
             }
-          : {}),
+          : { removeAddress: true }),
       });
 
       toast.success("Cliente atualizado com sucesso.");

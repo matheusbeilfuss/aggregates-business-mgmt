@@ -89,7 +89,7 @@ public class ClientService {
 				addr.setComplement(newAddressData.getComplement());
 				addr.setCep(newAddressData.getCep());
 			}
-		} else {
+		} else if (dto.isRemoveAddress()) {
 			existingClient.setAddress(null);
 		}
 

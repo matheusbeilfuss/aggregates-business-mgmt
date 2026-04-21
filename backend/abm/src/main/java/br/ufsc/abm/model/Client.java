@@ -97,12 +97,12 @@ public class Client implements Serializable {
 	}
 
 	public void setAddress(Address address) {
+		if (this.address != null && this.address != address) {
+			this.address.setClient(null);
+		}
 		this.address = address;
-		if (address != null) {
-			Client currentClient = address.getClient();
-			if (currentClient == null || currentClient == this) {
-				address.setClient(this);
-			}
+		if (address != null && address.getClient() != this) {
+			address.setClient(this);
 		}
 	}
 

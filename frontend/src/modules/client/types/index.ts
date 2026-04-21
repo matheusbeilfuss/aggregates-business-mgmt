@@ -47,4 +47,5 @@ export interface CreateClientPayload {
   neighborhood?: string;
   city?: string;
   state?: string;
+  removeAddress?: boolean;
 }

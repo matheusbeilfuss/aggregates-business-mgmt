@@ -28,12 +28,13 @@ public class ClientInputDTO {
 	private String city;
 	private String state;
 	private String cep;
+	private boolean removeAddress;
 
 	public ClientInputDTO() {
 	}
 
 	public ClientInputDTO(String name, String cpfCnpj, String email, List<PhoneDTO> phones, String street, String number, String complement, String neighborhood, String city,
-			String state, String cep) {
+			String state, String cep, boolean removeAddress) {
 		this.name = name;
 		this.cpfCnpj = cpfCnpj;
 		this.email = email;
@@ -45,6 +46,7 @@ public class ClientInputDTO {
 		this.city = city;
 		this.state = state;
 		this.cep = cep;
+		this.removeAddress = removeAddress;
 	}
 
 	public String getName() {
@@ -133,6 +135,14 @@ public class ClientInputDTO {
 
 	public void setCep(String cep) {
 		this.cep = cep;
+	}
+
+	public boolean isRemoveAddress() {
+		return removeAddress;
+	}
+
+	public void setRemoveAddress(boolean removeAddress) {
+		this.removeAddress = removeAddress;
 	}
 
 	public boolean hasAnyAddressField() {
