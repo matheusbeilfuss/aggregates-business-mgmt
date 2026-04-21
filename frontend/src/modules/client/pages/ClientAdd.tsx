@@ -6,7 +6,11 @@ import { toast } from "sonner";
 import { usePageTitle } from "@/hooks/usePageTitle";
 import { ApiError } from "@/lib/api";
 import { clientService } from "../services/client.service";
-import { clientSchema, ClientFormData } from "../schemas/client.schemas";
+import {
+  clientSchema,
+  ClientFormData,
+  hasAnyAddressField,
+} from "../schemas/client.schemas";
 import { ClientForm } from "../components/ClientForm";
 import { stripNonDigits } from "@/utils";
 
@@ -35,15 +39,7 @@ export function ClientAdd() {
 
   const onSubmit = async (data: ClientFormData) => {
     try {
-      const hasAddress = !!(
-        data.street?.trim() ||
-        data.number?.trim() ||
-        data.neighborhood?.trim() ||
-        data.city?.trim() ||
-        data.state?.trim() ||
-        data.cep?.trim() ||
-        data.complement?.trim()
-      );
+      const hasAddress = hasAnyAddressField(data);
 
       await clientService.insert({
         name: data.name,

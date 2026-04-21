@@ -6,6 +6,23 @@ const phoneSchema = z.object({
   type: z.enum(PHONE_TYPES, { required_error: "Tipo obrigatório" }),
 });
 
+const ADDRESS_FIELDS = [
+  "street",
+  "number",
+  "neighborhood",
+  "city",
+  "state",
+  "cep",
+  "complement",
+] as const;
+
+export function hasAnyAddressField(data: Record<string, unknown>): boolean {
+  return ADDRESS_FIELDS.some((key) => {
+    const val = data[key];
+    return typeof val === "string" && val.trim().length > 0;
+  });
+}
+
 export const clientSchema = z
   .object({
     name: z.string().trim().min(1, "Nome obrigatório"),
@@ -21,17 +38,7 @@ export const clientSchema = z
     state: z.string().optional().default(""),
   })
   .superRefine((data, ctx) => {
-    const fields = [
-      data.street,
-      data.number,
-      data.neighborhood,
-      data.city,
-      data.state,
-      data.cep,
-      data.complement,
-    ];
-    const hasAny = fields.some((f) => f && f.trim().length > 0);
-    if (!hasAny) return;
+    if (!hasAnyAddressField(data)) return;
 
     if (!data.street?.trim())
       ctx.addIssue({
