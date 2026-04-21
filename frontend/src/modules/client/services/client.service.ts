@@ -1,5 +1,5 @@
 import { api } from "@/lib/api";
-import { Client, CreateClientPayload } from "../types";
+import { Client, CreateClientPayload, UpdateClientPayload } from "../types";
 
 export const clientService = {
   getAll: () => api.get<Client[]>(`/clients`),
@@ -11,7 +11,7 @@ export const clientService = {
 
   insert: (data: CreateClientPayload) => api.post<Client>(`/clients`, data),
 
-  update: (clientId: number, data: CreateClientPayload) =>
+  update: (clientId: number, data: UpdateClientPayload) =>
     api.put<Client>(`/clients/${clientId}`, data),
 
   delete: (clientId: number) => api.delete(`/clients/${clientId}`),
