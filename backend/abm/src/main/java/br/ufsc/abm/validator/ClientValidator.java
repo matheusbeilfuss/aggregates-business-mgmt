@@ -40,12 +40,7 @@ public class ClientValidator {
 	}
 
 	private void validateAddress(ClientInputDTO dto) {
-		boolean hasAny = isNotBlank(dto.getStreet()) || isNotBlank(dto.getNumber())
-				|| isNotBlank(dto.getNeighborhood()) || isNotBlank(dto.getCity())
-				|| isNotBlank(dto.getState()) || isNotBlank(dto.getCep())
-				|| isNotBlank(dto.getComplement());
-
-		if (!hasAny) return;
+		if (!dto.hasAnyAddressField()) return;
 
 		if (!isNotBlank(dto.getStreet()))
 			throw new ValidationException("A rua é obrigatória quando o endereço é informado.");

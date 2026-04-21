@@ -39,7 +39,7 @@ public class ClientService {
 
 		Client client = clientFromDTO(dto);
 
-		if (hasAddressData(dto)) {
+		if (dto.hasAnyAddressField()) {
 			Address address = addressFromDTO(dto, client);
 			client.setAddress(address);
 		}
@@ -76,7 +76,7 @@ public class ClientService {
 		existingClient.setEmail(dto.getEmail());
 		existingClient.setCpfCnpj(dto.getCpfCnpj());
 
-		if (hasAddressData(dto)) {
+		if (dto.hasAnyAddressField()) {
 			Address newAddressData = addressFromDTO(dto, existingClient);
 			if (existingClient.getAddress() == null) {
 				existingClient.setAddress(newAddressData);
@@ -115,13 +115,6 @@ public class ClientService {
 
 	public List<Client> searchByName(String search) {
 		return repository.findByNameNormalized(normalizeName(search));
-	}
-
-	private boolean hasAddressData(ClientInputDTO dto) {
-		return isNotBlank(dto.getStreet()) || isNotBlank(dto.getNumber())
-				|| isNotBlank(dto.getNeighborhood()) || isNotBlank(dto.getCity())
-				|| isNotBlank(dto.getState()) || isNotBlank(dto.getCep())
-				|| isNotBlank(dto.getComplement());
 	}
 
 	public Client clientFromDTO(ClientInputDTO dto) {

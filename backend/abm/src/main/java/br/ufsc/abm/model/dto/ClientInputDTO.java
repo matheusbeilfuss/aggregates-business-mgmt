@@ -1,5 +1,7 @@
 package br.ufsc.abm.model.dto;
 
+import static br.ufsc.abm.util.StringUtils.isNotBlank;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -131,5 +133,12 @@ public class ClientInputDTO {
 
 	public void setCep(String cep) {
 		this.cep = cep;
+	}
+
+	public boolean hasAnyAddressField() {
+		return isNotBlank(street) || isNotBlank(number)
+				|| isNotBlank(neighborhood) || isNotBlank(city)
+				|| isNotBlank(state) || isNotBlank(cep)
+				|| isNotBlank(complement);
 	}
 }
