@@ -52,16 +52,18 @@ export function ClientForm({
 
   useEffect(() => {
     if (!address) return;
-    if (address.street)
-      form.setValue("street", address.street, { shouldValidate: true });
-    if (address.neighborhood)
-      form.setValue("neighborhood", address.neighborhood, {
-        shouldValidate: true,
-      });
-    if (address.city)
-      form.setValue("city", address.city, { shouldValidate: true });
-    if (address.state)
-      form.setValue("state", address.state, { shouldValidate: true });
+
+    const addressFields = [
+      { name: "street" as const, value: address.street },
+      { name: "neighborhood" as const, value: address.neighborhood },
+      { name: "city" as const, value: address.city },
+      { name: "state" as const, value: address.state },
+    ];
+
+    addressFields.forEach(({ name, value }) => {
+      if (form.getFieldState(name).isDirty) return;
+      form.setValue(name, value ?? "", { shouldValidate: true });
+    });
   }, [address, form]);
 
   if (loading) {

@@ -103,16 +103,19 @@ export function OrderForm({
 
   useEffect(() => {
     if (!cepAddress) return;
-    if (cepAddress.street)
-      form.setValue("street", cepAddress.street, { shouldValidate: true });
-    if (cepAddress.neighborhood)
-      form.setValue("neighborhood", cepAddress.neighborhood, {
-        shouldValidate: true,
-      });
-    if (cepAddress.city)
-      form.setValue("city", cepAddress.city, { shouldValidate: true });
-    if (cepAddress.state)
-      form.setValue("state", cepAddress.state, { shouldValidate: true });
+
+    const dirtyFields = form.formState.dirtyFields;
+    const addressFields = [
+      { name: "street" as const, value: cepAddress.street },
+      { name: "neighborhood" as const, value: cepAddress.neighborhood },
+      { name: "city" as const, value: cepAddress.city },
+      { name: "state" as const, value: cepAddress.state },
+    ];
+
+    addressFields.forEach(({ name, value }) => {
+      if (dirtyFields[name]) return;
+      form.setValue(name, value ?? "", { shouldValidate: true });
+    });
   }, [cepAddress, form]);
 
   useEffect(() => {
