@@ -92,7 +92,7 @@ export function OrderForm({
       form.setValue("neighborhood", client.address.neighborhood);
       form.setValue("city", client.address.city);
       form.setValue("state", client.address.state);
-    } else {
+    } else if (!isEditing) {
       form.setValue("cep", "");
       form.setValue("street", "");
       form.setValue("number", "");
@@ -109,7 +109,7 @@ export function OrderForm({
         form.setValue("phoneType", primaryPhone.type);
       }
     }
-  }, [client, form]);
+  }, [client, form, isEditing]);
 
   useEffect(() => {
     if (!cepAddress) return;
