@@ -24,6 +24,12 @@ public class ClientValidator {
 
 	public void validateUpdate(Long id, ClientInputDTO dto) {
 		validateCpfCnpjUniqueness(dto.getCpfCnpj(), id);
+
+		if (dto.isRemoveAddress() && dto.hasAnyAddressField()) {
+			throw new ValidationException(
+					"Não é possível remover e informar um endereço ao mesmo tempo.");
+		}
+
 		validateAddress(dto);
 	}
 
