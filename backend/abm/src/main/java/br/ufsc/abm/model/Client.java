@@ -101,9 +101,10 @@ public class Client implements Serializable {
 			this.address.setClient(null);
 		}
 		this.address = address;
-		if (address != null && address.getClient() != this) {
-			if (address.getClient() != null) {
-				address.getClient().setAddress(null);
+		if (address != null && !this.equals(address.getClient())) {
+			Client previousOwner = address.getClient();
+			if (previousOwner != null) {
+				previousOwner.address = null;
 			}
 			address.setClient(this);
 		}
@@ -124,13 +125,12 @@ public class Client implements Serializable {
 	}
 
 	@Override public boolean equals(Object o) {
-		if (o == null || getClass() != o.getClass())
-			return false;
-		Client client = (Client) o;
-		return Objects.equals(id, client.id);
+		if (this == o) return true;
+		if (!(o instanceof Client client)) return false;
+		return id != null && id.equals(client.getId());
 	}
 
 	@Override public int hashCode() {
-		return Objects.hashCode(id);
+		return getClass().hashCode();
 	}
 }
