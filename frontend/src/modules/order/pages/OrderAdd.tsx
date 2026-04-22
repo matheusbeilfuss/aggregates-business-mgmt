@@ -72,7 +72,7 @@ export function OrderAdd() {
         complement: data.complement || undefined,
         scheduledDate: data.scheduledDate,
         scheduledTime: data.scheduledTime,
-        observations: data.observations ?? null,
+        observations: data.observations || undefined,
         orderValue: data.orderValue!,
         productId: data.type === "MATERIAL" ? data.productId! : null,
         m3Quantity: data.type === "MATERIAL" ? data.m3Quantity : undefined,
