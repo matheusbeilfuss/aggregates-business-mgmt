@@ -46,13 +46,6 @@ export function OrderAdd() {
             { number: stripNonDigits(data.phone), type: data.phoneType },
           ],
           cpfCnpj: data.cpfCnpj ? stripNonDigits(data.cpfCnpj) : undefined,
-          street: data.street,
-          number: data.number,
-          neighborhood: data.neighborhood,
-          city: data.city,
-          state: data.state,
-          cep: data.cep ? stripNonDigits(data.cep) : undefined,
-          complement: data.complement || undefined,
         };
 
         const newClient = await clientService.insert(newClientPayload);
@@ -79,7 +72,7 @@ export function OrderAdd() {
         complement: data.complement || undefined,
         scheduledDate: data.scheduledDate,
         scheduledTime: data.scheduledTime,
-        observations: data.observations ?? null,
+        observations: data.observations || undefined,
         orderValue: data.orderValue!,
         productId: data.type === "MATERIAL" ? data.productId! : null,
         m3Quantity: data.type === "MATERIAL" ? data.m3Quantity : undefined,

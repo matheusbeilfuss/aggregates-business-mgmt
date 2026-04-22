@@ -8,7 +8,11 @@ import { usePageTitle } from "@/hooks/usePageTitle";
 import { ApiError } from "@/lib/api";
 import { formatPhone, formatCpfCnpj, formatCep, stripNonDigits } from "@/utils";
 import { clientService } from "../services/client.service";
-import { clientSchema, ClientFormData } from "../schemas/client.schemas";
+import {
+  clientSchema,
+  ClientFormData,
+  hasAnyAddressField,
+} from "../schemas/client.schemas";
 import { ClientForm } from "../components/ClientForm";
 import { useClient } from "../hooks";
 
@@ -68,6 +72,8 @@ export function ClientEdit() {
 
   const onSubmit = async (data: ClientFormData) => {
     try {
+      const hasAddress = hasAnyAddressField(data);
+
       await clientService.update(clientId, {
         name: data.name,
         cpfCnpj: data.cpfCnpj ? stripNonDigits(data.cpfCnpj) : undefined,
@@ -76,13 +82,17 @@ export function ClientEdit() {
           number: stripNonDigits(p.number),
           type: p.type,
         })),
-        cep: data.cep ? stripNonDigits(data.cep) : undefined,
-        street: data.street,
-        number: data.number,
-        complement: data.complement || undefined,
-        neighborhood: data.neighborhood,
-        city: data.city,
-        state: data.state,
+        ...(hasAddress
+          ? {
+              cep: data.cep ? stripNonDigits(data.cep) : undefined,
+              street: data.street,
+              number: data.number,
+              complement: data.complement || undefined,
+              neighborhood: data.neighborhood,
+              city: data.city,
+              state: data.state,
+            }
+          : { removeAddress: true }),
       });
 
       toast.success("Cliente atualizado com sucesso.");

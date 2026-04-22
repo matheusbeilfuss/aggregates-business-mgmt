@@ -1,12 +1,13 @@
 package br.ufsc.abm.model.dto;
 
+import static br.ufsc.abm.util.StringUtils.isNotBlank;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.Size;
 
 public class ClientInputDTO {
 
@@ -20,31 +21,20 @@ public class ClientInputDTO {
 	@Valid
 	private List<PhoneDTO> phones = new ArrayList<>();
 
-	@NotBlank(message = "A rua é obrigatória.")
 	private String street;
-
-	@NotBlank(message = "O número é obrigatório.")
 	private String number;
-
 	private String complement;
-
-	@NotBlank(message = "O bairro é obrigatório.")
 	private String neighborhood;
-
-	@NotBlank(message = "A cidade é obrigatória.")
 	private String city;
-
-	@NotBlank(message = "O estado é obrigatório.")
-	@Size(min = 2, message = "O estado deve ter pelo menos 2 caracteres.")
 	private String state;
-
 	private String cep;
+	private boolean removeAddress;
 
 	public ClientInputDTO() {
 	}
 
 	public ClientInputDTO(String name, String cpfCnpj, String email, List<PhoneDTO> phones, String street, String number, String complement, String neighborhood, String city,
-			String state, String cep) {
+			String state, String cep, boolean removeAddress) {
 		this.name = name;
 		this.cpfCnpj = cpfCnpj;
 		this.email = email;
@@ -56,6 +46,7 @@ public class ClientInputDTO {
 		this.city = city;
 		this.state = state;
 		this.cep = cep;
+		this.removeAddress = removeAddress;
 	}
 
 	public String getName() {
@@ -144,5 +135,20 @@ public class ClientInputDTO {
 
 	public void setCep(String cep) {
 		this.cep = cep;
+	}
+
+	public boolean isRemoveAddress() {
+		return removeAddress;
+	}
+
+	public void setRemoveAddress(boolean removeAddress) {
+		this.removeAddress = removeAddress;
+	}
+
+	public boolean hasAnyAddressField() {
+		return isNotBlank(street) || isNotBlank(number)
+				|| isNotBlank(neighborhood) || isNotBlank(city)
+				|| isNotBlank(state) || isNotBlank(cep)
+				|| isNotBlank(complement);
 	}
 }

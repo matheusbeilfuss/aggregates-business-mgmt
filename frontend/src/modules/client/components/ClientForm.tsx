@@ -43,6 +43,7 @@ export function ClientForm({
   });
 
   const cep = useWatch({ control: form.control, name: "cep" });
+
   const {
     address,
     loading: cepLoading,
@@ -51,12 +52,18 @@ export function ClientForm({
 
   useEffect(() => {
     if (!address) return;
-    form.setValue("street", address.street, { shouldValidate: true });
-    form.setValue("neighborhood", address.neighborhood, {
-      shouldValidate: true,
+
+    const addressFields = [
+      { name: "street" as const, value: address.street },
+      { name: "neighborhood" as const, value: address.neighborhood },
+      { name: "city" as const, value: address.city },
+      { name: "state" as const, value: address.state },
+    ];
+
+    addressFields.forEach(({ name, value }) => {
+      if (form.getFieldState(name).isDirty) return;
+      form.setValue(name, value ?? "", { shouldValidate: true });
     });
-    form.setValue("city", address.city, { shouldValidate: true });
-    form.setValue("state", address.state, { shouldValidate: true });
   }, [address, form]);
 
   if (loading) {
@@ -232,7 +239,7 @@ export function ClientForm({
               </div>
             </div>
 
-            <FormSection icon={MapPin} title="Endereço">
+            <FormSection icon={MapPin} title="Endereço (opcional)">
               <FormField
                 control={form.control}
                 name="cep"
@@ -274,9 +281,7 @@ export function ClientForm({
                 name="street"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>
-                      Rua <span className="text-destructive">*</span>
-                    </FormLabel>
+                    <FormLabel>Rua</FormLabel>
                     <FormControl>
                       <Input {...field} onFocus={(e) => e.target.select()} />
                     </FormControl>
@@ -290,9 +295,7 @@ export function ClientForm({
                 name="number"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>
-                      Número <span className="text-destructive">*</span>
-                    </FormLabel>
+                    <FormLabel>Número</FormLabel>
                     <FormControl>
                       <Input {...field} onFocus={(e) => e.target.select()} />
                     </FormControl>
@@ -329,9 +332,7 @@ export function ClientForm({
                 name="neighborhood"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>
-                      Bairro <span className="text-destructive">*</span>
-                    </FormLabel>
+                    <FormLabel>Bairro</FormLabel>
                     <FormControl>
                       <Input {...field} onFocus={(e) => e.target.select()} />
                     </FormControl>
@@ -345,9 +346,7 @@ export function ClientForm({
                 name="city"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>
-                      Cidade <span className="text-destructive">*</span>
-                    </FormLabel>
+                    <FormLabel>Cidade</FormLabel>
                     <FormControl>
                       <Input {...field} onFocus={(e) => e.target.select()} />
                     </FormControl>
@@ -361,9 +360,7 @@ export function ClientForm({
                 name="state"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>
-                      Estado <span className="text-destructive">*</span>
-                    </FormLabel>
+                    <FormLabel>Estado</FormLabel>
                     <FormControl>
                       <Input {...field} onFocus={(e) => e.target.select()} />
                     </FormControl>
