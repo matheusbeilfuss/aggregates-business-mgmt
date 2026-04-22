@@ -84,7 +84,7 @@ export function OrderEditForm({ orderId }: OrderEditFormProps) {
       complement: data.complement || undefined,
       scheduledDate: data.scheduledDate,
       scheduledTime: data.scheduledTime,
-      observations: data.observations || null,
+      observations: data.observations || undefined,
       orderValue: data.orderValue!,
       status: data.status,
       productId: data.type === "MATERIAL" ? data.productId! : null,

@@ -82,7 +82,7 @@ export interface CreateOrderPayload {
   scheduledDate: string;
   scheduledTime: string;
 
-  observations: string | null;
+  observations?: string;
   orderValue: number;
   status?: OrderStatus;
 }

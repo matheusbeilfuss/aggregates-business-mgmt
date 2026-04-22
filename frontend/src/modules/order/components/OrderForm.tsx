@@ -86,19 +86,38 @@ export function OrderForm({
 
   const quantityChangedByUser = useRef(!isEditing);
 
+  const prevClientId = useRef<number | undefined>(undefined);
+
   useEffect(() => {
     if (!client) return;
+
+    const isClientSwitch =
+      prevClientId.current !== undefined && prevClientId.current !== client.id;
+    prevClientId.current = client.id;
+
     form.setValue("clientName", client.name);
     form.setValue("cpfCnpj", formatCpfCnpj(client.cpfCnpj ?? ""));
-    if (client.address) {
-      form.setValue("cep", formatCep(client.address.cep ?? ""));
-      form.setValue("street", client.address.street);
-      form.setValue("number", client.address.number);
-      form.setValue("complement", client.address.complement ?? "");
-      form.setValue("neighborhood", client.address.neighborhood);
-      form.setValue("city", client.address.city);
-      form.setValue("state", client.address.state);
+
+    if (!isEditing || isClientSwitch) {
+      if (client.address) {
+        form.setValue("cep", formatCep(client.address.cep ?? ""));
+        form.setValue("street", client.address.street);
+        form.setValue("number", client.address.number);
+        form.setValue("complement", client.address.complement ?? "");
+        form.setValue("neighborhood", client.address.neighborhood);
+        form.setValue("city", client.address.city);
+        form.setValue("state", client.address.state);
+      } else if (isClientSwitch) {
+        form.setValue("cep", "");
+        form.setValue("street", "");
+        form.setValue("number", "");
+        form.setValue("complement", "");
+        form.setValue("neighborhood", "");
+        form.setValue("city", "");
+        form.setValue("state", "");
+      }
     }
+
     if (client.phones?.length) {
       const primaryPhone = selectPrimaryPhone(client.phones);
       if (primaryPhone) {
@@ -106,16 +125,23 @@ export function OrderForm({
         form.setValue("phoneType", primaryPhone.type);
       }
     }
-  }, [client, form]);
+  }, [client, form, isEditing]);
 
   useEffect(() => {
     if (!cepAddress) return;
-    form.setValue("street", cepAddress.street, { shouldValidate: true });
-    form.setValue("neighborhood", cepAddress.neighborhood, {
-      shouldValidate: true,
+
+    const dirtyFields = form.formState.dirtyFields;
+    const addressFields = [
+      { name: "street" as const, value: cepAddress.street },
+      { name: "neighborhood" as const, value: cepAddress.neighborhood },
+      { name: "city" as const, value: cepAddress.city },
+      { name: "state" as const, value: cepAddress.state },
+    ];
+
+    addressFields.forEach(({ name, value }) => {
+      if (dirtyFields[name]) return;
+      form.setValue(name, value ?? "", { shouldValidate: true });
     });
-    form.setValue("city", cepAddress.city, { shouldValidate: true });
-    form.setValue("state", cepAddress.state, { shouldValidate: true });
   }, [cepAddress, form]);
 
   useEffect(() => {

@@ -7,7 +7,7 @@ export interface Client {
   nameNormalized: string;
   cpfCnpj: string;
   email: string;
-  address?: Address;
+  address?: Address | null;
   phones: Phone[];
 }
 
@@ -41,10 +41,14 @@ export interface CreateClientPayload {
   email?: string;
   phones: CreatePhonePayload[];
   cep?: string;
-  street: string;
-  number: string;
+  street?: string;
+  number?: string;
   complement?: string;
-  neighborhood: string;
-  city: string;
-  state: string;
+  neighborhood?: string;
+  city?: string;
+  state?: string;
+}
+
+export interface UpdateClientPayload extends CreateClientPayload {
+  removeAddress?: boolean;
 }
