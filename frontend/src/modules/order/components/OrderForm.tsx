@@ -597,50 +597,52 @@ export function OrderForm({
             </FormSection>
 
             <FormSection icon={Clock} title="Agendamento">
-              <FormField
-                control={form.control}
-                name="scheduledDate"
-                render={({ field }) => (
-                  <FormItem className="flex-1">
-                    <FormLabel>
-                      Data <span className="text-destructive">*</span>
-                    </FormLabel>
-                    <FormControl>
-                      <DatePicker
-                        value={
-                          field.value
-                            ? new Date(`${field.value}T00:00:00`)
-                            : new Date()
-                        }
-                        onChange={(date: Date) =>
-                          field.onChange(toIsoDate(date))
-                        }
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+              <div className="flex gap-3 md:col-span-1 md:max-w-sm">
+                <FormField
+                  control={form.control}
+                  name="scheduledDate"
+                  render={({ field }) => (
+                    <FormItem className="flex-1">
+                      <FormLabel>
+                        Data <span className="text-destructive">*</span>
+                      </FormLabel>
+                      <FormControl>
+                        <DatePicker
+                          value={
+                            field.value
+                              ? new Date(`${field.value}T00:00:00`)
+                              : new Date()
+                          }
+                          onChange={(date: Date) =>
+                            field.onChange(toIsoDate(date))
+                          }
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
 
-              <FormField
-                control={form.control}
-                name="scheduledTime"
-                render={({ field }) => (
-                  <FormItem className="flex-1">
-                    <FormLabel>
-                      Horário <span className="text-destructive">*</span>
-                    </FormLabel>
-                    <FormControl>
-                      <Input
-                        {...field}
-                        type="time"
-                        onFocus={(e) => e.target.select()}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+                <FormField
+                  control={form.control}
+                  name="scheduledTime"
+                  render={({ field }) => (
+                    <FormItem className="flex-1">
+                      <FormLabel>
+                        Horário <span className="text-destructive">*</span>
+                      </FormLabel>
+                      <FormControl>
+                        <Input
+                          {...field}
+                          type="time"
+                          onFocus={(e) => e.target.select()}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
 
               <FormField
                 control={form.control}
