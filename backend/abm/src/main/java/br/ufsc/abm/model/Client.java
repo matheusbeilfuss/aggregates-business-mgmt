@@ -5,7 +5,6 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -131,6 +130,6 @@ public class Client implements Serializable {
 	}
 
 	@Override public int hashCode() {
-		return getClass().hashCode();
+		return Client.class.hashCode();
 	}
 }
