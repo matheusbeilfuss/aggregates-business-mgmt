@@ -19,6 +19,10 @@ public class ClientValidator {
 
 	public void validateInsert(ClientInputDTO dto) {
 		validateCpfCnpjUniqueness(dto.getCpfCnpj(), null);
+		if (dto.isRemoveAddress()) {
+			throw new ValidationException(
+					"Não é possível remover endereço na criação do cliente.");
+		}
 		validateAddress(dto);
 	}
 
