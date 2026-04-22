@@ -37,12 +37,16 @@ export function Order() {
     refetch,
   } = useOrders(toIsoDate(selectedDate));
 
-  const pendingOrders = orders?.filter(
-    (o: OrderItem) => o.status === "PENDING",
-  );
-  const completedOrders = orders?.filter(
-    (o: OrderItem) => o.status === "DELIVERED",
-  );
+  const sortByTime = (a: OrderItem, b: OrderItem) =>
+    a.scheduledTime.localeCompare(b.scheduledTime);
+
+  const pendingOrders = orders
+    ?.filter((o: OrderItem) => o.status === "PENDING")
+    .sort(sortByTime);
+
+  const completedOrders = orders
+    ?.filter((o: OrderItem) => o.status === "DELIVERED")
+    .sort(sortByTime);
 
   async function handleMarkOrderAsDelivered() {
     if (!orderToMarkAsDelivered) return;
