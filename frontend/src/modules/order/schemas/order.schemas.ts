@@ -50,6 +50,7 @@ export const orderSchema = z
         .positive("Valor do pedido obrigatório")
         .optional(),
     ),
+    status: z.enum(["PENDING", "DELIVERED"]).default("PENDING"),
   })
   .superRefine((data, ctx) => {
     if (!data.clientId && !data.clientName?.trim()) {

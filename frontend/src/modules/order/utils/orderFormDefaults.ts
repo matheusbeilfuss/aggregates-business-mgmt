@@ -22,4 +22,5 @@ export const orderFormDefaults: OrderFormData = {
   orderValue: undefined,
   scheduledTime: "",
   observations: "",
+  status: "PENDING",
 };

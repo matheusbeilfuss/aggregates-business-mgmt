@@ -77,6 +77,7 @@ export function OrderAdd() {
         productId: data.type === "MATERIAL" ? data.productId! : null,
         m3Quantity: data.type === "MATERIAL" ? data.m3Quantity : undefined,
         service: data.type === "SERVICE" ? (data.service ?? null) : null,
+        status: data.status,
       };
 
       await orderService.insert(payload);

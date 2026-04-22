@@ -139,6 +139,11 @@ public class OrderService {
 		existingOrder.setScheduledTime(dto.getScheduledTime());
 		existingOrder.setObservations(dto.getObservations());
 		existingOrder.setOrderValue(dto.getOrderValue());
+
+		if (dto.getStatus() != null) {
+			existingOrder.setStatus(dto.getStatus());
+		}
+
 		paymentService.updateOrderPaymentState(existingOrder);
 	}
 
@@ -215,7 +220,7 @@ public class OrderService {
 		order.setScheduledDate(dto.getScheduledDate());
 		order.setScheduledTime(dto.getScheduledTime());
 		order.setObservations(dto.getObservations());
-		order.setStatus(OrderStatusEnum.PENDING);
+		order.setStatus(dto.getStatus() != null ? dto.getStatus() : OrderStatusEnum.PENDING);
 		order.setPaymentStatus(PaymentStatusEnum.PENDING);
 		order.setOrderValue(dto.getOrderValue());
 		order.setRemainingValue(dto.getOrderValue());

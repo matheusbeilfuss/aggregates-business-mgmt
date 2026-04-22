@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
+import br.ufsc.abm.model.enums.OrderStatusEnum;
 import br.ufsc.abm.model.enums.OrderTypeEnum;
 
 import jakarta.validation.constraints.NotBlank;
@@ -56,12 +57,14 @@ public class OrderInputDTO {
 	@Positive(message = "O valor do pedido deve ser maior que zero.")
 	private BigDecimal orderValue;
 
+	private OrderStatusEnum status;
+
 	public OrderInputDTO() {
 	}
 
 	public OrderInputDTO(Long productId, Long clientId, String street, String number, String complement, String neighborhood, String city, String state, String cep,
 			Double m3Quantity,
-			String service, OrderTypeEnum type, LocalDate scheduledDate, LocalTime scheduledTime, String observations, BigDecimal orderValue) {
+			String service, OrderTypeEnum type, LocalDate scheduledDate, LocalTime scheduledTime, String observations, BigDecimal orderValue, OrderStatusEnum status) {
 		this.productId = productId;
 		this.clientId = clientId;
 		this.street = street;
@@ -78,6 +81,7 @@ public class OrderInputDTO {
 		this.scheduledTime = scheduledTime;
 		this.observations = observations;
 		this.orderValue = orderValue;
+		this.status = status;
 	}
 
 	public Long getProductId() {
@@ -206,5 +210,13 @@ public class OrderInputDTO {
 
 	public void setOrderValue(BigDecimal orderValue) {
 		this.orderValue = orderValue;
+	}
+
+	public OrderStatusEnum getStatus() {
+		return status;
+	}
+
+	public void setStatus(OrderStatusEnum status) {
+		this.status = status;
 	}
 }
