@@ -44,9 +44,9 @@ export function Order() {
     .filter((o: OrderItem) => o.status === "PENDING")
     .sort(sortByTime);
 
-  const completedOrders = (orders ?? []).filter(
-    (o: OrderItem) => o.status === "DELIVERED",
-  );
+  const completedOrders = (orders ?? [])
+    .filter((o: OrderItem) => o.status === "DELIVERED")
+    .sort(sortByTime);
 
   async function handleMarkOrderAsDelivered() {
     if (!orderToMarkAsDelivered) return;
