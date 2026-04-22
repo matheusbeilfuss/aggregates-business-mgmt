@@ -7,7 +7,7 @@ export interface Client {
   nameNormalized: string;
   cpfCnpj: string;
   email: string;
-  address?: Address;
+  address?: Address | null;
   phones: Phone[];
 }
 
