@@ -139,7 +139,11 @@ public class OrderService {
 		existingOrder.setScheduledTime(dto.getScheduledTime());
 		existingOrder.setObservations(dto.getObservations());
 		existingOrder.setOrderValue(dto.getOrderValue());
-		existingOrder.setStatus(dto.getStatus() != null ? dto.getStatus() : existingOrder.getStatus());
+
+		if (dto.getStatus() != null) {
+			existingOrder.setStatus(dto.getStatus());
+		}
+
 		paymentService.updateOrderPaymentState(existingOrder);
 	}
 
