@@ -241,20 +241,17 @@ export function OrderForm({
                     <FormLabel className="text-sm font-medium">
                       Status
                     </FormLabel>
-                    <FormControl>
-                      <Select
-                        value={field.value}
-                        onValueChange={field.onChange}
-                      >
+                    <Select value={field.value} onValueChange={field.onChange}>
+                      <FormControl>
                         <SelectTrigger>
                           <SelectValue placeholder="Selecione o status" />
                         </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="PENDING">Pendente</SelectItem>
-                          <SelectItem value="DELIVERED">Entregue</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </FormControl>
+                      </FormControl>
+                      <SelectContent>
+                        <SelectItem value="PENDING">Pendente</SelectItem>
+                        <SelectItem value="DELIVERED">Entregue</SelectItem>
+                      </SelectContent>
+                    </Select>
                     <FormMessage />
                   </FormItem>
                 )}
