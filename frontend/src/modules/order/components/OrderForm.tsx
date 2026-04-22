@@ -100,7 +100,7 @@ export function OrderForm({
         form.setValue("neighborhood", client.address.neighborhood);
         form.setValue("city", client.address.city);
         form.setValue("state", client.address.state);
-      } else {
+      } else if (isClientSwitch) {
         form.setValue("cep", "");
         form.setValue("street", "");
         form.setValue("number", "");
