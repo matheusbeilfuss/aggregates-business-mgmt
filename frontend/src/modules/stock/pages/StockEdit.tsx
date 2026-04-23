@@ -25,7 +25,7 @@ import {
   editStockSchema,
   type EditStockFormData,
 } from "../schemas/stock.schemas";
-import { tonToM3, m3ToTon } from "../utils/calculations";
+import { tonToM3, m3ToTon, parseInputNumber } from "../utils/calculations";
 import { ApiError } from "@/lib/api";
 import { usePageTitle } from "@/hooks/usePageTitle";
 import { useCategories } from "@/modules/category/hooks";
@@ -90,38 +90,36 @@ export function StockEdit() {
   if (!validId) return <Navigate to="/stocks" replace />;
 
   const handleTonChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const tonQuantity = parseFloat(e.target.value) || 0;
-    form.setValue("tonQuantity", tonQuantity);
+    const tonQuantity = parseInputNumber(e.target.value);
     setUserEditedTon(true);
     setUserEditedM3(false);
     const density = form.getValues("density");
-    if (density > 0) {
+    if (tonQuantity !== null && density > 0) {
       form.setValue("m3Quantity", tonToM3(tonQuantity, density));
     }
   };
 
   const handleM3Change = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const m3Quantity = parseFloat(e.target.value) || 0;
-    form.setValue("m3Quantity", m3Quantity);
+    const m3Quantity = parseInputNumber(e.target.value);
     setUserEditedM3(true);
     setUserEditedTon(false);
     const density = form.getValues("density");
-    if (density > 0) {
+    if (m3Quantity !== null && density > 0) {
       form.setValue("tonQuantity", m3ToTon(m3Quantity, density));
     }
   };
 
   const handleDensityChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const density = parseFloat(e.target.value) || 0;
-    form.setValue("density", density);
+    const density = parseInputNumber(e.target.value);
+    if (density === null || density <= 0) return;
+
     const currentTon = form.getValues("tonQuantity");
     const currentM3 = form.getValues("m3Quantity");
-    if (density > 0) {
-      if (userEditedM3 && !userEditedTon) {
-        form.setValue("tonQuantity", m3ToTon(currentM3, density));
-      } else {
-        form.setValue("m3Quantity", tonToM3(currentTon, density));
-      }
+
+    if (userEditedM3 && !userEditedTon) {
+      form.setValue("tonQuantity", m3ToTon(currentM3, density));
+    } else {
+      form.setValue("m3Quantity", tonToM3(currentTon, density));
     }
   };
 

@@ -23,3 +23,12 @@ export function calculateExpenseValue(
   }
   return 0;
 }
+
+export function parseInputNumber(value: string): number | null {
+  const normalized = value.replace(",", ".").trim();
+  if (normalized === "" || normalized === "-" || normalized.endsWith(".")) {
+    return null;
+  }
+  const parsed = Number(normalized);
+  return Number.isFinite(parsed) ? parsed : null;
+}
