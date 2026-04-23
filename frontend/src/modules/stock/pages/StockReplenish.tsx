@@ -244,6 +244,7 @@ export function StockReplenish() {
                     <FormControl>
                       <Input
                         type="number"
+                        {...field}
                         value={field.value ?? ""}
                         onFocus={(e) => e.target.select()}
                         onChange={(e) => {
@@ -266,6 +267,7 @@ export function StockReplenish() {
                     <FormControl>
                       <Input
                         type="number"
+                        {...field}
                         value={field.value ?? ""}
                         onFocus={(e) => e.target.select()}
                         onChange={(e) => {
@@ -288,6 +290,7 @@ export function StockReplenish() {
                     <FormControl>
                       <Input
                         type="number"
+                        {...field}
                         value={field.value ?? ""}
                         onFocus={(e) => e.target.select()}
                         onChange={(e) => {

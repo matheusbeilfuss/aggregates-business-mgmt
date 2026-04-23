@@ -204,6 +204,7 @@ export function StockEdit() {
                     <FormControl>
                       <Input
                         type="number"
+                        {...field}
                         value={field.value ?? 0}
                         onFocus={(e) => e.target.select()}
                         onChange={(e) => {
@@ -225,6 +226,7 @@ export function StockEdit() {
                     <FormControl>
                       <Input
                         type="number"
+                        {...field}
                         value={field.value ?? 0}
                         onFocus={(e) => e.target.select()}
                         onChange={(e) => {
@@ -246,6 +248,7 @@ export function StockEdit() {
                     <FormControl>
                       <Input
                         type="number"
+                        {...field}
                         value={field.value ?? 0}
                         onFocus={(e) => e.target.select()}
                         onChange={(e) => {
