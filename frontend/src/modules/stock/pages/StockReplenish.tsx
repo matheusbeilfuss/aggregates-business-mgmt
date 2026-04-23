@@ -134,7 +134,7 @@ export function StockReplenish() {
       updateExpenseValue(tonQuantity, m3Quantity);
     } else {
       form.setValue("m3Quantity", 0);
-      updateExpenseValue(0, 0);
+      updateExpenseValue(tonQuantity ?? 0, 0);
     }
   };
 
@@ -150,13 +150,19 @@ export function StockReplenish() {
       updateExpenseValue(tonQuantity, m3Quantity);
     } else {
       form.setValue("tonQuantity", 0);
-      updateExpenseValue(0, 0);
+      updateExpenseValue(0, m3Quantity ?? 0);
     }
   };
 
   const handleDensityChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const density = parseInputNumber(e.target.value);
-    if (density === null || density <= 0) return;
+    if (density === null || density <= 0) {
+      updateExpenseValue(
+        form.getValues("tonQuantity"),
+        form.getValues("m3Quantity"),
+      );
+      return;
+    }
 
     const currentTon = form.getValues("tonQuantity");
     const currentM3 = form.getValues("m3Quantity");
