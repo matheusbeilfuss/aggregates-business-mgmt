@@ -94,8 +94,11 @@ export function StockEdit() {
     setUserEditedTon(true);
     setUserEditedM3(false);
     const density = form.getValues("density");
+
     if (tonQuantity !== null && density > 0) {
       form.setValue("m3Quantity", tonToM3(tonQuantity, density));
+    } else {
+      form.setValue("m3Quantity", 0);
     }
   };
 
@@ -104,8 +107,11 @@ export function StockEdit() {
     setUserEditedM3(true);
     setUserEditedTon(false);
     const density = form.getValues("density");
+
     if (m3Quantity !== null && density > 0) {
       form.setValue("tonQuantity", m3ToTon(m3Quantity, density));
+    } else {
+      form.setValue("tonQuantity", 0);
     }
   };
 

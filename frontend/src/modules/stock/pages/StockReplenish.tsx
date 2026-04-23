@@ -127,10 +127,14 @@ export function StockReplenish() {
     setUserEditedTon(true);
     setUserEditedM3(false);
     const density = form.getValues("density");
+
     if (tonQuantity !== null && density > 0) {
       const m3Quantity = tonToM3(tonQuantity, density);
       form.setValue("m3Quantity", m3Quantity);
       updateExpenseValue(tonQuantity, m3Quantity);
+    } else {
+      form.setValue("m3Quantity", 0);
+      updateExpenseValue(0, 0);
     }
   };
 
@@ -139,10 +143,14 @@ export function StockReplenish() {
     setUserEditedM3(true);
     setUserEditedTon(false);
     const density = form.getValues("density");
+
     if (m3Quantity !== null && density > 0) {
       const tonQuantity = m3ToTon(m3Quantity, density);
       form.setValue("tonQuantity", tonQuantity);
       updateExpenseValue(tonQuantity, m3Quantity);
+    } else {
+      form.setValue("tonQuantity", 0);
+      updateExpenseValue(0, 0);
     }
   };
 

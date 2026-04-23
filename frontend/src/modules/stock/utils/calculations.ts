@@ -26,7 +26,7 @@ export function calculateExpenseValue(
 
 export function parseInputNumber(value: string): number | null {
   const normalized = value.replace(",", ".").trim();
-  if (normalized === "" || normalized === "-" || normalized.endsWith(".")) {
+  if (normalized === "" || normalized === "-") {
     return null;
   }
   const parsed = Number(normalized);
