@@ -210,6 +210,7 @@ export function StockEdit() {
                     <FormControl>
                       <Input
                         type="number"
+                        step="any"
                         {...field}
                         value={field.value ?? 0}
                         onFocus={(e) => e.target.select()}
@@ -232,6 +233,7 @@ export function StockEdit() {
                     <FormControl>
                       <Input
                         type="number"
+                        step="any"
                         {...field}
                         value={field.value ?? 0}
                         onFocus={(e) => e.target.select()}
@@ -254,6 +256,7 @@ export function StockEdit() {
                     <FormControl>
                       <Input
                         type="number"
+                        step="any"
                         {...field}
                         value={field.value ?? 0}
                         onFocus={(e) => e.target.select()}
@@ -297,11 +300,7 @@ export function StockEdit() {
             </div>
           </div>
 
-          <FormActions
-            cancelPath="/stocks"
-            submitLabel="Salvar"
-            onSubmit={form.handleSubmit(onSubmit)}
-          />
+          <FormActions cancelPath="/stocks" submitLabel="Salvar" />
         </form>
       </Form>
     </PageContainer>

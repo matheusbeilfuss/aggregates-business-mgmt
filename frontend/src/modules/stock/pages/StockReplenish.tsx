@@ -258,6 +258,7 @@ export function StockReplenish() {
                     <FormControl>
                       <Input
                         type="number"
+                        step="any"
                         {...field}
                         value={field.value ?? ""}
                         onFocus={(e) => e.target.select()}
@@ -281,6 +282,7 @@ export function StockReplenish() {
                     <FormControl>
                       <Input
                         type="number"
+                        step="any"
                         {...field}
                         value={field.value ?? ""}
                         onFocus={(e) => e.target.select()}
@@ -304,6 +306,7 @@ export function StockReplenish() {
                     <FormControl>
                       <Input
                         type="number"
+                        step="any"
                         {...field}
                         value={field.value ?? ""}
                         onFocus={(e) => e.target.select()}
@@ -391,11 +394,7 @@ export function StockReplenish() {
             </div>
           </div>
 
-          <FormActions
-            cancelPath="/stocks"
-            submitLabel="Adicionar"
-            onSubmit={form.handleSubmit(onSubmit)}
-          />
+          <FormActions cancelPath="/stocks" submitLabel="Adicionar" />
         </form>
       </Form>
     </PageContainer>
