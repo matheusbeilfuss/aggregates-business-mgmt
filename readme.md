@@ -94,7 +94,6 @@ Runs the full stack (frontend + backend + database) in Docker.
 # Copy and configure environment files
 cp .env.example .env
 cp docker-compose.example.yml docker-compose.yml
-cp frontend/nginx.example.conf frontend/nginx.conf
 
 # Edit .env with your values (at minimum: DATABASE_PASSWORD, JWT_SECRET, ADMIN_INITIAL_PASSWORD)
 nano .env
