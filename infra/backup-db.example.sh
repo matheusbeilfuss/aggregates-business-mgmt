@@ -11,6 +11,7 @@
 
 set -e
 
+PROJECT_DIR="$HOME/aggregates-business-mgmt"
 BACKUP_DIR="$HOME/backups"
 TIMESTAMP=$(date +%Y-%m-%d_%H-%M)
 KEEP_LOCAL_DAYS=7
@@ -20,7 +21,7 @@ FILENAME="abm_$TIMESTAMP.dump"
 mkdir -p "$BACKUP_DIR"
 
 # Dump the database from the running container
-docker compose -f ~/aggregates-business-mgmt/docker-compose.yml exec -T db \
+docker compose -f "$PROJECT_DIR/docker-compose.yml" exec -T db \
   pg_dump -U abm -d abm --format=custom > "$BACKUP_DIR/$FILENAME"
 
 # Upload to Google Drive
