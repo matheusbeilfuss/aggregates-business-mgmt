@@ -11,6 +11,8 @@
 
 set -e
 
+export PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+
 PROJECT_DIR="$HOME/aggregates-business-mgmt"
 BACKUP_DIR="$HOME/backups"
 TIMESTAMP=$(date +%Y-%m-%d_%H-%M)
