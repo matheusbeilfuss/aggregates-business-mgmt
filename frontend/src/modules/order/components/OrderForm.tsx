@@ -87,6 +87,7 @@ export function OrderForm({
   const quantityChangedByUser = useRef(!isEditing);
 
   const prevClientId = useRef<number | undefined>(undefined);
+  const cepSetByClient = useRef(false);
 
   useEffect(() => {
     if (!client) return;
@@ -100,6 +101,7 @@ export function OrderForm({
 
     if (!isEditing || isClientSwitch) {
       if (client.address) {
+        cepSetByClient.current = true;
         form.setValue("cep", formatCep(client.address.cep ?? ""));
         form.setValue("street", client.address.street);
         form.setValue("number", client.address.number);
@@ -130,7 +132,11 @@ export function OrderForm({
   useEffect(() => {
     if (!cepAddress) return;
 
-    const dirtyFields = form.formState.dirtyFields;
+    if (cepSetByClient.current) {
+      cepSetByClient.current = false;
+      return;
+    }
+
     const addressFields = [
       { name: "street" as const, value: cepAddress.street },
       { name: "neighborhood" as const, value: cepAddress.neighborhood },
@@ -139,8 +145,7 @@ export function OrderForm({
     ];
 
     addressFields.forEach(({ name, value }) => {
-      if (dirtyFields[name]) return;
-      form.setValue(name, value ?? "", { shouldValidate: true });
+      if (value) form.setValue(name, value, { shouldValidate: true });
     });
   }, [cepAddress, form]);
 
