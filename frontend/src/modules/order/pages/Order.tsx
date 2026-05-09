@@ -2,15 +2,16 @@ import {
   ConfirmDialog,
   LoadingState,
   PageContainer,
+  SummaryCard,
 } from "@/components/shared";
 import { DatePicker } from "@/components/shared/DatePicker";
 import { useOrders } from "../hooks/useOrders";
 import { OrderSection } from "../components/OrderSection";
 import { OrderItem } from "../types";
 import { useState } from "react";
-import { toIsoDate } from "@/utils";
+import { formatLocalCurrency, toIsoDate } from "@/utils";
 import { Button } from "@/components/ui/button";
-import { Plus } from "lucide-react";
+import { Plus, Receipt } from "lucide-react";
 import { useNavigate } from "react-router";
 import { orderService } from "../services/order.service";
 import { toast } from "sonner";
@@ -48,6 +49,11 @@ export function Order() {
     .filter((o: OrderItem) => o.status === "DELIVERED")
     .sort(sortByTime);
 
+  const totalSales = (orders ?? []).reduce(
+    (acc, o) => acc + Number(o.orderValue),
+    0,
+  );
+
   async function handleMarkOrderAsDelivered() {
     if (!orderToMarkAsDelivered) return;
     try {
@@ -84,17 +90,7 @@ export function Order() {
   return (
     <PageContainer
       title="Pedidos"
-      actions={
-        <Button
-          className="h-9 px-4 text-sm font-medium text-white gap-1.5
-                     hover:opacity-90 active:opacity-80 transition-opacity"
-          style={{ backgroundColor: "var(--color-primary-40)" }}
-          onClick={() => navigate("/orders/add")}
-        >
-          <Plus className="h-4 w-4" />
-          Novo pedido
-        </Button>
-      }
+      actions={<DatePicker value={selectedDate} onChange={setSelectedDate} />}
     >
       {error && (
         <p className="text-sm text-destructive mb-4">{error.message}</p>
@@ -104,8 +100,30 @@ export function Order() {
         <LoadingState rows={5} />
       ) : (
         <div className="space-y-6">
-          <div className="flex justify-center">
-            <DatePicker value={selectedDate} onChange={setSelectedDate} />
+          <div className="flex flex-col sm:flex-row sm:items-center gap-3">
+            <div className="flex-1 sm:flex-none sm:min-w-[520px]">
+              {totalSales > 0 && (
+                <SummaryCard
+                  label="Total vendido no dia"
+                  value={formatLocalCurrency(totalSales)}
+                  icon={Receipt}
+                  iconBg="var(--color-primary-90)"
+                  iconColor="var(--color-primary-40)"
+                  valueColor="var(--color-primary-40)"
+                />
+              )}
+            </div>
+
+            <Button
+              className="h-9 px-4 text-sm font-medium text-white gap-1.5
+                       hover:opacity-90 active:opacity-80 transition-opacity
+                       ml-auto shrink-0"
+              style={{ backgroundColor: "var(--color-primary-40)" }}
+              onClick={() => navigate("/orders/add")}
+            >
+              <Plus className="h-4 w-4" />
+              Novo pedido
+            </Button>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
