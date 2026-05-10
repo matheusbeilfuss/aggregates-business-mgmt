@@ -61,8 +61,7 @@ export function ClientForm({
     ];
 
     addressFields.forEach(({ name, value }) => {
-      if (form.getFieldState(name).isDirty) return;
-      form.setValue(name, value ?? "", { shouldValidate: true });
+      if (value) form.setValue(name, value, { shouldValidate: true });
     });
   }, [address, form]);
 
