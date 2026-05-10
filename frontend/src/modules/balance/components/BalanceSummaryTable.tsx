@@ -12,6 +12,12 @@ export function BalanceSummaryTable({ summary }: Props) {
       color: "#c25000",
     },
     {
+      label: "Vendas",
+      total: summary.totalSales,
+      avg: summary.avgSales,
+      color: "#0061a4",
+    },
+    {
       label: "Recebimentos",
       total: summary.totalIncome,
       avg: summary.avgIncome,

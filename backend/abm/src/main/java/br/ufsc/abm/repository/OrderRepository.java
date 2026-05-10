@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import br.ufsc.abm.model.Order;
+import br.ufsc.abm.model.dto.MonthlySalesDTO;
 import br.ufsc.abm.model.dto.ProductBalanceDTO;
 import br.ufsc.abm.model.enums.PaymentStatusEnum;
 
@@ -46,6 +47,20 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
        ORDER BY SUM(o.orderValue) DESC
        """)
 	List<ProductBalanceDTO> findProductBalanceSummary(
+			@Param("startDate") LocalDate startDate,
+			@Param("endDate") LocalDate endDate
+	);
+
+	@Query("""
+    SELECT new br.ufsc.abm.model.dto.MonthlySalesDTO(
+        MONTH(o.scheduledDate),
+        SUM(o.orderValue)
+    )
+    FROM Order o
+    WHERE o.scheduledDate BETWEEN :startDate AND :endDate
+    GROUP BY MONTH(o.scheduledDate)
+    """)
+	List<MonthlySalesDTO> findMonthlySales(
 			@Param("startDate") LocalDate startDate,
 			@Param("endDate") LocalDate endDate
 	);
