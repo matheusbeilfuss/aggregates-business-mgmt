@@ -145,7 +145,7 @@ Required GitHub Secrets: `SERVER_HOST`, `SERVER_USER`, `SERVER_SSH_KEY`.
 
 ### Database Backups
 
-Production backups are configured to run daily via cron, with local retention of 7 days and remote retention of 30 days on Google Drive (via rclone). See `infra/backup-db.example.sh` for the backup script reference.
+Daily database backups can be configured using the provided template script at `infra/backup-db.example.sh`. Copy it to the server, make it executable, adjust the variables, and schedule it with cron. See the script comments for detailed setup instructions. Local retention is set to 7 days and remote retention (Google Drive via rclone) to 30 days.
 
 **Restore in production:**
 
