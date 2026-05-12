@@ -150,9 +150,20 @@ export function OrderForm({
     ];
 
     addressFields.forEach(({ name, value }) => {
-      if (value) form.setValue(name, value, { shouldValidate: true });
+      if (!value) return;
+      const isDirty = !!form.formState.dirtyFields[name];
+      const currentValue = form.getValues(name);
+      if (!isDirty || !currentValue) {
+        form.setValue(name, value, { shouldValidate: true });
+      }
     });
   }, [cepAddress, form]);
+
+  useEffect(() => {
+    if (cepError && cepSetByClient.current) {
+      cepSetByClient.current = false;
+    }
+  }, [cepError]);
 
   useEffect(() => {
     if (orderType === "SERVICE") {
