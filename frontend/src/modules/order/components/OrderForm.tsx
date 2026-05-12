@@ -30,6 +30,7 @@ import {
   formatPhone,
   formatCpfCnpj,
   formatCep,
+  stripNonDigits,
 } from "@/utils";
 import { useEffect, useMemo, useRef } from "react";
 import { Product } from "@/modules/product/types";
@@ -101,7 +102,10 @@ export function OrderForm({
 
     if (!isEditing || isClientSwitch) {
       if (client.address) {
-        cepSetByClient.current = true;
+        const clientCepDigits = stripNonDigits(client.address.cep ?? "");
+        if (clientCepDigits.length === 8) {
+          cepSetByClient.current = true;
+        }
         form.setValue("cep", formatCep(client.address.cep ?? ""));
         form.setValue("street", client.address.street);
         form.setValue("number", client.address.number);
@@ -110,6 +114,7 @@ export function OrderForm({
         form.setValue("city", client.address.city);
         form.setValue("state", client.address.state);
       } else if (isClientSwitch) {
+        cepSetByClient.current = false;
         form.setValue("cep", "");
         form.setValue("street", "");
         form.setValue("number", "");
