@@ -149,6 +149,8 @@ Production backups are configured to run daily via cron, with local retention of
 
 **Restore in production:**
 
+Replace `abm` with your `DATABASE_USER` if different:
+
 ```bash
 docker compose exec -T db pg_restore -U abm -d abm --clean --if-exists < backup_file.dump
 ```
