@@ -20,11 +20,15 @@ KEEP_LOCAL_DAYS=7
 KEEP_REMOTE_DAYS=30
 FILENAME="abm_$TIMESTAMP.dump"
 
+# Adjust DB_USER and DB_NAME if your .env uses different values
+DB_USER="abm"
+DB_NAME="abm"
+
 mkdir -p "$BACKUP_DIR"
 
 # Dump the database from the running container
 docker compose -f "$PROJECT_DIR/docker-compose.yml" exec -T db \
-  pg_dump -U abm -d abm --format=custom > "$BACKUP_DIR/$FILENAME"
+  pg_dump -U "$DB_USER" -d "$DB_NAME" --format=custom > "$BACKUP_DIR/$FILENAME"
 
 # Upload to Google Drive
 rclone copy "$BACKUP_DIR/$FILENAME" gdrive:backups-abm/
