@@ -30,6 +30,7 @@ import {
   formatPhone,
   formatCpfCnpj,
   formatCep,
+  stripNonDigits,
 } from "@/utils";
 import { useEffect, useMemo, useRef } from "react";
 import { Product } from "@/modules/product/types";
@@ -87,6 +88,8 @@ export function OrderForm({
   const quantityChangedByUser = useRef(!isEditing);
 
   const prevClientId = useRef<number | undefined>(undefined);
+  const cepFromClient = useRef<string | null>(null);
+  const cepFilledFields = useRef<Set<string>>(new Set());
 
   useEffect(() => {
     if (!client) return;
@@ -100,6 +103,13 @@ export function OrderForm({
 
     if (!isEditing || isClientSwitch) {
       if (client.address) {
+        const clientCepDigits = stripNonDigits(client.address.cep ?? "").slice(
+          0,
+          8,
+        );
+        cepFromClient.current =
+          clientCepDigits.length === 8 ? clientCepDigits : null;
+        cepFilledFields.current = new Set();
         form.setValue("cep", formatCep(client.address.cep ?? ""));
         form.setValue("street", client.address.street);
         form.setValue("number", client.address.number);
@@ -108,6 +118,8 @@ export function OrderForm({
         form.setValue("city", client.address.city);
         form.setValue("state", client.address.state);
       } else if (isClientSwitch) {
+        cepFromClient.current = null;
+        cepFilledFields.current = new Set();
         form.setValue("cep", "");
         form.setValue("street", "");
         form.setValue("number", "");
@@ -130,7 +142,16 @@ export function OrderForm({
   useEffect(() => {
     if (!cepAddress) return;
 
-    const dirtyFields = form.formState.dirtyFields;
+    const currentDigits = stripNonDigits(form.getValues("cep") ?? "").slice(
+      0,
+      8,
+    );
+    if (cepFromClient.current && cepFromClient.current === currentDigits) {
+      cepFromClient.current = null;
+      return;
+    }
+    cepFromClient.current = null;
+
     const addressFields = [
       { name: "street" as const, value: cepAddress.street },
       { name: "neighborhood" as const, value: cepAddress.neighborhood },
@@ -138,11 +159,28 @@ export function OrderForm({
       { name: "state" as const, value: cepAddress.state },
     ];
 
+    const newFilled = new Set<string>();
+
     addressFields.forEach(({ name, value }) => {
-      if (dirtyFields[name]) return;
-      form.setValue(name, value ?? "", { shouldValidate: true });
+      const isDirty = !!form.formState.dirtyFields[name];
+      if (isDirty) return;
+
+      if (value) {
+        form.setValue(name, value, { shouldValidate: true });
+        newFilled.add(name);
+      } else if (cepFilledFields.current.has(name)) {
+        form.setValue(name, "", { shouldValidate: true });
+      }
     });
+
+    cepFilledFields.current = newFilled;
   }, [cepAddress, form]);
+
+  useEffect(() => {
+    if (cepError && cepFromClient.current) {
+      cepFromClient.current = null;
+    }
+  }, [cepError]);
 
   useEffect(() => {
     if (orderType === "SERVICE") {
