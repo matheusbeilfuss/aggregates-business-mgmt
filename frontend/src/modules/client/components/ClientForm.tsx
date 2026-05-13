@@ -1,6 +1,6 @@
 import { useFieldArray, UseFormReturn, useWatch } from "react-hook-form";
 import { Plus, Trash2, Loader2, User, Phone, MapPin } from "lucide-react";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import {
   Form,
   FormField,
@@ -50,6 +50,8 @@ export function ClientForm({
     error: cepError,
   } = useCepLookup(cep ?? "");
 
+  const cepFilledFields = useRef<Set<string>>(new Set());
+
   useEffect(() => {
     if (!address) return;
 
@@ -60,13 +62,21 @@ export function ClientForm({
       { name: "state" as const, value: address.state },
     ];
 
+    const newFilled = new Set<string>();
+
     addressFields.forEach(({ name, value }) => {
       const { isDirty } = form.getFieldState(name);
-      const currentValue = form.getValues(name);
-      if (value && (!isDirty || !currentValue)) {
+      if (isDirty) return;
+
+      if (value) {
         form.setValue(name, value, { shouldValidate: true });
+        newFilled.add(name);
+      } else if (cepFilledFields.current.has(name)) {
+        form.setValue(name, "", { shouldValidate: true });
       }
     });
+
+    cepFilledFields.current = newFilled;
   }, [address, form]);
 
   if (loading) {
