@@ -88,7 +88,7 @@ export function OrderForm({
   const quantityChangedByUser = useRef(!isEditing);
 
   const prevClientId = useRef<number | undefined>(undefined);
-  const cepSetByClient = useRef(false);
+  const cepFromClient = useRef<string | null>(null);
 
   useEffect(() => {
     if (!client) return;
@@ -106,7 +106,8 @@ export function OrderForm({
           0,
           8,
         );
-        cepSetByClient.current = clientCepDigits.length === 8;
+        cepFromClient.current =
+          clientCepDigits.length === 8 ? clientCepDigits : null;
         form.setValue("cep", formatCep(client.address.cep ?? ""));
         form.setValue("street", client.address.street);
         form.setValue("number", client.address.number);
@@ -115,7 +116,7 @@ export function OrderForm({
         form.setValue("city", client.address.city);
         form.setValue("state", client.address.state);
       } else if (isClientSwitch) {
-        cepSetByClient.current = false;
+        cepFromClient.current = null;
         form.setValue("cep", "");
         form.setValue("street", "");
         form.setValue("number", "");
@@ -138,10 +139,12 @@ export function OrderForm({
   useEffect(() => {
     if (!cepAddress) return;
 
-    if (cepSetByClient.current) {
-      cepSetByClient.current = false;
+    const currentDigits = stripNonDigits(cep ?? "").slice(0, 8);
+    if (cepFromClient.current && cepFromClient.current === currentDigits) {
+      cepFromClient.current = null;
       return;
     }
+    cepFromClient.current = null;
 
     const addressFields = [
       { name: "street" as const, value: cepAddress.street },
@@ -158,11 +161,11 @@ export function OrderForm({
         form.setValue(name, value, { shouldValidate: true });
       }
     });
-  }, [cepAddress, form]);
+  }, [cepAddress, form, cep]);
 
   useEffect(() => {
-    if (cepError && cepSetByClient.current) {
-      cepSetByClient.current = false;
+    if (cepError && cepFromClient.current) {
+      cepFromClient.current = null;
     }
   }, [cepError]);
 
