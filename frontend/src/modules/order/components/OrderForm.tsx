@@ -89,6 +89,7 @@ export function OrderForm({
 
   const prevClientId = useRef<number | undefined>(undefined);
   const cepFromClient = useRef<string | null>(null);
+  const cepFilledFields = useRef<Set<string>>(new Set());
 
   useEffect(() => {
     if (!client) return;
@@ -108,6 +109,7 @@ export function OrderForm({
         );
         cepFromClient.current =
           clientCepDigits.length === 8 ? clientCepDigits : null;
+        cepFilledFields.current = new Set();
         form.setValue("cep", formatCep(client.address.cep ?? ""));
         form.setValue("street", client.address.street);
         form.setValue("number", client.address.number);
@@ -117,6 +119,7 @@ export function OrderForm({
         form.setValue("state", client.address.state);
       } else if (isClientSwitch) {
         cepFromClient.current = null;
+        cepFilledFields.current = new Set();
         form.setValue("cep", "");
         form.setValue("street", "");
         form.setValue("number", "");
@@ -139,7 +142,10 @@ export function OrderForm({
   useEffect(() => {
     if (!cepAddress) return;
 
-    const currentDigits = stripNonDigits(cep ?? "").slice(0, 8);
+    const currentDigits = stripNonDigits(form.getValues("cep") ?? "").slice(
+      0,
+      8,
+    );
     if (cepFromClient.current && cepFromClient.current === currentDigits) {
       cepFromClient.current = null;
       return;
@@ -153,15 +159,22 @@ export function OrderForm({
       { name: "state" as const, value: cepAddress.state },
     ];
 
+    const newFilled = new Set<string>();
+
     addressFields.forEach(({ name, value }) => {
-      if (!value) return;
       const isDirty = !!form.formState.dirtyFields[name];
-      const currentValue = form.getValues(name);
-      if (!isDirty || !currentValue) {
+      if (isDirty) return;
+
+      if (value) {
         form.setValue(name, value, { shouldValidate: true });
+        newFilled.add(name);
+      } else if (cepFilledFields.current.has(name)) {
+        form.setValue(name, "", { shouldValidate: true });
       }
     });
-  }, [cepAddress, form, cep]);
+
+    cepFilledFields.current = newFilled;
+  }, [cepAddress, form]);
 
   useEffect(() => {
     if (cepError && cepFromClient.current) {
