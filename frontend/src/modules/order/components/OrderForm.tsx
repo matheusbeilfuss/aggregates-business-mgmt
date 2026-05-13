@@ -102,7 +102,10 @@ export function OrderForm({
 
     if (!isEditing || isClientSwitch) {
       if (client.address) {
-        const clientCepDigits = stripNonDigits(client.address.cep ?? "");
+        const clientCepDigits = stripNonDigits(client.address.cep ?? "").slice(
+          0,
+          8,
+        );
         cepSetByClient.current = clientCepDigits.length === 8;
         form.setValue("cep", formatCep(client.address.cep ?? ""));
         form.setValue("street", client.address.street);
