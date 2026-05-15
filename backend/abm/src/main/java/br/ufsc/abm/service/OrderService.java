@@ -12,6 +12,7 @@ import br.ufsc.abm.model.Client;
 import br.ufsc.abm.model.Order;
 import br.ufsc.abm.model.OrderAddress;
 import br.ufsc.abm.model.Product;
+import br.ufsc.abm.model.dto.MonthlySalesDTO;
 import br.ufsc.abm.model.dto.OrderInputDTO;
 import br.ufsc.abm.model.dto.ProductBalanceDTO;
 import br.ufsc.abm.model.dto.ReceivableDTO;
@@ -279,5 +280,9 @@ public class OrderService {
 
 	public List<ProductBalanceDTO> getBalanceByProduct(LocalDate startDate, LocalDate endDate) {
 		return orderRepository.findProductBalanceSummary(startDate, endDate);
+	}
+
+	public List<MonthlySalesDTO> getMonthlySales(LocalDate startDate, LocalDate endDate) {
+		return orderRepository.findMonthlySales(startDate, endDate);
 	}
 }

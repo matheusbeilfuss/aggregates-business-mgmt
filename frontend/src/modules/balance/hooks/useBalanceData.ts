@@ -7,6 +7,7 @@ import {
   ExpenseCategoryBalance,
 } from "../types";
 import { useBalanceExpenses } from "./useBalanceExpenses";
+import { useMonthlySales } from "./useMonthlySales";
 
 const MONTH_LABELS = [
   "Jan",
@@ -46,12 +47,21 @@ export function useBalanceData({
     error: paymentsError,
   } = useFinancePayments({ startDate, endDate, enabled });
 
-  const monthlyData = useMemo<MonthlyBalance[]>(() => {
-    if (!expenses || !payments) return [];
+  const {
+    data: monthlySales,
+    loading: loadingSales,
+    error: salesError,
+  } = useMonthlySales({ startDate, endDate, enabled });
 
-    const map = new Map<number, { expenses: number; income: number }>();
+  const monthlyData = useMemo<MonthlyBalance[]>(() => {
+    if (!expenses || !payments || !monthlySales) return [];
+
+    const map = new Map<
+      number,
+      { expenses: number; income: number; sales: number }
+    >();
     for (let m = 1; m <= 12; m++) {
-      map.set(m, { expenses: 0, income: 0 });
+      map.set(m, { expenses: 0, income: 0, sales: 0 });
     }
 
     for (const expense of expenses) {
@@ -68,29 +78,39 @@ export function useBalanceData({
       entry.income += Number(payment.paymentValue);
     }
 
+    for (const sale of monthlySales) {
+      const entry = map.get(sale.month);
+      if (entry) entry.sales += Number(sale.totalSales);
+    }
+
     return Array.from(map.entries()).map(([month, data]) => ({
       month,
       monthLabel: MONTH_LABELS[month - 1],
       expenses: data.expenses,
       income: data.income,
       profit: data.income - data.expenses,
+      sales: data.sales,
     }));
-  }, [expenses, payments]);
+  }, [expenses, payments, monthlySales]);
 
   const summary = useMemo<BalanceSummary>(() => {
     const nonEmptyMonths =
-      monthlyData.filter((m) => m.expenses > 0 || m.income > 0).length || 1;
+      monthlyData.filter((m) => m.expenses > 0 || m.income > 0 || m.sales > 0)
+        .length || 1;
 
     const totalExpenses = monthlyData.reduce((acc, m) => acc + m.expenses, 0);
     const totalIncome = monthlyData.reduce((acc, m) => acc + m.income, 0);
+    const totalSales = monthlyData.reduce((acc, m) => acc + m.sales, 0);
     const totalProfit = totalIncome - totalExpenses;
 
     return {
       totalExpenses,
       totalIncome,
+      totalSales,
       totalProfit,
       avgExpenses: totalExpenses / nonEmptyMonths,
       avgIncome: totalIncome / nonEmptyMonths,
+      avgSales: totalSales / nonEmptyMonths,
       avgProfit: totalProfit / nonEmptyMonths,
     };
   }, [monthlyData]);
@@ -115,7 +135,7 @@ export function useBalanceData({
     monthlyData,
     summary,
     expensesByCategory,
-    loading: loadingExpenses || loadingPayments,
-    error: expensesError || paymentsError,
+    loading: loadingExpenses || loadingPayments || loadingSales,
+    error: expensesError || paymentsError || salesError,
   };
 }

@@ -19,6 +19,7 @@ type Props = { data: MonthlyBalance[] };
 
 const SERIES = [
   { key: "expenses", name: "Gastos", color: "#c25000" },
+  { key: "sales", name: "Vendas", color: "#0061a4" },
   { key: "income", name: "Recebimentos", color: "#16a34a" },
   { key: "profit", name: "Líquido", color: "#2563eb" },
 ] as const;
