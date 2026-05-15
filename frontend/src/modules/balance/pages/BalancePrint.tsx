@@ -42,7 +42,8 @@ export function BalancePrint() {
   });
 
   const hasRealData = useMemo(
-    () => monthlyData.some((m) => m.expenses > 0 || m.income > 0),
+    () =>
+      monthlyData.some((m) => m.expenses > 0 || m.income > 0 || m.sales > 0),
     [monthlyData],
   );
 
@@ -144,19 +145,22 @@ export function BalancePrint() {
             <table className="w-full border-collapse text-sm">
               <thead>
                 <tr>
-                  {["Mês", "Gastos", "Recebimentos", "Líquido"].map((h, i) => (
-                    <th
-                      key={h}
-                      className={`px-4 py-3 text-xs font-semibold uppercase tracking-wide ${i === 0 ? "text-left" : "text-right"}`}
-                      style={{
-                        backgroundColor: "var(--color-primary-90)",
-                        color: "var(--color-primary-40)",
-                        borderBottom: "1px solid var(--color-outline-variant)",
-                      }}
-                    >
-                      {h}
-                    </th>
-                  ))}
+                  {["Mês", "Gastos", "Vendas", "Recebimentos", "Líquido"].map(
+                    (h, i) => (
+                      <th
+                        key={h}
+                        className={`px-4 py-3 text-xs font-semibold uppercase tracking-wide ${i === 0 ? "text-left" : "text-right"}`}
+                        style={{
+                          backgroundColor: "var(--color-primary-90)",
+                          color: "var(--color-primary-40)",
+                          borderBottom:
+                            "1px solid var(--color-outline-variant)",
+                        }}
+                      >
+                        {h}
+                      </th>
+                    ),
+                  )}
                 </tr>
               </thead>
 
@@ -180,6 +184,12 @@ export function BalancePrint() {
                       style={{ color: "#c25000" }}
                     >
                       {formatLocalCurrency(row.expenses)}
+                    </td>
+                    <td
+                      className="px-4 py-2.5 text-right tabular-nums"
+                      style={{ color: "#0061a4" }}
+                    >
+                      {formatLocalCurrency(row.sales)}
                     </td>
                     <td
                       className="px-4 py-2.5 text-right tabular-nums"
@@ -223,6 +233,12 @@ export function BalancePrint() {
                     className="px-4 py-2.5 text-right tabular-nums font-semibold text-xs"
                     style={{ color: "var(--color-primary-40)" }}
                   >
+                    {formatLocalCurrency(summary.totalSales)}
+                  </td>
+                  <td
+                    className="px-4 py-2.5 text-right tabular-nums font-semibold text-xs"
+                    style={{ color: "var(--color-primary-40)" }}
+                  >
                     {formatLocalCurrency(summary.totalIncome)}
                   </td>
                   <td
@@ -249,6 +265,12 @@ export function BalancePrint() {
                     style={{ color: "var(--color-on-surface-variant)" }}
                   >
                     {formatLocalCurrency(summary.avgExpenses)}
+                  </td>
+                  <td
+                    className="px-4 py-2.5 text-right tabular-nums text-xs"
+                    style={{ color: "var(--color-on-surface-variant)" }}
+                  >
+                    {formatLocalCurrency(summary.avgSales)}
                   </td>
                   <td
                     className="px-4 py-2.5 text-right tabular-nums text-xs"

@@ -12,6 +12,7 @@ import br.ufsc.abm.model.Client;
 import br.ufsc.abm.model.Order;
 import br.ufsc.abm.model.OrderAddress;
 import br.ufsc.abm.model.Product;
+import br.ufsc.abm.model.dto.MonthlySalesDTO;
 import br.ufsc.abm.model.dto.OrderInputDTO;
 import br.ufsc.abm.model.dto.ProductBalanceDTO;
 import br.ufsc.abm.model.dto.ReceivableDTO;
@@ -139,6 +140,11 @@ public class OrderService {
 		existingOrder.setScheduledTime(dto.getScheduledTime());
 		existingOrder.setObservations(dto.getObservations());
 		existingOrder.setOrderValue(dto.getOrderValue());
+
+		if (dto.getStatus() != null) {
+			existingOrder.setStatus(dto.getStatus());
+		}
+
 		paymentService.updateOrderPaymentState(existingOrder);
 	}
 
@@ -215,7 +221,7 @@ public class OrderService {
 		order.setScheduledDate(dto.getScheduledDate());
 		order.setScheduledTime(dto.getScheduledTime());
 		order.setObservations(dto.getObservations());
-		order.setStatus(OrderStatusEnum.PENDING);
+		order.setStatus(dto.getStatus() != null ? dto.getStatus() : OrderStatusEnum.PENDING);
 		order.setPaymentStatus(PaymentStatusEnum.PENDING);
 		order.setOrderValue(dto.getOrderValue());
 		order.setRemainingValue(dto.getOrderValue());
@@ -274,5 +280,9 @@ public class OrderService {
 
 	public List<ProductBalanceDTO> getBalanceByProduct(LocalDate startDate, LocalDate endDate) {
 		return orderRepository.findProductBalanceSummary(startDate, endDate);
+	}
+
+	public List<MonthlySalesDTO> getMonthlySales(LocalDate startDate, LocalDate endDate) {
+		return orderRepository.findMonthlySales(startDate, endDate);
 	}
 }

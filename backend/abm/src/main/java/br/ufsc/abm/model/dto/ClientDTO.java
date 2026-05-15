@@ -31,13 +31,15 @@ public class ClientDTO {
 		this.name = client.getName();
 		this.cpfCnpj = client.getCpfCnpj();
 		this.email = client.getEmail();
-		this.cep = address.getCep();
-		this.state = address.getState();
-		this.city = address.getCity();
-		this.neighborhood = address.getNeighborhood();
-		this.street = address.getStreet();
-		this.number = address.getNumber();
-		this.complement = address.getComplement();
+		if (address != null) {
+			this.cep = address.getCep();
+			this.state = address.getState();
+			this.city = address.getCity();
+			this.neighborhood = address.getNeighborhood();
+			this.street = address.getStreet();
+			this.number = address.getNumber();
+			this.complement = address.getComplement();
+		}
 		this.phones = phones.stream().map(PhoneDTO::new).toList();
 	}
 

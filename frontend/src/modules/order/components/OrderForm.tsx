@@ -30,12 +30,20 @@ import {
   formatPhone,
   formatCpfCnpj,
   formatCep,
+  stripNonDigits,
 } from "@/utils";
 import { useEffect, useMemo, useRef } from "react";
 import { Product } from "@/modules/product/types";
 import { useClient } from "@/modules/client/hooks";
 import { useCategoryPrices } from "@/modules/price/hooks";
 import { useCepLookup } from "@/hooks/useCepLookup";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 interface OrderFormProps {
   title: string;
@@ -79,19 +87,49 @@ export function OrderForm({
 
   const quantityChangedByUser = useRef(!isEditing);
 
+  const prevClientId = useRef<number | undefined>(undefined);
+  const cepFromClient = useRef<string | null>(null);
+  const cepFilledFields = useRef<Set<string>>(new Set());
+
   useEffect(() => {
     if (!client) return;
+
+    const isClientSwitch =
+      prevClientId.current !== undefined && prevClientId.current !== client.id;
+    prevClientId.current = client.id;
+
     form.setValue("clientName", client.name);
     form.setValue("cpfCnpj", formatCpfCnpj(client.cpfCnpj ?? ""));
-    if (client.address) {
-      form.setValue("cep", formatCep(client.address.cep ?? ""));
-      form.setValue("street", client.address.street);
-      form.setValue("number", client.address.number);
-      form.setValue("complement", client.address.complement ?? "");
-      form.setValue("neighborhood", client.address.neighborhood);
-      form.setValue("city", client.address.city);
-      form.setValue("state", client.address.state);
+
+    if (!isEditing || isClientSwitch) {
+      if (client.address) {
+        const clientCepDigits = stripNonDigits(client.address.cep ?? "").slice(
+          0,
+          8,
+        );
+        cepFromClient.current =
+          clientCepDigits.length === 8 ? clientCepDigits : null;
+        cepFilledFields.current = new Set();
+        form.setValue("cep", formatCep(client.address.cep ?? ""));
+        form.setValue("street", client.address.street);
+        form.setValue("number", client.address.number);
+        form.setValue("complement", client.address.complement ?? "");
+        form.setValue("neighborhood", client.address.neighborhood);
+        form.setValue("city", client.address.city);
+        form.setValue("state", client.address.state);
+      } else if (isClientSwitch) {
+        cepFromClient.current = null;
+        cepFilledFields.current = new Set();
+        form.setValue("cep", "");
+        form.setValue("street", "");
+        form.setValue("number", "");
+        form.setValue("complement", "");
+        form.setValue("neighborhood", "");
+        form.setValue("city", "");
+        form.setValue("state", "");
+      }
     }
+
     if (client.phones?.length) {
       const primaryPhone = selectPrimaryPhone(client.phones);
       if (primaryPhone) {
@@ -99,17 +137,50 @@ export function OrderForm({
         form.setValue("phoneType", primaryPhone.type);
       }
     }
-  }, [client, form]);
+  }, [client, form, isEditing]);
 
   useEffect(() => {
     if (!cepAddress) return;
-    form.setValue("street", cepAddress.street, { shouldValidate: true });
-    form.setValue("neighborhood", cepAddress.neighborhood, {
-      shouldValidate: true,
+
+    const currentDigits = stripNonDigits(form.getValues("cep") ?? "").slice(
+      0,
+      8,
+    );
+    if (cepFromClient.current && cepFromClient.current === currentDigits) {
+      cepFromClient.current = null;
+      return;
+    }
+    cepFromClient.current = null;
+
+    const addressFields = [
+      { name: "street" as const, value: cepAddress.street },
+      { name: "neighborhood" as const, value: cepAddress.neighborhood },
+      { name: "city" as const, value: cepAddress.city },
+      { name: "state" as const, value: cepAddress.state },
+    ];
+
+    const newFilled = new Set<string>();
+
+    addressFields.forEach(({ name, value }) => {
+      const isDirty = !!form.formState.dirtyFields[name];
+      if (isDirty) return;
+
+      if (value) {
+        form.setValue(name, value, { shouldValidate: true });
+        newFilled.add(name);
+      } else if (cepFilledFields.current.has(name)) {
+        form.setValue(name, "", { shouldValidate: true });
+      }
     });
-    form.setValue("city", cepAddress.city, { shouldValidate: true });
-    form.setValue("state", cepAddress.state, { shouldValidate: true });
+
+    cepFilledFields.current = newFilled;
   }, [cepAddress, form]);
+
+  useEffect(() => {
+    if (cepError && cepFromClient.current) {
+      cepFromClient.current = null;
+    }
+  }, [cepError]);
 
   useEffect(() => {
     if (orderType === "SERVICE") {
@@ -202,23 +273,23 @@ export function OrderForm({
 
               <FormField
                 control={form.control}
-                name="scheduledDate"
+                name="status"
                 render={({ field }) => (
                   <FormItem className="shrink-0">
-                    <FormLabel className="text-sm font-medium">Data</FormLabel>
-                    <FormControl>
-                      <DatePicker
-                        value={
-                          field.value
-                            ? new Date(`${field.value}T00:00:00`)
-                            : new Date()
-                        }
-                        onChange={(date: Date) =>
-                          field.onChange(toIsoDate(date))
-                        }
-                        align="end"
-                      />
-                    </FormControl>
+                    <FormLabel className="text-sm font-medium">
+                      Status
+                    </FormLabel>
+                    <Select value={field.value} onValueChange={field.onChange}>
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Selecione o status" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        <SelectItem value="PENDING">Pendente</SelectItem>
+                        <SelectItem value="DELIVERED">Entregue</SelectItem>
+                      </SelectContent>
+                    </Select>
                     <FormMessage />
                   </FormItem>
                 )}
@@ -561,25 +632,52 @@ export function OrderForm({
             </FormSection>
 
             <FormSection icon={Clock} title="Agendamento">
-              <FormField
-                control={form.control}
-                name="scheduledTime"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>
-                      Horário <span className="text-destructive">*</span>
-                    </FormLabel>
-                    <FormControl>
-                      <Input
-                        {...field}
-                        type="time"
-                        onFocus={(e) => e.target.select()}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+              <div className="flex gap-3 md:col-span-1 md:max-w-sm">
+                <FormField
+                  control={form.control}
+                  name="scheduledDate"
+                  render={({ field }) => (
+                    <FormItem className="flex-1">
+                      <FormLabel>
+                        Data <span className="text-destructive">*</span>
+                      </FormLabel>
+                      <FormControl>
+                        <DatePicker
+                          value={
+                            field.value
+                              ? new Date(`${field.value}T00:00:00`)
+                              : new Date()
+                          }
+                          onChange={(date: Date) =>
+                            field.onChange(toIsoDate(date))
+                          }
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="scheduledTime"
+                  render={({ field }) => (
+                    <FormItem className="flex-1">
+                      <FormLabel>
+                        Horário <span className="text-destructive">*</span>
+                      </FormLabel>
+                      <FormControl>
+                        <Input
+                          {...field}
+                          type="time"
+                          onFocus={(e) => e.target.select()}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
 
               <FormField
                 control={form.control}

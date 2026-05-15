@@ -33,7 +33,12 @@ import {
   replenishSchema,
   type ReplenishFormData,
 } from "../schemas/stock.schemas";
-import { tonToM3, m3ToTon, calculateExpenseValue } from "../utils/calculations";
+import {
+  tonToM3,
+  m3ToTon,
+  calculateExpenseValue,
+  parseInputNumber,
+} from "../utils/calculations";
 import { ApiError } from "@/lib/api";
 import { usePageTitle } from "@/hooks/usePageTitle";
 import { useProductSuppliersByProductId } from "@/modules/product-supplier/hooks";
@@ -118,46 +123,58 @@ export function StockReplenish() {
   };
 
   const handleTonChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const tonQuantity = parseFloat(e.target.value) || 0;
-    form.setValue("tonQuantity", tonQuantity);
+    const tonQuantity = parseInputNumber(e.target.value);
     setUserEditedTon(true);
     setUserEditedM3(false);
     const density = form.getValues("density");
-    if (density > 0) {
+
+    if (tonQuantity !== null && density > 0) {
       const m3Quantity = tonToM3(tonQuantity, density);
       form.setValue("m3Quantity", m3Quantity);
       updateExpenseValue(tonQuantity, m3Quantity);
+    } else {
+      form.setValue("m3Quantity", 0);
+      updateExpenseValue(tonQuantity ?? 0, 0);
     }
   };
 
   const handleM3Change = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const m3Quantity = parseFloat(e.target.value) || 0;
-    form.setValue("m3Quantity", m3Quantity);
+    const m3Quantity = parseInputNumber(e.target.value);
     setUserEditedM3(true);
     setUserEditedTon(false);
     const density = form.getValues("density");
-    if (density > 0) {
+
+    if (m3Quantity !== null && density > 0) {
       const tonQuantity = m3ToTon(m3Quantity, density);
       form.setValue("tonQuantity", tonQuantity);
       updateExpenseValue(tonQuantity, m3Quantity);
+    } else {
+      form.setValue("tonQuantity", 0);
+      updateExpenseValue(0, m3Quantity ?? 0);
     }
   };
 
   const handleDensityChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const density = parseFloat(e.target.value) || 0;
-    form.setValue("density", density);
+    const density = parseInputNumber(e.target.value);
+    if (density === null || density <= 0) {
+      updateExpenseValue(
+        form.getValues("tonQuantity"),
+        form.getValues("m3Quantity"),
+      );
+      return;
+    }
+
     const currentTon = form.getValues("tonQuantity");
     const currentM3 = form.getValues("m3Quantity");
-    if (density > 0) {
-      if (userEditedM3 && !userEditedTon) {
-        const newTon = m3ToTon(currentM3, density);
-        form.setValue("tonQuantity", newTon);
-        updateExpenseValue(newTon, currentM3);
-      } else {
-        const newM3 = tonToM3(currentTon, density);
-        form.setValue("m3Quantity", newM3);
-        updateExpenseValue(currentTon, newM3);
-      }
+
+    if (userEditedM3 && !userEditedTon) {
+      const newTon = m3ToTon(currentM3, density);
+      form.setValue("tonQuantity", newTon);
+      updateExpenseValue(newTon, currentM3);
+    } else {
+      const newM3 = tonToM3(currentTon, density);
+      form.setValue("m3Quantity", newM3);
+      updateExpenseValue(currentTon, newM3);
     }
   };
 
@@ -241,6 +258,8 @@ export function StockReplenish() {
                     <FormControl>
                       <Input
                         type="number"
+                        step="any"
+                        {...field}
                         value={field.value ?? ""}
                         onFocus={(e) => e.target.select()}
                         onChange={(e) => {
@@ -263,6 +282,8 @@ export function StockReplenish() {
                     <FormControl>
                       <Input
                         type="number"
+                        step="any"
+                        {...field}
                         value={field.value ?? ""}
                         onFocus={(e) => e.target.select()}
                         onChange={(e) => {
@@ -285,6 +306,8 @@ export function StockReplenish() {
                     <FormControl>
                       <Input
                         type="number"
+                        step="any"
+                        {...field}
                         value={field.value ?? ""}
                         onFocus={(e) => e.target.select()}
                         onChange={(e) => {
@@ -371,11 +394,7 @@ export function StockReplenish() {
             </div>
           </div>
 
-          <FormActions
-            cancelPath="/stocks"
-            submitLabel="Adicionar"
-            onSubmit={form.handleSubmit(onSubmit)}
-          />
+          <FormActions cancelPath="/stocks" submitLabel="Adicionar" />
         </form>
       </Form>
     </PageContainer>

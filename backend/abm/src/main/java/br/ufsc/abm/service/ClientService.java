@@ -38,8 +38,10 @@ public class ClientService {
 
 		Client client = clientFromDTO(dto);
 
-		Address address = addressFromDTO(dto, client);
-		client.setAddress(address);
+		if (dto.hasAnyAddressField()) {
+			Address address = addressFromDTO(dto, client);
+			client.setAddress(address);
+		}
 
 		List<Phone> phones = phonesFromDTO(client, dto);
 		for (Phone phone : phones) {
@@ -73,18 +75,22 @@ public class ClientService {
 		existingClient.setEmail(dto.getEmail());
 		existingClient.setCpfCnpj(dto.getCpfCnpj());
 
-		Address newAddressData = addressFromDTO(dto, existingClient);
-		if (existingClient.getAddress() == null) {
-			existingClient.setAddress(newAddressData);
-		} else {
-			Address addr = existingClient.getAddress();
-			addr.setStreet(newAddressData.getStreet());
-			addr.setNumber(newAddressData.getNumber());
-			addr.setCity(newAddressData.getCity());
-			addr.setState(newAddressData.getState());
-			addr.setNeighborhood(newAddressData.getNeighborhood());
-			addr.setComplement(newAddressData.getComplement());
-			addr.setCep(newAddressData.getCep());
+		if (dto.hasAnyAddressField()) {
+			Address newAddressData = addressFromDTO(dto, existingClient);
+			if (existingClient.getAddress() == null) {
+				existingClient.setAddress(newAddressData);
+			} else {
+				Address addr = existingClient.getAddress();
+				addr.setStreet(newAddressData.getStreet());
+				addr.setNumber(newAddressData.getNumber());
+				addr.setCity(newAddressData.getCity());
+				addr.setState(newAddressData.getState());
+				addr.setNeighborhood(newAddressData.getNeighborhood());
+				addr.setComplement(newAddressData.getComplement());
+				addr.setCep(newAddressData.getCep());
+			}
+		} else if (dto.isRemoveAddress()) {
+			existingClient.setAddress(null);
 		}
 
 		new ArrayList<>(existingClient.getPhones()).forEach(existingClient::removePhone);

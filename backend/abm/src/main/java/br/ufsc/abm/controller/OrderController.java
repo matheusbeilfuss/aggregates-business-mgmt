@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import br.ufsc.abm.model.Order;
+import br.ufsc.abm.model.dto.MonthlySalesDTO;
 import br.ufsc.abm.model.dto.OrderInputDTO;
 import br.ufsc.abm.model.dto.ProductBalanceDTO;
 import br.ufsc.abm.model.dto.ReceivableDTO;
@@ -97,6 +98,11 @@ public class OrderController {
 			@RequestParam LocalDate endDate
 	) {
 		return ResponseEntity.ok(service.getBalanceByProduct(startDate, endDate));
+	}
+
+	@GetMapping("/monthly-sales")
+	public ResponseEntity<List<MonthlySalesDTO>> getMonthlySales(@RequestParam LocalDate startDate, @RequestParam LocalDate endDate) {
+		return ResponseEntity.ok(service.getMonthlySales(startDate, endDate));
 	}
 
 	@GetMapping("/has-open-receivables")

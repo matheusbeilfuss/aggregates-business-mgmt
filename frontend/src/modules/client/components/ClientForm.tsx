@@ -1,6 +1,6 @@
 import { useFieldArray, UseFormReturn, useWatch } from "react-hook-form";
 import { Plus, Trash2, Loader2, User, Phone, MapPin } from "lucide-react";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import {
   Form,
   FormField,
@@ -43,20 +43,40 @@ export function ClientForm({
   });
 
   const cep = useWatch({ control: form.control, name: "cep" });
+
   const {
     address,
     loading: cepLoading,
     error: cepError,
   } = useCepLookup(cep ?? "");
 
+  const cepFilledFields = useRef<Set<string>>(new Set());
+
   useEffect(() => {
     if (!address) return;
-    form.setValue("street", address.street, { shouldValidate: true });
-    form.setValue("neighborhood", address.neighborhood, {
-      shouldValidate: true,
+
+    const addressFields = [
+      { name: "street" as const, value: address.street },
+      { name: "neighborhood" as const, value: address.neighborhood },
+      { name: "city" as const, value: address.city },
+      { name: "state" as const, value: address.state },
+    ];
+
+    const newFilled = new Set<string>();
+
+    addressFields.forEach(({ name, value }) => {
+      const { isDirty } = form.getFieldState(name);
+      if (isDirty) return;
+
+      if (value) {
+        form.setValue(name, value, { shouldValidate: true });
+        newFilled.add(name);
+      } else if (cepFilledFields.current.has(name)) {
+        form.setValue(name, "", { shouldValidate: true });
+      }
     });
-    form.setValue("city", address.city, { shouldValidate: true });
-    form.setValue("state", address.state, { shouldValidate: true });
+
+    cepFilledFields.current = newFilled;
   }, [address, form]);
 
   if (loading) {
@@ -232,7 +252,7 @@ export function ClientForm({
               </div>
             </div>
 
-            <FormSection icon={MapPin} title="Endereço">
+            <FormSection icon={MapPin} title="Endereço (opcional)">
               <FormField
                 control={form.control}
                 name="cep"
@@ -274,9 +294,7 @@ export function ClientForm({
                 name="street"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>
-                      Rua <span className="text-destructive">*</span>
-                    </FormLabel>
+                    <FormLabel>Rua</FormLabel>
                     <FormControl>
                       <Input {...field} onFocus={(e) => e.target.select()} />
                     </FormControl>
@@ -290,9 +308,7 @@ export function ClientForm({
                 name="number"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>
-                      Número <span className="text-destructive">*</span>
-                    </FormLabel>
+                    <FormLabel>Número</FormLabel>
                     <FormControl>
                       <Input {...field} onFocus={(e) => e.target.select()} />
                     </FormControl>
@@ -329,9 +345,7 @@ export function ClientForm({
                 name="neighborhood"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>
-                      Bairro <span className="text-destructive">*</span>
-                    </FormLabel>
+                    <FormLabel>Bairro</FormLabel>
                     <FormControl>
                       <Input {...field} onFocus={(e) => e.target.select()} />
                     </FormControl>
@@ -345,9 +359,7 @@ export function ClientForm({
                 name="city"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>
-                      Cidade <span className="text-destructive">*</span>
-                    </FormLabel>
+                    <FormLabel>Cidade</FormLabel>
                     <FormControl>
                       <Input {...field} onFocus={(e) => e.target.select()} />
                     </FormControl>
@@ -361,9 +373,7 @@ export function ClientForm({
                 name="state"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>
-                      Estado <span className="text-destructive">*</span>
-                    </FormLabel>
+                    <FormLabel>Estado</FormLabel>
                     <FormControl>
                       <Input {...field} onFocus={(e) => e.target.select()} />
                     </FormControl>

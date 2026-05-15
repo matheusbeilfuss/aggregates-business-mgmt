@@ -1,5 +1,5 @@
 import { api } from "@/lib/api";
-import { ProductBalance } from "../types";
+import { MonthlySales, ProductBalance } from "../types";
 import { toIsoDate } from "@/utils";
 import { Expense } from "@/modules/finance/types";
 
@@ -12,5 +12,10 @@ export const balanceService = {
   getBalanceExpenses: (startDate: Date, endDate: Date) =>
     api.get<Expense[]>(
       `/expenses/balance?startDate=${toIsoDate(startDate)}&endDate=${toIsoDate(endDate)}`,
+    ),
+
+  getMonthlySales: (startDate: Date, endDate: Date) =>
+    api.get<MonthlySales[]>(
+      `/orders/monthly-sales?startDate=${toIsoDate(startDate)}&endDate=${toIsoDate(endDate)}`,
     ),
 };

@@ -5,7 +5,6 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -97,12 +96,16 @@ public class Client implements Serializable {
 	}
 
 	public void setAddress(Address address) {
+		if (this.address != null && this.address != address) {
+			this.address.setClient(null);
+		}
 		this.address = address;
-		if (address != null) {
-			Client currentClient = address.getClient();
-			if (currentClient == null || currentClient == this) {
-				address.setClient(this);
+		if (address != null && !this.equals(address.getClient())) {
+			Client previousOwner = address.getClient();
+			if (previousOwner != null) {
+				previousOwner.address = null;
 			}
+			address.setClient(this);
 		}
 	}
 
@@ -121,13 +124,12 @@ public class Client implements Serializable {
 	}
 
 	@Override public boolean equals(Object o) {
-		if (o == null || getClass() != o.getClass())
-			return false;
-		Client client = (Client) o;
-		return Objects.equals(id, client.id);
+		if (this == o) return true;
+		if (!(o instanceof Client client)) return false;
+		return id != null && id.equals(client.getId());
 	}
 
 	@Override public int hashCode() {
-		return Objects.hashCode(id);
+		return Client.class.hashCode();
 	}
 }

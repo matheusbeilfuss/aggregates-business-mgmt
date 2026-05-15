@@ -14,4 +14,8 @@ public class StringUtils {
 				.replaceAll("\\s+", " ")
 				.toLowerCase();
 	}
+
+	public static boolean isNotBlank(String value) {
+		return value != null && !value.isBlank();
+	}
 }

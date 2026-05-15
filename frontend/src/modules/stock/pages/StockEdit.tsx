@@ -25,6 +25,7 @@ import {
   editStockSchema,
   type EditStockFormData,
 } from "../schemas/stock.schemas";
+import { tonToM3, m3ToTon, parseInputNumber } from "../utils/calculations";
 import { ApiError } from "@/lib/api";
 import { usePageTitle } from "@/hooks/usePageTitle";
 import { useCategories } from "@/modules/category/hooks";
@@ -49,6 +50,8 @@ export function StockEdit() {
 
   const [productId, setProductId] = useState<number | null>(null);
   const [isFormReady, setIsFormReady] = useState(false);
+  const [userEditedM3, setUserEditedM3] = useState(false);
+  const [userEditedTon, setUserEditedTon] = useState(false);
 
   const form = useForm<EditStockFormData>({
     resolver: zodResolver(editStockSchema),
@@ -85,6 +88,46 @@ export function StockEdit() {
   }, [stockError, navigate]);
 
   if (!validId) return <Navigate to="/stocks" replace />;
+
+  const handleTonChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const tonQuantity = parseInputNumber(e.target.value);
+    setUserEditedTon(true);
+    setUserEditedM3(false);
+    const density = form.getValues("density");
+
+    if (tonQuantity !== null && density > 0) {
+      form.setValue("m3Quantity", tonToM3(tonQuantity, density));
+    } else {
+      form.setValue("m3Quantity", 0);
+    }
+  };
+
+  const handleM3Change = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const m3Quantity = parseInputNumber(e.target.value);
+    setUserEditedM3(true);
+    setUserEditedTon(false);
+    const density = form.getValues("density");
+
+    if (m3Quantity !== null && density > 0) {
+      form.setValue("tonQuantity", m3ToTon(m3Quantity, density));
+    } else {
+      form.setValue("tonQuantity", 0);
+    }
+  };
+
+  const handleDensityChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const density = parseInputNumber(e.target.value);
+    if (density === null || density <= 0) return;
+
+    const currentTon = form.getValues("tonQuantity");
+    const currentM3 = form.getValues("m3Quantity");
+
+    if (userEditedM3 && !userEditedTon) {
+      form.setValue("tonQuantity", m3ToTon(currentM3, density));
+    } else {
+      form.setValue("m3Quantity", tonToM3(currentTon, density));
+    }
+  };
 
   async function onSubmit(data: EditStockFormData) {
     if (!productId || !stockId) return;
@@ -159,6 +202,29 @@ export function StockEdit() {
 
             <FormSection icon={Package} title="Estoque">
               <FormField
+                name="density"
+                control={form.control}
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Densidade (Ton/m³)</FormLabel>
+                    <FormControl>
+                      <Input
+                        type="number"
+                        step="any"
+                        {...field}
+                        value={field.value ?? 0}
+                        onFocus={(e) => e.target.select()}
+                        onChange={(e) => {
+                          field.onChange(e);
+                          handleDensityChange(e);
+                        }}
+                      />
+                    </FormControl>
+                  </FormItem>
+                )}
+              />
+
+              <FormField
                 name="tonQuantity"
                 control={form.control}
                 render={({ field }) => (
@@ -167,9 +233,14 @@ export function StockEdit() {
                     <FormControl>
                       <Input
                         type="number"
+                        step="any"
                         {...field}
                         value={field.value ?? 0}
                         onFocus={(e) => e.target.select()}
+                        onChange={(e) => {
+                          field.onChange(e);
+                          handleTonChange(e);
+                        }}
                       />
                     </FormControl>
                   </FormItem>
@@ -185,27 +256,14 @@ export function StockEdit() {
                     <FormControl>
                       <Input
                         type="number"
+                        step="any"
                         {...field}
                         value={field.value ?? 0}
                         onFocus={(e) => e.target.select()}
-                      />
-                    </FormControl>
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                name="density"
-                control={form.control}
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Densidade (Ton/m³)</FormLabel>
-                    <FormControl>
-                      <Input
-                        type="number"
-                        {...field}
-                        value={field.value ?? 0}
-                        onFocus={(e) => e.target.select()}
+                        onChange={(e) => {
+                          field.onChange(e);
+                          handleM3Change(e);
+                        }}
                       />
                     </FormControl>
                   </FormItem>
@@ -242,11 +300,7 @@ export function StockEdit() {
             </div>
           </div>
 
-          <FormActions
-            cancelPath="/stocks"
-            submitLabel="Salvar"
-            onSubmit={form.handleSubmit(onSubmit)}
-          />
+          <FormActions cancelPath="/stocks" submitLabel="Salvar" />
         </form>
       </Form>
     </PageContainer>

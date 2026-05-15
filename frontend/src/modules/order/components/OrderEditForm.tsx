@@ -49,6 +49,7 @@ export function OrderEditForm({ orderId }: OrderEditFormProps) {
       scheduledTime: order.scheduledTime,
       observations: order.observations ?? "",
       orderValue: order.orderValue,
+      status: order.status,
 
       clientId: order.client.id,
       clientName: order.client.name,
@@ -83,8 +84,9 @@ export function OrderEditForm({ orderId }: OrderEditFormProps) {
       complement: data.complement || undefined,
       scheduledDate: data.scheduledDate,
       scheduledTime: data.scheduledTime,
-      observations: data.observations ?? null,
+      observations: data.observations || undefined,
       orderValue: data.orderValue!,
+      status: data.status,
       productId: data.type === "MATERIAL" ? data.productId! : null,
       m3Quantity: data.type === "MATERIAL" ? data.m3Quantity : undefined,
       service: data.type === "SERVICE" ? (data.service ?? null) : null,
