@@ -241,7 +241,7 @@ export function OrderForm({
                           <label
                             key={opt.value}
                             className="flex items-center gap-2 px-4 py-2 rounded-lg border
-                                       cursor-pointer transition-colors text-sm select-none"
+                                      cursor-pointer transition-colors text-base md:text-sm select-none"
                             style={{
                               borderColor:
                                 field.value === opt.value
@@ -587,7 +587,8 @@ export function OrderForm({
                   render={({ field, fieldState }) => (
                     <FormItem>
                       <FormLabel>
-                        Quantidade <span className="text-destructive">*</span>
+                        Quantidade (m³)
+                        <span className="text-destructive">*</span>
                       </FormLabel>
                       <FormControl>
                         <QuantityCombobox
