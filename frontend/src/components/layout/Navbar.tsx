@@ -52,12 +52,12 @@ export function Navbar() {
       className="w-full h-14 flex items-center justify-between px-4
                  border-b border-border bg-background shrink-0"
     >
-      <div className="flex items-center gap-3 min-w-0">
+      <div className="flex items-center gap-3 min-w-0 overflow-hidden">
         <SidebarTrigger className="h-8 w-8 shrink-0 rounded-md text-muted-foreground hover:bg-accent" />
 
-        <Breadcrumb>
-          <BreadcrumbList>
-            <BreadcrumbItem>
+        <Breadcrumb className="overflow-hidden min-w-0">
+          <BreadcrumbList className="flex-nowrap min-w-0">
+            <BreadcrumbItem className="shrink-0">
               {crumbs.length > 0 ? (
                 <BreadcrumbLink asChild>
                   <Link to="/" className="text-sm">
@@ -97,8 +97,8 @@ export function Navbar() {
                   </Fragment>
                 ))}
 
-                <BreadcrumbItem>
-                  <BreadcrumbPage className="text-sm">
+                <BreadcrumbItem className="min-w-0 overflow-hidden">
+                  <BreadcrumbPage className="text-sm block truncate">
                     {lastCrumb.label}
                   </BreadcrumbPage>
                 </BreadcrumbItem>
