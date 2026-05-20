@@ -20,14 +20,18 @@ export function PaymentMethodSelect({ value, onChange }: Props) {
       value={value}
     >
       <SelectTrigger className="w-full">
-        <SelectValue placeholder="Selecione um método de pagamento" />
+        <SelectValue placeholder="Selecione..." />
       </SelectTrigger>
       <SelectContent>
-        {Object.values(PaymentMethodEnum).map((method) => (
-          <SelectItem key={method} value={method}>
-            {paymentMethodLabel[method]}
-          </SelectItem>
-        ))}
+        {Object.values(PaymentMethodEnum)
+          .sort((a, b) =>
+            paymentMethodLabel[a].localeCompare(paymentMethodLabel[b], "pt-BR"),
+          )
+          .map((method) => (
+            <SelectItem key={method} value={method}>
+              {paymentMethodLabel[method]}
+            </SelectItem>
+          ))}
       </SelectContent>
     </Select>
   );
