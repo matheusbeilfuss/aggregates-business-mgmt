@@ -42,11 +42,12 @@ export function ProductSelect({
           >
             <div className="flex w-full justify-between items-center gap-4">
               <span>{product.name}</span>
-              {product.category?.name && (
-                <span className="text-xs text-muted-foreground">
-                  {product.category.name}
-                </span>
-              )}
+              {product.category?.name &&
+                product.category.name !== product.name && (
+                  <span className="text-xs text-muted-foreground">
+                    {product.category.name}
+                  </span>
+                )}
             </div>
           </SelectItem>
         ))}
