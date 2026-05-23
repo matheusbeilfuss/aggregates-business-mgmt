@@ -59,7 +59,7 @@ export function PriceTable({
   }
 
   return (
-    <div className="rounded-xl border overflow-hidden w-full">
+    <div className="rounded-xl border overflow-x-auto overflow-y-auto max-h-[600px] w-full">
       <Table
         className="table-fixed"
         style={{ minWidth: `${140 + 110 + volumes.length * 100 + 44}px` }}
@@ -67,7 +67,7 @@ export function PriceTable({
         <TableHeader>
           <TableRow className="hover:bg-transparent border-b border-border [transition:none]">
             <TableHead
-              className="sticky left-0 z-20 w-[140px] text-xs font-semibold uppercase tracking-wide"
+              className="sticky left-0 top-0 z-20 w-[140px] text-xs font-semibold uppercase tracking-wide"
               style={{
                 backgroundColor: "var(--color-primary-90)",
                 color: "var(--color-primary-40)",
@@ -77,7 +77,7 @@ export function PriceTable({
             </TableHead>
 
             <TableHead
-              className="w-[110px] text-xs font-semibold uppercase tracking-wide text-right"
+              className="sticky top-0 z-10 w-[110px] text-xs font-semibold uppercase tracking-wide text-right"
               style={{
                 backgroundColor: "var(--color-primary-90)",
                 color: "var(--color-primary-40)",
@@ -93,7 +93,7 @@ export function PriceTable({
               return (
                 <TableHead
                   key={v}
-                  className="w-[100px] text-xs font-semibold uppercase tracking-wide text-right"
+                  className="sticky top-0 z-10 w-[100px] text-xs font-semibold uppercase tracking-wide text-right"
                   style={{
                     backgroundColor: "var(--color-primary-90)",
                     color: "var(--color-primary-40)",
@@ -115,7 +115,7 @@ export function PriceTable({
             })}
 
             <TableHead
-              className="w-11"
+              className="sticky top-0 z-10 w-11"
               style={{
                 backgroundColor: "var(--color-primary-90)",
                 color: "var(--color-primary-40)",
