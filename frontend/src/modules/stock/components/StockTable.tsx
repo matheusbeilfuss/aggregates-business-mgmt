@@ -98,12 +98,12 @@ export function StockTable({ stocks, onDeleteProduct }: StockTableProps) {
   }
 
   return (
-    <div className="rounded-xl border overflow-hidden">
+    <div className="rounded-xl border overflow-x-auto">
       <Table className="w-full">
         <TableHeader>
           <TableRow className="hover:bg-transparent">
             <TableHead
-              className="px-4 text-xs font-semibold uppercase tracking-wide"
+              className="px-4 text-xs font-semibold uppercase tracking-wide sticky left-0 z-20 w-[140px] md:w-auto"
               style={{
                 backgroundColor: "var(--color-primary-90)",
                 color: "var(--color-primary-40)",
@@ -149,7 +149,10 @@ export function StockTable({ stocks, onDeleteProduct }: StockTableProps) {
           {allGroups.map(({ categoryName, items }) => (
             <Fragment key={categoryName}>
               <TableRow className="hover:bg-transparent border-0">
-                <TableCell colSpan={5} className="py-0 px-0">
+                <TableCell
+                  className="py-0 px-0 sticky left-0 z-10"
+                  style={{ minWidth: 0 }}
+                >
                   <div
                     className="flex items-center gap-3 px-4 py-2 border-l-2"
                     style={{
@@ -165,14 +168,19 @@ export function StockTable({ stocks, onDeleteProduct }: StockTableProps) {
                     </span>
                   </div>
                 </TableCell>
+                <TableCell
+                  colSpan={4}
+                  className="py-0 px-0"
+                  style={{ backgroundColor: "var(--color-surface-container)" }}
+                />
               </TableRow>
 
               {items.map((stock) => (
                 <TableRow
                   key={stock.id}
-                  className="hover:bg-accent/50 cursor-default bg-background"
+                  className="cursor-default group bg-background hover:bg-accent/50 [transition:none]"
                 >
-                  <TableCell className="px-4">
+                  <TableCell className="px-4 sticky left-0 z-10 bg-inherit w-[140px] md:w-auto whitespace-normal break-words [transition:none]">
                     <div className="flex flex-col items-start gap-0.5 sm:flex-row sm:items-center sm:gap-2">
                       <span className="text-sm font-medium text-foreground">
                         {stock.product.name}
