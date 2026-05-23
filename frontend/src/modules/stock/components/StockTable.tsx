@@ -98,7 +98,7 @@ export function StockTable({ stocks, onDeleteProduct }: StockTableProps) {
   }
 
   return (
-    <div className="rounded-xl border overflow-x-auto max-h-[600px] overflow-y-auto">
+    <div className="rounded-xl border overflow-x-auto overflow-y-auto max-h-[600px] md:max-h-none">
       <Table className="w-full">
         <TableHeader>
           <TableRow className="hover:bg-transparent">
@@ -178,9 +178,9 @@ export function StockTable({ stocks, onDeleteProduct }: StockTableProps) {
               {items.map((stock) => (
                 <TableRow
                   key={stock.id}
-                  className="cursor-default group bg-background hover:bg-accent/50 [transition:none]"
+                  className="cursor-default table-row [transition:none]"
                 >
-                  <TableCell className="px-4 sticky left-0 z-10 bg-inherit w-[140px] md:w-auto whitespace-normal break-words [transition:none]">
+                  <TableCell className="px-4 sticky left-0 z-10 w-[140px] md:w-auto whitespace-normal break-words [transition:none]">
                     <div className="flex flex-col items-start gap-0.5 sm:flex-row sm:items-center sm:gap-2">
                       <span className="text-sm font-medium text-foreground">
                         {stock.product.name}
@@ -199,7 +199,7 @@ export function StockTable({ stocks, onDeleteProduct }: StockTableProps) {
                         )}
                     </div>
                   </TableCell>
-                  <TableCell className="px-4 text-right">
+                  <TableCell className="px-4 text-right [transition:none]">
                     {stock.tonQuantity != null ? (
                       <span className="text-sm tabular-nums">
                         {stock.tonQuantity.toFixed(2)}{" "}
@@ -211,7 +211,7 @@ export function StockTable({ stocks, onDeleteProduct }: StockTableProps) {
                       <span className="text-muted-foreground text-sm">—</span>
                     )}
                   </TableCell>
-                  <TableCell className="px-4 text-right">
+                  <TableCell className="px-4 text-right [transition:none]">
                     {stock.m3Quantity != null ? (
                       <span className="text-sm tabular-nums">
                         {stock.m3Quantity.toFixed(2)}{" "}
@@ -223,7 +223,7 @@ export function StockTable({ stocks, onDeleteProduct }: StockTableProps) {
                       <span className="text-muted-foreground text-sm">—</span>
                     )}
                   </TableCell>
-                  <TableCell className="px-4 text-right">
+                  <TableCell className="px-4 text-right [transition:none]">
                     {stock.density != null ? (
                       <span className="text-sm tabular-nums text-muted-foreground">
                         {stock.density.toFixed(2)}
