@@ -15,7 +15,8 @@ export function PageContainer({
 }: PageContainerProps) {
   return (
     <div className="flex flex-col min-h-full">
-      <header className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between px-6 md:px-10 py-6 border-b border-border bg-background shrink-0">
+      <header className="flex items-center justify-between gap-4 px-6 md:px-10 py-6 border-b border-border bg-background shrink-0">
+        {" "}
         <div>
           <h1 className="text-xl font-semibold tracking-tight text-foreground">
             {title}
