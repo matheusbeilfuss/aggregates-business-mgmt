@@ -17,7 +17,6 @@ import {
   CurrencyInput,
   FormSection,
 } from "@/components/shared";
-import { DatePicker } from "@/components/shared/DatePicker";
 import { UseFormReturn, useWatch } from "react-hook-form";
 import { Loader2, User, MapPin, Package, Clock } from "lucide-react";
 import { OrderFormData } from "../schemas/order.schemas";
@@ -25,7 +24,6 @@ import { ProductSelect } from "./ProductSelect";
 import { QuantityCombobox } from "./QuantityCombobox";
 import { ClientCombobox } from "./ClientCombobox";
 import {
-  toIsoDate,
   selectPrimaryPhone,
   formatPhone,
   formatCpfCnpj,
@@ -643,16 +641,12 @@ export function OrderForm({
                         Data <span className="text-destructive">*</span>
                       </FormLabel>
                       <FormControl>
-                        <DatePicker
-                          value={
-                            field.value
-                              ? new Date(`${field.value}T00:00:00`)
-                              : new Date()
+                        <Input
+                          type="date"
+                          value={field.value ?? ""}
+                          onChange={(e) =>
+                            field.onChange(e.target.value || null)
                           }
-                          onChange={(date: Date) =>
-                            field.onChange(toIsoDate(date))
-                          }
-                          align="start"
                         />
                       </FormControl>
                       <FormMessage />
