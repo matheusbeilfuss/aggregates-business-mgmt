@@ -14,7 +14,19 @@ export function ExpenseRowLabel({ expense }: ExpenseRowLabelProps) {
       <span className="font-medium text-foreground">{expense.name}</span>
 
       <span className="text-muted-foreground text-xs">
-        {expense.category ?? "—"}
+        {expense.category ? (
+          <span
+            className="text-[11px] font-medium px-1.5 py-0.5 rounded"
+            style={{
+              backgroundColor: "var(--color-surface-container-high)",
+              color: "var(--color-on-surface-variant)",
+            }}
+          >
+            {expense.category}
+          </span>
+        ) : (
+          "—"
+        )}
       </span>
 
       <span className="text-muted-foreground text-xs">
