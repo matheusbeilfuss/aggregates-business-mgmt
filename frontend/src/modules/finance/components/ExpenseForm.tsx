@@ -197,7 +197,7 @@ export function ExpenseForm({
                       onChange={(date) =>
                         date && field.onChange(toIsoDate(date))
                       }
-                      align="end"
+                      align="start"
                     />
                   </FormControl>
                   <FormMessage />

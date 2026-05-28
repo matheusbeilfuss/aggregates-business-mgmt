@@ -652,6 +652,7 @@ export function OrderForm({
                           onChange={(date: Date) =>
                             field.onChange(toIsoDate(date))
                           }
+                          align="start"
                         />
                       </FormControl>
                       <FormMessage />
