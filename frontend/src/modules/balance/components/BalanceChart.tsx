@@ -40,7 +40,7 @@ export function BalanceChart({ data }: Props) {
 
   const commonProps = {
     data,
-    margin: { top: 8, right: 16, left: 16, bottom: 8 },
+    margin: { top: 16, right: 16, left: 0, bottom: 8 },
   };
 
   return (
