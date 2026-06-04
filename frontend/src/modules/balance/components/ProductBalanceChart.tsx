@@ -7,6 +7,8 @@ import {
   Tooltip,
   ResponsiveContainer,
   Cell,
+  LabelList,
+  LabelProps,
 } from "recharts";
 import { ProductBalance } from "../types";
 import { formatLocalCurrency } from "@/utils";
@@ -41,32 +43,90 @@ export function ProductBalanceChart({ data }: Props) {
       <BarChart
         data={sorted}
         layout="vertical"
-        margin={{ top: 8, right: 32, left: 8, bottom: 8 }}
+        margin={{ top: 8, right: 80, left: 8, bottom: 8 }}
       >
         <CartesianGrid strokeDasharray="3 3" horizontal={false} />
-        <XAxis
-          type="number"
-          tickFormatter={(value: number) => {
-            if (value === 0) return "R$ 0";
-            if (value >= 1000) return `R$ ${(value / 1000).toFixed(1)}k`;
-            return `R$ ${value}`;
-          }}
-          tick={{ fontSize: 12 }}
-        />
-        <YAxis
-          type="category"
-          dataKey="productName"
-          tick={{ fontSize: 12 }}
-          width={70}
-        />
+        <XAxis type="number" hide />
+        <YAxis type="category" dataKey="productName" hide />
         <Tooltip
           formatter={(value: number) => formatLocalCurrency(value)}
           labelFormatter={(label) => `Produto: ${label}`}
         />
-        <Bar dataKey="totalValue" name="Vendas">
+        <Bar dataKey="totalValue" name="Vendas" radius={4}>
           {sorted.map((entry, index) => (
             <Cell key={entry.productName} fill={colors[index]} />
           ))}
+          <LabelList
+            dataKey="productName"
+            content={(props: LabelProps) => {
+              const { x, y, width, height, value } = props;
+              const name = String(value ?? "");
+              const barWidth = Number(width ?? 0);
+              const barX = Number(x ?? 0);
+              const barY = Number(y ?? 0) + Number(height ?? 0) / 2;
+              const charsPerPixel = 7;
+              const fitsInside = barWidth > name.length * charsPerPixel + 16;
+
+              if (fitsInside) {
+                return (
+                  <text
+                    x={barX + 8}
+                    y={barY}
+                    fill="#fff"
+                    fontSize={12}
+                    dominantBaseline="middle"
+                  >
+                    {name}
+                  </text>
+                );
+              }
+              return null;
+            }}
+          />
+          <LabelList
+            dataKey="totalValue"
+            content={(props: LabelProps) => {
+              const { x, y, width, height, value } = props;
+              const barWidth = Number(width ?? 0);
+              const barX = Number(x ?? 0);
+              const barY = Number(y ?? 0) + Number(height ?? 0) / 2;
+              const index = sorted.findIndex((d) => d.totalValue === value);
+              const name = sorted[index]?.productName ?? "";
+              const color = colors[index];
+              const charsPerPixel = 7;
+              const fitsInside = barWidth > name.length * charsPerPixel + 16;
+              const formattedValue =
+                Number(value) >= 1000
+                  ? `R$ ${(Number(value) / 1000).toFixed(1)}k`
+                  : `R$ ${value}`;
+
+              if (fitsInside) {
+                return (
+                  <text
+                    x={barX + barWidth + 8}
+                    y={barY}
+                    fill={color}
+                    fontSize={12}
+                    dominantBaseline="middle"
+                  >
+                    {formattedValue}
+                  </text>
+                );
+              }
+
+              return (
+                <text
+                  x={barX + barWidth + 8}
+                  y={barY}
+                  fontSize={12}
+                  dominantBaseline="middle"
+                >
+                  <tspan fill={color}>{name}</tspan>
+                  <tspan fill={color}> · {formattedValue}</tspan>
+                </text>
+              );
+            }}
+          />
         </Bar>
       </BarChart>
     </ResponsiveContainer>
