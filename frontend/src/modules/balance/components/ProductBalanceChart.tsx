@@ -73,7 +73,7 @@ export function ProductBalanceChart({ data }: Props) {
                     x={barX + 8}
                     y={barY}
                     fill="#fff"
-                    fontSize={12}
+                    fontSize={11}
                     dominantBaseline="middle"
                   >
                     {name}
@@ -92,7 +92,6 @@ export function ProductBalanceChart({ data }: Props) {
               const barY = Number(y ?? 0) + Number(height ?? 0) / 2;
               const index = sorted.findIndex((d) => d.totalValue === value);
               const name = sorted[index]?.productName ?? "";
-              const color = colors[index];
               const charsPerPixel = 7;
               const fitsInside = barWidth > name.length * charsPerPixel + 16;
               const formattedValue =
@@ -105,8 +104,9 @@ export function ProductBalanceChart({ data }: Props) {
                   <text
                     x={barX + barWidth + 8}
                     y={barY}
-                    fill={color}
-                    fontSize={12}
+                    fill="var(--color-muted-foreground)"
+                    opacity={0.9}
+                    fontSize={11}
                     dominantBaseline="middle"
                   >
                     {formattedValue}
@@ -118,11 +118,16 @@ export function ProductBalanceChart({ data }: Props) {
                 <text
                   x={barX + barWidth + 8}
                   y={barY}
-                  fontSize={12}
+                  fontSize={11}
                   dominantBaseline="middle"
                 >
-                  <tspan fill={color}>{name}</tspan>
-                  <tspan fill={color}> · {formattedValue}</tspan>
+                  <tspan fill="var(--color-muted-foreground)" opacity={0.9}>
+                    {name}
+                  </tspan>
+                  <tspan fill="var(--color-muted-foreground)" opacity={0.9}>
+                    {" "}
+                    · {formattedValue}
+                  </tspan>
                 </text>
               );
             }}
