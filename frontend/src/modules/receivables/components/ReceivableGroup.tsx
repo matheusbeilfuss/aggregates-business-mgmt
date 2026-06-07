@@ -22,11 +22,11 @@ export function ReceivableGroup({ group, onAddPayment }: Props) {
     >
       <AccordionItem value={String(group.clientId)} className="border-0">
         <AccordionTrigger
-          className="px-4 py-3 hover:no-underline [&>svg]:self-center [&>svg]:mt-0"
+          className="px-4 py-3 hover:no-underline [&>svg]:self-center [&>svg]:mt-0 overflow-hidden"
           style={{ backgroundColor: "var(--color-primary-90)" }}
         >
-          <div className="flex flex-1 items-center justify-between pr-2 text-sm">
-            <div className="flex flex-col sm:flex-row sm:items-center sm:gap-1 min-w-0">
+          <div className="flex items-center justify-between pr-2 text-sm min-w-0 flex-1">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:gap-1 min-w-0 flex-1">
               <span
                 className="font-semibold truncate"
                 style={{ color: "var(--color-primary-10)" }}
