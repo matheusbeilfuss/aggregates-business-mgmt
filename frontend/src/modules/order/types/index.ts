@@ -58,6 +58,7 @@ export type OrderForPayment = {
   scheduledTime: string;
   orderValue: number;
   remainingValue: number;
+  m3Quantity?: number | null;
 };
 
 // Payloads para API

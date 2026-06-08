@@ -6,6 +6,7 @@ export type Receivable = {
   clientName: string;
   type: OrderTypeEnum;
   productName: string | null;
+  m3Quantity: number | null;
   service: string | null;
   scheduledDate: string;
   scheduledTime: string;
