@@ -18,7 +18,9 @@ export function ReceivableRow({ receivable, onAddPayment }: Props) {
   const label =
     receivable.type === OrderTypeEnum.SERVICE
       ? (receivable.service ?? `Pedido #${receivable.id}`)
-      : (receivable.productName ?? `Pedido #${receivable.id}`);
+      : receivable.m3Quantity != null && receivable.productName
+        ? `${receivable.m3Quantity} m³ de ${receivable.productName}`
+        : (receivable.productName ?? `Pedido #${receivable.id}`);
 
   const statusStyle = paymentStatusStyle[receivable.paymentStatus];
 
