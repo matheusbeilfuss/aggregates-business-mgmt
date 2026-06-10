@@ -83,7 +83,6 @@ export function PricePrint() {
           className="w-full max-w-5xl bg-white rounded-2xl shadow-sm overflow-hidden"
           style={{ border: "1px solid var(--color-outline-variant)" }}
         >
-          {/* Cabeçalho */}
           <div
             className="print-header flex items-end justify-between px-8 py-6"
             style={{ borderBottom: "2px solid var(--color-primary-40)" }}
@@ -114,7 +113,6 @@ export function PricePrint() {
             </p>
           </div>
 
-          {/* Tabela */}
           <div className="px-8 py-6">
             <table className="w-full border-collapse text-sm">
               <thead>
@@ -155,53 +153,56 @@ export function PricePrint() {
                 </tr>
               </thead>
               <tbody>
-                {Object.entries(grouped).map(
-                  (
-                    [categoryId, { name, prices: categoryPrices }],
-                    rowIndex,
-                  ) => (
-                    <tr
-                      key={categoryId}
-                      style={{
-                        backgroundColor:
-                          rowIndex % 2 === 0 ? "#ffffff" : "#f4f3f7",
-                        borderBottom: "1px solid var(--color-outline-variant)",
-                      }}
-                    >
-                      <td
-                        className="px-4 py-3 font-medium"
-                        style={{ color: "var(--color-on-surface)" }}
+                {Object.entries(grouped)
+                  .sort(([, a], [, b]) => a.name.localeCompare(b.name, "pt-BR"))
+                  .map(
+                    (
+                      [categoryId, { name, prices: categoryPrices }],
+                      rowIndex,
+                    ) => (
+                      <tr
+                        key={categoryId}
+                        style={{
+                          backgroundColor:
+                            rowIndex % 2 === 0 ? "#ffffff" : "#f4f3f7",
+                          borderBottom:
+                            "1px solid var(--color-outline-variant)",
+                        }}
                       >
-                        {name}
-                      </td>
-                      <td
-                        className="px-4 py-3 text-right tabular-nums"
-                        style={{ color: "var(--color-on-surface)" }}
-                      >
-                        {formatLocalCurrency(categoryPrices[0]?.price ?? 0)}
-                      </td>
-                      {volumes.map((v) => (
                         <td
-                          key={v}
+                          className="px-4 py-3 font-medium"
+                          style={{ color: "var(--color-on-surface)" }}
+                        >
+                          {name}
+                        </td>
+                        <td
                           className="px-4 py-3 text-right tabular-nums"
                           style={{ color: "var(--color-on-surface)" }}
                         >
-                          {categoryPrices[v] ? (
-                            formatLocalCurrency(categoryPrices[v].price)
-                          ) : (
-                            <span
-                              style={{
-                                color: "var(--color-on-surface-variant)",
-                              }}
-                            >
-                              —
-                            </span>
-                          )}
+                          {formatLocalCurrency(categoryPrices[0]?.price ?? 0)}
                         </td>
-                      ))}
-                    </tr>
-                  ),
-                )}
+                        {volumes.map((v) => (
+                          <td
+                            key={v}
+                            className="px-4 py-3 text-right tabular-nums"
+                            style={{ color: "var(--color-on-surface)" }}
+                          >
+                            {categoryPrices[v] ? (
+                              formatLocalCurrency(categoryPrices[v].price)
+                            ) : (
+                              <span
+                                style={{
+                                  color: "var(--color-on-surface-variant)",
+                                }}
+                              >
+                                —
+                              </span>
+                            )}
+                          </td>
+                        ))}
+                      </tr>
+                    ),
+                  )}
               </tbody>
             </table>
           </div>

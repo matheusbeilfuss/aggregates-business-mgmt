@@ -125,8 +125,9 @@ export function PriceTable({
         </TableHeader>
 
         <TableBody>
-          {Object.entries(grouped).map(
-            ([categoryId, { name, prices: categoryPrices }]) => {
+          {Object.entries(grouped)
+            .sort(([, a], [, b]) => a.name.localeCompare(b.name, "pt-BR"))
+            .map(([categoryId, { name, prices: categoryPrices }]) => {
               const allPrices = [
                 categoryPrices[0]?.price ?? 0,
                 ...volumes.map((v) => categoryPrices[v]?.price ?? 0),
@@ -208,8 +209,7 @@ export function PriceTable({
                   </TableCell>
                 </TableRow>
               );
-            },
-          )}
+            })}
         </TableBody>
       </Table>
     </div>
