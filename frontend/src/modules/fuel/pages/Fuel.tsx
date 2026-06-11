@@ -52,7 +52,7 @@ export default function Fuel() {
       ) : !sortedExpenses.length ? (
         <div
           className="flex flex-col items-center justify-center gap-2 py-16
-                     rounded-xl border border-dashed"
+             rounded-xl border border-dashed w-full text-center"
           style={{ borderColor: "var(--color-outline-variant)" }}
         >
           <FuelIcon
