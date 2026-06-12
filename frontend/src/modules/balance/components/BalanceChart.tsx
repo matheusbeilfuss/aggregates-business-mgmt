@@ -30,9 +30,11 @@ export function BalanceChart({ data }: Props) {
   const yAxisProps = {
     tickFormatter: (value: number) => {
       if (value === 0) return "R$ 0";
-      if (value >= 1_000_000) return `R$ ${(value / 1_000_000).toFixed(1)}M`;
-      if (value >= 1000) return `R$ ${(value / 1000).toFixed(1)}k`;
-      return `R$ ${value}`;
+      const abs = Math.abs(value);
+      const prefix = value < 0 ? "-R$ " : "R$ ";
+      if (abs >= 1_000_000) return `${prefix}${(abs / 1_000_000).toFixed(1)}M`;
+      if (abs >= 1000) return `${prefix}${(abs / 1000).toFixed(1)}k`;
+      return `${prefix}${abs}`;
     },
     tick: { fontSize: 12 },
     width: 54,
@@ -40,7 +42,7 @@ export function BalanceChart({ data }: Props) {
 
   const commonProps = {
     data,
-    margin: { top: 8, right: 16, left: 16, bottom: 8 },
+    margin: { top: 16, right: 16, left: 0, bottom: 8 },
   };
 
   return (

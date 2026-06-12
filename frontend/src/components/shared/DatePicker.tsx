@@ -36,7 +36,7 @@ export function DatePicker({
           <Button
             variant="outline"
             id={buttonId}
-            className="justify-start font-normal"
+            className="justify-start font-normal text-base md:text-sm"
             disabled={disabled}
           >
             {value.toLocaleDateString("pt-BR")}

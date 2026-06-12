@@ -38,15 +38,17 @@ export function CategorySelect({
         </SelectTrigger>
       </FormControl>
       <SelectContent>
-        {categories.map((category) => (
-          <SelectItem
-            key={category.id}
-            value={String(category.id)}
-            className="cursor-pointer"
-          >
-            {category.name}
-          </SelectItem>
-        ))}
+        {[...categories]
+          .sort((a, b) => a.name.localeCompare(b.name, "pt-BR"))
+          .map((category) => (
+            <SelectItem
+              key={category.id}
+              value={String(category.id)}
+              className="cursor-pointer"
+            >
+              {category.name}
+            </SelectItem>
+          ))}
       </SelectContent>
     </Select>
   );

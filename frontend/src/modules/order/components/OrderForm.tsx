@@ -17,7 +17,6 @@ import {
   CurrencyInput,
   FormSection,
 } from "@/components/shared";
-import { DatePicker } from "@/components/shared/DatePicker";
 import { UseFormReturn, useWatch } from "react-hook-form";
 import { Loader2, User, MapPin, Package, Clock } from "lucide-react";
 import { OrderFormData } from "../schemas/order.schemas";
@@ -25,7 +24,6 @@ import { ProductSelect } from "./ProductSelect";
 import { QuantityCombobox } from "./QuantityCombobox";
 import { ClientCombobox } from "./ClientCombobox";
 import {
-  toIsoDate,
   selectPrimaryPhone,
   formatPhone,
   formatCpfCnpj,
@@ -241,7 +239,7 @@ export function OrderForm({
                           <label
                             key={opt.value}
                             className="flex items-center gap-2 px-4 py-2 rounded-lg border
-                                       cursor-pointer transition-colors text-sm select-none"
+                                      cursor-pointer transition-colors text-base md:text-sm select-none"
                             style={{
                               borderColor:
                                 field.value === opt.value
@@ -587,7 +585,8 @@ export function OrderForm({
                   render={({ field, fieldState }) => (
                     <FormItem>
                       <FormLabel>
-                        Quantidade <span className="text-destructive">*</span>
+                        Quantidade (m³)
+                        <span className="text-destructive">*</span>
                       </FormLabel>
                       <FormControl>
                         <QuantityCombobox
@@ -642,14 +641,11 @@ export function OrderForm({
                         Data <span className="text-destructive">*</span>
                       </FormLabel>
                       <FormControl>
-                        <DatePicker
-                          value={
-                            field.value
-                              ? new Date(`${field.value}T00:00:00`)
-                              : new Date()
-                          }
-                          onChange={(date: Date) =>
-                            field.onChange(toIsoDate(date))
+                        <Input
+                          type="date"
+                          value={field.value ?? ""}
+                          onChange={(e) =>
+                            field.onChange(e.target.value || null)
                           }
                         />
                       </FormControl>

@@ -9,7 +9,7 @@ export function Layout({ children }: { children: ReactNode }) {
 
   return (
     <SidebarProvider>
-      <div className="flex h-screen w-screen">
+      <div className="flex h-dvh w-screen">
         <AppSidebar />
         <div className="flex flex-col flex-1 min-w-0">
           <Navbar />

@@ -14,8 +14,9 @@ export function PageContainer({
   actions,
 }: PageContainerProps) {
   return (
-    <div className="flex flex-col h-full">
+    <div className="flex flex-col min-h-full">
       <header className="flex items-center justify-between gap-4 px-6 md:px-10 py-6 border-b border-border bg-background shrink-0">
+        {" "}
         <div>
           <h1 className="text-xl font-semibold tracking-tight text-foreground">
             {title}
@@ -29,7 +30,7 @@ export function PageContainer({
         )}
       </header>
 
-      <div className="flex-1 overflow-y-auto overflow-x-hidden px-6 md:px-10 py-6">
+      <div className="flex-1 overflow-x-hidden px-6 md:px-10 py-6">
         {children}
       </div>
     </div>

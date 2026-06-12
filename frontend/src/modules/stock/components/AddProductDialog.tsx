@@ -99,7 +99,9 @@ export function AddProductDialog({
               name="name"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Nome</FormLabel>
+                  <FormLabel>
+                    Nome <span className="text-destructive">*</span>
+                  </FormLabel>
                   <FormControl>
                     <Input {...field} />
                   </FormControl>
@@ -113,7 +115,9 @@ export function AddProductDialog({
               name="isNewCategory"
               render={({ field, fieldState }) => (
                 <FormItem>
-                  <FormLabel>Categoria</FormLabel>
+                  <FormLabel>
+                    Categoria <span className="text-destructive">*</span>
+                  </FormLabel>
                   <div className="flex gap-2">
                     {field.value ? (
                       <FormField

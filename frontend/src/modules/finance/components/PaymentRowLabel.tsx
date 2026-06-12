@@ -29,16 +29,18 @@ export function PaymentRowLabel({ payment }: PaymentRowLabelProps) {
         {payment.order.client.name}
       </span>
 
-      <span className="text-muted-foreground flex items-center gap-1.5 flex-wrap">
-        {description}
-        <span
-          className="text-[10px] font-medium px-1.5 py-0.5 rounded shrink-0"
-          style={{
-            backgroundColor: "var(--color-surface-container-high)",
-            color: "var(--color-on-surface-variant)",
-          }}
-        >
-          #{payment.order.id}
+      <span className="text-muted-foreground flex items-center gap-1.5">
+        <span className="min-w-0">
+          {description}{" "}
+          <span
+            className="text-[10px] font-medium px-1.5 py-0.5 rounded inline-block align-middle"
+            style={{
+              backgroundColor: "var(--color-surface-container-high)",
+              color: "var(--color-on-surface-variant)",
+            }}
+          >
+            #{payment.order.id}
+          </span>
         </span>
       </span>
 

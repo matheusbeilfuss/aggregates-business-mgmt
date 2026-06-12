@@ -71,12 +71,12 @@ export function OrderAccordionItem({
             </div>
 
             <div className="flex flex-col min-w-0">
-              <div className="flex items-center gap-1.5 flex-wrap">
-                <span className="text-sm font-medium text-foreground leading-none">
+              <div className="flex items-center gap-1.5 min-w-0">
+                <span className="text-sm font-medium text-foreground leading-none truncate">
                   {order.client.name}
                 </span>
                 <span
-                  className="text-[10px] font-medium px-1.5 py-0.5 rounded"
+                  className="text-[10px] font-medium px-1.5 py-0.5 rounded shrink-0"
                   style={{
                     backgroundColor: "var(--color-surface-container-high)",
                     color: "var(--color-on-surface-variant)",
@@ -85,7 +85,7 @@ export function OrderAccordionItem({
                   #{order.id}
                 </span>
               </div>
-              <span className="text-xs text-muted-foreground mt-0.5 truncate">
+              <span className="text-xs text-muted-foreground mt-0.5">
                 {order.orderAddress.neighborhood}
                 {isMaterial
                   ? ` · ${order.m3Quantity ?? 0} m³ de ${order.product.name}`
