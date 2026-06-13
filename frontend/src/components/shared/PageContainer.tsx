@@ -14,7 +14,7 @@ export function PageContainer({
   actions,
 }: PageContainerProps) {
   return (
-    <div className="flex flex-col min-h-full">
+    <div className="flex flex-col">
       <header className="flex items-center justify-between gap-4 px-6 md:px-10 py-6 border-b border-border bg-background shrink-0">
         {" "}
         <div>
