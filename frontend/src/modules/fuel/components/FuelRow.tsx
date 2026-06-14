@@ -108,12 +108,16 @@ export function FuelRow({ expense }: Props) {
             {expense.liters != null && (
               <Metric label="Litros" value={`${expense.liters} L`} />
             )}
-            {expense.kmDriven != null && (
-              <Metric label="Km rodados" value={`${expense.kmDriven} km`} />
-            )}
-            {expense.fuelSupplier && (
-              <Metric label="Estabelecimento" value={expense.fuelSupplier} />
-            )}
+            <Metric
+              label="Km rodados"
+              value={
+                expense.kmDriven != null ? `${expense.kmDriven} km` : "-"
+              }
+            />
+            <Metric
+              label="Estabelecimento"
+              value={expense.fuelSupplier || "-"}
+            />
             {expense.vehicle && (
               <Metric label="Veículo" value={expense.vehicle} />
             )}

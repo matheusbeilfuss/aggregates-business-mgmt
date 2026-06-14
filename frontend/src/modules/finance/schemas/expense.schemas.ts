@@ -17,7 +17,10 @@ export const expenseSchema = z
       required_error: "O tipo é obrigatório.",
     }),
     vehicle: z.string().nullable().optional(),
-    kmDriven: z.coerce.number().nullable().optional(),
+    kmDriven: z.preprocess(
+      (value) => (value === "" ? null : value),
+      z.coerce.number().nullable().optional(),
+    ),
     liters: z.coerce.number().nullable().optional(),
     pricePerLiter: z.coerce.number().nullable().optional(),
     fuelSupplier: z.string().nullable().optional(),
@@ -46,11 +49,11 @@ export const expenseSchema = z
           message: "O valor do litro é obrigatório.",
         });
       }
-      if (!data.kmDriven || data.kmDriven <= 0) {
+      if (data.kmDriven != null && data.kmDriven <= 0) {
         ctx.addIssue({
           path: ["kmDriven"],
           code: "custom",
-          message: "Os quilômetros rodados são obrigatórios.",
+          message: "Os quilômetros rodados devem ser maiores que zero.",
         });
       }
     }
