@@ -18,6 +18,8 @@ type Props = {
   data: ProductBalance[];
 };
 
+type ExtendedLabelProps = LabelProps & { payload?: ProductBalance };
+
 export function ProductBalanceChart({ data }: Props) {
   if (data.length === 0) {
     return (
@@ -85,14 +87,14 @@ export function ProductBalanceChart({ data }: Props) {
           />
           <LabelList
             dataKey="totalValue"
-            content={(props: LabelProps) => {
+            content={(props: ExtendedLabelProps) => {
               const { x, y, width, height, value } = props;
               const barWidth = Number(width ?? 0);
               const barX = Number(x ?? 0);
               const barY = Number(y ?? 0) + Number(height ?? 0) / 2;
-              const index = sorted.findIndex((d) => d.totalValue === value);
-              const name = sorted[index]?.productName ?? "";
-              const charsPerPixel = 7;
+              const payload = props.payload;
+              const name = payload?.productName ?? "";
+              const charsPerPixel = 6.5;
               const fitsInside = barWidth > name.length * charsPerPixel + 16;
               const formattedValue =
                 Number(value) >= 1000
