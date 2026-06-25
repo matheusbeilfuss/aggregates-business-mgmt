@@ -16,7 +16,7 @@ interface OrderSectionProps {
 export function OrderSection({
   title,
   orders,
-  emptyMessage,
+  emptyMessage = "Nenhum pedido encontrado.",
   onMarkAsDelivered,
   onAddPayment,
   onDeleteOrder,
