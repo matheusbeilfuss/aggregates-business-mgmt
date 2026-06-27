@@ -15,7 +15,10 @@ export default defineConfig({
     __APP_VERSION__: JSON.stringify(process.env.npm_package_version ?? "0.0.0"),
   },
   server: {
-    allowedHosts: true,
+    allowedHosts:
+      process.env.VITE_ALLOWED_HOSTS === "all"
+        ? true
+        : ["localhost", "127.0.0.1", "::1"],
     proxy: {
       "/api": {
         target: "http://localhost:8080",
