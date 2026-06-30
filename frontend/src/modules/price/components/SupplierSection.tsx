@@ -133,7 +133,7 @@ export function SupplierSection({
           onDelete={onDeleteSupplier}
         />
       ) : (
-        <div className="rounded-xl border overflow-hidden">
+        <div className="rounded-xl border overflow-hidden overflow-x-auto">
           <Table>
             <TableHeader>
               <TableRow className="hover:bg-transparent">
