@@ -20,10 +20,15 @@ export default defineConfig(({ mode }) => {
       ),
     },
     server: {
-      allowedHosts:
-        env.VITE_ALLOWED_HOSTS === "all"
-          ? true
-          : ["localhost", "127.0.0.1", "::1"],
+      allowedHosts: (() => {
+        const raw = env.VITE_ALLOWED_HOSTS?.trim();
+        if (!raw) return ["localhost", "127.0.0.1", "::1"];
+        if (raw === "all") return true;
+        return raw
+          .split(",")
+          .map((h) => h.trim())
+          .filter(Boolean);
+      })(),
       proxy: {
         "/api": {
           target: "http://localhost:8080",
