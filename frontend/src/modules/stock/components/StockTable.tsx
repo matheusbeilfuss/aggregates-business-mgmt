@@ -146,8 +146,14 @@ export function StockTable({ stocks, onDeleteProduct }: StockTableProps) {
         </TableHeader>
 
         <TableBody>
-          {allGroups.map(({ categoryName, items }, groupIndex) => (
-            <Fragment key={`${categoryName}-${groupIndex}`}>
+          {allGroups.map(({ categoryName, items }) => (
+            <Fragment
+              key={
+                categoryName === "Individuais"
+                  ? "individuals"
+                  : String(items[0]?.product.category?.id ?? categoryName)
+              }
+            >
               <TableRow className="hover:bg-transparent border-0">
                 <TableCell
                   className="py-0 px-0 sticky left-0 z-10"
