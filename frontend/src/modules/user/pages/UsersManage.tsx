@@ -156,14 +156,12 @@ export function UsersManage() {
                 </Avatar>
 
                 <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-2 flex-wrap">
-                    <span className="text-sm font-semibold text-foreground truncate">
-                      {user.firstName} {user.lastName}
-                    </span>
+                  <p className="text-sm font-semibold text-foreground">
+                    {user.firstName} {user.lastName}{" "}
                     {user.admin && (
                       <span
-                        className="flex items-center gap-1 text-[10px] font-semibold
-                                   px-2 py-0.5 rounded-full shrink-0"
+                        className="inline-flex items-center gap-1 text-[10px] font-semibold
+                   px-2 py-0.5 rounded-full align-middle"
                         style={{
                           backgroundColor: "var(--color-primary-90)",
                           color: "var(--color-primary-40)",
@@ -172,10 +170,10 @@ export function UsersManage() {
                         <ShieldCheck className="h-3 w-3" />
                         Admin
                       </span>
-                    )}
+                    )}{" "}
                     {isSelf && (
                       <span
-                        className="text-[10px] font-semibold px-2 py-0.5 rounded-full shrink-0"
+                        className="inline-block text-[10px] font-semibold px-2 py-0.5 rounded-full align-middle"
                         style={{
                           backgroundColor: "var(--color-surface-container-low)",
                           color: "var(--color-on-surface-variant)",
@@ -184,7 +182,7 @@ export function UsersManage() {
                         Você
                       </span>
                     )}
-                  </div>
+                  </p>
                   <p
                     className="text-xs mt-0.5 truncate"
                     style={{ color: "var(--color-on-surface-variant)" }}

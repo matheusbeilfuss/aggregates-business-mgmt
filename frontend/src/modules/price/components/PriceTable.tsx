@@ -59,7 +59,7 @@ export function PriceTable({
   }
 
   return (
-    <div className="rounded-xl border overflow-hidden w-full">
+    <div className="rounded-xl border overflow-x-auto overflow-y-auto max-h-[600px] md:max-h-none w-full">
       <Table
         className="table-fixed"
         style={{ minWidth: `${140 + 110 + volumes.length * 100 + 44}px` }}
@@ -67,7 +67,7 @@ export function PriceTable({
         <TableHeader>
           <TableRow className="hover:bg-transparent border-b border-border [transition:none]">
             <TableHead
-              className="sticky left-0 z-20 w-[140px] text-xs font-semibold uppercase tracking-wide"
+              className="sticky left-0 top-0 z-20 w-[140px] text-xs font-semibold uppercase tracking-wide"
               style={{
                 backgroundColor: "var(--color-primary-90)",
                 color: "var(--color-primary-40)",
@@ -77,7 +77,7 @@ export function PriceTable({
             </TableHead>
 
             <TableHead
-              className="w-[110px] text-xs font-semibold uppercase tracking-wide text-right"
+              className="sticky top-0 z-10 w-[110px] text-xs font-semibold uppercase tracking-wide text-right"
               style={{
                 backgroundColor: "var(--color-primary-90)",
                 color: "var(--color-primary-40)",
@@ -93,7 +93,7 @@ export function PriceTable({
               return (
                 <TableHead
                   key={v}
-                  className="w-[100px] text-xs font-semibold uppercase tracking-wide text-right"
+                  className="sticky top-0 z-10 w-[100px] text-xs font-semibold uppercase tracking-wide text-right"
                   style={{
                     backgroundColor: "var(--color-primary-90)",
                     color: "var(--color-primary-40)",
@@ -115,7 +115,7 @@ export function PriceTable({
             })}
 
             <TableHead
-              className="w-11"
+              className="sticky top-0 z-10 w-11"
               style={{
                 backgroundColor: "var(--color-primary-90)",
                 color: "var(--color-primary-40)",
@@ -125,8 +125,9 @@ export function PriceTable({
         </TableHeader>
 
         <TableBody>
-          {Object.entries(grouped).map(
-            ([categoryId, { name, prices: categoryPrices }]) => {
+          {Object.entries(grouped)
+            .sort(([, a], [, b]) => a.name.localeCompare(b.name, "pt-BR"))
+            .map(([categoryId, { name, prices: categoryPrices }]) => {
               const allPrices = [
                 categoryPrices[0]?.price ?? 0,
                 ...volumes.map((v) => categoryPrices[v]?.price ?? 0),
@@ -136,12 +137,9 @@ export function PriceTable({
               return (
                 <TableRow
                   key={categoryId}
-                  className="cursor-default group bg-background hover:bg-transparent [transition:none]"
+                  className="cursor-default table-row [transition:none]"
                 >
-                  <TableCell
-                    className="sticky left-0 z-10 w-[140px] text-sm whitespace-normal
-             break-words bg-background group-hover:bg-accent/50"
-                  >
+                  <TableCell className="sticky left-0 z-10 w-[140px] text-sm whitespace-normal break-words">
                     <div className="flex flex-col items-start gap-0.5 sm:flex-row sm:items-center sm:gap-2">
                       <span className="font-medium">{name}</span>
                       {allZero && (
@@ -158,7 +156,7 @@ export function PriceTable({
                     </div>
                   </TableCell>
 
-                  <TableCell className="text-right group-hover:bg-accent/50">
+                  <TableCell className="text-right">
                     {(categoryPrices[0]?.price ?? 0) === 0 ? (
                       <span className="text-sm tabular-nums text-muted-foreground">
                         {formatLocalCurrency(0)}
@@ -173,10 +171,7 @@ export function PriceTable({
                   {volumes.map((v) => {
                     const price = categoryPrices[v]?.price ?? 0;
                     return (
-                      <TableCell
-                        key={v}
-                        className="text-right group-hover:bg-accent/50"
-                      >
+                      <TableCell key={v} className="text-right">
                         {categoryPrices[v] ? (
                           price === 0 ? (
                             <span className="text-sm tabular-nums text-muted-foreground">
@@ -198,7 +193,7 @@ export function PriceTable({
 
                   <TableCell
                     onClick={(e) => e.stopPropagation()}
-                    className="w-11 group-hover:bg-accent/50"
+                    className="w-11"
                   >
                     <div className="flex justify-end">
                       <CategoryActions
@@ -214,8 +209,7 @@ export function PriceTable({
                   </TableCell>
                 </TableRow>
               );
-            },
-          )}
+            })}
         </TableBody>
       </Table>
     </div>

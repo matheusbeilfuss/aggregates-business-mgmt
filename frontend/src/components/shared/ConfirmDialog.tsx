@@ -43,7 +43,7 @@ export function ConfirmDialog({
   return (
     <AlertDialog open={open} onOpenChange={onOpenChange}>
       <AlertDialogContent className="sm:max-w-[400px] gap-0">
-        <AlertDialogHeader>
+        <AlertDialogHeader className="text-left">
           <div className="flex items-start gap-3">
             <div
               className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full mt-0.5"

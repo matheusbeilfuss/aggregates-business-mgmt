@@ -61,7 +61,7 @@ export function HomeBalanceCard({
               />
 
               <div className="flex gap-8 mt-4 md:mt-0 md:flex-1">
-                <div className="flex flex-col gap-0.5 flex-1">
+                <div className="flex flex-col gap-0.5 flex-1 min-w-0">
                   <span
                     className="text-xs font-medium uppercase tracking-wide"
                     style={{ color: "var(--color-on-surface-variant)" }}
@@ -69,13 +69,13 @@ export function HomeBalanceCard({
                     Entradas
                   </span>
                   <span
-                    className="text-2xl font-bold tabular-nums"
+                    className="text-xl md:text-2xl font-bold tabular-nums"
                     style={{ color: "#16a34a" }}
                   >
                     {formatLocalCurrency(income)}
                   </span>
                 </div>
-                <div className="flex flex-col gap-0.5 flex-1">
+                <div className="flex flex-col gap-0.5 flex-1 min-w-0">
                   <span
                     className="text-xs font-medium uppercase tracking-wide"
                     style={{ color: "var(--color-on-surface-variant)" }}
@@ -83,7 +83,7 @@ export function HomeBalanceCard({
                     Saídas
                   </span>
                   <span
-                    className="text-2xl font-bold tabular-nums"
+                    className="text-xl md:text-2xl font-bold tabular-nums"
                     style={{ color: "#c25000" }}
                   >
                     {formatLocalCurrency(expenses)}

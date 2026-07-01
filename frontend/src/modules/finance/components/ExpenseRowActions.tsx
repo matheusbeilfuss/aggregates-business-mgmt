@@ -1,4 +1,3 @@
-// ExpenseRowActions.tsx
 import { useState } from "react";
 import { MoreHorizontal, Pencil, DollarSign, Trash2 } from "lucide-react";
 import { toast } from "sonner";

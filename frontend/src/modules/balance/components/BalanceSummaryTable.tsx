@@ -32,8 +32,8 @@ export function BalanceSummaryTable({ summary }: Props) {
   ];
 
   return (
-    <div className="rounded-xl border overflow-hidden w-fit">
-      <table className="text-sm">
+    <div className="rounded-xl border overflow-x-auto w-full">
+      <table className="text-sm w-full">
         <thead>
           <tr style={{ backgroundColor: "var(--color-primary-90)" }}>
             <th
@@ -68,10 +68,10 @@ export function BalanceSummaryTable({ summary }: Props) {
               >
                 {row.label}
               </td>
-              <td className="px-4 py-2.5 text-right tabular-nums text-sm text-foreground">
+              <td className="px-4 py-2.5 text-right tabular-nums text-sm text-foreground whitespace-nowrap">
                 {formatLocalCurrency(row.total)}
               </td>
-              <td className="px-4 py-2.5 text-right tabular-nums text-sm text-muted-foreground">
+              <td className="px-4 py-2.5 text-right tabular-nums text-sm text-muted-foreground whitespace-nowrap">
                 {formatLocalCurrency(row.avg)}
               </td>
             </tr>

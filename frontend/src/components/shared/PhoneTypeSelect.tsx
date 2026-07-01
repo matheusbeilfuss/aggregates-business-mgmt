@@ -33,11 +33,15 @@ export function PhoneTypeSelect({
         <SelectValue placeholder={placeholder} />
       </SelectTrigger>
       <SelectContent>
-        {PHONE_TYPES.map((type) => (
-          <SelectItem key={type} value={type}>
-            {phoneTypeLabel[type]}
-          </SelectItem>
-        ))}
+        {[...PHONE_TYPES]
+          .sort((a, b) =>
+            phoneTypeLabel[a].localeCompare(phoneTypeLabel[b], "pt-BR"),
+          )
+          .map((type) => (
+            <SelectItem key={type} value={type}>
+              {phoneTypeLabel[type]}
+            </SelectItem>
+          ))}
       </SelectContent>
     </Select>
   );

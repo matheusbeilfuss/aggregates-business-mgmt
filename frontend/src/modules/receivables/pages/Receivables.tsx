@@ -84,6 +84,7 @@ export default function Receivables() {
         scheduledTime: receivableForPayment.scheduledTime,
         orderValue: receivableForPayment.orderValue,
         remainingValue: receivableForPayment.remainingValue,
+        m3Quantity: receivableForPayment.m3Quantity ?? null,
       }
     : null;
 

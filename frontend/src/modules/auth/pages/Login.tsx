@@ -73,7 +73,7 @@ export function Login() {
 
   return (
     <>
-      <div className="min-h-screen flex flex-col md:flex-row">
+      <div className="min-h-screen overflow-x-hidden flex flex-col md:flex-row">
         <div
           className="relative flex flex-col items-center justify-center
                    md:w-1/2 py-14 px-8 overflow-hidden"

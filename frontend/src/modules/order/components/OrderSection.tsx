@@ -7,6 +7,7 @@ import { getPaymentBorderColor } from "../utils/getPaymentBorderColor";
 interface OrderSectionProps {
   title: string;
   orders?: OrderItem[];
+  emptyMessage?: string;
   onMarkAsDelivered?: (order: OrderItem) => void;
   onAddPayment?: (order: OrderItem) => void;
   onDeleteOrder?: (order: OrderItem) => void;
@@ -15,6 +16,7 @@ interface OrderSectionProps {
 export function OrderSection({
   title,
   orders,
+  emptyMessage = "Nenhum pedido encontrado.",
   onMarkAsDelivered,
   onAddPayment,
   onDeleteOrder,
@@ -56,7 +58,7 @@ export function OrderSection({
             className="text-sm"
             style={{ color: "var(--color-on-surface-variant)" }}
           >
-            Nenhum pedido encontrado.
+            {emptyMessage}
           </p>
         </div>
       ) : (

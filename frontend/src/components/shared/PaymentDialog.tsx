@@ -52,8 +52,14 @@ export function PaymentDialog({
 }: Props) {
   const isEdit = props.mode === "edit";
   const order = isEdit ? props.payment.order : props.order;
-  const orderLabel =
-    order.product?.name ?? order.service ?? `Pedido #${order.id}`;
+  const orderLabel = (() => {
+    if (order.product?.name) {
+      return order.m3Quantity != null
+        ? `${order.m3Quantity} m³ de ${order.product.name}`
+        : order.product.name;
+    }
+    return order.service ?? `Pedido #${order.id}`;
+  })();
 
   const form = useForm<PaymentFormData>({
     resolver: zodResolver(paymentSchema),
@@ -104,7 +110,7 @@ export function PaymentDialog({
         if (!o) form.reset();
       }}
     >
-      <DialogContent className="sm:max-w-[440px]">
+      <DialogContent className="sm:max-w-[440px] overflow-hidden w-full min-w-0">
         <DialogHeader>
           <DialogTitle>
             {isEdit ? "Editar entrada" : "Adicionar pagamento"}
@@ -117,14 +123,14 @@ export function PaymentDialog({
         </DialogHeader>
 
         <div
-          className="flex items-start justify-between gap-4 rounded-xl p-4"
+          className="flex flex-col sm:flex-row sm:items-start justify-between gap-3 rounded-xl p-4"
           style={{ backgroundColor: "var(--color-surface-container-low)" }}
         >
           <div className="space-y-0.5 min-w-0">
             <p className="text-sm font-semibold text-foreground">
               Pedido #{order.id}
             </p>
-            <p className="text-xs text-muted-foreground truncate">
+            <p className="text-xs text-muted-foreground">
               {order.client.name} · {orderLabel}
             </p>
             <p className="text-xs text-muted-foreground">
@@ -133,7 +139,7 @@ export function PaymentDialog({
             </p>
           </div>
 
-          <div className="text-right shrink-0 space-y-2">
+          <div className="flex sm:flex-col sm:text-right gap-4 sm:gap-2 sm:shrink-0">
             <div>
               <p
                 className="text-[10px] font-medium uppercase tracking-wide"
@@ -170,7 +176,7 @@ export function PaymentDialog({
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit(onSubmit)}
-            className="space-y-4 pt-1"
+            className="space-y-4 pt-1 min-w-0"
           >
             <FormField
               control={form.control}

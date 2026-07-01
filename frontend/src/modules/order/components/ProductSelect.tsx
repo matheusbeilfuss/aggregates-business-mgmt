@@ -34,22 +34,25 @@ export function ProductSelect({
         <SelectValue placeholder={placeholder} />
       </SelectTrigger>
       <SelectContent>
-        {products.map((product) => (
-          <SelectItem
-            key={product.id}
-            value={String(product.id)}
-            className="cursor-pointer"
-          >
-            <div className="flex w-full justify-between items-center gap-4">
-              <span>{product.name}</span>
-              {product.category?.name && (
-                <span className="text-xs text-muted-foreground">
-                  {product.category.name}
-                </span>
-              )}
-            </div>
-          </SelectItem>
-        ))}
+        {[...products]
+          .sort((a, b) => a.name.localeCompare(b.name, "pt-BR"))
+          .map((product) => (
+            <SelectItem
+              key={product.id}
+              value={String(product.id)}
+              className="cursor-pointer"
+            >
+              <div className="flex w-full justify-between items-center gap-4">
+                <span>{product.name}</span>
+                {product.category?.name &&
+                  product.category.name !== product.name && (
+                    <span className="text-xs text-muted-foreground">
+                      {product.category.name}
+                    </span>
+                  )}
+              </div>
+            </SelectItem>
+          ))}
       </SelectContent>
     </Select>
   );

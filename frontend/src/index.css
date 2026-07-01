@@ -120,4 +120,15 @@
   body {
     @apply bg-background text-foreground;
   }
+  html,
+  body,
+  #root {
+    min-height: 100%;
+  }
+  .table-row td {
+    background-color: var(--color-background);
+  }
+  .table-row:hover td {
+    background-color: var(--color-accent);
+  }
 }

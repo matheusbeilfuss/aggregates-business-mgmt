@@ -9,12 +9,15 @@ import {
 import { ExpenseCategoryBalance } from "../types";
 import { formatLocalCurrency } from "@/utils";
 import { generateColors } from "../utils/generateColors";
+import { useIsMobile } from "@/hooks/useMobile";
 
 type Props = {
   data: ExpenseCategoryBalance[];
 };
 
 export function ExpenseCategoryChart({ data }: Props) {
+  const isMobile = useIsMobile();
+
   if (data.length === 0) {
     return (
       <div
@@ -34,7 +37,7 @@ export function ExpenseCategoryChart({ data }: Props) {
   const colors = generateColors(data.length);
 
   return (
-    <ResponsiveContainer width="100%" height={280}>
+    <ResponsiveContainer width="100%" height={isMobile ? 340 : 280}>
       <PieChart>
         <Pie
           data={data}
@@ -50,6 +53,7 @@ export function ExpenseCategoryChart({ data }: Props) {
         </Pie>
         <Tooltip formatter={(value: number) => formatLocalCurrency(value)} />
         <Legend
+          verticalAlign="bottom"
           formatter={(value) => <span style={{ fontSize: 12 }}>{value}</span>}
         />
       </PieChart>

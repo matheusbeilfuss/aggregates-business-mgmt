@@ -14,6 +14,7 @@ public class ReceivableDTO {
 	private String clientName;
 	private OrderTypeEnum type;
 	private String productName;
+	private Double m3Quantity;
 	private String service;
 	private LocalDate scheduledDate;
 	private LocalTime scheduledTime;
@@ -24,7 +25,7 @@ public class ReceivableDTO {
 	public ReceivableDTO() {
 	}
 
-	public ReceivableDTO(Long id, Long clientId, String clientName, OrderTypeEnum type, String productName, String service, LocalDate scheduledDate, LocalTime scheduledTime,
+	public ReceivableDTO(Long id, Long clientId, String clientName, OrderTypeEnum type, String productName, Double m3Quantity, String service, LocalDate scheduledDate, LocalTime scheduledTime,
 			BigDecimal orderValue,
 			BigDecimal remainingValue, PaymentStatusEnum paymentStatus) {
 		this.id = id;
@@ -32,6 +33,7 @@ public class ReceivableDTO {
 		this.clientName = clientName;
 		this.type = type;
 		this.productName = productName;
+		this.m3Quantity = m3Quantity;
 		this.service = service;
 		this.scheduledDate = scheduledDate;
 		this.scheduledTime = scheduledTime;
@@ -78,6 +80,14 @@ public class ReceivableDTO {
 
 	public void setProductName(String productName) {
 		this.productName = productName;
+	}
+
+	public Double getM3Quantity() {
+		return m3Quantity;
+	}
+
+	public void setM3Quantity(Double m3Quantity) {
+		this.m3Quantity = m3Quantity;
 	}
 
 	public String getService() {

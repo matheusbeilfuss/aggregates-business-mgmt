@@ -6,7 +6,7 @@ import jakarta.validation.constraints.Size;
 public class PasswordUpdateDTO {
 
 	@NotBlank(message = "A nova senha é obrigatória.")
-	@Size(min = 6, message = "A nova senha deve ter pelo menos 6 caracteres.")
+	@Size(min = 8, message = "A nova senha deve ter pelo menos 8 caracteres.")
 	private String newPassword;
 
 	public String getNewPassword() {

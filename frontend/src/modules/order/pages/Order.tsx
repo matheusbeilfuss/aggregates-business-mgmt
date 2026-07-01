@@ -156,6 +156,7 @@ export function Order() {
             <OrderSection
               title="Pendentes"
               orders={pendingOrders}
+              emptyMessage="Nenhum pedido pendente."
               onMarkAsDelivered={setOrderToMarkAsDelivered}
               onAddPayment={(order) => {
                 setOrderForPayment(order);
@@ -167,6 +168,7 @@ export function Order() {
             <OrderSection
               title="Entregues"
               orders={completedOrders}
+              emptyMessage="Nenhum pedido entregue."
               onAddPayment={(order) => {
                 setOrderForPayment(order);
                 setIsPaymentDialogOpen(true);

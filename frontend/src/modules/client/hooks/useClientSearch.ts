@@ -29,7 +29,12 @@ export function useClientSearch(query: string): UseClientSearchResult {
     const timer = setTimeout(async () => {
       try {
         const data = await clientService.search(trimmed);
-        if (!ignore) setResults(data ?? []);
+        if (!ignore)
+          setResults(
+            [...(data ?? [])].sort((a, b) =>
+              a.name.localeCompare(b.name, "pt-BR"),
+            ),
+          );
       } catch {
         if (!ignore) setResults([]);
       } finally {

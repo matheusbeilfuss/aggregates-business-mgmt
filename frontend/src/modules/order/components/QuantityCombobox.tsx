@@ -73,15 +73,17 @@ export function QuantityCombobox({
       />
       <ComboboxContent>
         <ComboboxList>
-          {prices.map((price) => (
-            <ComboboxItem
-              key={price.id}
-              value={String(price.m3Volume)}
-              className="cursor-pointer"
-            >
-              {price.m3Volume === 0 ? "Depósito" : `${price.m3Volume} m³`}
-            </ComboboxItem>
-          ))}
+          {[...prices]
+            .sort((a, b) => a.m3Volume - b.m3Volume)
+            .map((price) => (
+              <ComboboxItem
+                key={price.id}
+                value={String(price.m3Volume)}
+                className="cursor-pointer"
+              >
+                {price.m3Volume === 0 ? "Depósito" : `${price.m3Volume} m³`}
+              </ComboboxItem>
+            ))}
         </ComboboxList>
       </ComboboxContent>
     </Combobox>

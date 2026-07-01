@@ -250,6 +250,7 @@ public class OrderService {
 				order.getClient().getName(),
 				order.getType(),
 				productName,
+				order.getM3Quantity(),
 				order.getService(),
 				order.getScheduledDate(),
 				order.getScheduledTime(),

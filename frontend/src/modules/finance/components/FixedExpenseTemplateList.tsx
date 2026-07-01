@@ -74,9 +74,9 @@ export function FixedExpenseTemplateList({
                 }}
                 onClick={() => onSelect(t)}
               >
-                <div className="flex items-center gap-2 min-w-0">
+                <div className="min-w-0">
                   <span
-                    className="text-sm font-medium truncate"
+                    className="text-sm font-medium"
                     style={{
                       color:
                         selectedId === t.id
@@ -85,10 +85,10 @@ export function FixedExpenseTemplateList({
                     }}
                   >
                     {t.name}
-                  </span>
+                  </span>{" "}
                   {t.category && (
                     <span
-                      className="text-[10px] px-1.5 py-0.5 rounded shrink-0"
+                      className="text-[10px] px-1.5 py-0.5 rounded inline-block align-middle"
                       style={{
                         backgroundColor:
                           selectedId === t.id
