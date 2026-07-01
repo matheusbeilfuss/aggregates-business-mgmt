@@ -485,6 +485,7 @@ export function ExpenseForm({
                       <FormControl>
                         <Input
                           type="date"
+                          {...field}
                           value={field.value ?? ""}
                           onChange={(e) =>
                             field.onChange(e.target.value || null)
@@ -507,6 +508,7 @@ export function ExpenseForm({
                       <FormControl>
                         <Input
                           type="date"
+                          {...field}
                           value={field.value ?? ""}
                           onChange={(e) =>
                             field.onChange(e.target.value || null)

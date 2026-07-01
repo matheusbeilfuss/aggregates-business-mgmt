@@ -643,6 +643,7 @@ export function OrderForm({
                       <FormControl>
                         <Input
                           type="date"
+                          {...field}
                           value={field.value ?? ""}
                           onChange={(e) => field.onChange(e.target.value)}
                         />
