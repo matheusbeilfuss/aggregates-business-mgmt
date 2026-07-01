@@ -31,7 +31,9 @@ export function useClientSearch(query: string): UseClientSearchResult {
         const data = await clientService.search(trimmed);
         if (!ignore)
           setResults(
-            (data ?? []).sort((a, b) => a.name.localeCompare(b.name, "pt-BR")),
+            [...(data ?? [])].sort((a, b) =>
+              a.name.localeCompare(b.name, "pt-BR"),
+            ),
           );
       } catch {
         if (!ignore) setResults([]);
