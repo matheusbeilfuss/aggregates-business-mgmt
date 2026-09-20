@@ -5,8 +5,8 @@ export interface Client {
   id: number;
   name: string;
   nameNormalized: string;
-  cpfCnpj: string;
-  email: string;
+  cpfCnpj: string | null;
+  email: string | null;
   address?: Address | null;
   phones: Phone[];
 }
