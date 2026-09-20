@@ -1,4 +1,6 @@
-export function formatCpfCnpj(value: string): string {
+export function formatCpfCnpj(value: string | null | undefined): string {
+  if (!value) return "";
+
   const digits = value.replace(/\D/g, "").slice(0, 14);
 
   if (digits.length <= 3) return digits;
