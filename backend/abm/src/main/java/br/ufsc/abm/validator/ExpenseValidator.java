@@ -24,8 +24,8 @@ public class ExpenseValidator {
 		if (dto.getPricePerLiter() == null || dto.getPricePerLiter() <= 0) {
 			throw new ValidationException("Despesa do tipo COMBUSTÍVEL deve conter o preço por litro.");
 		}
-		if (dto.getKmDriven() == null || dto.getKmDriven() <= 0) {
-			throw new ValidationException("Despesa do tipo COMBUSTÍVEL deve conter os km rodados.");
+		if (dto.getKmDriven() != null && dto.getKmDriven() <= 0) {
+			throw new ValidationException("Os km rodados da despesa do tipo COMBUSTÍVEL devem ser maiores que zero.");
 		}
 	}
 }

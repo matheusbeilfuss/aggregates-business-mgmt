@@ -39,6 +39,12 @@ function Metric({ label, value }: MetricProps) {
 
 export function FuelRow({ expense }: Props) {
   const litersLabel = expense.liters != null ? `${expense.liters} L` : null;
+  const kmPerLiterLabel =
+    expense.kmDriven != null && expense.liters
+      ? `${(expense.kmDriven / expense.liters).toLocaleString("pt-BR", {
+          maximumFractionDigits: 2,
+        })} km/L`
+      : "-";
   const statusStyle = paymentStatusStyle[expense.paymentStatus];
 
   return (
@@ -92,11 +98,8 @@ export function FuelRow({ expense }: Props) {
 
         <AccordionContent className="pb-0">
           <div
-            className="grid grid-cols-2 md:grid-cols-3 divide-y
-             [&>*]:border-r
-             [&>*:nth-child(2n)]:border-r-0
-             md:[&>*:nth-child(2n)]:border-r
-             md:[&>*:nth-child(3n)]:border-r-0"
+            className="grid grid-cols-2 md:grid-cols-3 -mr-px -mb-px
+             [&>*]:border-r [&>*]:border-b"
             style={{ borderColor: "var(--color-outline-variant)" }}
           >
             {expense.pricePerLiter != null && (
@@ -108,12 +111,15 @@ export function FuelRow({ expense }: Props) {
             {expense.liters != null && (
               <Metric label="Litros" value={`${expense.liters} L`} />
             )}
-            {expense.kmDriven != null && (
-              <Metric label="Km rodados" value={`${expense.kmDriven} km`} />
-            )}
-            {expense.fuelSupplier && (
-              <Metric label="Estabelecimento" value={expense.fuelSupplier} />
-            )}
+            <Metric
+              label="Km rodados"
+              value={expense.kmDriven != null ? `${expense.kmDriven} km` : "-"}
+            />
+            <Metric label="Km por litro" value={kmPerLiterLabel} />
+            <Metric
+              label="Estabelecimento"
+              value={expense.fuelSupplier || "-"}
+            />
             {expense.vehicle && (
               <Metric label="Veículo" value={expense.vehicle} />
             )}
@@ -121,7 +127,7 @@ export function FuelRow({ expense }: Props) {
               label="Valor total"
               value={formatLocalCurrency(expense.expenseValue)}
             />
-            <div className="flex flex-col gap-0.5 px-4 py-3 bg-background !border-r-0">
+            <div className="flex flex-col gap-0.5 px-4 py-3 bg-background">
               <span
                 className="text-[10px] font-medium uppercase tracking-wide"
                 style={{ color: "var(--color-on-surface-variant)" }}
